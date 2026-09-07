@@ -1,0 +1,235 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContextTemplateReference>
+
+@using Core_project_BusinessLogic;
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    int curPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<h2>Component Template Mapping</h2>
+
+<!-- ================= SEARCH ================= -->
+<form asp-action="Index" method="get" class="card p-3 mb-4">
+    <div class="row">
+
+        <div class="col-md-3">
+            <label>Component Layout</label>
+            <select name="contextId" class="form-control"
+                asp-items="@(new SelectList(ViewBag.ContextMasters, "ID", "Title", ViewBag.SelectedContextId))">
+                <option value="">-- All --</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Template</label>
+            <select name="templateId" class="form-control"
+                asp-items="@(new SelectList(ViewBag.TemplateMasters, "ID", "Name", ViewBag.SelectedTemplateId))">
+                <option value="">-- All --</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Label</label>
+            <input name="label" value="@ViewBag.Label" class="form-control" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+</form>
+
+
+<!-- ================= ADD NEW MAPPING ================= -->
+<form asp-action="Add" method="post" class="card p-3 mb-4" id="mappingForm">
+    @if (TempData["MappingError"] != null)
+    {
+        <div class="text-danger mb-2">@TempData["MappingError"]</div>
+    }
+    <div class="row">
+
+        <div class="col-md-3">
+            <label>Component Layout</label>
+            <select name="Context_Master_ID" id="ddContext" class="form-control"
+                asp-items="@(new SelectList(ViewBag.ContextMasters, "ID", "Title", ViewBag.SelectedContextId))">
+            </select>
+            <span id="ctxError" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label>Template</label>
+            <select name="Template_Master_ID" id="ddTemplate" class="form-control"
+                asp-items="@(new SelectList(ViewBag.TemplateMasters, "ID", "Name", ViewBag.SelectedTemplateId))">
+            </select>
+            <span id="templateError" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-2">
+            <label>Sequence</label>
+            <input name="Sequence" id="txtSequence" class="form-control" type="number" min="1" max="9999" />
+            <span id="seqError" class="text-danger"></span>
+        </div>
+
+        <!-- NEW FIELD -->
+        <div class="col-md-2">
+            <label>Label</label>
+            <input name="Component_Label"
+                   id="txtLabel"
+                   class="form-control"
+                   maxlength="100" />
+            <span id="labelError" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-primary w-100">
+                Mapping
+            </button>
+        </div>
+
+    </div>
+</form>
+
+
+<table  class="table table-bordered table-striped">
+   
+    <thead>
+        <tr>
+            <th>ID</th> 
+            <th>Component Title</th>
+            <th>Template</th>
+            <th>Sequence</th>
+            <th>Label</th>
+            @* <th>Actions</th> *@
+            <th>Edit Label</th>
+             <th>View Layout</th>
+            <th>Drag</th>
+        </tr>
+    </thead>
+
+    <tbody id="sortableComponents">
+    @foreach (var item in Model)
+    {
+        <tr  data-id="@item.ID">
+            <td>@item.ID</td>
+            <td >@item.Context_Title</td>
+            <td>@item.Template_Name</td>
+            <td  class="seq">@item.Sequence</td>
+            <td class="label-cell">
+
+<span class="label-text">@item.Component_Label</span>
+
+<input type="text"
+       class="form-control label-input d-none"
+       value="@item.Component_Label" />
+
+</td>
+            
+
+            @* <td>
+                @if (!item.HasData)
+                {
+
+    <a asp-controller="DynamicData"
+     asp-action="AddMainComponent"
+    asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+    class="btn btn-sm btn-primary">
+    Add Component
+    </a>
+
+   <a asp-controller="DynamicData"
+   asp-action="AddData"
+   asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+   class="btn btn-sm btn-primary">
+    Add Block
+    </a>
+
+
+
+                    @* <a asp-controller="DynamicData"
+                       asp-action="AddData"
+                       asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+                       class="btn btn-sm btn-success">
+                       Add Data
+                    </a> 
+                }
+                else
+                {
+
+ <a asp-controller="DynamicData"
+     asp-action="EditMainComponent"
+    asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+    class="btn btn-sm btn-primary">
+    Edit Component
+    </a>
+
+
+                    <a asp-controller="DynamicData"
+                       asp-action="AddData"
+                       asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+                       class="btn btn-sm btn-primary">
+                       Add Block
+                    </a>
+                }
+            </td>  *@
+            <td>
+<button type="button"
+        class="btn btn-sm btn-warning btn-edit">
+    Edit
+</button>
+
+<button type="button"
+        class="btn btn-sm btn-success btn-save d-none">
+    Save
+</button>
+
+<button type="button"
+        class="btn btn-sm btn-danger btn-delete-mapping"
+        data-id="@item.ID"
+        data-context-id="@item.Context_Master_ID"
+        title="Delete mapping and related details">
+    Delete
+</button></td>
+
+      <td>
+                                        <button type="button" class="btn btn-sm btn-outline-primary js-view-layout"
+                                            data-enc-id="@CryptoEngine.Encrypt(item.ID.ToString())">
+                                            View Layout
+                                        </button>
+                                    </td>
+<td class="drag-handle">☰</td>
+          
+        </tr>
+    }
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == curPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i, templateId = ViewBag.SelectedTemplateId, contextId = ViewBag.SelectedContextId, label = ViewBag.Label })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+ <div class="modal fade spot-layoutModal" id="layoutModalTemplate" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Template Preview</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="layoutContainerTemplate"></div>
+                </div>
+            </div>
+        </div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="~/Assets/scripts/context_template_reference_index.js"></script>
+}

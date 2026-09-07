@@ -1,0 +1,163 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<MenuFooter>
+
+@{
+    var footerMenus = Model ?? new List<MenuFooter>();
+
+   
+    var columns = footerMenus
+    .Where(x => x.ParentFooterId == null || x.ParentFooterId == 0)
+    .Where(x => x.FooterType == "Column")
+    .OrderBy(x => x.Sequence)
+    .ToList();
+
+    var socialMenus = footerMenus
+    .Where(x => x.FooterType == "Social")
+    .OrderBy(x => x.Sequence)
+    .ToList();
+
+    var companyInfo = footerMenus
+    .FirstOrDefault(x => x.FooterType == "CompanyInfo");
+
+    var copyright = footerMenus
+    .FirstOrDefault(x => x.FooterType == "Copyright");
+
+    var bottomLinks = footerMenus
+    .Where(x => x.FooterType == "BottomLink")
+    .OrderBy(x => x.Sequence)
+    .ToList();
+}
+
+<footer class="relative overflow-hidden text-white">
+
+    <img src="~/Assets/images/common-images/footer-bg.webp"
+        class="object-cover w-full h-full lg:h-full absolute inset-0 bottom-0 -z-1" alt="" />
+
+    <img src="~/Assets/images/common-images/footer-vector.webp" alt=""
+        class="footer-vector pointer-events-none select-none absolute bottom-0 sm:bottom-17 left-0 w-full h-auto" />
+
+    <!-- Footer Logo -->
+    <div class="container">
+        <div class="relative z-10 sm:max-w-5xl mx-auto pt-6">
+            <div class="flex flex-col items-center text-center">
+                <div class="flex items-center gap-3">
+
+                    <img src="@(companyInfo?.FooterThumbImage ?? 
+                                                 Url.Content("~/Assets/images/logo/priyacement-logo-white.svg"))"
+                        alt="@(companyInfo?.Title ?? "Priya Cement")" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="border-t border-white/40"></div>
+
+    <!-- Footer Columns -->
+    <div class="container">
+        <div class="relative z-10 sm:max-w-4xl mx-auto pt-6 pb-0">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-10 py-10 text-sm linkcolumns-outer">
+
+                @foreach (var column in columns.OrderBy(x => x.Sequence))
+                {
+                    var links = footerMenus
+                    .Where(x => x.ParentFooterId == column.FooterId)
+                    .OrderBy(x => x.Sequence)
+                    .ToList();
+
+                    <div class="linkcolumns-block">
+                        <h4 class="font-bold text-white tracking-wide mb-4">
+                            @column.Title
+                        </h4>
+
+                        @if (column.Title?.ToUpper() == "FOLLOW ON US")
+                        {
+                            <ul class="space-y-3 text-white/80">
+                                @foreach (var link in links)
+                                {
+                                    <li>
+                                        <a href="@(link.Url ?? "#")" target="@(link.Target ?? "_blank")"
+                                            class="social-item flex items-center gap-2.5">
+
+                                            @if (!string.IsNullOrEmpty(link.FooterImage))
+                                            {
+                                                <span
+                                                    class="social-circle w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                                                    <img src="@link.FooterImage" alt="@link.Title" />
+                                                </span>
+                                            }
+
+                                            @link.Title
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="space-y-2.5 text-white">
+                                @foreach (var link in links)
+                                {
+                                    <li>
+                                        <a href="@(link.Url ?? "#")" target="@link.Target" class="link-item block">
+                                            @link.Title
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Information -->
+    @if (!string.IsNullOrEmpty(companyInfo?.Description))
+    {
+        <div class="container">
+            <div class="relative z-10 max-w-full bottom-line-wrapper">
+                <div class="text-center text-white py-5">
+                    @Html.Raw(companyInfo.Description)
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Bottom Copyright -->
+    <div class="relative z-10 border-t border-white/40 bottom-bar-wrapper">
+        <div class="container">
+            <div
+                class="pt-4 pb-5 sm:pb-8 flex flex-col md:flex-row items-center justify-center gap-2 text-sm text-white bottom-bar-wrapper-inner relative">
+
+                <div>
+                    @if (copyright != null)
+                    {
+                        <text>
+                            &copy; <span id="year-foot"></span> @copyright.Description.CleanParagraphTags()
+                        </text>
+                    }
+
+                    @foreach (var link in bottomLinks)
+                    {
+                        <span class="mx-1.5">|</span>
+
+                        <a href="@link.Url" target="@link.Target" class="link-item">
+                            @link.Title
+                        </a>
+                    }
+                </div>
+
+                <p class="text-white/30 text-[10px]! tic-text">
+                    <a href="https://www.ticworks.com/" target="_blank">TIC</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+</footer>

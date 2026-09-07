@@ -1,0 +1,181 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.ProductModel
+
+@{
+    var main = Model?.Onsite_Testing_List?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var benefits = Model?.Onsite_Testing_List?
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList() ?? new List<ComponentModel>();
+
+    var capHeader = Model?.Testing_Capabilities_List?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var capabilities = Model?.Testing_Capabilities_List?
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList() ?? new List<ComponentModel>();
+
+    var media = !string.IsNullOrWhiteSpace(main?.Component_right_image)
+        ? main.Component_right_image
+        : (!string.IsNullOrWhiteSpace(main?.ComponentThumbnail) ? main.ComponentThumbnail : main?.ThumbnailImage);
+    var mediaAlt = !string.IsNullOrWhiteSpace(main?.Component_Right_image_alt)
+        ? main.Component_Right_image_alt
+        : main?.ComponentThumbnailAltText;
+    var eyebrow = !string.IsNullOrWhiteSpace(main?.Designation) ? main.Designation : main?.Component_Designation;
+    var title = !string.IsNullOrWhiteSpace(main?.DisplayTitle) ? main.DisplayTitle : main?.Title;
+    var body = !string.IsNullOrWhiteSpace(main?.Intro) ? main.Intro : main?.Content;
+    var blockSectionTitle = !string.IsNullOrWhiteSpace(main?.Section_title)
+        ? main.Section_title.CleanParagraphTags()
+        : "";
+    var capTitle = !string.IsNullOrWhiteSpace(capHeader?.DisplayTitle)
+        ? capHeader.DisplayTitle
+        : (!string.IsNullOrWhiteSpace(capHeader?.Section_title) ? capHeader.Section_title : capHeader?.Title);
+}
+
+@if (main != null || benefits.Any() || capabilities.Any())
+{
+    <section id="onsite" class="scroll-mt-28 lg:scroll-mt-40 section-spacing">
+        @if (main != null)
+        {
+            <div class="container">
+                <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-10">
+                    @if (!string.IsNullOrWhiteSpace(media))
+                    {
+                        <div class="rounded-md parallax-wrap lg:max-w-[60%] w-full">
+                            <img src="@media" alt="@mediaAlt" class="rounded-md object-cover shadow-card parallax-img" />
+                        </div>
+                    }
+                    <div class="lg:max-w-[45%]" data-fade>
+                        <div class="section-title-outer section-title-outer-start section-with-intro section-title-nonintro">
+                            @if (!string.IsNullOrWhiteSpace(eyebrow))
+                            {
+                                <span class="eyebrow-text">@Html.Raw(eyebrow.CleanParagraphTags())</span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(title))
+                            {
+                                <h2 class="text-h2 title-section reveal-text">
+                                    @Html.Raw(title.CleanParagraphTags())
+                                </h2>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(body))
+                            {
+                                <p>@Html.Raw(body.CleanParagraphTags())</p>
+                            }
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(blockSectionTitle))
+                        {
+                            <h3 class="mt-10 text-h4">@Html.Raw(blockSectionTitle)</h3>
+                        }
+
+                        @if (benefits.Any())
+                        {
+                            <ul class="mt-6 grid gap-5 grid-cols-2 sm:grid-cols-2 onsite-ul">
+                                @foreach (var item in benefits)
+                                {
+                                    var icon = !string.IsNullOrWhiteSpace(item.Component_Icon_Image)
+                                        ? item.Component_Icon_Image
+                                        : (!string.IsNullOrWhiteSpace(item.Icon_Image) ? item.Icon_Image : item.ThumbnailImage);
+                                    var label = !string.IsNullOrWhiteSpace(item.DisplayTitle) ? item.DisplayTitle : item.Title;
+                                    <li class="flex items-center gap-2 sm:gap-4 onsite-ul-list">
+                                        <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-surface-strong">
+                                            @if (!string.IsNullOrWhiteSpace(icon))
+                                            {
+                                                <img src="@icon" alt="" class="h-auto w-auto object-cover shrink-0">
+                                            }
+                                        </span>
+                                        <span class="text-20 font-medium">@Html.Raw(label.CleanParagraphTags())</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (capabilities.Any() || capHeader != null)
+        {
+            <div data-rail-scope class="mt-8 bg-surface pb-8 pt-8 sm:mt-10 sm:pb-16 sm:pt-16 lg:mt-10 lg:pb-24 lg:pt-20">
+                <div class="container">
+                    @if (!string.IsNullOrWhiteSpace(capTitle))
+                    {
+                        <div class="section-sticky-head">
+                            <h3 class="section-sticky-title text-h2 reveal-text">@Html.Raw(capTitle.CleanParagraphTags())</h3>
+                        </div>
+                    }
+
+                    <div class="mt-10 flex gap-3 sm:mt-12 sm:gap-5 lg:mt-14 lg:gap-8">
+                        <div data-rail class="relative w-[8px] shrink-0 self-stretch">
+                            <span class="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border"></span>
+                            <span data-rail-thumb class="absolute left-0 top-0 h-10 w-2 rounded-full bg-secondary"></span>
+                        </div>
+                        <div class="min-w-0 flex-1 space-y-16 sm:space-y-20 lg:space-y-28">
+                            @{ var index = 1; }
+                            @foreach (var item in capabilities)
+                            {
+                                var itemTitle = !string.IsNullOrWhiteSpace(item.DisplayTitle) ? item.DisplayTitle : item.Title;
+                                var itemIntro = !string.IsNullOrWhiteSpace(item.Intro) ? item.Intro : "";
+                                var itemImg = !string.IsNullOrWhiteSpace(item.ComponentThumbnail)
+                                    ? item.ComponentThumbnail
+                                    : (!string.IsNullOrWhiteSpace(item.ThumbnailImage) ? item.ThumbnailImage : item.Component_right_image);
+                                var listHtml = item.Content;
+                                <article class="grid items-start gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)_minmax(220px,300px)] lg:gap-10 outer-grid-cols">
+                                    <div class="flex min-w-0 gap-4 sm:gap-6 grid-cols-content">
+                                        <span data-count class="font-bold text-ghost text-big leading-none shrink-0">@index.ToString("00")</span>
+                                        <div data-fade class="min-w-0 pt-1">
+                                            <h4 class="text-h4">@Html.Raw(itemTitle.CleanParagraphTags())</h4>
+                                            <span class="block h-px w-full bg-[#EDEDED] my-3"></span>
+                                            @if (!string.IsNullOrWhiteSpace(itemIntro))
+                                            {
+                                                <p>@Html.Raw(itemIntro.CleanParagraphTags())</p>
+                                            }
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(itemImg))
+                                    {
+                                        <img data-fade src="@itemImg" alt="" class="w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[5/3.6] rounded-md object-cover bg-[#E8E8E8]" />
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(listHtml))
+                                    {
+                                        if (listHtml.Contains("<li", StringComparison.OrdinalIgnoreCase) || listHtml.Contains("<ul", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <div data-fade class="md:col-span-2 lg:col-span-1 lg:pt-2 right-listcol">
+                                                @Html.Raw(listHtml)
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            var lines = listHtml
+                                                .Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<br />", "\n")
+                                                .Split(new[] { '\n', '|' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                            <ul data-fade class="md:col-span-2 lg:col-span-1 lg:pt-2 list-none m-0 p-0">
+                                                @for (var i = 0; i < lines.Length; i++)
+                                                {
+                                                    var line = lines[i].CleanParagraphTags();
+                                                    if (string.IsNullOrWhiteSpace(line)) { continue; }
+                                                    <li class="flex items-start gap-3 border-b border-border py-3.5 text-p font-medium @(i == lines.Length - 1 ? "last:border-b-0" : "")">
+                                                        <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"></span>@Html.Raw(line)
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    }
+                                </article>
+                                index++;
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </section>
+}

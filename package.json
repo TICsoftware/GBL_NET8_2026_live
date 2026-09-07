@@ -1,0 +1,31 @@
+{
+  "name": "GBL_NET8_2026_Live",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:css": "tailwindcss -i ./wwwroot/Assets/css/main.css -o ./wwwroot/dist/site.css --watch",
+    "build:css": "tailwindcss -i ./wwwroot/Assets/css/main.css -o ./wwwroot/dist/site.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TICsoftware/GBL_NET8_2026_Live.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/TICsoftware/GBL_NET8_2026_Live/issues"
+  },
+  "homepage": "https://github.com/TICsoftware/GBL_NET8_2026_Live#readme",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "vite": "^8.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2"
+  }
+}

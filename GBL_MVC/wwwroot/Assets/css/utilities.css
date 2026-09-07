@@ -1,0 +1,462 @@
+.container-custom {
+    width: min(88%, 1680px);
+    margin-inline: auto;
+}
+
+.container-custom--relative {
+    position: relative;
+    z-index: 10;
+}
+
+.section-band {
+    padding-inline: 1rem;
+    text-align: center;
+}
+
+.header-logo {
+    width: auto;
+    height: 60px;
+}
+
+.header-actions {
+    gap: 34px;
+}
+
+.desktop-nav {
+    font-size: 0.875rem;
+}
+
+.dropdown-panel {
+    min-width: 240px;
+}
+
+.hero-section {
+    height: 70vh;
+}
+
+.hero-section-ass-img {
+    width: 30px;
+}
+
+.hero-assistant {
+    bottom: 10%;
+}
+
+.about-grid {
+    padding-bottom: 20px;
+}
+
+.copy-tight {
+    line-height: 1.3;
+}
+
+.leaf-field {
+    left: -27px;
+    top: 38px;
+    width: 499px;
+    height: 250px;
+}
+
+.leaf-image {
+    width: 58px;
+}
+
+.collage-stage {
+    height: 340px;
+    max-width: 670px;
+}
+
+.collage-turn {
+    top: 34px;
+    left: 40px;
+    width: 90px;
+    border-radius: 24px;
+}
+
+.collage-item-top {
+    top: -16px;
+    width: 55%;
+}
+
+.collage-item-bottom {
+    bottom: -20px;
+    left: 15px;
+    width: 65%;
+}
+
+.media-frame {
+    border-radius: 24px;
+}
+
+.pan-image-top {
+    width: 128%;
+    left: -14%;
+    border-radius: 24px;
+}
+
+.pan-image-bottom {
+    width: 126%;
+    left: -13%;
+    border-radius: 24px;
+}
+
+.overlay-rounded {
+    border-radius: 24px;
+}
+
+.overlay-sweep {
+    width: 75%;
+}
+
+.overlay-sweep-right {
+    right: -75%;
+}
+
+.overlay-sweep-left {
+    left: -75%;
+}
+
+.playground-media {
+    aspect-ratio: 1 / 1;
+}
+
+.playground-image,
+.playground-caption {
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+}
+
+.signature-bg {
+    background-image: url("../images/signatueBackgroundImg.png");
+}
+
+.signature-content {
+    margin-bottom: -200px;
+}
+
+.signature-heading {
+    transform: translateX(0);
+}
+
+.signature-plate {
+    max-width: 1200px;
+}
+
+.signature-shine {
+    border-radius: 60px;
+}
+
+.edge-card {
+    border-radius: 24px;
+    transform: scale(0.82);
+    filter: blur(2px);
+}
+
+.edge-card-image {
+    border-color: #ffffff2e;
+    border-radius: 20px;
+    /*width: 90% !important;*/
+    margin: auto;
+}
+
+.edge-arrow-bar {
+    top: 25%;
+}
+
+.edge-prev {
+    left: -22px;
+}
+
+.edge-next {
+    right: -22px;
+}
+
+.edge-details {
+    transform: translateY(-20px);
+}
+
+.quote-icon {
+    width: 14%;
+}
+
+.pill {
+    border-radius: 8px;
+    padding: 7px 9px;
+}
+
+.footer-bg {
+    background-image: url("../images/footerBackground.jpg");
+    color: #e8f0e4;
+}
+
+.footer-grid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.footer-logo {
+    width: auto;
+    height: 50px;
+}
+
+.footer-brand-copy {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.footer-nav-list {
+    font-size: 14.5px;
+}
+
+.footer-bottom {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+}
+
+.footer-legal {
+    color: #fff;
+}
+
+.legal-divider {
+    border-right-color: #fff;
+}
+
+@media (min-width: 640px) {
+    .hero-section {
+        height: 85vh;
+    }
+
+    .leaf-image {
+        width: 70px;
+    }
+
+    .collage-stage {
+        height: 460px;
+    }
+
+    .collage-turn {
+        left: 83px;
+        width: 120px;
+    }
+
+    .collage-item-top {
+        width: 60%;
+    }
+
+    .collage-item-bottom {
+        bottom: -43px;
+        left: 23px;
+        width: 70%;
+    }
+
+    .signature-content {
+        margin-bottom: -400px;
+    }
+}
+
+@media (min-width: 768px) {
+    .header-logo {
+        height: 80px;
+    }
+
+    .leaf-image {
+        width: 150px;
+    }
+
+    .desktop-nav {
+        font-size: 12px;
+    }
+
+    .quote-icon {
+        width: 18%;
+    }
+
+    .footer-grid {
+        padding-right: 20px;
+        padding-left: 0;
+    }
+
+    .footer-logo,
+    .footer-indent {
+        padding-left: 20px;
+    }
+
+    .footer-bottom {
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+
+    .footer-quick-links {
+        padding-left: 40px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .desktop-nav {
+        font-size: 0.875rem;
+    }
+
+    .collage-stage {
+        height: 560px;
+    }
+
+    .collage-turn {
+        width: 154px;
+    }
+
+    .collage-item-top {
+        width: 380px;
+    }
+
+    .collage-item-bottom {
+        width: 440px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .signature-heading {
+        transform: translateX(-60px);
+        opacity: 0;
+    }
+
+    .signature-section:hover .signature-heading {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .signature-section:hover .signature-bg {
+        transform: scale(1.015);
+    }
+
+    .signature-section:hover .signature-plate-image,
+    .signature-plate-image:hover {
+        transform: rotate(-60deg);
+    }
+
+    .signature-section:active .signature-plate-image {
+        transform: rotate(-30deg);
+    }
+
+    .signature-section:hover .signature-shine {
+        opacity: 0.3;
+    }
+}
+
+@media (min-width: 1024px) {
+    .signature-content {
+        margin-bottom: -683px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .footer-grid {
+        padding-right: 100px;
+    }
+
+    .footer-logo,
+    .footer-indent {
+        padding-left: 100px;
+    }
+}
+
+.section-sm {
+    padding-block: clamp(32px, 5vw, 64px);
+}
+
+.section {
+    padding-block: clamp(48px, 6vw, 80px);
+}
+
+.section-lg {
+    padding-block: clamp(64px, 7vw, 96px);
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
+.icon-sm {
+    width: 14px;
+    height: 14px;
+}
+
+.icon-md {
+    width: 18px;
+    height: 18px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
+.edge-arrow-bar {
+    top: 0%;
+}
+
+/* Small tablets */
+@media (min-width: 290px) and (max-width: 576px) {
+    .edge-arrow-bar {
+        top: 23% !important;
+    }
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+    .edge-arrow-bar {
+        top: 23%;
+    }
+}
+
+/* Laptops */
+@media (min-width: 992px) {
+    .edge-arrow-bar {
+        top: 28%;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+    .edge-arrow-bar {
+        top: 34%;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1600px) {
+    .edge-arrow-bar {
+        top: 35%;
+    }
+}
+
+/* Ultra Wide */
+@media (min-width: 2100px) {
+    .edge-arrow-bar {
+        top: 30%;
+    }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+    .footer-bottom {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+ 

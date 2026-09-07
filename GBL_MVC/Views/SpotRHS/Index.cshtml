@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Core_project_BusinessLogic.Entity.Manage.Add_Spot_RHS>
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "List Blocks";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+<h2>Blocks Details List</h2>
+<a asp-action="Add" class="btn btn-primary mb-3">Add New</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Title</th>
+            <th>Block Layout Title</th>
+            <th>Status</th>
+            <th>Sequence</th>
+            <th>Created</th>
+            <th width="250">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @using Core_project_BusinessLogic
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.SpotTemplate</td>
+
+                
+                   <td>
+                    @if (item.Status == 2)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+                <td>@item.sequence</td>
+                <td>@item.Created_Date?.ToString("dd-MMM-yyyy")</td>
+
+                <td>
+                    <a asp-action="Add" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                        class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                    @if (item.Status == 2)
+                    {
+                        <a asp-action="Delete" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                            class="btn btn-sm btn-outline-danger ms-2">Deactivate</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

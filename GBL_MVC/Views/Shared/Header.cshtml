@@ -1,0 +1,224 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<MenuHeader>
+@{
+  var menus = Model?.ToList() ?? new List<MenuHeader>();
+
+  var parentMenus = menus
+    .Where(x => x.ParentMenuId == null && x.MenuCategory == 3)
+    .OrderBy(x => x.Sequence)
+    .ToList();
+
+  var headerLogo = Model?.FirstOrDefault(x => x.MenuCategory == 1);
+}
+
+<template id="navSource">
+
+  @foreach (var parent in parentMenus)
+  {
+    var children = menus
+    .Where(x => x.ParentMenuId == parent.MenuId)
+    .OrderBy(x => x.Sequence)
+    .ToList();
+
+    var menuKey = !string.IsNullOrEmpty(parent.MenuName)
+    ? parent.MenuName.ToLower().Replace(" ", "-").Replace("&", "and")
+    : $"menu-{parent.MenuId}";
+
+    @* MEGA MENU *@
+    if (parent.MenuType == "MegaMenu")
+    {
+      <section class="nav-data" data-key="@menuKey" data-label="@parent.MenuName">
+
+        @if (children.Any())
+        {
+          <ul class="mega-links">
+            @foreach (var child in children)
+            {
+              <li>
+                <a href="@child.Url" target="@(child.Target ?? "_self")">
+
+                  <span class="ml-title">@child.MenuName</span>
+
+                  @if (!string.IsNullOrEmpty(child.FeatureDescription))
+                  {
+                    <span class="ml-desc">
+                      @Html.Raw(child.FeatureDescription.CleanParagraphTags())
+                    </span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (!string.IsNullOrEmpty(parent.FeatureImage) ||
+            !string.IsNullOrEmpty(parent.FeatureTitle))
+        {
+          <div class="mega-promo">
+            <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" target="@(parent.FeatureButtonTarget ?? "_self")">
+
+              @if (!string.IsNullOrEmpty(parent.FeatureImage))
+              {
+                <img class="mp-media" src="@parent.FeatureImage" alt="@parent.FeatureTitle" />
+              }
+
+              @if (!string.IsNullOrEmpty(parent.FeatureTitle))
+              {
+                <h4>@parent.FeatureTitle</h4>
+              }
+
+              @if (!string.IsNullOrEmpty(parent.FeatureButtonText))
+              {
+                <div class="mp-cta">
+                  @parent.FeatureButtonText
+                  <img src="~/Assets/images/common-images/button-arrow-icon.svg" alt="button arrow icon" />
+                </div>
+              }
+            </a>
+          </div>
+        }
+
+      </section>
+    }
+    else
+    {
+      @* NORMAL MENU *@
+      <section class="nav-data" data-key="@menuKey" data-label="@parent.MenuName" data-href="@parent.Url">
+      </section>
+
+    }
+  }
+
+
+
+</template>
+
+
+<header class="site-header is-intro" id="siteHeader">
+  <div class="container">
+    <div class="header-inner">
+
+      <a href="@(headerLogo?.Url ?? "/")" class="logo-link"
+        aria-label="@(headerLogo?.MenuName ?? "Priya Cement — Home")">
+
+        <img src="@(headerLogo?.ThumbImage ?? "/Assets/images/logo/priyacement-logo-red.svg")"
+          alt="@(headerLogo?.MenuName ?? "Priya Cement logo")">
+      </a>
+
+      <nav class="primary-nav" id="primaryNav" aria-label="Primary">
+        <div class="nav-pill" id="navPill"></div>
+        <!-- nav items injected by JS -->
+      </nav>
+
+      <div class="header-actions">
+        @* <div class="lang-wrap" id="langWrap">
+            <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                <img src="~/Assets/images/common-images/global-icon.svg" alt="whatsapp icon"><span class="lang-label">EN</span>
+            <svg class="chev" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="lang-menu">
+            <button aria-current="true">English</button>
+            <button>हिन्दी</button>
+            </div>
+        </div> *@
+
+        <div class="divider-v"></div>
+
+        @* <a href="#" class="btn-dealer"><span class="dealer-full">Find a Dealer</span></a> *@
+
+        @* <a class="icon-btn whatsapp-btn" href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <img src="~/Assets/images/common-images/whatsapp-icon.svg" alt="whatsapp icon">
+        </a> *@
+
+        <div class="search-wrap">
+          <button class="icon-btn search-trigger" id="searchTrigger" aria-label="Search">
+            <img src="~/Assets/images/common-images/search-icon.svg" alt="search icon">
+          </button>
+        </div>
+
+
+
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- desktop mega menu -->
+  <div class="mega-backdrop" id="megaBackdrop"></div>
+  <div class="mega-stage" id="megaStage">
+    <div class="mega-panel" id="megaPanel">
+      <div class="mega-inner" id="megaInner"></div>
+    </div>
+  </div>
+
+  <!-- mobile drawer — pure navigation only; search / language / dealer / WhatsApp
+       all live in the header above, not duplicated in here -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="mobile-nav" id="mobileNav" aria-label="Mobile menu">
+    <div class="drawer-head">
+      <img src="~/Assets/images/logo/priyacement-logo-red.svg" alt="Priya Cement logo">
+      <button class="drawer-close" id="drawerClose" aria-label="Close menu">
+        <svg viewBox="0 0 20 20" fill="none">
+          <path d="M4 4l12 12M16 4L4 16" stroke-width="1.7" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <div class="drawer-body" id="drawerBody">
+      <div class="drawer-screen drawer-root" id="drawerRoot"></div>
+      <div class="drawer-screen drawer-sub" id="drawerSub"></div>
+    </div>
+  </aside>
+</header>
+
+<!-- cmd-k style search overlay -->
+<form class="search-form">
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-modal" id="searchModal">
+      <div class="search-modal-input" id="searchInputWrap">
+
+        <img src="~/Assets/images/common-images/search-icon.svg" alt="search icon">
+
+        <input type="text" placeholder="Search products, tools, dealers..." id="searchInput" name="keyword"
+          autocomplete="off">
+
+        <button type="button" class="search-clear" id="searchClear" aria-label="Clear search">
+          <svg viewBox="0 0 12 12" fill="none">
+            <path d="M1 1l10 10M11 1L1 11" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <button type="button" class="search-modal-close" id="searchModalClose" aria-label="Close search">
+          <svg viewBox="0 0 18 18" fill="none">
+            <path d="M3.5 3.5l11 11M14.5 3.5l-11 11" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </div>
+</form>
+
+@* <form class="search-form">
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-modal" id="searchModal">
+      <div class="search-modal-input" id="searchInputWrap">
+
+        <img src="~/Assets/images/common-images/search-icon.svg" alt="search icon">
+        <input type="text" placeholder="Search products, tools, dealers..." id="searchInput" autocomplete="off">
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+          <svg viewBox="0 0 12 12" fill="none">
+            <path d="M1 1l10 10M11 1L1 11" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+        <button class="search-modal-close" id="searchModalClose" aria-label="Close search">
+          <svg viewBox="0 0 18 18" fill="none">
+            <path d="M3.5 3.5l11 11M14.5 3.5l-11 11" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</form> *@

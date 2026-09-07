@@ -1,0 +1,72 @@
+    @model Core_project_BusinessLogic.Entity.LanguageMaster
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Edit Language";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Edit Language
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<h2>Edit Language</h2>
+
+@using (Html.BeginForm())
+{
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                @Html.HiddenFor(m => m.ID, new { @Value = Model.ID })
+
+                @Html.LabelFor(m => m.Language_Name)
+                @Html.TextBoxFor(m => m.Language_Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Language_Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.Language_Sequence)
+                @Html.TextBoxFor(m => m.Language_Sequence, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Language_Sequence, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+
+            @Html.LabelFor(m => m.Status)
+            @Html.DropDownListFor(m => m.Status,
+                new List<SelectListItem>{
+                    new SelectListItem{Text="Active", Value="1"},
+                    new SelectListItem{Text="Inactive", Value="0"}
+                },
+                new { @class="form-control form-select" })
+            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-12  ">
+            <div class="d-inline-block text-center">
+             <button class="btn btn-primary cms-btn-custom">Update</button>
+            </div>
+        </div>
+    </div>
+   
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/Assets/scripts/language_master.js"></script>
+}

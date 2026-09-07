@@ -1,0 +1,78 @@
+@model GBL_MVC.Models.Manage_Model.Model_Template_Master
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Template Master";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+
+@using (Html.BeginForm("AddTemplateMaster", "TemplateMaster", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+     <section class="section content-main">
+        <div class="row">
+             <div class="card-header">
+                        <h2 class="card-title">Template type</h2>
+                    </div>
+
+    <div class="form-horizontal row">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+        <div class="col-md-4">
+            <!-- Language Master -->
+            <div class="form-group mb-3">
+                <label asp-for="Language_Master_ID" class="control-label required"></label>
+                <select asp-for="Language_Master_ID" class="form-control form-select" asp-items="@(new SelectList(ViewBag.Languages, "ID", "Language_Name"))">
+                    <option value="">-- Select --</option>
+                </select>
+                <span asp-validation-for="Language_Master_ID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- Template Name -->
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label required" })
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter Template Name" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- Status -->
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.Status, new { @class = "control-label required" })
+                @Html.DropDownListFor(model => model.Status,
+                    new List<SelectListItem>
+                    {
+                        new SelectListItem{ Text="Active", Value = "1" },
+                        new SelectListItem{ Text="Inactive", Value = "0" }
+                    },
+                    "--Select--",
+                    new { id = "ddStatus", @class = "form-control form-select" })
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Created By -->
+
+        @Html.HiddenFor(model => model.ID, new { @Value = "0" })
+        @Html.HiddenFor(model => model.Template_Master_Save_Action)
+
+        <div class="col-md-12 text-center">
+            <input id="btnSaveAndPublish" name="Command" type="submit" value="Save and Publish" class="btn btn-primary navbar-btn" />
+        </div>
+    </div>
+
+    
+     
+
+</div>
+</section>
+}
+
+<div id="template-master-alert-message" data-message="@(TempData["AlertMessage"] ?? string.Empty)" hidden></div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/Assets/scripts/template_master.js"></script>
+}

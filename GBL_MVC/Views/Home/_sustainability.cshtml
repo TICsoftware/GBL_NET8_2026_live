@@ -1,0 +1,84 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var stats = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null)
+{
+<section class="home-sustainability-section section-spacing overflow-hidden relative">
+  <div class="video-bg-wrap absolute top-0 inset-s-0 w-full h-full overflow-hidden">
+    <video
+      class="video-bg w-full h-full object-fit-cover"
+      autoplay
+      muted
+      loop
+      playsinline
+      poster="@Component.ComponentThumbnail">
+      @if (!string.IsNullOrWhiteSpace(Component.component_Video_path))
+      {
+          <source src="@Component.component_Video_path" type="video/mp4">
+      }
+    </video>
+    <div class="video-bg-overlay absolute top-0 inset-s-0 w-full h-full"></div>
+  </div>
+
+  <div class="container relative z-1">
+    <div class="section-title-outer section-title-outer-start section-title-sm white-copy">
+      <h2 class="text-h2 title-section reveal-text">
+       @Html.Raw(
+            !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                ? Component.DisplayTitle.CleanParagraphTags()
+                : Component.Title)
+      </h2>
+      @if (!string.IsNullOrWhiteSpace(Component.Intro))
+      {
+          <p>@Html.Raw(Component.Intro.CleanParagraphTags())</p>
+      }
+    </div>
+
+    @if (stats.Any())
+    {
+    <div class="sustainability-block divide-y divide-white/40 space-y-4 md:space-y-8">
+        @foreach (var item in stats)
+        {
+            var isNumeric = int.TryParse(item.Title?.Trim(), out var target);
+            <div class="pb-4 md:pb-5 lg:pb-6 counter-wrap-outer">
+              <div class="flex items-end gap-2 counter-wrap-inner">
+               @Html.Raw(item.Landing_Intro.CleanParagraphTags())
+                @if (!string.IsNullOrWhiteSpace(item.Intro))
+                {
+                    <p class="stat-label">@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                }
+              </div>
+              @if (!string.IsNullOrWhiteSpace(item.Content))
+              {
+                  <p class="stat-sub">@Html.Raw(item.Content.CleanParagraphTags())</p>
+              }
+            </div>
+        }
+    </div>
+    }
+  </div>
+
+  @if (!string.IsNullOrWhiteSpace(Component.Url))
+  {
+  <div class="outer-btn-wrap outer-bg-white outer-btn-spacing absolute left-0 bottom-0">
+        <a class="site-link" href="@Component.Url">
+          @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "Read our sustainability story")
+          <span class="site-link-arrow" aria-hidden="true"><img src="/Assets/images/common-images/button-arrow-icon.svg" alt="" class="w-auto object-cover"></span>
+        </a>
+  </div>
+  }
+</section>
+}

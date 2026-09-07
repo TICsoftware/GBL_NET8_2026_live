@@ -1,0 +1,100 @@
+﻿@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var header = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+    var items = Model?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList() ?? new List<ComponentModel>();
+    if (!items.Any() && Model != null)
+    {
+        items = Model.Where(x => header == null || x.GroupId != header.GroupId).OrderBy(x => x.Sequence).ToList();
+    }
+
+    var sectionTitle = !string.IsNullOrWhiteSpace(header?.DisplayTitle) ? header.DisplayTitle : header?.Title;
+    var framesBase = !string.IsNullOrWhiteSpace(header?.Url)
+        ? header.Url
+        : Url.Content("~/Assets/images/careers/images/");
+    if (!string.IsNullOrWhiteSpace(framesBase) && !framesBase.EndsWith("/"))
+    {
+        framesBase += "/";
+    }
+
+    var bgImg = !string.IsNullOrWhiteSpace(header?.Componentbackground)
+        ? header.Componentbackground
+        : (!string.IsNullOrWhiteSpace(header?.ThumbnailImage) ? header.ThumbnailImage : "/Assets/images/bg-image-dark.webp");
+
+    var centerLogo = !string.IsNullOrWhiteSpace(header?.ComponentThumbnail)
+        ? header.ComponentThumbnail
+        : (!string.IsNullOrWhiteSpace(header?.Icon_Image) ? header.Icon_Image : "/Assets/images/careers/icons/logo.png");
+}
+
+@if (header != null || items.Any())
+{
+    <section id="life-inside"
+             class="lifeinside-section relative w-full bg-outside-section"
+             aria-label="Life inside Priya Cement"
+             data-frames-base="@framesBase">
+
+        <div class="sticky-stage relative w-full">
+            <div class="lifeinside-bg" id="lifeinside-bg" aria-hidden="true">
+                <img src="@bgImg" alt="" class="lifeinside-bg-img">
+            </div>
+
+            <div class="section-title-outer section-title-outer-start section-title-left" id="section-title">
+                @if (!string.IsNullOrWhiteSpace(header?.DisplayTitle))
+                {
+                    <h2 class="text-h2 title-section reveal-text">
+                        @Html.Raw(header?.DisplayTitle ?? header?.Title)
+                    </h2>
+                }
+            </div>
+
+            <div class="stage" id="stage">
+                <canvas id="flower" class="flower-canvas" role="img"
+                        aria-label="Red petal flower revealing clockwise"></canvas>
+
+                <div id="center-logo" class="node logo center-logo" role="img" aria-label="Priya Cement lion emblem">
+                    <img src="@centerLogo" alt="" class="center-logo-img" draggable="false" />
+                </div>
+
+                @foreach (var item in items)
+                {
+                    var rawTitle = (item.Title ?? "").Trim().ToLowerInvariant();
+                    var knownKeys = new[] { "learning", "leadership", "recognition", "purpose", "culture", "safety", "wellness" };
+                    var key = knownKeys.FirstOrDefault(k => rawTitle.Contains(k))
+                        ?? rawTitle.Replace(" ", "-");
+                    var icon = !string.IsNullOrWhiteSpace(item.Component_Icon_Image)
+                        ? item.Component_Icon_Image
+                        : (!string.IsNullOrWhiteSpace(item.Icon_Image) ? item.Icon_Image : item.ThumbnailImage);
+                    var alt = !string.IsNullOrWhiteSpace(item.DisplayTitle) ? item.DisplayTitle.CleanParagraphTags() : item.Title;
+                    if (!string.IsNullOrWhiteSpace(icon) && !string.IsNullOrWhiteSpace(key))
+                    {
+                        <img class="node icon" data-key="@key" src="@icon" alt="@alt" />
+                    }
+                }
+            </div>
+
+            <div class="lifeinside-labels" id="lifeinside-labels">
+                @foreach (var item in items)
+                {
+                    var rawTitle = (item.Title ?? "").Trim().ToLowerInvariant();
+                    var knownKeys = new[] { "learning", "leadership", "recognition", "purpose", "culture", "safety", "wellness" };
+                    var key = knownKeys.FirstOrDefault(k => rawTitle.Contains(k))
+                        ?? rawTitle.Replace(" ", "-");
+                    var side = string.IsNullOrWhiteSpace(item.bg_class) ? "right" : item.bg_class.Trim().ToLowerInvariant();
+                       
+                    var labelTitle = !string.IsNullOrWhiteSpace(item.DisplayTitle) ? item.DisplayTitle : item.Title;
+                    var labelBody = !string.IsNullOrWhiteSpace(item.Intro) ? item.Intro : item.Content;
+                    if (string.IsNullOrWhiteSpace(key)) { continue; }
+                    <div class="label label-txt" data-key="@key" data-side="@side">
+                        <h2>@Html.Raw(labelTitle.CleanParagraphTags())</h2>
+                        @if (!string.IsNullOrWhiteSpace(labelBody))
+                        {
+                            <p>@Html.Raw(labelBody.CleanParagraphTags())</p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

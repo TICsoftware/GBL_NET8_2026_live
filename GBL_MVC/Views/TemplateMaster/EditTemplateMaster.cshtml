@@ -1,0 +1,78 @@
+@model Core_project_BusinessLogic.Entity.TemplateMaster
+
+@{
+    ViewData["Title"] = "Edit Template Master";
+   
+        Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["AlertMessage"]
+    </div>
+}
+
+@using (Html.BeginForm("EditTemplateMaster", "TemplateMaster", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger mb-2" })
+
+    <!-- Hidden ID -->
+     @Html.HiddenFor(m => m.ID, new { @Value = Model.ID })
+
+    @Html.HiddenFor(m => m.Created_UserID)
+    @Html.HiddenFor(m => m.Created_Date)
+<div class="row">
+    <div class="col-md-4">
+        <!-- Language Master -->
+        <div class="form-group mb-3">
+            <label asp-for="Language_Master_ID" class="control-label required"></label>
+            <select asp-for="Language_Master_ID" class="form-control form-select" asp-items="@(new SelectList(ViewBag.Languages, "ID", "Language_Name"))">
+                <option value="">-- Select --</option>
+            </select>
+            <span asp-validation-for="Language_Master_ID" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+    <div class="form-group mb-3">
+        @Html.LabelFor(m => m.Name, new { @class = "control-label required" })
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter Template Name" })
+        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+    </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.Status, new { @class = "control-label required" })
+            @Html.DropDownListFor(m => m.Status,
+                new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Active", Value = "1", Selected = (Model.Status == 1) },
+                    new SelectListItem { Text = "Inactive", Value = "0", Selected = (Model.Status == 0) }
+                },
+                new { @class = "form-control form-select" })
+            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="col-md-12 text-center">
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Update
+        </button>
+        <a asp-action="Index" class="btn btn-secondary cms-btnsecondary-custom">
+            <i class="bi bi-arrow-left-circle"></i> Cancel
+        </a>
+    </div>
+</div>
+</div>
+
+    
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/Assets/scripts/template_master.js"></script>
+}

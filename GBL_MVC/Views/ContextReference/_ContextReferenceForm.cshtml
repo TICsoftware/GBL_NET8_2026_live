@@ -1,0 +1,52 @@
+@model Core_project_BusinessLogic.Entity.ContextReference
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group mb-3">
+            <label class="form-label">Language</label>
+            <select asp-for="Language_Master_ID" class="form-control form-select"
+                    asp-items="@(new SelectList(ViewBag.Languages, "ID", "Language_Name"))">
+                <option value="">-- Select --</option>
+            </select>
+            @Html.ValidationMessageFor(m => m.Language_Master_ID)
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group mb-3">
+            <label class="form-label">Components Layout</label>
+            <select asp-for="Context_Master_ID" class="form-control form-select"
+                    asp-items="@(new SelectList(ViewBag.ContextMasters, "ID", "Title"))">
+                <option value="">-- Select --</option>
+            </select>
+            @Html.ValidationMessageFor(m => m.Context_Master_ID)
+        </div>
+    </div>
+  <div class="col-md-3">
+        <div class="form-group mb-3">
+            <label class="form-label">Template Master</label>
+            <select asp-for="Template_Master_ID" class="form-control form-select"
+                    asp-items="@(new SelectList(ViewBag.TemplateMasters, "ID", "Name"))">
+                <option value="">-- Select --</option>
+            </select>
+            @Html.ValidationMessageFor(m => m.Template_Master_ID)
+        </div>
+    </div>
+    <div class="col-md-3">      
+        <div class="form-group mb-3">
+            <label class="form-label">Reference Title</label>
+            @Html.TextBoxFor(m => m.Reference_Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Reference_Title)
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group mb-3">
+            <label class="form-label">Status</label>
+            <select asp-for="Status" class="form-control form-select">
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+            </select>
+        </div>
+    </div>
+    @Html.Hidden("returnUrl", ViewBag.ReturnUrl as string)
+</div>

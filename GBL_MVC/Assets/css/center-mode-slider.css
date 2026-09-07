@@ -1,0 +1,152 @@
+.edge-swiper-next:hover,
+.edge-swiper-prev:hover {
+    background: var(--color-darkcream);
+    border-color: var(--color-cream);
+    box-shadow: 0 12px 24px rgb(0 0 0 / 0.16);
+}
+.swiper.edgeSwiper {padding-top: 25px;}
+
+/* Mute transitions during seamless loop wrap so active scale/blur doesn't re-fire */
+.edgeSwiper.edge-swiper-jumping .swiper-wrapper,
+.edgeSwiper.edge-swiper-jumping .swiper-slide,
+.edgeSwiper.edge-swiper-jumping .edge-card,
+.edgeSwiper.edge-swiper-jumping .edge-card-image,
+.edgeSwiper.edge-swiper-jumping .edge-details {
+    transition: none !important;
+}
+/* Image aur text ke beech zero gap */
+.edgeSwiper .swiper-slide-active .p-8,
+.edgeSwiper .swiper-slide-active .edge-details {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    padding: 0px 5px !important;  
+    margin-top: 27px !important;  
+}
+
+/* Scale bhi thoda kam */
+.edgeSwiper .swiper-slide-active .group {
+    transform: scale(1.08);
+    opacity: 1;
+    filter: blur(0);
+    position: relative;
+    z-index: 10;
+    padding-bottom: 20px;
+}
+.edge-card-title, .edge-card-text {color: var(--color-cream);}
+.edge-card-title{font-size: var(--text-h4);margin-bottom: 0.5rem;}
+/* Image ka border kam karo */
+.edge-card-image {
+    border-width: 4px !important; 
+}
+.edge-nav-arrows {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 43%;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.edge-nav-arrows .edge-swiper-prev,
+.edge-nav-arrows .edge-swiper-next {
+    pointer-events: all;
+}
+
+
+
+.edge-arrow-bar {
+    top: 0%;
+}
+
+
+.edge-card {
+    border-radius: 24px;
+    transform: scale(0.82);
+    filter: blur(2px);
+}
+
+.edge-card-image {
+    border-color: #ffffff2e;
+    border-radius: 20px;
+    /*width: 90% !important;*/
+    margin: auto;
+}
+
+.edge-arrow-bar {
+    top: 25%;
+}
+
+.edge-prev {
+    left: -22px;
+}
+
+.edge-next {
+    right: -22px;
+}
+
+.edge-details {
+    transform: translateY(-20px);
+}
+
+
+/* Small tablets */
+@media (min-width: 290px) and (max-width: 575px) {
+    .edge-nav-arrows {
+    top: 33% !important;
+    width: 92% !IMPORTANT;
+}
+}
+@media (min-width: 576px) and (max-width: 767px) {
+    .edge-nav-arrows {
+        top: 43% !important;
+        width: 92% !IMPORTANT;
+    }
+}
+/* Tablets */
+@media (min-width: 768px) {
+    .edge-nav-arrows {
+        top: 35% !important;
+    }
+    .edgeSwiper .swiper-slide-active .p-8, .edgeSwiper .swiper-slide-active .edge-details {
+    display: block;
+}
+}
+
+/* Laptops */
+@media (min-width: 992px) {
+    .edge-nav-arrows {
+        top: 36% !important;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+    .edge-nav-arrows {
+    top: 40% !IMPORTANT;
+}
+.edgeSwiper .swiper-slide-active .p-8, .edgeSwiper .swiper-slide-active .edge-details {
+    display: flex;
+}
+}
+
+/* Large Desktop */
+@media (min-width: 1600px) {
+    .edge-nav-arrows {
+        width: 42% !IMPORTANT;
+    }
+}
+
+/* Ultra Wide */
+@media (min-width: 2100px) {
+    .edge-nav-arrows {
+        top: 30%;
+    }
+}
+@media (max-width: 992px) {
+.inner-center-slider {padding: 0 20px}
+}

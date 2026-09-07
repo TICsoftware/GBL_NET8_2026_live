@@ -1,0 +1,125 @@
+@model Core_project_BusinessLogic.Entity.ContextMaster
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Components Layout";
+    var cspNonce = Context.Items["CSPNonce"]?.ToString();
+}
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Add Components Layout
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Add" method="post" class="form-horizontal">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group mb-6">
+                <label asp-for="Language_Master_ID" class="form-label">Language</label>
+                <select asp-for="Language_Master_ID" class="form-control form-select" asp-items="@(new SelectList(ViewBag.Languages, "ID", "Language_Name"))" required>
+                    <option value="">-- Select --</option>
+                </select>
+                <span asp-validation-for="Language_Master_ID" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group mb-6">
+                <label asp-for="Title" class="form-label">Title</label>
+                <input asp-for="Title"
+                       class="form-control"
+                       required
+                       minlength="3"
+                       maxlength="100"
+                       pattern="^[A-Za-z0-9\s\.\,\-\_\(\)\/&]{3,100}$"
+                       title="3-100 characters; only letters, numbers, spaces, and . , - _ ( ) / & are allowed." />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+<div class="col-md-6">
+    <div class="form-group mb-3">
+        <label class="form-label">Templates</label>
+
+        <select name="TemplateIds"
+                id="TemplateIds"
+                multiple="multiple"
+                class="form-control form-select"
+                required>
+            @foreach (var t in ViewBag.TemplateMasters)
+            {
+                var selected = ViewBag.SelectedTemplates != null &&
+                               ((List<int>)ViewBag.SelectedTemplates).Contains(t.ID);
+
+                <option value="@t.ID" selected="@(selected ? "selected" : null)">
+                    @t.Name
+                </option>
+            }
+        </select>
+
+       <br /> <small class="text-muted">Hold Ctrl to select multiple templates</small>
+    </div>
+</div>
+
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-control form-select" required>
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group mb-3">
+                <label class="form-label">Design Layout</label>
+                @Html.TextAreaFor(model => model.Design_Layout, new { @class = "form-control editor-full", placeholder = "Enter design layout", required = "required", minlength = "5", maxlength = "5000" })
+                <span asp-validation-for="Design_Layout" class="text-danger"></span>
+                @* <textarea asp-for="Design_Layout" class="form-control editor-full"></textarea> *@
+            </div>
+        </div>
+
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
+
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="importmap" nonce="@cspNonce">
+        {
+            "imports": {
+                "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+                "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+            }
+        }
+    </script>
+    <script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+    <script src="~/Assets/scripts/dynamic_template_master_add.js"></script>
+}
+
+@section head{
+    <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+}
+
+
+
+

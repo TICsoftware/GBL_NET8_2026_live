@@ -1,0 +1,83 @@
+@model List<CmsMenuTemplate>
+
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "LIst Menu Template";
+}
+
+@using Core_project_BusinessLogic.Entity
+
+@{
+    ViewData["Title"] = "LIst Menu Template";
+}
+
+<h2>List Menu Template</h2>
+
+
+<h2>Menu Templates</h2>
+
+<a href="/CmsMenuAdmin/TemplateAddEdit"
+   class="btn btn-success mb-3">
+    Add New Template
+</a>
+
+<table class="table table-bordered">
+
+<thead class="table-dark">
+
+<tr>
+<th>ID</th>
+<th>Template Name</th>
+<th>Preview</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+@foreach (var t in Model)
+{
+<tr>
+
+<td>@t.TemplateId</td>
+
+<td>@t.TemplateName</td>
+
+<td>
+@if (!string.IsNullOrEmpty(t.PreviewImage))
+{
+<img src="@t.PreviewImage" width="120"/>
+}
+</td>
+
+<td>
+
+@if (t.IsActive)
+{
+<span class="badge bg-success">Active</span>
+}
+else
+{
+<span class="badge bg-danger">Inactive</span>
+}
+
+</td>
+
+<td>
+
+<a href="/CmsMenuAdmin/TemplateAddEdit/@t.TemplateId"
+   class="btn btn-primary btn-sm">
+   Edit
+</a>
+
+</td>
+
+</tr>
+}
+
+</tbody>
+
+</table>

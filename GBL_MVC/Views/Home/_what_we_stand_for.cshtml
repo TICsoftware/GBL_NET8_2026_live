@@ -1,0 +1,68 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var certificates = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null)
+{
+<section class="home-whatwestandfor-section section-spacing overflow-hidden relative enlarge-outer-section">
+  <div class="container">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12 items-center">
+        <div class="lg:col-span-5 leftContent-wrap">
+          <div class="section-title-outer section-title-outer-start section-title-md">
+              <h2 class="text-h2 title-section reveal-text">
+                @Html.Raw(
+                    !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                        ? Component.DisplayTitle.CleanParagraphTags()
+                        : Component.Title)
+              </h2>
+              @if (!string.IsNullOrWhiteSpace(Component.Intro))
+              {
+                  <p>@Html.Raw(Component.Intro.CleanParagraphTags())</p>
+              }
+          </div>
+          @if (certificates.Any())
+          {
+          <div>
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 md:gap-3 certificates-box-outer mt-8 sm:mt-10">
+                @foreach (var item in certificates)
+                {
+                    var img = !string.IsNullOrWhiteSpace(item.Icon_Image)
+                        ? item.Icon_Image
+                        : (!string.IsNullOrWhiteSpace(item.ComponentThumbnail) ? item.ComponentThumbnail : item.ThumbnailImage);
+                    <div class="certificates-box">
+                        <img src="@img" alt="@item.ComponentThumbnailAltText" class="w-auto object-cover">
+                    </div>
+                }
+            </div>
+          </div>
+          }
+        </div>
+        @{
+            var mainImg = !string.IsNullOrWhiteSpace(Component.ComponentThumbnail)
+                ? Component.ComponentThumbnail
+                : (!string.IsNullOrWhiteSpace(Component.Component_right_image)
+                    ? Component.Component_right_image
+                    : Component.ThumbnailImage);
+        }
+        @if (!string.IsNullOrWhiteSpace(mainImg))
+        {
+        <div class="lg:col-span-7 rounded-sm parallax-wrap enlarge-wrapper">
+          <img src="@mainImg" alt="@Component.ComponentThumbnailAltText" class="w-full rounded-sm object-cover parallax-img">
+        </div>
+        }
+    </div>
+  </div>
+</section>
+}

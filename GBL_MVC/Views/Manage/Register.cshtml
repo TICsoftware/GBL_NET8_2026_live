@@ -1,0 +1,219 @@
+@model Core_project_BusinessLogic.Entity.Manage.User
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+    ViewData["Title"] = "Register";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<title>Register -TIC CMS </title>
+
+@* <link rel="stylesheet" href="/Assets/css/user_register.css" /> *@
+
+<style>
+    .validation-clean {
+        display: flex;
+        align-items: center;
+        /* ✅ center alignment */
+        gap: 10px;
+        padding: 10px 14px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c2c7;
+        border-left: 4px solid #dc3545;
+        border-radius: 6px;
+        color: #842029;
+        font-size: 14px;
+    }
+
+    /* 🔴 Fix bullet issue */
+    .validation-clean ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* 🔴 Fix spacing */
+    .validation-clean li {
+        margin: 0;
+    }
+
+    /* 🔴 Icon alignment fix */
+    .validation-clean i {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-eye-icon {
+        top: 38px;
+        right: 15px;
+        cursor: pointer;
+    }
+</style>
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Manage" asp-action="Dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Register User
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <h2>Register User</h2>
+
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="validation-clean mb-3">
+            <i class="bi bi-exclamation-circle"></i>
+            <div asp-validation-summary="All" class="mb-0"></div>
+        </div>
+    }
+
+
+    <form asp-action="Register" asp-controller="Manage" method="post">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Username</label>
+                                <input asp-for="username" class="form-control" />
+                                <span asp-validation-for="username" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6 position-relative">
+
+                                <label class="form-label">Password</label>
+
+                                <input asp-for="password" type="password" class="form-control pe-5" id="Password" />
+
+                                <!-- 👁 Icon inside textbox -->
+                                <i class="bi bi-eye position-absolute password-eye-icon" id="togglePassword"></i>
+
+                                <span asp-validation-for="password" class="text-danger" id="Password-error"></span>
+
+                            </div>
+                        </div>
+
+                        @* <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Password</label>
+                                <input asp-for="password" type="password" class="form-control" id="Password" />
+                                <i class="bi bi-eye" id="togglePassword" style=" cursor:pointer;"></i>
+                                <span asp-validation-for="password" class="text-danger" id="Password-error"></span>
+                            </div>
+                        </div> *@
+
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label asp-for="UserType_Id">User type</label>
+                                <select asp-for="UserType_Id" class="form-control form-select"
+                                    asp-items="@(new SelectList(ViewBag.UserType, "Id", "Name"))">
+                                    <option value="">Select user type</option>
+                                </select>
+                                <span asp-validation-for="UserType_Id" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Email</label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Contact No</label>
+                                <input asp-for="PhoneNo" class="form-control" />
+                                <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <button type="submit" id="btnRegister" class="btn btn-primary">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#btnRegister").click(function () {
+
+            let password = $("#Password").val();
+            let error = "";
+
+            // Clear previous error
+            $("#Password-error").text("");
+            $("#Password-error").removeClass("field-validation-error");
+            $("#Password-error").addClass("field-validation-valid");
+
+
+            // Validation rules
+            if (password.length < 8) {
+                error = "Password must be at least 8 characters";
+            }
+            else if (!/[A-Z]/.test(password)) {
+                error = "Password must contain at least 1 uppercase letter";
+            }
+            else if (!/[0-9]/.test(password)) {
+                error = "Password must contain at least 1 number";
+            }
+            else if (!/[^a-zA-Z0-9]/.test(password)) {
+                error = "Password must contain at least 1 special character";
+            }
+
+            // Show error or submit
+            if (error !== "") {
+                $("#Password-error").text(error);
+                $("#Password-error").addClass("field-validation-error");
+                $("#Password-error").removeClass("field-validation-valid");
+
+                return false;
+            }
+
+
+
+
+        });
+
+
+        $("#togglePassword").click(function () {
+
+            let input = $("#Password");
+            let type = input.attr("type");
+
+            if (type === "password") {
+                input.attr("type", "text");
+                //$(this).text("🙈"); // change icon
+            } else {
+                input.attr("type", "password");
+                //$(this).text("👁️");
+            }
+
+        });
+
+    });
+</script>

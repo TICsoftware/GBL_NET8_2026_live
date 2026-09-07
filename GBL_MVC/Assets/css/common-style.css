@@ -1,0 +1,198 @@
+﻿/**=====================================
+TITLE ANIMATION
+=====================================**/
+ .section-title-outer {margin-bottom: 40px;}
+.title-section{font-weight:400; color: var(--color-text-heading);margin-bottom: 15px;} 
+.title-section .text-letters-slide{ color: var(--color-secondary) !important;  font-family: var(--font-heading) !important;  font-style: italic;  font-weight: 600;  letter-spacing: -0.02em;}
+.word {overflow: hidden;padding-bottom: 0.1em;margin-bottom: -0.1em;transform-origin: bottom;}
+.section-title--light {color: var(--color-cream);}
+.section-title--dark {color: var(--color-text-dark);}
+.section-title-outer p {font-size: var(--text-intro);}
+.section-title--light-outer p {color: #fff;}
+.section-title-outer-center {text-align: center;}
+
+.card,
+.feature-card,
+.testimonial-card,
+.insight-card {
+    transition:
+        transform var(--motion-base) var(--ease-premium),
+        box-shadow var(--motion-base) var(--ease-premium),
+        background-color var(--motion-base) var(--ease-premium),
+        color var(--motion-base) var(--ease-premium);
+    will-change: transform;
+}
+.card:hover,
+.feature-card:hover,
+.testimonial-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 45px rgb(0 0 0 / 0.14);
+}
+
+.swiper-slide.transition-all.duration-700.swiper-slide-next {
+    z-index: -9 !important;
+}
+
+.swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: var(--color-green) !important;
+    opacity: 0.3;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1 !important;
+    background: var(--color-green) !important;
+    outline: 1px solid var(--color-green);
+    outline-offset: 10px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    display: none;
+}
+
+.swiper-pagination-custom,
+.testimonial-pagination {
+    width: auto !important;
+}
+
+.swiper-button-next-custom,
+.swiper-button-prev-custom {
+    position: relative;
+    z-index: 20;
+}
+
+.swiper-button-next-custom,
+.swiper-button-prev-custom,
+.testimonial-next,
+.testimonial-prev,
+.edge-swiper-next,
+.edge-swiper-prev {
+    transition:
+        transform var(--motion-fast) var(--ease-premium),
+        background-color var(--motion-fast) var(--ease-premium),
+        border-color var(--motion-fast) var(--ease-premium),
+        box-shadow var(--motion-fast) var(--ease-premium);
+}
+
+.swiper-button-next-custom:hover,
+.swiper-button-prev-custom:hover,
+.testimonial-next:hover,
+.testimonial-prev:hover {
+    background: var(--color-orange);
+    box-shadow: 0 12px 24px rgb(252 113 60 / 0.22);
+}
+
+
+.hero-section-ass-img {
+    width: 45px;
+}
+
+.hero-assistant {
+    bottom: 10%;
+}
+
+/**=====================================
+INNER BANNER CSS
+=====================================**/
+.innerbanner-title-span {font-style: italic; font-weight: 700; color: #fff;}
+.into-section-center-wrapper {display: flex; justify-content: center;}
+.into-section-center-wrapper p {font-size: var(--text-intro); color: var(--color-text);}
+
+/**=====================================
+Leaf travel CSS
+=====================================**/
+.ld-leaf-wrapper {position: relative; overflow: hidden;}
+.leaf-travel-anim{
+    position:absolute;
+    top:10vw;
+    right:10vw;
+    pointer-events:none;
+    z-index:100;
+    will-change:transform;
+}
+
+/* ==========================================================
+   Common form checkbox (reuse on all public forms)
+   ========================================================== */
+.form-check {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  user-select: none;
+}
+
+.form-check-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.form-check-box {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  margin-top: 1px;
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-check-box::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border: solid #231F20;
+  border-width: 0 2px 2px 0;
+  transform: scale(0) rotate(45deg);
+  transition: transform 0.18s ease;
+  margin-top: -1px;
+}
+
+.form-check-input:checked + .form-check-box {
+  border-color: #fff;
+  background: #fff;
+}
+
+.form-check-input:checked + .form-check-box::after {
+  transform: scale(1) rotate(45deg);
+}
+
+.form-check-input:focus-visible + .form-check-box {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
+.form-check-label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Light surfaces (if checkbox is used on white background) */
+.form-check.form-check-light {
+  color: var(--color-primary, #231F20);
+}
+.form-check.form-check-light .form-check-box {
+  border-color: rgba(35, 31, 32, 0.45);
+}
+.form-check.form-check-light .form-check-input:checked + .form-check-box {
+  border-color: var(--color-secondary, #ED1C24);
+  background: var(--color-secondary, #ED1C24);
+}
+.form-check.form-check-light .form-check-box::after {
+  border-color: #fff;
+}
+.form-check.form-check-light .form-check-input:focus-visible + .form-check-box {
+  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.25);
+}
+

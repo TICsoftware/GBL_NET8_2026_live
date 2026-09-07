@@ -1,0 +1,39 @@
+﻿@model Core_project_BusinessLogic.MediaManagerViewModel
+
+@foreach (var img in Model.Items)
+{
+    var fileName = img.media_file_name ?? "";
+    var ext = System.IO.Path.GetExtension(fileName)?.TrimStart('.').ToLower() ?? "";
+    bool isImage = ext == "jpg" || ext == "jpeg" || ext == "png" || ext == "webp";
+
+    <div class="col-md-3">
+        <div class="media-card"
+             data-url="@img.file_path"
+             data-type="@img.file_type"
+             data-id="@img.ID">
+
+            @if (isImage)
+            {
+                <img src="@img.file_path" class="img-fluid" />
+            }
+            else
+            {
+                <div class="file-icon">@ext.ToUpper()</div>
+            }
+
+            <div class="media-title">@img.media_file_name</div>
+
+            <button class="btn btn-outline-danger btn-sm w-100 mt-1 btn-delete-media"
+                    data-id="@img.ID">
+                Delete
+            </button>
+        </div>
+    </div>
+}
+
+@if (Model.HasMore)
+{
+    <div class="col-12 text-center mt-3">
+        <button id="btnLoadMore" class="btn btn-primary">Load More</button>
+    </div>
+}

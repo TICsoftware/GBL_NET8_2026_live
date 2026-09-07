@@ -1,0 +1,173 @@
+@model Core_project_BusinessLogic.MediaManagerViewModel
+@* Scripts/CSS for Cropper and media-manager load once from the host layout (dashboard or media manager).
+   Do not inject jQuery or media-manager.js here — AJAX .load() would re-run them, break Bootstrap modals, and block Close. *@
+
+<form id="mediaUploadForm" enctype="multipart/form-data">
+
+    @Html.AntiForgeryToken()
+
+    <!-- DROP ZONE -->
+    <div id="dropZone" class="border p-4 text-center">
+        Click or Drag 'n' Drop Files here
+    </div>
+
+    <!-- REAL FILE INPUT -->
+    <input type="file" id="files" name="files" multiple hidden
+        accept=".jpg,.jpeg,.png,.webp,.pdf,.docx,.ppt,.pptx,.mp4" />
+
+    <div class="row mt-2">
+        <!-- FILE TYPE DROPDOWN -->
+        <div class="col-md-4">
+            <select name="fileType" id="fileType" class="form-control form-select" required>
+                <option value="">Select Folder</option>
+                <option value="masthead">Masthead Image</option>
+                <option value="thumbnail">Thumbnail Image</option>
+                <option value="background">Background Image</option>
+                <option value="icon">Icon Image</option>
+                <option value="pdf">PDF</option>
+                <option value="video">Video</option>
+                <option value="doc">Documents</option>
+                <option value="investor">Investor</option>
+                <option value="press">Press Release</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button id="btnUpload" type="button" class="btn btn-primary">
+                Upload files
+            </button>
+        </div>
+    </div>
+
+</form>
+
+<!-- AJAX MESSAGE -->
+<div id="uploadMessage" class="mt-2"></div>
+
+<div>@TempData["Message"]</div>
+
+<form method="get" class="row mt-3">
+    <div class="col-md-3">
+        <select name="sortOrder" class="form-control form-select">
+            <option value="DateDesc">Date Descending</option>
+            <option value="DateAsc">Date Ascending</option>
+            <option value="NameAsc">Name Ascending</option>
+            <option value="NameDesc">Name Descending</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="fileType" class="form-control form-select">
+            <option value="All">All Media Items</option>
+            <option value=".jpg">Images</option>
+            <option value=".png">PNG</option>
+            <option value=".webp">WEBP</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <input type="text" name="search" placeholder="Type to search" value="@Model.SearchTerm" class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-secondary w-100">Search</button>
+    </div>
+</form>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="row g-3">
+            @foreach (var img in Model.Items)
+            {
+                var fileName = img.media_file_name ?? "";
+                var ext = System.IO.Path.GetExtension(fileName)?.TrimStart('.').ToLower() ?? "";
+
+                bool isImage = ext == "jpg" || ext == "jpeg" || ext == "png" || ext == "webp";
+
+                string iconClass;
+                if (ext == "pdf") iconClass = "pdf";
+                else if (ext == "doc" || ext == "docx") iconClass = "doc";
+                else if (ext == "ppt" || ext == "pptx") iconClass = "ppt";
+                else iconClass = "file";
+
+                <div class="col-md-3">
+                    <div class="media-card" data-url="@img.file_path" data-type="@img.file_type" data-id="@img.ID">
+
+                        @if (isImage)
+                        {
+                            <img src="@img.file_path" class="img-fluid" />
+                        }
+                        else
+                        {
+                            <div class="file-icon @iconClass">@ext.ToUpper()</div>
+                        }
+
+                        <div class="media-title" title="@img.media_file_name">
+                            @img.media_file_name
+                        </div>
+
+                      
+
+                        <input type="hidden" id="currentPage" value="@Model.CurrentPage" />
+
+                        @* <form asp-action="Delete" method="post">
+                            <input type="hidden" name="id" value="@img.ID" />
+                            <button class="btn btn-outline-danger btn-sm w-100 mt-1">Delete</button>
+                        </form> *@
+                        <button class="btn btn-outline-danger btn-sm w-100 mt-1 btn-delete-media" data-id="@img.ID">
+                            Delete
+                        </button>
+
+                    </div>
+                </div>
+            }
+
+            @if (Model.HasMore)
+            {
+                <div class="text-center mt-3">
+                    <button id="btnLoadMore" class="btn btn-primary">Load More</button>
+                </div>
+            }
+
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div id="previewPanel" class="preview-panel" style="display:none;">
+            <h5 class="mb-3">Selected File</h5>
+
+            <div id="previewArea"></div>
+
+
+            <button type="button" id="btnOpenCrop" class="btn btn-success w-100 mt-2">
+                Customize Image
+            </button>
+
+
+
+            <label class="form-label">File Name</label>
+            <input type="text" id="previewName" class="form-control mb-3" readonly />
+
+            <label class="form-label">Alt Text</label>
+            <input type="text" id="previewAlt" class="form-control mb-3" />
+
+
+            <div class="input-group mb-3">
+                <input type="text" id="txtFileUrl" class="form-control" readonly />
+                <button type="button" class="btn btn-outline-secondary" id="btnCopyUrl">
+                    Copy
+                </button>
+            </div>
+
+
+            <button id="btnAddTemp" class="btn btn-primary w-100">Save</button>
+
+
+        </div>
+        <input type="hidden" id="hdnMediaId" value="">
+        <input type="hidden" id="hdnImagePreview" value="">
+
+    </div>
+</div>
+
+

@@ -1,0 +1,201 @@
+﻿@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.HomePageModel
+@{
+    ViewData["Title"] = "Priya Cement";
+    Layout = "~/Views/Shared/_Layout_home_page.cshtml";
+    var content = Model?.Home_Content;
+}
+
+@section head {
+    <title>@(content?.cont_window_title)</title>
+
+    <script nonce="@(Context.Items["CSPNonce"])">
+      (function () {
+        var KEY = 'priyaHomepageLoaderSeen';
+        var isReload = false;
+        try {
+          var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+          if (nav) isReload = nav.type === 'reload';
+          else if (performance.navigation) isReload = performance.navigation.type === 1;
+        } catch (e) {}
+        var seen = false;
+        try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+        if (!isReload && seen) {
+          document.documentElement.classList.add('site-preloader-skip');
+        } else {
+          document.documentElement.classList.add('site-preloader-pending');
+          // Kick SVG fetch immediately so draw is ready ASAP (no long blank)
+          try {
+            window.__priyaLoaderSvgs = {
+              lion: fetch('/Assets/images/logo/lion-vector-loader.svg', { credentials: 'same-origin' }).then(function (r) { return r.text(); }),
+              wordmark: fetch('/Assets/images/logo/logo-vector-loader.svg', { credentials: 'same-origin' }).then(function (r) { return r.text(); })
+            };
+          } catch (e) {}
+        }
+      })();
+    </script>
+    <link rel="preload" href="~/Assets/images/logo/lion-vector-loader.svg" as="image" asp-append-version="true" />
+    <link rel="preload" href="~/Assets/images/logo/logo-vector-loader.svg" as="image" asp-append-version="true" />
+    <link rel="preload" href="~/Assets/css/homepage-preloader.css" as="style" asp-append-version="true">
+    <link rel="stylesheet" href="~/Assets/css/homepage-preloader.css" asp-append-version="true" />
+    <style nonce="@(Context.Items["CSPNonce"])">
+      /* Gray cover from first paint — never pure white blank */
+      html.site-preloader-pending {
+        overflow-y: scroll !important;
+        background: #f5f5f5 !important;
+      }
+      html.site-preloader-pending body {
+        overflow: hidden !important;
+        height: 100% !important;
+        background: #f5f5f5 !important;
+      }
+      html.site-preloader-exiting body {
+        background: #f5f5f5 !important;
+      }
+      html.site-preloader-pending .site-header {
+        opacity:0 !important;
+        visibility:hidden !important;
+        pointer-events:none !important;
+      }
+      html.site-preloader-pending #sitePreloader,
+      html.site-preloader-lock #sitePreloader {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 10500 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #f5f5f5 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      /* During logo travel — no gray/white sheet; banner shows under flyers */
+      html.site-preloader-travel #sitePreloader {
+        background: transparent !important;
+        background-color: transparent !important;
+        pointer-events: none !important;
+      }
+      html.site-preloader-travel body {
+        background: transparent !important;
+      }
+      /* Progress + logos visible from first paint (no blank wait) */
+      html.site-preloader-pending .site-preloader__logo-wrap,
+      html.site-preloader-pending .site-preloader__wordmark,
+      html.site-preloader-pending .site-preloader__progress {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      html.site-preloader-pending .site-preloader__progress {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 200px;
+        max-width: 60vw;
+      }
+      html.site-preloader-pending .site-preloader__bar {
+        width: 100%;
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(0,0,0,.12);
+        overflow: hidden;
+      }
+      html.site-preloader-pending .site-preloader__bar-fill {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: #ed1c24;
+      }
+      html.site-preloader-pending .site-preloader__counter {
+        font-family: Poppins, sans-serif;
+        font-size: 13px;
+        letter-spacing: .08em;
+        color: rgba(0,0,0,.65);
+      }
+      html.site-preloader-skip #sitePreloader {
+        display:none !important;
+      }
+    </style>
+
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Priya Cement" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="https://www.priyacement.com" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+    <meta itemprop="name" content="Priya Cement" />
+    <meta itemprop="description" content="@(content?.cont_metadesc)" />
+    <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+    <!-- Facebook / Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Priya Cement" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <meta property="og:url" content="https://www.priyacement.com" />
+
+    <link rel="canonical" href="https://www.priyacement.com" />
+
+      @if (!string.IsNullOrWhiteSpace(content?.page_schema))
+    {
+      
+            @Html.Raw(content?.page_schema.Replace("<p>", "").Replace("</p>", ""))
+       
+    }
+    
+}
+
+@section Styles {
+    <link rel="preload" href="~/Assets/css/swiper-bundle.min.css" as="style">
+    <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" />
+
+    <link rel="preload" href="~/Assets/css/homepage-style.css" as="style" asp-append-version="true">
+    <link rel="stylesheet" href="~/Assets/css/homepage-style.css" asp-append-version="true" />
+}
+
+@if (Model?.Banners != null && Model.Banners.Any())
+{
+    @await Html.PartialAsync("_banner", Model.Banners)
+}
+
+@if (Model?.Products_List != null && Model.Products_List.Any())
+{
+    @await Html.PartialAsync("_products", Model.Products_List)
+}
+
+@if (Model?.WhatWeStandFor_List != null && Model.WhatWeStandFor_List.Any())
+{
+    @await Html.PartialAsync("_what_we_stand_for", Model.WhatWeStandFor_List)
+}
+
+@if (Model?.Sustainability_List != null && Model.Sustainability_List.Any())
+{
+    @await Html.PartialAsync("_sustainability", Model.Sustainability_List)
+}
+
+@if (Model?.Testimonials_List != null && Model.Testimonials_List.Any())
+{
+    @await Html.PartialAsync("_testimonials", Model.Testimonials_List)
+}
+
+@if (Model?.Careers_List != null && Model.Careers_List.Any())
+{
+    @await Html.PartialAsync("_careers", Model.Careers_List)
+}
+
+@section Scripts {
+  <script src="~/Assets/js/swiper-bundle.min.js"></script>
+  <script src="~/Assets/js/homepage-script.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/odometer-counter-script.js"></script>
+}

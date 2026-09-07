@@ -1,0 +1,275 @@
+/* ══════════════════════════════
+   PRODUCTS — CTA parallax + man cutout (breaks out above card)
+══════════════════════════════ */
+.bg-parallax-section .outer-bg-wrap {
+  position: relative;
+  overflow: visible;
+}
+
+/* Stage allows the man to sit outside the clipped card */
+.bg-parallax-section .bg-parallax-stage {
+  position: relative;
+  overflow: visible;
+  /* Room above the card for the hard-hat breakout */
+  padding-top: clamp(3.5rem, 7vw, 10rem);
+  padding-right: 0;
+}
+
+/* Rounded card — only this clips the background */
+.bg-parallax-section .bg-parallax-frame {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bg-parallax-section .parallax-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.bg-parallax-section .parallax-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 130%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.bg-parallax-section .overlay-scrim {
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.bg-parallax-section .bg-parallax-content {
+  position: relative;
+  z-index: 2;
+  max-width: min(42rem, 65%);
+  pointer-events: none;
+}
+
+.bg-parallax-section .bg-parallax-content .section-title-outer {
+  margin-bottom: 0;
+  max-width: none;
+}
+
+.bg-parallax-section .bg-parallax-content .section-title-sm {
+  max-width: none;
+  margin: 0;
+}
+
+.bg-parallax-section .bg-parallax-content .title-section {
+  margin-bottom: 0;
+}
+
+.bg-parallax-section .outer-btn-wrap {
+  z-index: 3;
+}
+
+/* Man — sibling of the card, full stage height so head clears the top edge */
+.man-image-wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  width: min(44%, 460px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.man-image-img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.our-products-cards h3 {font-size: var(--text-h4); font-weight: 700;margin-bottom: 15px;}
+.our-products-cards h3 span {color: #7B7B7B;font-size: var(--text-p);font-weight: 700;}
+.our-products-cards p {font-size: var(--text-p);margin-bottom: 0;}
+.our-products-cards {
+  background-color: #EEEEEE;
+  padding: 30px 30px;
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.our-products-landing-cards.is-rise-anim .our-products-cards {
+  /* GSAP owns translateY — don't fight it with CSS transition on transform */
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.our-products-cards .outer-btn-wrap {position: absolute; bottom: 30px;left: auto;}
+.our-products-content {padding-bottom: 60px;}
+.our-products-img {max-height: 260px;
+    position: relative;
+    display: flex;
+    align-items: end;} 
+.our-products-img img {
+    object-fit: contain;
+    object-position: bottom;
+    position: relative;
+    width: auto;
+    bottom: 0;}
+
+.logo-lion-vector-outer {
+  position: absolute;
+  bottom: -2vw;
+  right: 5vw;
+  z-index: -1;
+  pointer-events: none;
+}
+ .product-index-intro-outer .intro-title-col .section-title-outer .title-section{max-width: 80%;}
+
+    @media (min-width: 1024px) {.our-products-img img {height: auto;}}
+
+@media (max-width: 1023px) {
+    .product-index-intro-outer .intro-title-col .section-title-outer .title-section{max-width: 100%;}
+  }
+
+@media (max-width: 991px) {
+  /* Same composition as desktop — scaled down */
+  .bg-parallax-section .bg-parallax-stage {
+    padding-top: clamp(2rem, 4.5vw, 3.25rem);
+  }
+
+  .bg-parallax-section .bg-parallax-frame {
+    min-height: 380px;
+    justify-content: center;
+    padding-block: clamp(1.75rem, 3.5vw, 2.5rem);
+    padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+    padding-bottom: 4.5rem;
+    
+  }
+.bg-parallax-section .outer-bg-wrap {overflow: hidden; margin-right: 20px;}
+  .bg-parallax-section .bg-parallax-content {
+    max-width: min(26rem, 58%);
+  }
+
+  .bg-parallax-section .bg-parallax-content .title-section {
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
+  }
+
+  .bg-parallax-section .outer-btn-wrap.outer-btn-spacing {
+    padding: 1rem 1.15rem;
+  }
+
+  .bg-parallax-section .outer-btn-wrap .site-link {
+    font-size: 0.9375rem;
+  }
+
+  .man-image-wrap {
+    width: min(46%, 300px);
+  }
+  .products-landing-section {padding-top: 0;}
+  .logo-lion-vector-outer {display: none;}
+}
+
+@media (max-width: 767px) {
+  .intro-title-col { padding-bottom: 15px; }
+
+  /* Same layout: title left · man right · CTA bottom-left — just tighter */
+  .bg-parallax-section .bg-parallax-stage {
+    padding-top: 1.75rem;
+  }
+
+  .bg-parallax-section .bg-parallax-frame {
+    min-height: 340px;
+    justify-content: center;
+    padding-top: 1.5rem;
+    padding-bottom: 3.75rem;
+    padding-inline: 1rem;
+  }
+
+  .bg-parallax-section .overlay-scrim {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.92) -5%,
+      rgba(0, 0, 0, 0.72) 28%,
+      rgba(0, 0, 0, 0.35) 52%,
+      rgba(0, 0, 0, 0) 78%
+    );
+  }
+
+  .bg-parallax-section .bg-parallax-content {
+    max-width: 56%;
+  }
+
+  .bg-parallax-section .bg-parallax-content .title-section {
+    font-size: clamp(1.25rem, 5.2vw, 1.625rem);
+    line-height: 1.15;
+  }
+
+  .bg-parallax-section .outer-btn-wrap.outer-btn-spacing {
+    padding: 0.85rem 1rem;
+  }
+
+  .bg-parallax-section .outer-btn-wrap .site-link {
+    font-size: 0.8125rem;
+    gap: 6px;
+    padding-bottom: 8px;
+  }
+
+  .man-image-wrap {
+    width: min(48%, 200px);
+  }
+
+  .our-products-img { align-items: start; }
+  .our-products-cards { padding: 30px 20px; }
+  .logo-lion-vector-outer {display: none;}
+  .bg-parallax-section .outer-bg-wrap {overflow: hidden;margin-right: 20px;}
+  .products-landing-section {padding-top: 0;}
+}
+
+@media (max-width: 393px) {
+  .bg-parallax-section .bg-parallax-frame {
+    min-height: 300px;
+    padding-bottom: 3.5rem;
+  }
+
+  .bg-parallax-section .bg-parallax-content {
+    max-width: 54%;
+  }
+
+  .man-image-wrap {
+    width: min(50%, 170px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-parallax-section .parallax-img {
+    height: 100%;
+    will-change: auto;
+    transform: none !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1366px) {
+    .bg-parallax-section .bg-parallax-frame {min-height: 475px;}
+    .bg-parallax-section .bg-parallax-content { max-width: min(35rem, 65%);}
+    .our-products-cards {padding: 22px 22px;}
+}

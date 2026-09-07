@@ -1,0 +1,403 @@
+/* Banner css */
+.particle{
+    animation: floatParticle 6s ease-in-out infinite;
+}
+
+.particle:nth-child(2){
+    animation-delay:2s;
+}
+
+.particle:nth-child(3){
+    animation-delay:4s;
+}
+
+@keyframes floatParticle{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-20px);
+    }
+}
+/* banner css end */
+
+/* green leaf decoration` */
+.ld-quote-band{
+    position: relative;
+    overflow: hidden;
+}
+
+.ld-leaf-decoration{
+    position: absolute;
+    top: 80px;
+    right: 18%;
+
+    z-index: 2;
+    will-change: transform;
+    transform-origin: center;
+    pointer-events: none;
+}
+
+@media (max-width:991px){
+    .ld-leaf-decoration{
+        right:8%;
+        width:58px;
+    }
+}
+
+@media (max-width:767px){
+    .ld-leaf-decoration{
+        right:20px;
+        width:46px;
+    }
+}
+
+/* Bod image transform effect css — smooth crossfade (no filter animation = no jank/flash) */
+/* Card Image */
+.ld-card-arch{
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 292px;
+    aspect-ratio: 292 / 305;
+    border-radius: 999px 999px 0 0;
+}
+
+/* Both images occupy exactly the same space */
+.ld-img{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+        opacity .8s ease,
+        transform .8s cubic-bezier(.22,1,.36,1);
+
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Invisible image used only to give height */
+.ld-card-arch::before{
+    content:"";
+    display:block;
+    padding-top:100%; /* 305 / 292 */
+}
+
+/* Sketch */
+.ld-img-sketch{
+    opacity:1;
+    z-index:1;
+    transform:scale(1);
+}
+
+/* Color */
+.ld-img-color{
+    opacity:0;
+    z-index:2;
+    transform:scale(1);
+}
+
+/* Hover */
+.ld-card:hover .ld-img-sketch{
+    opacity:0;
+    transform:scale(1);
+}
+
+.ld-card:hover .ld-img-color{
+    opacity:1;
+    transform:scale(1);
+}
+
+/* ==========================================================================
+   LEADERSHIP WITH TRUST PAGE (Figma: Leadership with Trust)
+   ========================================================================== */
+
+/* ---------- HERO BANNER ---------- */
+.ld-hero {
+    height: 70vh;
+    min-height: 420px;
+}
+
+@media (min-width: 1024px) {
+    .ld-hero {
+        height: 100vh;
+        max-height: 812px;
+    }
+}
+
+.ld-hero-title {
+    font-family: "Balkist", sans-serif;
+    font-weight: 400;
+    font-size: clamp(30px, 2.7vw, 52px);
+    letter-spacing: -0.02em;
+    line-height: 1.52;
+    color: #f6f6f6;
+}
+
+/* ---------- QUOTE BANDS ---------- */
+.ld-quote-band {
+    position: relative;
+    background: linear-gradient(
+        180deg,
+        #f9f2e8 0%,
+        #f3e6da 45%,
+        #f6ecdd 100%
+    );
+    overflow: hidden;
+   padding-top: 12vw;
+}
+.ld-quote-bg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    pointer-events:none;
+    z-index:1;
+}
+
+.container{
+    position:relative;
+    z-index:2;
+}
+
+
+.ld-quote {
+    position: relative;
+    margin-inline: auto;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: var(--text-h3);
+    text-align: center;
+    color: var(--color-text-heading);
+    font-weight: 500;
+     line-height: 1.15;
+}
+
+.ld-quote-mark {
+    width: clamp(32px, 2.7vw, 51px);
+    user-select: none;
+}
+
+.ld-quote-mark--close {
+
+    margin-left: auto;
+}
+
+.ld-quote-author {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.ld-quote-author .ld-author-name {
+
+    font-weight: 400;
+    font-size: var(--text-h3);
+    color: #1c1918;
+    line-height: 1.5;
+}
+
+.ld-quote-author .ld-author-org {
+
+    font-weight: 400;
+
+    color: #1c1918;
+    line-height: 1.5;
+}
+
+.ld-quote-author .ld-author-role {
+    font-size: var(--text-small);
+    letter-spacing: 0.02em;
+    color: var(--color-copy);
+    margin-top: 6px;
+}
+
+/* ---------- BOARD BAND (soft fabric gradient) ---------- */
+.ld-board-section {
+    position: relative;
+background-color: #F1EDDE;
+    overflow: hidden;
+}
+
+/* ---------- TEAM SECTIONS ---------- */
+.ld-team-section {
+    position: relative;
+    background-color: #F1EDDE;
+    overflow: hidden;
+}
+
+.ld-title-leaf {
+    display: inline-block;
+    width: clamp(60px, 7vw, 138px);
+    vertical-align: middle;
+    margin-left: 12px;
+    user-select: none;
+}
+
+.ld-title-leaf--left {
+    margin-left: 0;
+    margin-right: 12px;
+}
+
+/* ---------- LEADER CARDS ---------- */
+.ld-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+@media (min-width: 768px) {
+    .ld-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .ld-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 30px 40px;
+    }
+}
+
+.ld-card {
+    background: #F6F4E6;
+    border-radius: 17.5px;
+    padding: clamp(14px, 1.2vw, 22px) clamp(18px, 2.5vw, 48px) clamp(20px, 1.8vw, 34px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition:
+        transform var(--motion-base) var(--ease-premium),
+        box-shadow var(--motion-base) var(--ease-premium);
+}
+
+.ld-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 40px rgba(67, 60, 40, 0.14);
+}
+
+.ld-card-arch {
+    width: 100%;
+    max-width: 292px;
+    aspect-ratio: 292 / 305;
+    border-radius: 999px 999px 100px 100px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e9e3cf 0%, #dbd8be 55%, #e5dfc9 100%);
+}
+
+/* NOTE: :not(.ld-img) excludes the Board of Directors sketch/colour images
+   (.ld-img-sketch / .ld-img-color) from this generic rule. Without this,
+   this rule's higher specificity was overriding the opacity transition
+   on .ld-img, causing the crossfade to snap instead of fade (the "flash"). */
+.ld-card-arch img:not(.ld-img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    transition: transform var(--motion-slow) var(--ease-premium);
+}
+
+.ld-card:hover .ld-card-arch img:not(.ld-img) {
+    transform: scale(1.04);
+}
+
+.ld-card h3 {
+  
+ 
+    font-size: var(--text-h4);
+    margin-top: 1rem;
+}
+
+
+
+/* open quote */
+/* Quote wrapper */
+.ld-quote-wrapper{
+    position: relative;
+
+    margin: 0 auto;
+    padding: 0 70px;
+}
+
+/* Opening quote */
+.ld-quote-mark--open{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Closing quote */
+.ld-quote-mark--close{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-left: 0; /* overrides existing margin-left:auto */
+}
+
+@media (max-width:767px){
+
+    .ld-quote-wrapper{
+        padding: 0 40px;
+    }
+
+    .ld-quote-mark--open{
+        left: 5px;
+    }
+
+    .ld-quote-mark--close{
+        right: 5px;
+    }
+    .ld-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 15px;
+    max-width: 85%;
+    margin: 0 auto;
+}
+}
+
+
+/* Quote wrapper */
+.ld-quote-wrapper{
+    position: relative;
+  
+    margin: 0 auto;
+    padding: 0 70px;
+}
+
+/* Opening quote */
+.ld-quote-mark--open{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Closing quote */
+.ld-quote-mark--close{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-left: 0; /* overrides existing margin-left:auto */
+}
+
+@media (max-width:767px){
+
+    .ld-quote-wrapper{
+        padding: 0 20px;
+    }
+
+    .ld-quote-mark--open{
+        left: 5px;
+    }
+
+    .ld-quote-mark--close{
+        right: 5px;
+    }
+}

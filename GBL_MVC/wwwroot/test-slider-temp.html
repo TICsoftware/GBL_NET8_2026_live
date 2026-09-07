@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Slider test</title>
+<link rel="stylesheet" href="Assets/css/swiper-bundle.min.css" />
+<style>
+  body { font-family: sans-serif; }
+  .swiper.edgeSwiper { padding: 40px 0; overflow: hidden; }
+  .swiper-slide { display:flex; align-items:center; justify-content:center; }
+  .slide-box { width: 100%; height: 200px; display:flex; align-items:center; justify-content:center;
+    font-size: 40px; font-weight:bold; color:#fff; border-radius: 8px; }
+  .swiper-slide-active .slide-box { outline: 4px solid red; }
+  .edge-nav-arrows { display:flex; gap: 20px; justify-content:center; margin-top: 20px; }
+  .edge-swiper-prev, .edge-swiper-next { cursor:pointer; padding: 10px 20px; background:#eee; border-radius: 6px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+
+<div class="swiper edgeSwiper px-4 py-6">
+  <div class="swiper-wrapper py-4 pb-2">
+    <div class="swiper-slide"><div class="slide-box" style="background:#e74c3c;">1</div></div>
+    <div class="swiper-slide"><div class="slide-box" style="background:#3498db;">2</div></div>
+    <div class="swiper-slide"><div class="slide-box" style="background:#2ecc71;">3</div></div>
+    <div class="swiper-slide"><div class="slide-box" style="background:#9b59b6;">4</div></div>
+  </div>
+  <div class="edge-nav-arrows">
+    <div class="edge-swiper-prev">Prev</div>
+    <div class="edge-swiper-next">Next</div>
+  </div>
+</div>
+
+<div id="log" style="white-space:pre-wrap; font-family: monospace; padding: 20px;"></div>
+
+<script src="Assets/js/swiper-bundle.min.js"></script>
+<script src="Assets/js/center-mode-slider.js"></script>
+<script>
+  function log(msg){ document.getElementById('log').textContent += msg + "\n"; }
+  setTimeout(() => {
+    const slides = [...document.querySelectorAll('.edgeSwiper .swiper-slide')];
+    log('Total DOM slides after init: ' + slides.length);
+    slides.forEach((s,i) => {
+      log(i + ': text=' + s.querySelector('.slide-box')?.textContent + ' classes=' + s.className + ' duplicated=' + s.getAttribute('data-duplicated'));
+    });
+  }, 500);
+</script>
+</body>
+</html>

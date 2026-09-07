@@ -1,0 +1,132 @@
+﻿@model TechnicalSupportEnquiryModal
+
+
+
+<form asp-controller="Product" asp-action="SubmitTechnicalSupport" method="post" id="technicalSupportForm" novalidate>
+
+    <div class="mt-8 flex flex-wrap sm:items-center sm:justify-center gap-x-[44px] gap-y-3">
+        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ServiceTypeList)
+        {
+            <label class="radio-opt">
+                <input asp-for="ServiceTypeId" name="ServiceTypeId" type="radio" value="@item.Value" />
+                <span class="radio-dot"></span>
+                <span class="text-p font-medium text-white">@item.Text</span>
+            </label>
+        }
+
+        <span asp-validation-for="ServiceTypeId" class="text-red-500"></span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-10">
+
+        <div>
+            <input asp-for="Name" class="f-field" placeholder="Name*" maxlength="150"/>
+            <span asp-validation-for="Name" class="text-red-500"></span>
+        </div>
+
+        <div>
+            <input asp-for="Designation" class="f-field" placeholder="Designation" maxlength="200"/>
+            <span asp-validation-for="Designation"></span>
+        </div>
+
+        <div>
+            <input asp-for="CompanyName" class="f-field" placeholder="Company or firm name*" maxlength="200" />
+            <span asp-validation-for="CompanyName"></span>
+        </div>
+
+        <div>
+            <input asp-for="PhoneNumber" class="f-field" placeholder="Phone number*" maxlength="20"/>
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+
+        <div>
+            <input asp-for="EmailAddress" class="f-field" placeholder="Email address*" maxlength="150"/>
+            <span asp-validation-for="EmailAddress"></span>
+        </div>
+
+        <div class="cselect">
+            <select asp-for="StateId" class="f-field">
+                <option value="">Select State</option>
+                @foreach (var item in ViewBag.StateList)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+            <span asp-validation-for="StateId"></span>
+            <input type="hidden" asp-for="State" id="State" />
+        </div>
+
+        <div class="cselect">
+            @* <select asp-for="CityId" class="f-field">
+                <option value="">Site Location</option>
+                @foreach (var item in ViewBag.CityList)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select> *@
+            <input asp-for="City" class="f-field" placeholder="City*" maxlength="100"/>
+            <span asp-validation-for="City"></span>
+        </div>
+
+        <div class="cselect">
+            <select asp-for="TestTypeId" class="f-field">
+                <option value="">Type of tests required</option>
+                @foreach (var item in ViewBag.TestTypeList)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+            <span asp-validation-for="TestTypeId"></span>
+        </div>
+
+    </div>
+
+    <div class="mt-6 flex flex-col sm:flex-col sm:items-start sm:justify-between gap-4">
+        <label class="form-check">
+            <input asp-for="Consent" type="checkbox" class="form-check-input" />
+            <span class="form-check-box" aria-hidden="true"></span>
+            <span class="form-check-label">I agree to be contacted regarding this enquiry.</span>
+
+        </label>
+        <span asp-validation-for="Consent" class="text-red-500"></span>
+    </div>
+
+    <div class="mt-6 flex flex-col sm:flex-col sm:items-start sm:justify-between gap-4 lg:max-w-2xl">
+        <label class="label-check-txt">
+            <p>
+                Disclaimer: I authorize Rain Cements Limited (Priya Cement) and its representatives to Call, SMS,
+                Email or WhatsApp me about its updates and notifications. This consent overrides any registration for Do
+                Not
+                Disturb (DND) /
+                National Do Not Call (NDNC).
+            </p>
+        </label>
+    </div>
+
+    <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="input-field col s12 p-0 mr-3.75 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <div class="g-recaptcha" data-sitekey="@ViewBag.captchapublickey"></div>
+            <div class="text-white font-light italic dark-textwhite text-sm">
+                (Cannot view the captcha? Please make sure Google <br />
+                and its services are enabled on your system.)
+            </div>
+        </div>
+        <span id="captchaError" class="text-red-500 field-validation-valid">
+    </div>
+
+
+    </span>
+
+    <div class="md:col-span-2 lg:col-span-3 mt-3 flex justify-center form-Submitbtn-wrap">
+        <button type="submit"
+            class="inline-flex items-center gap-2.5 rounded-[10px] bg-white px-[14px] py-[10px] text-base font-medium text-[#231f20] shadow-[0px_4px_5px_rgba(0,0,0,0.1),0px_17px_8.5px_rgba(0,0,0,0.09)] transition-transform hover:-translate-y-0.5">
+            Submit
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                <path d="M0 5h14M10 1l4 4-4 4" stroke="#231f20" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+    </div>
+    <div id="technicalSupportMessage" class="mt-4 text-center"></div>
+
+</form>

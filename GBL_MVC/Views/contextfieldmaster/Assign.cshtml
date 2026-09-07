@@ -1,0 +1,56 @@
+@model Core_project_BusinessLogic.Entity.ContextMasterFieldAssign
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Context";
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                           Assign Fields to Components 
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+ </div>
+<h2>Assign Fields to Components </h2>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.context_master_id)
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Field Name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var field in Model.AllFields)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               name="SelectedFieldIds"
+                               value="@field.id"
+                               @(Model.SelectedFieldIds.Contains(field.id) ? "checked" : "") />
+                    </td>
+                    <td>@field.name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+
+   
+}

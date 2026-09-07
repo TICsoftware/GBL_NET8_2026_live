@@ -1,0 +1,102 @@
+﻿@model GBL_MVC.Models.Manage_Model.Templatetype_Model
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Blocks Layout | TIC CMS";
+}
+
+<title>@ViewData["Title"]</title>
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Add Blocks Layout</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+   @using (Html.BeginForm("Add", "TemplateType", FormMethod.Post, new { enctype = "multipart/form-data", @id="TemplateTypeForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(m => m.ID, new { @Value = Model.ID })
+
+        <section class="section content-main">
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="card">
+
+                        <div class="card-header">
+                            <h2 class="card-title">Add Blocks Layout</h2>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="col-md-12 col-12">
+
+                                <!-- Language -->
+                                 <div class="form-group mb-3">
+                                    @Html.LabelFor(model => model.Template_Type, new { @class = "form-label required" })
+                                    @Html.TextBoxFor(model => model.Template_Type,new { @class = "form-control",
+                                    @placeholder = "Enter Blocks Layout title" })
+                                    @Html.ValidationMessageFor(model => model.Template_Type)
+                                </div>
+
+                                 <div class="form-group mb-3">
+                                    <label>Components</label>
+                                    <select asp-for="SelectedComponentsIds"
+                                            asp-items="@(new MultiSelectList(ViewBag.ComponentMasters,"ID","Name"))"
+                                            multiple class="form-control form-select">
+                                    </select>
+                                     <small class="text-muted">Hold Ctrl to select multiple components</small>
+                                </div>
+
+
+                                <!-- Description -->
+                                <div class="form-group mb-3">
+                                    @Html.LabelFor(model => model.Design_Layout, new { @class = "form-label" })
+                                    @Html.TextAreaFor(model => model.Design_Layout, new { @class = "form-control editor-full",  placeholder = "Enter design layout" })
+                                </div>
+
+                                @Html.HiddenFor(model => model.Template_Master_Save_Action)
+
+                            </div>
+                            <div class="pull-right mt-3">
+                                <input id="btnSaveAndPublish" name="Command" type="submit" value="Save and Publish"
+                                    class="btn btn-primary navbar-btn" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+        </section>
+    }
+</div>
+
+
+@section head{
+    <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+}
+
+
+@section Scripts {
+   <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+                "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+            }
+        }
+    </script>
+    <script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+}
+

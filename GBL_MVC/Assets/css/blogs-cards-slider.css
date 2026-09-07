@@ -1,0 +1,24 @@
+.blogs-cards-slider .blogs-cards-content .insight-title {font-family: var(--font-heading); font-size: var(--text-h3); font-weight: 500; color: var(--color-text-heading); line-height: 1.2; margin-top: 0.5rem; margin-bottom: 0.5rem;}
+.blogs-slider-wrap { position: relative;}
+.blogs-slider-nav { display: flex;justify-content: center; gap: 12px; margin-top: 32px;}
+.blogs-prev,.blogs-next { width: 52px; height: 52px; border: 1px solid #ddd; border-radius: 50%; background: var(--color-green);color: #fff; display: flex; align-items: center;justify-content: center; cursor: pointer; transition: all .3s ease;}
+.blogs-prev:hover,.blogs-next:hover { background: var(--color-orange); color: #fff; border-color: var(--color-orange);}
+.blogs-prev.swiper-button-disabled,.blogs-next.swiper-button-disabled { opacity: .35; pointer-events: none;}
+
+
+
+ /* Small screen laptop */
+ @media (min-width: 1200px) and (max-width: 1366px) {
+.bc-plate-wrap::before {width: 450px;height: 450px;}
+.text-width { max-width: 50vw;} .bc-polaroid--left { width: clamp(180px, 10vw, 449px);}
+.bc-polaroid--right { width: clamp(180px, 10vw, 449px);}
+.bc-dining-intro {max-width: 60%;}
+.bc-dining-deco--basil { width: 25vw; right: 1vw;}
+.bc-edge-section .section-title-outer { max-width: 60vw;}
+.edge-content {font-size: 14px !important;}
+.bc-arch-center .bc-arch-card.is-active { width: 540px; min-height: 450px; opacity: 1; transform: scale(1); z-index: 3; overflow: visible; justify-content: flex-start; padding-top: clamp(1.5rem, 8%, 2.5rem);}
+.bc-arch-center .bc-arch-card.is-active p.edge-content { max-height: 260px; }
+.bc-arch-card + .bc-arch-card {  margin-left: 5px; margin-bottom: -10px;}
+.bc-arch-center .bc-arch-viewport { overflow: hidden; width: 100%; height: 495px; padding:20px 0px ;}
+
+}

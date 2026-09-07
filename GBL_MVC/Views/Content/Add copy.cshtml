@@ -1,0 +1,738 @@
+@model cms_Content
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+    ViewData["Title"] = "Add Content";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row justify-content-between">
+                <div class="col-12 col-md-6 order-md-1 order-first">
+                    <h3>Add Content</h3>
+                    
+                </div>
+                <div class="col-12 col-md-3 order-md-2 order-last">
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                        <select class="form-select" id="inputGroupSelect01">
+                            <option selected="">Select...</option>
+                            <option value="1">Add new </option>
+                            <option value="2">Draft</option>
+                            <option value="3">Published</option>
+                            <option value="3">In-Process</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="section content-main">
+        @using (Html.BeginForm("Add", "Content", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="row">
+             @Html.AntiForgeryToken()
+             @Html.ValidationSummary(excludePropertyErrors: true, "", new { @class = "text-danger" })
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Select Masters</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="selectMastersAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="selectMastersAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#selectMastersAccordion-collapseOne" aria-expanded="true" aria-controls="selectMastersAccordion-collapseOne">
+                                        Select Masters Data
+                                        </button>
+                                    </h2>
+                                    <div id="selectMastersAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="selectMastersAccordion-headingOne" data-bs-parent="#selectMastersAccordion">
+                                         <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Language_master_id" class="form-label">Language</label>
+                                                        @Html.DropDownListFor(model => model.Language_master_id, Model.Languages , new { id = "ddLanguage", @class = "form-select" })
+                                                        @Html.ValidationMessageFor(model => model.Language_master_id, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Content_Type_ID" class="form-label">Content type <sup>*</sup></label>
+                                                            <div class="d-flex">
+                                                                <div class="form-check me-2">
+                                                                    @Html.RadioButtonFor(model => model.Content_Type_ID, Core_project_BusinessLogic.Content_Types.Section, new { id = "Content_Type_ID" ,@class ="form-check-label"}) @Html.Label("Section")
+                                                                </div>
+                                                                <div class="form-check me-2">
+                                                                    @Html.RadioButtonFor(model => model.Content_Type_ID, Core_project_BusinessLogic.Content_Types.Common_Article, new { id = "Content_Type_ID" ,@class ="form-check-label"}) @Html.Label("Common article")
+                                                                </div>
+                                                                <div class="form-check me-2">
+                                                                    @Html.RadioButtonFor(model => model.Content_Type_ID, Core_project_BusinessLogic.Content_Types.Related_Article, new { id = "Content_Type_ID" ,@class ="form-check-label"}) @Html.Label("Related article")
+                                                                </div>                                                                
+                                                            </div>
+                                                             @Html.ValidationMessageFor(model => model.Content_Type_ID, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>                                                 
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">                                                                                                                 
+                                                        <label for="template_type" class="form-label">Template type </label>
+                                                        @Html.DropDownListFor(model => model.template_type,
+                                                            new List<SelectListItem>
+                                                                    {
+                                                                        new SelectListItem { Text = "Static", Value = "1" },
+                                                                        new SelectListItem { Text = "Dynamic", Value = "2" },                                                                        
+                                                                    },
+                                                            new { @class = "form-select", id = "ddtemplate_type" })   
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="ddTemplates" class="form-label">Template </label>
+                                                        <div class="d-flex flex-wrap">
+                                                        @Html.DropDownListFor(model => model.Template_Master_ID,
+                                                            Model.Templates , new { id = "ddTemplates", @class = "form-select" })
+                                                            @Html.ValidationMessageFor(model => model.Template_Master_ID, "", new { @class = "text-danger" })
+                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Geography_ID" class="form-label">Geography <sup>*</sup></label>
+                                                        <div class="d-flex flex-wrap">
+                                                        @Html.DropDownListFor(model => model.Geography_ID,
+                                                            Model.Geographies , new { id = "ddGeography", @class = "form-select" })
+                                                            @Html.ValidationMessageFor(model => model.Geography_ID, "", 
+                                                            new { @class = "text-danger" })
+                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="ddSections" class="form-label">Select Section</label>
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-12 mb-2">
+                                                                @Html.DropDownListFor(model => model.Section_id,
+                                                                Model.Sections , new { id = "ddSections", @class = "form-select" }) 
+                                                            </div>
+                                                            <div class="col-md-6 col-12">
+                                                                @Html.DropDownListFor(model => model.Subsection_id,
+                                                                Model.subSections , new { id = "ddSubSections", @class = "form-select" }) 
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                  <div class="form-group mb-3">
+                                                    <label for="ddArticle" class="form-label">Select Article</label>
+                                                     <div class="d-flex flex-wrap">
+                                                        @Html.DropDownListFor(model => model.article_id,
+                                                            Model.Articles , new { id = "ddArticle", @class = "form-select" })                                                             
+                                                           
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div class="col-md-12 col-12" id="div_language_sections" style="display:@(Model.Language_master_id > 1 ? "block": "none");">
+                                                    <div class="form-group mb-3">
+                                                        <label for="ddLanguage_Sections" class="form-label">Select Language Section</label>
+                                                        <div class="row">
+                                                            <div class="col-md-12 col-12 mb-2">
+                                                                @Html.DropDownListFor(model => model.Language_section_id ,
+                                                                Model.Language_sections , new { id = "ddLanguage_Sections", @class = "form-select" }) 
+                                                            </div>
+                                                            <div class="col-md-12 col-12">
+                                                                @Html.DropDownListFor(model => model.Language_subsection_id,
+                                                                Model.Language_subSections , new { id = "ddLanguage_SubSections", @class = "form-select" }) 
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>     
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Page details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="pageDetailsAccordion">
+                                <div class="accordion-item">
+                                   <h2 class="accordion-header" id="pageDetailsAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pageDetailsAccordion-collapseOne" aria-expanded="true" aria-controls="pageDetailsAccordion-collapseOne">
+                                        Page details Data
+                                        </button>
+                                    </h2> 
+                                    <div id="pageDetailsAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="pageDetailsAccordion-headingOne" data-bs-parent="#pageDetailsAccordion">
+                                        <div class="accordion-body">
+                                             <div class="row">
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Pagename" class="form-label">Page Name<sup>*</sup></label>
+                                                        @Html.TextBoxFor(model => model.Pagename, new { id="Pagename" , @class="form-control"}) 
+                                                        @Html.ValidationMessageFor(model => model.Pagename, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Title" class="form-label">Content title <sup>*</sup></label>
+                                                        @Html.TextBoxFor(model => model.Title, new { id="Title" , @class="form-control"}) 
+                                                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Hmpg_title" class="form-label">Landing page Title </label>
+                                                        @Html.TextBoxFor(model => model.Hmpg_title, new { id="Hmpg_title" , @class="form-control"}) 
+                                                        @Html.ValidationMessageFor(model => model.Hmpg_title, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Breadcrumb_title" class="form-label">Breadcrumb title </label>
+                                                        @Html.TextBoxFor(model => model.Breadcrumb_title, new { id="Breadcrumb_title" , @class="form-control"}) 
+                                                        @Html.ValidationMessageFor(model => model.Breadcrumb_title, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Window_title" class="form-label">Window title<sup>*</sup></label>
+                                                        @Html.TextBoxFor(model => model.Window_title, new { id="Window_title" , @class="form-control"}) 
+                                                        @Html.ValidationMessageFor(model => model.Window_title, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">                                                                                                                 
+                                                        <label for="Sequence" class="form-label">Sequence number</label>
+                                                        @Html.DropDownListFor(model => model.Sequence,
+                                                            new List<SelectListItem>
+                                                                    {
+                                                                        new SelectListItem { Text = "Select", Value = "0" },
+                                                                        new SelectListItem { Text = "1", Value = "1" },
+                                                                        new SelectListItem { Text = "2", Value = "2" },
+                                                                        new SelectListItem { Text = "3", Value = "3" },
+                                                                        new SelectListItem { Text = "4", Value = "4" },
+                                                                        new SelectListItem { Text = "5", Value = "5" },
+                                                                        new SelectListItem { Text = "6", Value = "6" },
+                                                                        new SelectListItem { Text = "7", Value = "7" },
+                                                                        new SelectListItem { Text = "8", Value = "8" },
+                                                                        new SelectListItem { Text = "9", Value = "9" },
+                                                                        new SelectListItem { Text = "10", Value = "10" },
+                                                                        new SelectListItem { Text = "11", Value = "11" },
+                                                                        new SelectListItem { Text = "12", Value = "12" },
+                                                                        new SelectListItem { Text = "13", Value = "13" },
+                                                                        new SelectListItem { Text = "14", Value = "14" },
+                                                                        new SelectListItem { Text = "15", Value = "15" },
+                                                                        new SelectListItem { Text = "16", Value = "16" },
+                                                                        new SelectListItem { Text = "17", Value = "17" },
+                                                                        new SelectListItem { Text = "18", Value = "18" },
+                                                                        new SelectListItem { Text = "19", Value = "19" },
+                                                                        new SelectListItem { Text = "20", Value = "20" }
+                                                                    },
+                                                            new { @class = "form-select", id = "ddSequence" })   
+                                                    </div>
+                                                </div>
+                                               
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Displaydate" class="form-label">Display date</label>
+                                                        @Html.TextBoxFor(model => model.Displaydate, new { id="Displaydate" , @class="form-control flatpickr-base-config", @placeholder="Select date.."}) 
+                                                        @Html.ValidationMessageFor(model => model.Displaydate, "", new { @class = "text-danger" })  
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Search_url" class="form-label">Search URL by</label>
+                                                        @Html.TextBoxFor(model => model.Search_url, new { id="Search_url" , @class="form-control"})   
+                                                        @Html.ValidationMessageFor(model => model.Search_url, "", new { @class = "text-danger" })  
+                                                        <div class="checkbox">
+                                                            @Html.CheckBoxFor(model => model.IsSearch, new { @class = "checkbox" })
+                                                            @Html.ValidationMessageFor(model => model.IsSearch, "", new { @class = "text-danger" })  
+                                                            <label for="IsSearch">Enable Search</label>
+                                                        </div>                                                   
+                                                    </div>
+                                                </div>
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">SEO</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="SEOdataAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="SEOdataAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#SEOdataAccordion-collapseOne" aria-expanded="true" aria-controls="SEOdataAccordion-collapseOne">
+                                        SEO data
+                                        </button>
+                                    </h2>
+                                    <div id="SEOdataAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="SEOdataAccordion-headingOne" data-bs-parent="#SEOdataAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">                                             
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Metatag" class="form-label">Meta keywords</label>
+                                                        @Html.TextAreaFor(model => model.Metatag, new { id="Metatag" , @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Metatag, "", new { @class = "text-danger" })  
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Metadesc" class="form-label">Meta description</label>
+                                                        @Html.TextAreaFor(model => model.Metadesc, new { id="Metadesc" , @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.Metadesc, "", new { @class = "text-danger" })  
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Metaexpiry" class="form-label">Meta expiry</label>
+                                                        @Html.TextBoxFor(model => model.Metaexpiry, new { id="Metaexpiry" , @class="form-control flatpickr-base-config", @placeholder="Select date.."}) 
+                                                        @Html.ValidationMessageFor(model => model.Metaexpiry, "", new { @class = "text-danger" })  
+                                                    </div>
+                                                </div>                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Other details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="otherdataAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="otherdataAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#otherdataAccordion-collapseOne" aria-expanded="true" aria-controls="otherdataAccordion-collapseOne">
+                                        Other page data
+                                        </button>
+                                    </h2>
+                                    <div id="otherdataAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="otherdataAccordion-headingOne" data-bs-parent="#otherdataAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="External_url" class="form-label">Link external url <span class="mute small">Please enter external URL with https://</span> </label>
+                                                        @Html.TextBoxFor(model => model.External_url, new { id="External_url" , @class="form-control"})  
+                                                        @Html.ValidationMessageFor(model => model.External_url, "", new { @class = "text-danger" })  
+                                                        <div class="checkbox">
+                                                            @Html.CheckBoxFor(model => model.IsExternal, new { @class = "checkbox" })
+                                                            @Html.ValidationMessageFor(model => model.IsExternal, "", new { @class = "text-danger" })  
+                                                            <label for="IsExternal">Open in a new window</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="ByLine" class="form-label">By Line</label>
+                                                        @Html.TextBoxFor(model => model.ByLine, new { id="ByLine" , @class="form-control"})   
+                                                        @Html.ValidationMessageFor(model => model.ByLine, "", new { @class = "text-danger" })  
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Publication" class="form-label">Publication</label>
+                                                        @Html.TextBoxFor(model => model.Publication, new { id="Publication" , @class="form-control"})   
+                                                        @Html.ValidationMessageFor(model => model.Publication, "", new { @class = "text-danger" }) 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3"> 
+                                                        <div class="checkbox">
+                                                            @Html.CheckBoxFor(model => model.Display_top_icon, new { @class = "checkbox" })
+                                                            @Html.ValidationMessageFor(model => model.Display_top_icon, "", new { @class = "text-danger" }) 
+                                                            <label for="Display_top_icon">Display top icon</label>
+                                                        </div>
+                                                    </div>
+                                                </div>    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>   
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body-intro-content col-12"  >
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Intro</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="pageDataAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="pageDataAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pageDataAccordion-collapseOne" aria-expanded="true" aria-controls="pageDataAccordion-collapseOne">
+                                        Intro section
+                                        </button>
+                                    </h2>
+                                    <div id="pageDataAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="pageDataAccordion-headingOne" data-bs-parent="#pageDataAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Hmpg_intro" class="form-label">Landing page Intro </label>
+                                                        @Html.ValidationMessageFor(model => model.Hmpg_intro, "", new { @class = "text-danger" })  
+                                                        @Html.TextAreaFor(model => model.Hmpg_intro, new { @class = "form-control editor-full" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Intro" class="form-label">Intro </label>
+                                                        @Html.ValidationMessageFor(model => model.Intro, "", new { @class = "text-danger" })  
+                                                        @Html.TextAreaFor(model => model.Intro, new { @class = "form-control editor-full" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body-intro-content col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Content</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="pageDataContentAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="pageDataContentAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pageDataContentAccordion-collapseOne" aria-expanded="true" aria-controls="pageDataContentAccordion-collapseOne">
+                                        Content section
+                                        </button>
+                                    </h2>
+                                    <div id="pageDataContentAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="pageDataContentAccordion-headingOne" data-bs-parent="#pageDataContentAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-12 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Content" class="form-label">Content </label>
+                                                        @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })  
+                                                        @Html.TextAreaFor(model => model.Content, new { @class = "form-control editor-full" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">File upload</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="fileuploadAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="fileuploadAccordion-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fileuploadAccordion-collapseOne" aria-expanded="true" aria-controls="fileuploadAccordion-collapseOne">
+                                        File upload data
+                                        </button>
+                                    </h2>
+                                    <div id="fileuploadAccordion-collapseOne" class="accordion-collapse collapse show" aria-labelledby="fileuploadAccordion-headingOne" data-bs-parent="#fileuploadAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Thumb_image" class="form-label">Landing page thumbnail <span class="mute small"> (Max. size 500KB)</span></label>
+                                                        <button type="button" id="btnFile" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>
+                                                        @Html.HiddenFor(model => model.Thumb_image_id)  
+                                                        <img src="@Model.Thumb_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height" title="@Model.Thumb_image_alttext" style="display:none;" />                                                    
+                                                        <a  href="javascript:void(0)" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link" id="thumb_image_Remove" style="display:none;" ></a>
+                                                        @Html.HiddenFor(model => model.Thumb_image_IsDelete)
+                                                        @Html.HiddenFor(model => model.Thumb_image)
+                                                        @Html.ValidationMessageFor(model => model.Thumb_image)   
+                                                    
+                                                    </div>     
+                                                    <div class="form-group mb-3">
+                                                            <label for="Thumb_image_alttext" class="form-label">Mouse over text for thumbnail</label>
+                                                            @Html.TextBoxFor(model => model.Thumb_image_alttext, new { id="Thumb_image_alttext" , @class="form-control"}) 
+                                                            @Html.ValidationMessageFor(model => model.Thumb_image_alttext)
+                                                    </div>
+                                                </div> 
+                                            
+                                                <div class="col-md-6 col-12" style="display:none;">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Small_Icon_Thumb_image" class="form-label">Small icon thumbnail / Video preview Image / Mouseover image </label>
+                                                        <button type="button" id="btnFile_Small_Icon_image" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>
+                                                        @Html.HiddenFor(model => model.Small_Icon_Thumb_image_id)
+                                                        <img src="@Model.Small_Icon_Thumb_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height" title="@Model.Thumb_image_alttext" style="display:none;"/>
+                                                        <a href="javascript:void(0)" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link" id="small_icon_thumb_image_Remove" style="display:none;"></a>
+                                                        @Html.HiddenFor(model => model.Small_Icon_Thumb_image_IsDelete)
+                                                        @Html.HiddenFor(model => model.Small_Icon_Thumb_image)
+                                                        @Html.ValidationMessageFor(model => model.Small_Icon_Thumb_image) 
+                                                        
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                            <label for="Small_Icon_alttext" class="form-label">Mouse over text for Small Icon</label>
+                                                            @Html.TextBoxFor(model => model.Small_Icon_alttext, new { id="Small_Icon_alttext" , @class="form-control"}) 
+                                                            @Html.ValidationMessageFor(model => model.Small_Icon_alttext)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            
+                                            <div class="row">
+                                                <div class="col-md-3 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Masthead_image" class="form-label">Masthead image <span class="mute small"> (Max. size 1MB)</span> </label>
+                                                        <button type="button" id="btnFile_Masthead_image" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>
+                                                        @Html.HiddenFor(model => model.Masthead_image_id) 
+                                                        <img src="@Model.Masthead_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height" title="@Model.Masthead_image_alttext" style="display:none;" />                                                       
+                                                        <a href="javascript:void(0)" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link" id="masthead_image_Remove" style="display:none;"></a>                                                
+                                                        @Html.HiddenFor(model => model.Masthead_image_IsDelete)
+                                                        @Html.HiddenFor(model => model.Masthead_image)
+                                                        @Html.ValidationMessageFor(model => model.Masthead_image) 
+                                                    </div>    
+                                                    <div class="form-group mb-3">
+                                                        <label for="Mobile_Masthead_image" class="form-label">Masthead Mobile image<span class="mute small"> (Max. size 1MB)</span> </label>
+                                                        <button type="button" id="btnFile_Mobile_Masthead_image" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>                                                   
+                                                        @Html.HiddenFor(model => model.Mobile_Masthead_image_id) 
+                                                        <img src="@Model.Mobile_Masthead_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height" title="@Model.Masthead_image_alttext" style="display:none;" />                                                        
+                                                        <a href="javascript:void(0)" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link" id="Mobile_Masthead_image_Remove" style="display:none;"></a>                                                
+                                                        @Html.HiddenFor(model => model.Mobile_Masthead_image_IsDelete) 
+                                                        @Html.HiddenFor(model => model.Mobile_Masthead_image)
+                                                        @Html.ValidationMessageFor(model => model.Mobile_Masthead_image)
+                                                    </div>                                                  
+                                                </div>
+                                                <div class="col-md-9 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Masthead_image_alttext" class="form-label">Masthead image Alt text </label>
+                                                        @Html.TextAreaFor(model => model.Masthead_image_alttext, new { @class = "form-control editor-full" })                                                         
+                                                        @Html.ValidationMessageFor(model => model.Masthead_image_alttext)                                                        
+                                                    </div>                                                    
+                                                </div>
+                                            </div>
+                                        
+                                            
+                                            <div class="row">
+                                                <div class="col-md-3 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Background_image" class="form-label">Background image<span class="mute small"> (Max. size 1MB)</span> </label>
+                                                        <button type="button" id="btnFile_Background_image" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>
+                                                        @Html.HiddenFor(model => model.Background_image_id)                                                   
+                                                        <img src="@Model.Background_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height" style="display:none;" />                                                 
+                                                        <a href="javascript:void(0)" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link" id="Background_image_Remove" style="display:none;"></a>
+                                                        @Html.HiddenFor(model => model.Background_image_IsDelete) 
+                                                        @Html.HiddenFor(model => model.Background_image)
+                                                        @Html.ValidationMessageFor(model => model.Background_image)
+                                                    </div>  
+                                                    <div class="form-group mb-3">
+                                                        <label for="Attach_file" class="form-label">Attach file</label>
+                                                        <button type="button" id="btnFile_Attach_file" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>
+                                                        @Html.HiddenFor(model => model.Attach_file_id)  
+                                                        @* <div class="filePreview" >
+                                                            <a href="@(Model.Thumbnail_Img_Media_Id > 0 ? Model.Files : "#")" target="_blank" class="btn btn-sm btn-dark fileLink">
+                                                                <i class="bi bi-file-earmark"></i> View File
+                                                            </a>
+                                                            @Html.HiddenFor(model => model.Attach_file_IsDelete)
+                                                        </div> *@
+                                                        @Html.ValidationMessageFor(model => model.Attach_file)
+                                                    </div>                                                     
+                                                </div>
+                                                <div class="col-md-9 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Masthead_image_alttext" class="form-label">Background image Alt text </label>
+                                                        @Html.TextAreaFor(model => model.Background_image_Alttext, new { @class = "form-control editor-full" })                                                         
+                                                        @Html.ValidationMessageFor(model => model.Background_image_Alttext)                                                        
+                                                    </div>                                                    
+                                                </div>
+                                               
+                                            </div>
+                                        
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 text-center" id="div_addspot_templates">                    
+                    @Html.HiddenFor(model => model.Spot_temp_id)
+                    <div class="card-body" id="div_contentspotmapping">
+                    </div>
+                </div>
+                <div class="col-sm-12 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-outline-primary me-1 mb-1" name="Command" value="Save" onclick="return validate_form();" ><i class="bi bi-save me-1" ></i> Save</button>
+                    <button type="submit" class="btn btn-outline-primary me-1 mb-1" name="Command" value="Save and publish" onclick="return validate_form();" ><i class="bi bi-rocket-takeoff me-1"></i> Save and publish</button>
+                </div>
+            </div>
+        }
+        </section>
+    </div>
+    <div class="modal fade" id="modal_spottemplates" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static"  data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Spot templates</h5>   
+                </div>
+                <div class="modal-body" id="spotTemplatesModalBody">
+                        
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end gap-2">                  
+                    <button  type="button" class="btn btn-secondary" id="btnsubmit_spot_templates" onclick="Refresh_context_details(true);" >
+                        Close
+                    </button>
+                  
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+     <div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Media Manager</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+                </div>
+
+                <div class="modal-body" id="mediaManagerModalBody">
+                        
+                </div>
+
+               <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                        Add image
+                    </button>
+                    <button  type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ 
+ @section head{
+    @* <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+    <style type="text/css">
+        #Intro + .ck-editor .ck-editor__editable {
+        min-height: 150px !important;
+        }
+
+        #Hmpg_intro + .ck-editor .ck-editor__editable {
+        min-height: 150px !important;
+        }
+
+         #Content + .ck-editor .ck-editor__editable {
+        min-height: 350px !important;
+        }
+
+        #Masthead_image_alttext + .ck-editor .ck-editor__editable {
+        min-height: 80px !important;
+        }
+
+         #Background_image_Alttext + .ck-editor .ck-editor__editable {
+        min-height: 80px !important;
+        }
+
+    </style> *@
+
+     <link rel="stylesheet" href="~/Assets/css/media-manager.css" />
+}
+ 
+@* @section Scripts {
+  
+   
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
+<script src="/Assets/scripts/add_ck_editor_new.js"></script>
+    <script src="~/Assets/scripts/manage_content.js"></script>
+    <script src="~/Assets/scripts/media-manager.js"></script>
+   
+    <script>
+    $(document).ready(function () {
+
+        // ✅ INIT CKEDITOR FOR MAIN PAGE
+        if (window.initCkEditors) {
+            window.initCkEditors(document);
+            console.log("Main page CKEditor initialized");
+        } else {
+            console.error("initCkEditors not available on main page");
+        }
+
+        // existing code
+        if ($("#Spot_temp_id").val() != "") {
+            Refresh_context_details(false);
+        }
+    });
+</script>
+} *@
+
+@section Scripts {
+@* <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script> *@
+ @* <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>  *@
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script> 
+<script src="/Assets/scripts/add_ck_editor_new.js"></script>
+<script>
+    console.log("CKEDITOR CHECK:", window.ClassicEditor);
+</script>
+<script src="~/Assets/scripts/manage_content.js"></script>
+<script src="~/Assets/scripts/media-manager.js"></script>
+
+<script>
+    $(document).ready(function () {
+@* 
+        // ✅ INIT CKEDITOR FOR MAIN PAGE
+        if (window.initCkEditors) {
+            window.initCkEditors(document);
+            console.log("Main page CKEditor initialized");
+        } else {
+            console.error("initCkEditors not available on main page");
+        } *@
+
+        window.initCkEditors(document);
+
+        if ($("#Spot_temp_id").val() != "") {
+            Refresh_context_details(false);
+        }
+    });
+
+    // ======================================
+    // ✅ ADD THIS FUNCTION HERE
+    // ======================================
+    function validate_form() {
+
+        console.log("VALIDATE FORM CALLED");
+
+        if (window.syncCkEditorsToSource) {
+            window.syncCkEditorsToSource(document); // 🔥 VERY IMPORTANT
+        }
+
+        return true; // allow submit
+    }
+</script>
+
+}
+

@@ -1,0 +1,928 @@
+/* ══════════════════════════════
+   CAREERS — CTA parallax + people cutout (breaks out above card)
+══════════════════════════════ */
+.bg-parallax-section .outer-bg-wrap {
+  position: relative;
+  overflow: visible;
+}
+
+.bg-parallax-section .bg-parallax-stage {
+  position: relative;
+  overflow: visible;
+  /* Room above the card for head breakout */
+  padding-top: clamp(3.5rem, 7vw, 10rem);
+  padding-right: 0;
+}
+
+.bg-parallax-section .bg-parallax-frame {
+  --cta-parallax-bleed: clamp(28px, 5vh, 48px);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 660px;
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bg-parallax-section .parallax-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(-1 * var(--cta-parallax-bleed));
+  height: calc(100% + (2 * var(--cta-parallax-bleed)));
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.bg-parallax-section .parallax-wrap .parallax-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.bg-parallax-section .overlay-scrim {
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.bg-parallax-section .bg-parallax-content {
+  position: relative;
+  z-index: 2;
+  max-width: min(42rem, 48%);
+  pointer-events: none;
+}
+
+.bg-parallax-section .bg-parallax-content .section-title-outer {
+  margin-bottom: 0;
+  max-width: none;
+}
+
+.bg-parallax-section .bg-parallax-content .section-title-sm {
+  max-width: none;
+  margin: 0;
+}
+
+.bg-parallax-section .bg-parallax-content .title-section {
+  margin-bottom: 0;
+}
+
+.bg-parallax-section .outer-btn-wrap {
+  z-index: 3;
+}
+
+/* Dual CTAs — one continuous white bar (no dark gap), clear of people */
+.bg-parallax-cta-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 5px;
+  max-width: min(100%, 52%);
+  pointer-events: auto;
+}
+
+.bg-parallax-cta-row .outer-btn-wrap {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.bg-parallax-cta-row .outer-btn-wrap + .outer-btn-wrap {
+  border-left: 1px solid rgba(35, 31, 32, 0.12);
+}
+
+.bg-parallax-cta-row .site-link {
+  white-space: nowrap;
+}
+
+/* People — sibling of the card, full stage height so heads clear the top edge.
+   Group shot is landscape (~1.21:1): wrap MUST be wide enough that
+   height:100% + object-fit:contain still paints at full stage height.
+   Too-narrow wrap shrinks the bitmap and heads fall inside the card. */
+.man-image-wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  width: min(68%, 1000px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.man-image-img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: right bottom;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.logo-lion-vector-outer {
+  position: absolute;
+  top: -3vw;
+  right: 0;
+  z-index: -1;
+  pointer-events: none;
+  width: min(72vw, 375px);
+  max-width: 375px;
+}
+
+.section-title-large { max-width: 880px; margin: 0 auto; }
+.section-title-large .title-section { max-width: 31vw; }
+.careers-intro { margin-top: 50px; margin-bottom: -80px; }
+
+.testimonials-left-part .section-title-outer p{max-width: 100%;}
+
+@media (min-width: 1024px) {
+  .our-products-img img { height: auto; }
+}
+
+/* —— Tablet — same composition as desktop, scaled —— */
+@media (max-width: 991px) {
+  .bg-parallax-section .outer-bg-wrap {
+    overflow: hidden;
+    margin-right: 20px;
+  }
+
+  .bg-parallax-section .bg-parallax-stage {
+    padding-top: clamp(2.25rem, 5vw, 3.5rem);
+  }
+
+  .bg-parallax-section .bg-parallax-frame {
+    min-height: 400px;
+    justify-content: center;
+    padding-block: clamp(1.75rem, 3.5vw, 2.5rem);
+    padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+    padding-bottom: 5rem;
+  }
+
+  .bg-parallax-section .bg-parallax-content {
+    max-width: min(24rem, 50%);
+  }
+
+
+  .bg-parallax-cta-row {
+    max-width: 50%;
+  }
+
+  .bg-parallax-section .outer-btn-wrap.outer-btn-spacing {
+    padding: 0.85rem 1rem;
+  }
+
+  .bg-parallax-section .outer-btn-wrap .site-link {
+    font-size: 0.875rem;
+    gap: 6px;
+  }
+
+  .man-image-wrap {
+     width: min(46%, 300px);
+    right: 0;
+  }
+.man-image-img {height: 75%;}
+  .section-title-large .title-section {
+    max-width: 100%;
+  }
+  .careers-intro { margin-top: 50px; margin-bottom: -60px; }
+}
+
+/*
+ * Mobile — desktop composition (title left · people right · CTAs bottom-left).
+ * Cover + full-stage wrap puts faces in the padding-top breakout band.
+ */
+@media (max-width: 767px) {
+  .bg-parallax-section .outer-bg-wrap {
+    overflow: hidden;
+    margin-right: 20px;
+  }
+
+  .bg-parallax-section .bg-parallax-stage {
+    padding-top: 3.25rem;
+    overflow: visible;
+  }
+
+  .bg-parallax-section .bg-parallax-frame {
+    min-height: 340px;
+    justify-content: center;
+    padding-top: 1.35rem;
+    padding-bottom: 5.75rem;
+    padding-inline: 1rem;
+  }
+
+  .bg-parallax-section .overlay-scrim {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.92) -5%,
+      rgba(0, 0, 0, 0.78) 30%,
+      rgba(0, 0, 0, 0.4) 52%,
+      rgba(0, 0, 0, 0) 78%
+    );
+  }
+
+  .bg-parallax-section .bg-parallax-content {
+    max-width: 52%;
+  }
+
+
+
+  .bg-parallax-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 52%;
+  }
+
+  .bg-parallax-cta-row .outer-btn-wrap {
+    width: 100%;
+  }
+
+  .bg-parallax-cta-row .outer-btn-wrap + .outer-btn-wrap {
+    border-left: 0;
+    border-top: 1px solid rgba(35, 31, 32, 0.12);
+  }
+
+  .bg-parallax-section .outer-btn-wrap.outer-btn-spacing {
+    padding: 0.8rem 0.9rem;
+  }
+
+  .bg-parallax-section .outer-btn-wrap .site-link {
+    font-size: 0.8125rem;
+    gap: 6px;
+    padding-bottom: 8px;
+    white-space: nowrap;
+  }
+
+  .man-image-wrap {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: 55%;
+    height: auto;
+  }
+
+  .man-image-img {
+    width: 100%;
+    height: auto;
+    max-width: none;
+    object-fit: cover;
+    object-position: 68% 8%;
+  }
+
+  .careers-intro { margin-bottom: -40px; }
+  .logo-lion-vector-outer {display: flex;justify-content: end;}
+
+
+}
+
+@media (max-width: 393px) {
+  .bg-parallax-section .bg-parallax-stage {
+    padding-top: 3rem;
+  }
+
+  .bg-parallax-section .bg-parallax-frame {
+    min-height: 320px;
+    padding-bottom: 5.5rem;
+  }
+
+  .bg-parallax-section .bg-parallax-content {
+    max-width: 50%;
+  }
+
+  .bg-parallax-cta-row {
+    max-width: 50%;
+  }
+
+  .bg-parallax-section .outer-btn-wrap.outer-btn-spacing {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .bg-parallax-section .outer-btn-wrap .site-link {
+    font-size: 0.75rem;
+  }
+
+  .man-image-wrap {
+    width: 56%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-parallax-section .parallax-wrap {
+    top: 0;
+    height: 100%;
+    will-change: auto;
+    transform: none !important;
+  }
+
+  .bg-parallax-section .parallax-img {
+    height: 100%;
+    will-change: auto;
+    transform: none !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1366px) {
+  .bg-parallax-section .bg-parallax-frame { min-height: 520px; }
+  .bg-parallax-section .bg-parallax-content { max-width: min(35rem, 42%); }
+  .bg-parallax-cta-row { max-width: 48%; }
+  .man-image-wrap { width: min(70%, 900px); }
+  .testimonials-left-part .section-title-outer .title-section{max-width: 88%;}
+}
+
+/* ══════════════════════════════
+   CAREERS — TESTIMONIALS MARQUEE
+   (self-contained; does not rely on homepage-style.css)
+══════════════════════════════ */
+.home-testimonials-section {
+  isolation: isolate;
+}
+
+.bg-light-gray {
+  background-color: #fcfcfc;
+}
+
+.testimonials-outer-wrap .parallax-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.testimonials-outer-wrap .testimonials-bg-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  z-index: -1;
+}
+
+.marquee-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 64px, black calc(100% - 64px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, black 64px, black calc(100% - 64px), transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  animation-play-state: paused;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.marquee-track.up {
+  animation-name: careersScrollUp;
+  animation-duration: 32s;
+}
+
+.marquee-track.down {
+  animation-name: careersScrollDown;
+  animation-duration: 32s;
+}
+
+.section-in-view .marquee-track {
+  animation-play-state: running;
+}
+
+.marquee-viewport:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+
+ .grid-photo { object-fit: cover; width: 100%; height: 100%; }
+
+
+/* ══════════════════════════════
+   WORKPLACE CULTURE
+   Desktop: 3-col collage (same nodes via display:contents)
+   Mobile: heading static + horizontal scroll-snap on photos
+══════════════════════════════ */
+.workplaceculture-section .culture-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.workplaceculture-section .culture-intro .section-title-outer {
+  margin-bottom: 0;
+}
+
+.workplaceculture-section .culture-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.workplaceculture-section .culture-photos {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.workplaceculture-section .culture-photos::-webkit-scrollbar {
+  display: none;
+}
+
+.workplaceculture-section .culture-photo {
+  flex: 0 0 82%;
+  scroll-snap-align: start;
+  aspect-ratio: 4.5 / 5.5;
+  min-height: 0;
+  position: relative;
+}
+
+.workplaceculture-section .culture-parallax-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.workplaceculture-section .culture-photo .grid-photo,
+.workplaceculture-section .culture-photo .parallax-img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  /* Never scale/zoom the photo for parallax */
+  transform: none !important;
+}
+
+@media (min-width: 768px) {
+  .workplaceculture-section {
+    overflow: visible;
+  }
+
+  .workplaceculture-section .culture-layout {
+    overflow: visible;
+  }
+
+  .workplaceculture-section .culture-photo {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workplaceculture-section .culture-photo {
+    will-change: auto;
+    transform: none !important;
+  }
+}
+
+.workplaceculture-section .culture-slider-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.workplaceculture-section .culture-slider-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid rgba(35, 31, 32, 0.18);
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.workplaceculture-section .culture-slider-arrow img {
+  width: 14px;
+  height: auto;
+  display: block;
+  filter: brightness(0) saturate(100%) invert(11%) sepia(5%) saturate(538%) hue-rotate(314deg) brightness(94%) contrast(90%);
+}
+
+.workplaceculture-section .culture-slider-prev img {
+  transform: scaleX(-1);
+}
+
+.workplaceculture-section .culture-slider-arrow:hover:not(:disabled) {
+  border-color: var(--color-secondary, #ED1C24);
+}
+
+.workplaceculture-section .culture-slider-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.workplaceculture-section .culture-slider-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.workplaceculture-section .culture-slider-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(35, 31, 32, 0.22);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, width 0.2s ease;
+}
+
+.workplaceculture-section .culture-slider-dot.is-active {
+  width: 1.25rem;
+  background: var(--color-secondary, #ED1C24);
+}
+
+
+
+
+
+
+
+
+
+
+/* ══════════════════════════════
+   LIFE INSIDE (shared helpers — main layout in lifeinside-style.css)
+══════════════════════════════ */
+.bg-outside-section {
+  isolation: isolate;
+}
+
+
+
+
+
+
+
+
+/* Optional peek of next slide on slightly larger phones */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .workplaceculture-section .culture-photo {
+    flex-basis: 50%;
+  }
+}
+
+/* Desktop / tablet collage — same 4 photos, no duplicates */
+@media (min-width: 1023px) {
+  .workplaceculture-section .culture-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: minmax(14rem, 1fr) minmax(14rem, 1fr);
+    gap: 1.875rem;
+    min-height: min(70vh, 640px);
+    align-items: stretch;
+  }
+
+  .workplaceculture-section .culture-intro {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+  }
+
+  /* Flatten so photos sit on the parent grid; hide mobile controls */
+  .workplaceculture-section .culture-slider,
+  .workplaceculture-section .culture-photos {
+    display: contents;
+  }
+
+  .workplaceculture-section .culture-slider-nav {
+    display: none !important;
+  }
+
+  .workplaceculture-section .culture-photo {
+    flex: none;
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .workplaceculture-section .culture-photo--1 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .workplaceculture-section .culture-photo--2 {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+
+  .workplaceculture-section .culture-photo--3 {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .workplaceculture-section .culture-photo--4 {
+    grid-column: 3;
+    grid-row: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  #marquee-section.is-js-marquee .marquee-track {
+    animation: none !important;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #marquee-section.is-js-marquee .marquee-viewport {
+    touch-action: none;
+    cursor: grab;
+  }
+
+  #marquee-section.is-js-marquee .marquee-viewport.is-dragging,
+  #marquee-section.is-js-marquee .marquee-viewport.is-dragging .marquee-track {
+    cursor: grabbing;
+  }
+
+  .home-testimonials-section {
+    display: block;
+    isolation: isolate;
+    height: auto;
+    min-height: calc(100vh - var(--header-h, 106px));
+  }
+
+  .home-testimonials-section .testimonials-layout {
+    align-items: start;
+  }
+
+  .home-testimonials-section .testimonials-left-part {
+    position: sticky;
+    top: calc(var(--header-h, 106px) + 1.25rem);
+    z-index: 2;
+    align-self: start;
+  }
+
+  .home-testimonials-section .testimonials-marquee-col {
+    height: calc(100vh - var(--header-h, 106px) - 5rem);
+    max-height: calc(100vh - var(--header-h, 106px) - 5rem);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #marquee-section {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+  }
+
+  #marquee-section .marquee-viewport {
+    min-height: 0;
+  }
+}
+
+@keyframes careersScrollUp {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes careersScrollDown {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+
+  #marquee-section.is-js-marquee .marquee-track {
+    cursor: default;
+  }
+}
+
+@media (max-width: 1023px) {
+  .home-testimonials-section {
+    height: auto;
+    min-height: 0;
+    display: block;
+  }
+
+  .home-testimonials-section .testimonials-left-part {
+    position: static;
+    top: auto;
+  }
+
+  .home-testimonials-section .testimonials-marquee-col {
+    overflow: visible;
+  }
+
+  #marquee-section {
+    height: auto !important;
+  }
+
+  #marquee-section .marquee-viewport {
+    overflow: visible;
+    height: auto;
+    -webkit-mask-image: none;
+            mask-image: none;
+    padding-top: 0 !important;
+    touch-action: auto;
+    cursor: auto;
+  }
+
+  #marquee-section .marquee-track {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+    gap: 1.5rem;
+    cursor: auto;
+    user-select: auto;
+  }
+
+  #marquee-section.is-js-marquee .marquee-viewport,
+  #marquee-section.is-js-marquee .marquee-track {
+    touch-action: auto !important;
+    cursor: auto !important;
+  }
+
+  #marquee-section .quote-card[aria-hidden="true"] {
+    display: none !important;
+  }
+
+  #marquee-section .quote-card.is-collapsed {
+    display: none;
+  }
+
+  #marquee-section.is-mobile-rise-anim .quote-card.is-rise-anim-card {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+}
+
+.quote-card {
+  background: var(--color-light);
+  padding: 40px 25px;
+}
+
+.quote-card-member {
+  font-size: var(--text-p);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.quote-card-desn {
+  font-size: var(--text-small);
+  color: var(--color-gray);
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.quote-card-para {
+  font-size: var(--text-p);
+  margin-bottom: 0;
+  padding-top: 30px;
+}
+
+.quote-card .site-link {
+  --link-color: #A6A6A6;
+  --link-hover: #231F20;
+  font-size: 1rem;
+}
+
+.quote-card-content {
+  padding: 40px 0 60px 0;
+}
+
+.quote-card .site-link-arrow img {
+  filter: brightness(0) saturate(100%) invert(69%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(102%) contrast(88%);
+}
+
+.quote-card .site-link:hover img {
+  filter: brightness(0) saturate(100%) invert(11%) sepia(5%) saturate(538%) hue-rotate(314deg) brightness(94%) contrast(90%);
+}
+
+/* Mobile rise helpers live under the max-width:1023px marquee block */
+
+@media (max-width: 767px) {
+.quote-card-content {padding: 40px 0 0px 0;}
+}
+
+
+@media (max-width: 1680px) {
+.bg-parallax-section .bg-parallax-content {max-width: min(42rem, 40%);}
+}
+
+@media (min-width: 1200px) and (max-width: 1366px) {
+  .quote-card-para {
+    font-size: 1rem;
+  }
+
+  .home-testimonials-section .testimonials-marquee-col {
+    height: calc(130vh - var(--header-h, 106px) - 5rem);
+    max-height: calc(130vh - var(--header-h, 106px) - 5rem);
+  }
+
+  /* Culture collage — ~150% on large monitors / compact laptops */
+  .workplaceculture-section .culture-layout {
+    min-height: min(48vh, 400px);
+    gap: 1rem;
+    grid-template-rows: minmax(9rem, 1fr) minmax(9rem, 1fr);
+  }
+
+  /* .workplaceculture-section .culture-intro .title-section {
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    line-height: 1.2;
+  } */
+
+  .workplaceculture-section .culture-intro p {
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+}
+
+/* ~125% zoom / mid desktops (narrower CSS width) */
+@media (min-width: 1367px) and (max-width: 1600px) {
+  .workplaceculture-section .culture-layout {
+    min-height: min(55vh, 580px);
+    gap: 1.25rem;
+    grid-template-rows: minmax(17rem, 1fr) minmax(17rem, 1fr);
+  }
+
+  /* .workplaceculture-section .culture-intro .title-section {
+    font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+    line-height: 1.2;
+  } */
+
+  .workplaceculture-section .culture-intro p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+/* Compact desktop just above collage breakpoint */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .workplaceculture-section .culture-layout {
+    min-height: min(45vh, 360px);
+    gap: 0.875rem;
+    grid-template-rows: minmax(8rem, 1fr) minmax(8rem, 1fr);
+  }
+
+  /* .workplaceculture-section .culture-intro .title-section {
+    font-size: clamp(1.25rem, 2.8vw, 1.65rem);
+    line-height: 1.2;
+  } */
+
+  .workplaceculture-section .culture-intro p {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+}
+
+/* 125% zoom (high-DPI / zoomed Chrome — light extra) */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.25),
+  screen and (min-width: 1025px) and (min-resolution: 120dpi) {
+  .workplaceculture-section .culture-layout {
+    min-height: min(55vh, 480px);
+    gap: 1.25rem;
+  }
+}
+
+/* 150% zoom */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.5),
+  screen and (min-width: 1025px) and (min-resolution: 144dpi) {
+  .workplaceculture-section .culture-layout {
+    min-height: min(48vh, 400px);
+    gap: 1rem;
+  }
+
+  .workplaceculture-section .culture-intro p {
+    font-size: 0.9375rem;
+  }
+}

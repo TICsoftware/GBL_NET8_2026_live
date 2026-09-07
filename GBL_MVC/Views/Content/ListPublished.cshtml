@@ -1,0 +1,218 @@
+@model CMS_pages
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+    ViewData["Title"] = "Edit Content";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row justify-content-between">
+            <div class="col-12 col-md-6 order-md-1 order-first">
+                <h3>List Content</h3>
+
+            </div>
+            <div class="col-12 col-md-3 order-md-2 order-last">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                    <select class="form-select" id="inputGroupSelect01">
+                        <option selected="">Select...</option>
+                        <option value="1">Add new </option>
+                        <option value="2">Draft</option>
+                        <option value="3">Published</option>
+                        <option value="3">In-Process</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="section content-main">
+    @using (Html.BeginForm("Drafts", "Content", FormMethod.Post, new { enctype = "multipart/form-data" , @class = "form-horizontal" }))
+    {
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">List published content</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <a asp-action="Add" class="btn btn-primary mb-3">Add New </a>                        
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+                       <div class="col-md-3">
+                            <!-- Language -->
+                            <div class="form-group mb-3">
+                                <label for="ddLanguage" class="form-label">Language</label>
+                                @Html.DropDownListFor(model => model.language_id, Model.Languages , new { id = "ddLanguage", @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.language_id, "", new { @class = "text-danger" })
+                            </div> 
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Geography -->
+                            <div class="form-group mb-3">
+                                <label for="ddGeography" class="form-label">Geography </label> 
+                                @Html.DropDownListFor(model => model.Geography_ID,
+                                    Model.Geographies , new { id = "ddGeography", @class = "form-select" })
+                                    @Html.ValidationMessageFor(model => model.Geography_ID, "", new { @class = "text-danger" })
+                                                      
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Title -->
+                            <div class="form-group mb-3">
+                                <label for="searchquery" class="form-label">Enter keywords </label> 
+                                @Html.TextBoxFor(model => model.searchquery, new { @class = "form-control", placeholder = "Enter title" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">Sections </label> 
+                                @Html.DropDownListFor(model => model.section_id,
+                                Model.Sections , new { id = "ddSection", @class = "form-select" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">&nbsp; </label> 
+                                @Html.DropDownListFor(model => model.subSection_id,
+                                Model.subSections , new { id = "ddsubSection", @class = "form-select" })
+                            </div>
+                        </div>
+                         <div class="col-12 col-md-12 text-center">
+                            <a asp-action="Drafts" class="btn btn-primary mb-3">Search </a>      
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <h2>Sections</h2>                
+                            @if (Model.sections_list != null)
+                            {
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Parent title</th>
+                                            <th>Language</th>
+                                            <th>Created date</th>
+                                            <th>Updated Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        @foreach (var item in Model.sections_list)
+                                        {
+                                            <tr>
+                                                <td>@item.Title</td>
+                                                <td>@item.Parent_title</td>
+                                                <td>@(item.Language)</td>
+                                                <td>@item.Created_date.ToString("dd-MMM-yyyy")</td>
+                                                <td>@(item.Updated_date == null ? "" : item.Updated_date?.ToString("dd-MMM-yyyy"))</td>
+                                                <td>
+                                                    @if (item.Status == 2)
+                                                    {
+                                                        @Html.Raw("Published")
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(value: "Draft")
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a asp-action="Edit"
+                                                        asp-route-Id="@(Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString()))"
+                                                        class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                    <a asp-action="Delete"
+                                                        asp-route-Id="@(Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString()))"
+                                                        class="btn btn-sm btn-outline-danger ms-2">Delete</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p>
+                                    No record found
+                                </p>
+                            }
+                    </div>
+                    <div class="row">
+                        <h2>Articles</h2>                
+                        @if (Model.articles_list != null)
+                        {
+                            <table class="table table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Parent title</th>
+                                        <th>Language</th>
+                                        <th>Created date</th>
+                                        <th>Updated Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    @foreach (var item in Model.articles_list)
+                                    {
+                                        <tr>
+                                            <td>@item.Title</td>
+                                            <td>@item.Parent_title</td>
+                                            <td>@(item.Language)</td>
+                                            <td>@item.Created_date.ToString("dd-MMM-yyyy")</td>
+                                            <td>@(item.Updated_date == null ? "" : item.Updated_date?.ToString("dd-MMM-yyyy"))</td>
+                                            <td>
+                                                @if (item.Status == 2)
+                                                {
+                                                    @Html.Raw("Published")
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(value: "Draft")
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-action="Edit"
+                                                    asp-route-Id="@(Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString()))"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                <a asp-action="Drafts"  asp-route-mode="delete"
+                                                    asp-route-Id="@(Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString()))"
+                                                    class="btn btn-sm btn-outline-danger ms-2">Delete</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>
+                                No record found
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>  
+    }
+    </section>
+</div>
+
+@section Scripts {
+    @if (ViewBag.alert_message != null)
+    {
+        <div id="content-alert" class="d-none" data-message="@ViewBag.alert_message"></div>
+        <script src="~/Assets/scripts/content_alert.js"></script>
+    }
+}

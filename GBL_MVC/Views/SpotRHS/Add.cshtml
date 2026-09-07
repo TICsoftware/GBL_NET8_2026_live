@@ -1,0 +1,293 @@
+﻿@model GBL_MVC.Models.Manage_Model.SpotRHS_Model
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add / Edit Blocks | TIC CMS";
+}
+
+<title>@ViewData["Title"]</title>
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Add Blocks Details</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Add", "SpotRHS", FormMethod.Post, new { enctype = "multipart/form-data", @id="RHSForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(m => m.ID, new { @Value = Model.ID })
+
+        <section class="section content-main">
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Add Blocks Details</h2>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+
+                                    <!-- Language -->
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Language_Master_ID" class="form-label">Language</label>
+                                        <select asp-for="Language_Master_ID" class="form-control form-select" asp-items="@(new SelectList(ViewBag.Languages, "ID", "Language_Name"))">
+                                        <option value="">Select Language</option>
+                                        </select>
+                                        <span asp-validation-for="Language_Master_ID" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <!-- Geography -->
+                                    <div class="form-group mb-3">
+                                            <label asp-for="Geography_ID" class="form-label">Geography</label>
+                                            <select asp-for="Geography_ID" class="form-control form-select" asp-items="@(new SelectList(ViewBag.Geography, "ID", "Country_Name"))">
+                                            <option value="">Select Geography</option>
+                                            </select>
+                                            <span asp-validation-for="Geography_ID" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group mb-3">
+                                            <label asp-for="spot_template_master_id" class="form-label">Spot reference</label>
+                                            <select asp-for="spot_template_master_id" class="form-control form-select" asp-items="@(new SelectList(ViewBag.SpotReference, "ID", "Name"))">
+                                            <option value="">Select Blocks reference</option>
+                                            </select>
+                                            <span asp-validation-for="spot_template_master_id" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <!-- Title -->
+                                    <div class="form-group mb-3">
+                                        @Html.LabelFor(model => model.Title, new { @class = "form-label" })
+                                        @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "Enter title" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- Description -->
+                                        <div class="form-group mb-3">
+                                            @Html.LabelFor(model => model.Description, new { @class = "form-label" })
+                                            @Html.TextAreaFor(model => model.Description, new { @class = "form-control editor-full",  placeholder = "Enter description" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <!-- Thumbnail -->
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.Thumbnail_Img, new { @class = "form-label" })
+                                                    <button type="button" id="btnFile" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select thumbnail</button>
+                                                    @Html.HiddenFor(model => model.Thumbnail_Img_Media_Id, new { @Value = "0", @class="media-id" })
+                                                   
+                                                    <img class="imgPreview" src="@(Model.Thumbnail_Img != null ? Model.Thumbnail_Img : "")" />
+                                                    <span class="remove-icon">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                    </span>
+                                                   
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.Thumbnail_Alt_Text, new { @class = "form-label" })
+                                                    @Html.TextBoxFor(model => model.Thumbnail_Alt_Text, new { @class = "form-control", placeholder = "Enter thumbnail alt text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- Background -->
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.Background_Img, new { @class = "form-label" })
+                                                    <button type="button" id="btnFile" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select background</button>
+                                                    @Html.HiddenFor(model => model.Background_Img_Media_Id, new { @Value = "0" })
+                                                    <img class="imgPreview" src="@(Model.Background_Img != null ? Model.Background_Img : "")" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.Background_Alt_Text, new { @class = "form-label" })
+                                                    @Html.TextBoxFor(model => model.Background_Alt_Text, new { @class = "form-control", placeholder = "Enter background alt text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- Icon -->
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.Icon_Img, new { @class = "form-label" })
+                                                    <button type="button" id="btnFile" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select icon</button>
+                                                    @Html.HiddenFor(model => model.Icon_Img_Media_Id, new { @Value = "0" })
+                                                    <img class="imgPreview" src="@(Model.Icon_Img != null ? Model.Icon_Img : "")" />
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.Icon_Alt_Text, new { @class = "form-label" })
+                                                    @Html.TextBoxFor(model => model.Icon_Alt_Text, new { @class = "form-control", placeholder = "Enter icon alt text" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <!-- RHS Intro -->
+                                    <div class="form-group mb-3">
+                                        @Html.LabelFor(model => model.Spot_Intro, new { @class = "form-label" })
+                                        @Html.TextAreaFor(model => model.Spot_Intro, new { @class = "form-control editor-full"})
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <!-- RHS Content -->
+                                    <div class="form-group mb-3">
+                                        @Html.LabelFor(model => model.Spot_Content, new { @class = "form-label" })
+                                        @Html.TextAreaFor(model => model.Spot_Content, new { @class = "form-control editor-full" })
+                                    </div>
+                                </div>
+
+                               
+                                <div class="col-md-12">
+                                    <div class="row"> 
+                                        <div class="col-md-3">
+                                            <!-- Files -->
+                                            <div class="form-group mb-3">
+                                                @Html.LabelFor(model => model.Files, new { @class = "form-label" })
+                                                <button type="button" id="btnFile" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select files</button>
+                                                @Html.HiddenFor(model => model.Files_Media_Id, new { @Value = "0" })
+                                                <div class="filePreview" >
+                                                    <a href="@(Model.Files_Media_Id > 0 ? Model.Files : "#")" target="_blank" class="btn btn-sm btn-dark fileLink">
+                                                        <i class="bi bi-file-earmark"></i> View File
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <!-- External URL -->
+                                            <div class="form-group mb-3">
+                                                @Html.LabelFor(model => model.External_Url, new { @class = "form-label" })
+                                                @Html.TextBoxFor(model => model.External_Url, new { @class = "form-control", placeholder = "Enter external URL" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <!-- Is External -->
+                                            <div class="form-group mb-3">
+                                                @Html.CheckBoxFor(model => model.IsExternal, new { @class = "form-check-input" })
+                                                @Html.LabelFor(model => model.IsExternal, new { @class = "form-label" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <!-- Sequence -->
+                                            <div class="form-group mb-3">
+                                                @Html.LabelFor(model => model.Sequence, new { @class = "form-label" })
+                                                @Html.DropDownListFor(model => model.Sequence,
+                                                        Enumerable.Range(1, 30).Select(x => new SelectListItem
+                                                        {
+                                                            Text = x.ToString(),
+                                                            Value = x.ToString()
+                                                        }),
+                                                        "Select sequence",
+                                                        new { @class = "form-control form-select", id = "ddSequence" }
+                                                    )
+
+                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+                                    <!-- Hidden fields -->
+                                    @* @Html.HiddenFor(model => model.ID, new { @Value = "0" }) *@
+                                    @Html.HiddenFor(model => model.Status)
+                                    @Html.HiddenFor(model => model.Created_UserID)
+                                    @Html.HiddenFor(model => model.Created_Date)
+                                    @Html.HiddenFor(model => model.Updated_UserID)
+                                    @Html.HiddenFor(model => model.Updated_Date)
+                                    @Html.HiddenFor(model => model.Published_UserID)
+                                    @Html.HiddenFor(model => model.Published_Date)
+                                    @Html.HiddenFor(model => model.DeActivated_UserID)
+                                    @Html.HiddenFor(model => model.DeActivated_Date)
+                                    @Html.HiddenFor(model => model.Spot_RHS_Save_Action)
+
+                              
+                                <div class="col-md-12 text-center">
+                                    <div class="form-group mt-3">
+                                        <input id="btnSaveAndPublish" name="Command" type="submit" value="Save and Publish" class="btn btn-primary navbar-btn" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+        </section>
+    }
+</div>
+
+
+
+
+ <div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Media Manager</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+                </div>
+
+                <div class="modal-body" id="mediaManagerModalBody">
+                        
+                </div>
+
+               <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                        Add image
+                    </button>
+                    <button  type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+@section head{
+    <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+}
+
+
+
+@section Scripts {
+   <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+                "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+            }
+        }
+    </script>
+    <script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+}
+
+
+

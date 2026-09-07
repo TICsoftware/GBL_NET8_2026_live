@@ -1,0 +1,94 @@
+/* Full page center */
+
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+     height: 100vh; 
+}
+
+/* Card */
+.register-card {
+    background: #fff;
+    padding: 30px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Title */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #4facfe;
+}
+
+/* Button */
+.btn-register {
+    width: 100%;
+    padding: 10px;
+    background: #4facfe;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-register:hover {
+    background: #2d8cf0;
+}
+
+/* Login link */
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.auth-logo img {
+    width: 60px;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.auth-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+}

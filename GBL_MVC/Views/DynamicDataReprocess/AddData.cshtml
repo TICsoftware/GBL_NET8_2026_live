@@ -1,0 +1,155 @@
+@model Core_project_BusinessLogic.Entity.ContextDetail
+
+ 
+@using Core_project_BusinessLogic.Entity
+@{
+    Layout = null;
+    var cspNonce = Context.Items["CSPNonce"]?.ToString();
+
+    var fields = ViewBag.Fields as List<ContextFieldDefinition>
+    ?? new List<ContextFieldDefinition>();
+
+    var reference = ViewBag.Reference;
+    var encId = ViewBag.EncId;
+    var cont_id = ViewBag.cont_id;
+    var mode = ViewBag.Mode as string ?? "block";
+
+}
+
+<link rel="stylesheet" href="~/Assets/css/dynamic_data_reprocess.css" />
+
+<h2>
+    @if (mode == "Main")
+    {
+        <h2>Main Component : @(reference?.Context_Title ?? "Reference")</h2>
+    }
+
+    else
+    {
+        <h2>Block Component : @(reference?.Context_Title ?? "Reference")</h2>
+    }
+</h2>
+
+
+
+<form id="addContextDetailsForm" method="post" asp-action="Submit" asp-controller="DynamicDataReprocess">
+
+    <input type="hidden" name="referenceId" value="@reference.ID" />
+    <input type="hidden" name="masterId" value="@reference.Context_Master_ID" />
+    <input type="hidden" name="cont_id" value="@cont_id" />
+    <input type="hidden" name="mode" value="@ViewBag.Mode" />
+    <input type="hidden" name="is_block" value="@(mode == "Main" ? 0 : 1)" />
+    @foreach (var f in fields)
+    {
+        <div class="mb-3">
+            <label class="form-label">@f.name</label>
+
+            @* TEXTBOX *@
+            @if (f.field_type_id == 1)
+            {
+                @* <input name="@f.name_key" class="form-control" placeholder="@f.place_holder" /> *@
+
+                <input name="@f.name_key" class="form-control dynamic-field" placeholder="@f.place_holder"
+                       data-required="@(f.is_required == 1 ? "true" : "false")" data-validation="@f.field_validation"
+                       data-message="@f.custom_validation" data-name="@f.name" />
+            }
+
+            @* DROPDOWN *@
+            else if (f.field_type_id == 2)
+            {
+                List<string> opts = new();
+
+                if (!string.IsNullOrWhiteSpace(f.field_options))
+                {
+                    try
+                    {
+                        opts = System.Text.Json.JsonSerializer
+                        .Deserialize<List<string>>(f.field_options);
+                    }
+                    catch { }
+                }
+
+            
+                <select name="@f.name_key" class="form-control dynamic-field"
+                        data-required="@(f.is_required == 1 ? "true" : "false")" data-name="@f.name">
+                    <option value="">-- Select --</option>
+                    @foreach (var o in opts)
+                    {
+                        <option value="@o">@o</option>
+                    }
+                </select>
+            }
+
+            @* HTML EDITOR *@
+            else if (f.field_type_id == 7)
+            {
+
+                <textarea name="@f.name_key" class="form-control  editor-full"
+                          data-required="@(f.is_required == 1 ? "true" : "false")" data-validation="@f.field_validation"
+                          data-name="@f.name"></textarea>
+
+            }
+
+            @* IMAGE FIELD *@
+            else if (f.field_type_id == 8)
+            {
+                <div class="form-group mb-3">
+                    <button type="button" id="btnFile" class="btn btn-outline-primary d-block select-media"> Select
+                        File</button>
+                        <input type="hidden" name="@($"{f.name_key}_existing")" />
+                        <img src="@f.image_previewname" class="dynamic-data-preview-img" />
+                        <img src="@f.image_previewname" class="dynamic-data-preview-img imgPreview" />
+                </div>
+
+            }
+
+                <small class="text-muted">@f.help_text</small>
+
+            </div>
+        }
+        @Html.Hidden("returnUrl", ViewBag.ReturnUrl as string)
+        <button class="btn btn-primary">Save</button>
+    </form>
+
+
+</div>
+<div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i
+                    data-feather="x"></i></button>
+                </div>
+
+                <div class="modal-body" id="mediaManagerModalBody">
+
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                        Add image
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+<link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+<script type="importmap" nonce="@cspNonce">
+    {
+        "imports": {
+            "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+            "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+        }
+    }
+</script>
+<script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+<script src="~/Assets/scripts/dynamic_data_reprocess_add.js"></script>

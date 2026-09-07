@@ -1,0 +1,119 @@
+﻿/* ==========================================================
+   COOKIE / PRIVACY POLICY BAR
+   ========================================================== */
+.privacy_policy_botm {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -120%;
+  z-index: 9999;
+  display: none;
+  width: 100%;
+  pointer-events: none;
+}
+
+.privacy_policy_botm .container {
+  pointer-events: none;
+}
+
+.privacy_policy_bg {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  flex-wrap: wrap;
+  margin: 0 auto 1rem;
+  padding: 1.1rem 1.35rem;
+  background: #231F20;
+  color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.privacy_policy_bg p {
+  flex: 1 1 280px;
+  margin: 0;
+  max-width: 46rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.privacy_btn {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  flex: 0 0 auto;
+}
+
+.privacy_btn .acceptbtn,
+.privacy_btn .privacy_close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.28s ease, background-color 0.28s ease, border-color 0.28s ease, transform 0.28s ease;
+}
+
+/* Accept CTA */
+.privacy_btn .privacy_close,
+.privacy_btn #acceptCookie {
+  min-height: 42px;
+  padding: 0.55rem 1.35rem;
+  border-radius: 10px;
+  background: #ED1C24;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.privacy_btn .privacy_close:hover,
+.privacy_btn #acceptCookie:hover {
+  background: #fff;
+  color: #231F20;
+}
+
+/* Legal link */
+.privacy_btn a.acceptbtn {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.privacy_btn a.acceptbtn:hover {
+  color: #fff;
+  border-bottom-color: #ED1C24;
+}
+
+@media (max-width: 767px) {
+  .privacy_policy_bg {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0 0.75rem 0.75rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+  }
+
+  .privacy_policy_bg p {
+    font-size: 0.875rem;
+  }
+
+  .privacy_btn {
+    width: 100%;
+  }
+
+  .privacy_btn .privacy_close,
+  .privacy_btn #acceptCookie {
+    flex: 1 1 auto;
+  }
+  .privacy_policy_bg p{flex: 0 auto;}
+}

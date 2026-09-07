@@ -1,0 +1,303 @@
+.intro-section-wrap p {
+    font-size: var(--text-22);
+}
+
+
+.cta-section h2{
+    font-family:var(  --font-heading);
+    font-size:var(--text-h3);
+    font-style:italic;
+    font-weight:700;
+}
+
+/* Final Positions */
+
+.gallery-left{
+
+    left:18%;
+    transform:rotate(-6deg);
+    z-index:1;
+
+}
+
+.gallery-center{
+
+    z-index:3;
+
+}
+
+.gallery-right{
+
+    right:18%;
+    transform:rotate(6deg);
+    z-index:20;
+
+}
+
+@media(max-width:991px){
+
+.gallery-card{
+
+width:230px;
+height:320px;
+
+}
+
+.gallery-left{
+
+left:0;
+
+}
+
+.gallery-right{
+
+right:0;
+
+}
+
+}
+
+
+
+.counter-odometer {display: inline-flex;align-items: baseline;gap: 0ch;font-variant-numeric: tabular-nums;line-height: 1;overflow: hidden;}
+.odometer-digit {overflow: hidden;display: inline-block;vertical-align: bottom;height: 1em;width: 1ch;text-align: center;font-family: inherit;font-weight: inherit;font-size: inherit;}
+.odometer-column {display: block;transform: translateY(0);will-change: transform; overflow: hidden;}
+.odometer-digit-line {display: block;height: 1em;line-height: 1em;box-sizing: border-box;}
+.counter-suffix {display: inline-block;margin-left: 0.35ch;font-family: inherit;font-size: inherit;line-height: 1; color: var(--color-green);}
+.odometer-comma {display: inline-block; width: 0.4em; text-align: center;font-weight: inherit;vertical-align: bottom;}
+.counter-wrapper{ display:flex; align-items:center; justify-content:center; gap:1rem;}
+.counter-item{ flex:1; text-align:center;color: var(--color-green); justify-content: center; align-items: center;}
+.counter-divider{ width:1px; height:70px;background:#d8d2c2; flex-shrink:0;}
+.counter {font-size:var(--text-h2); color: var(--color-green);font-weight:500; font-family:var(--font-body);}
+.counter-item p {font-size:var(--text-h4); color: var(--color-text-heading); font-family:var(--font-heading); font-weight:500;}
+
+/* Tablet */
+
+@media(max-width:991px){
+
+.counter-wrapper{
+
+    gap:2rem;
+
+}
+
+.counter-title{
+
+    font-size:1.25rem;
+
+}
+
+.counter-divider{
+
+    height:55px;
+
+}
+
+}
+
+/* Mobile */
+
+@media(max-width:767px){
+
+.counter-wrapper{
+
+    flex-direction:column;
+    gap:2rem;
+
+}
+
+.counter-divider{
+
+    width:60px;
+    height:1px;
+
+}
+
+.counter-number{
+
+    font-size:2rem;
+
+}
+
+.counter-title{
+
+    font-size:1.25rem;
+
+}
+
+}
+
+/* CTA SECTIOM */
+.cta-heading{
+
+    max-width:900px;
+    margin-inline:auto;
+
+    font-family:"Balkist-Bolditalic", serif;
+    font-size:clamp(2rem,4vw,3.5rem);
+    line-height:1.15;
+    color:#1f1f1f;
+
+}
+
+.cta-section{
+    background-color: #F2ECDC;
+}
+
+/* Footprint section */
+/* ================= FOOTPRINT ================= */
+
+.footprint-section{
+
+    position:relative;
+
+}
+
+.footprint-decor{
+
+    z-index:2;
+
+}
+
+.footprint-map{
+
+    display:block;
+
+}
+
+.copy-tight{
+
+    font-size:18px;
+    line-height:1.8;
+    color:#4b4b4b;
+
+}
+
+/* Tablet */
+
+@media(max-width:991px){
+
+.copy-tight{
+
+    font-size:17px;
+
+}
+
+.footprint-decor{
+
+    width:90px;
+    left:0;
+    top:-30px;
+
+}
+
+}
+
+/* Mobile */
+
+@media(max-width:767px){
+
+.footprint-section{
+
+    text-align:center;
+
+}
+
+.copy-tight{
+
+    font-size:16px;
+    line-height:1.7;
+
+}
+
+.footprint-decor{
+
+    position:relative;
+    inset:auto;
+
+    margin:0 auto 2rem;
+
+    display:block;
+
+}
+
+.footprint-map{
+
+    margin-top:1rem;
+
+}
+
+}
+
+
+
+/* ============================
+   BASE / RESET
+============================ */
+.map-outer-warapper {
+  position: relative;
+}
+
+.map-inside-wrapper {
+  position: relative;
+}
+
+/* ============================
+   STATE / REGION SHAPES
+============================ */
+.map-state {
+  stroke: #646C81;
+  stroke-width: 1.44564;
+  cursor: pointer;
+  transition: fill 0.25s ease, opacity 0.25s ease;
+}
+
+.map-state:hover {
+  fill: #FC713C !important;
+}
+
+.map-state.active {
+  fill: #FC713C !important;
+}
+
+.map-state.active:hover {
+  fill: #FC713C !important;
+}
+.map-state.hover-linked {
+      fill: #FC713C !important;
+}
+
+/* Dim other states once one is active */
+.map-outer-warapper.has-active .map-state:not(.active) {
+  opacity: 0.55;
+}
+
+/* ============================
+   PIN + LINE + LABEL (map-item)
+============================ */
+.map-item .map-hover {fill: #FC713C;cursor: pointer;transition: fill 0.25s ease, r 0.2s ease; stroke: #fc713c80; stroke-width: 14;
+   animation: mapPulse 1.8s ease-out infinite;}
+.map-hover::after { content: "";}
+@keyframes mapPulse {
+  0% {stroke-width: 0; stroke-opacity: 0.8;}
+  70% { stroke-width: 14;stroke-opacity: 0.25;}
+  100% {stroke-width: 20;stroke-opacity: 0;}
+}
+.map-item .map-hover:hover {fill: #E85A2A !important;r: 6.5;}
+.map-item.linked-hover .map-hover {fill: #E85A2A !important;r: 6.5;}
+.map-item.active .map-hover, .map-item.linked-active .map-hover {fill: #E85A2A !important;r: 6.5;}
+.map-item .map-line {opacity: 0;stroke: #000015;stroke-width: 1;fill: none;stroke-dasharray: 4 2;pointer-events: none;transition: opacity 0.2s ease;}
+.map-item .map-label-group {opacity: 0;pointer-events: none;transition: opacity 0.2s ease;}
+.map-item .map-label-bg {fill: #748D6E;}
+.map-item .map-label {fill: #ffffff;font-size: 0.75rem;font-family: sans-serif;}
+.map-item:hover .map-line, .map-item:hover .map-label-group { opacity: 1;}
+.map-item.linked-hover .map-line,
+.map-item.linked-hover .map-label-group,
+.map-item.linked-active .map-line,
+.map-item.linked-active .map-label-group,
+.map-item.active .map-line,
+.map-item.active .map-label-group {
+  opacity: 1;
+}
+
+

@@ -1,0 +1,56 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var component = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+    var faqItems = Model.Where(x => x.IsBlock == 1)
+    .OrderBy(x => x.Sequence)
+    .ToList();
+}
+
+
+
+<section class="relative section-spacing solutions-faq-section" aria-labelledby="solutions-faq-heading">
+    <div class="container">
+        <div class="section-title-outer section-title-outer-center solutions-faq-heading">
+            <h2 class="text-h2 title-section reveal-text">
+                @Html.Raw(!string.IsNullOrWhiteSpace(component.DisplayTitle)
+                                ? component.DisplayTitle.CleanParagraphTags()
+                                : component.Title)
+            </h2>
+        </div>
+
+        <div class="solutions-faq-list" data-solutions-faq>
+
+
+            @for (int i = 0; i < faqItems.Count; i++)
+            {
+                var item = faqItems[i];
+                var isOpen = i == 0;
+
+                <div class="solutions-faq-item @(isOpen ? "is-open" : "")">
+
+                    <button type="button" class="solutions-faq-trigger" aria-expanded="@isOpen.ToString().ToLower()">
+
+                        <span class="solutions-faq-q">@item.Title</span>
+
+                        <span class="solutions-faq-icon" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="solutions-faq-panel" role="region">
+                        <div class="solutions-faq-panel-inner">
+
+                            @if (!string.IsNullOrWhiteSpace(item.Intro))
+                            {
+                                <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</section>

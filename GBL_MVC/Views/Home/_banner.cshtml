@@ -1,0 +1,96 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var slides = Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList();
+}
+
+<section class="hero-banner-section">
+  <div class="swiper hero-swiper">
+    <div class="swiper-wrapper">
+
+      @for (var i = 0; i < slides.Count; i++)
+      {
+          var item = slides[i];
+          var alignClass = item.Sequence == 3 ? "slide-copy--left" : "slide-copy--right";
+          var desktopImg = !string.IsNullOrWhiteSpace(item.banner_image_webp) ? item.banner_image_webp : item.Component_Background_image;
+          var mobileImg = !string.IsNullOrWhiteSpace(item.banner_mobile_image) ? item.banner_mobile_image : desktopImg;
+          var titleHtml = !string.IsNullOrWhiteSpace(item.DisplayTitle)
+              ? item.DisplayTitle.CleanParagraphTags()
+              : item.Title;
+
+          <div class="swiper-slide">
+            <div class="slide-media">
+              <picture class="bannerinner-picture">
+                  <source media="(min-width:768px)" srcset="@desktopImg">
+                  <source media="(max-width:767px)" srcset="@mobileImg">
+                  @if (i == 0)
+                  {
+                      <img class="slide-bg" src="@desktopImg" alt="@item.ThumbnailAltText" fetchpriority="high">
+                  }
+                  else
+                  {
+                      <img class="slide-bg" src="@desktopImg" alt="@item.ThumbnailAltText">
+                  }
+              </picture>
+            </div>
+
+            <div class="slide-scrim"></div>
+
+            <div class="container slide-copy @alignClass flex items-center">
+              <div class="slide-content w-full md:w-[52%]">
+
+                @if (!string.IsNullOrWhiteSpace(item.Icon_Image))
+                {
+                    <div class="banner-extra-logo-wrap"><img src="@item.Icon_Image" alt=""></div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(item.Icon_Image2))
+                {
+                    <div class="banner-logo-wrap"><img src="@item.Icon_Image2" alt="@item.Icon_Image2"></div>
+                }
+
+                @if (i == 0)
+                {
+                    <h1 class="text-h1 text-white">@Html.Raw(titleHtml)</h1>
+                }
+                else
+                {
+                    <h2 class="text-h1 text-white">@Html.Raw(titleHtml)</h2>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(item.Intro))
+                {
+                    <p class="hero-para">@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                }
+
+              </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(item.Url))
+            {
+                <div class="outer-hero-button outer-bg-white">
+                  <a class="site-link" href="@item.Url">
+                    @(!string.IsNullOrWhiteSpace(item.Url_Text) ? item.Url_Text : "Read the full story")
+                    <span class="site-link-arrow" aria-hidden="true"><img src="/Assets/images/common-images/button-arrow-icon.svg" alt="" class="w-auto object-cover"></span>
+                  </a>
+                </div>
+            }
+          </div>
+      }
+
+    </div>
+
+    <div class="hero-pag-wrap">
+      <button type="button" class="swiper-button-prev" aria-label="Previous slide">
+        <img src="/Assets/images/common-images/button-arrow-icon.svg" alt="" class="w-auto object-cover" aria-hidden="true">
+      </button>
+      <div class="hero-pagination"></div>
+      <button type="button" class="swiper-button-next" aria-label="Next slide">
+        <img src="/Assets/images/common-images/button-arrow-icon.svg" alt="" class="w-auto object-cover" aria-hidden="true">
+      </button>
+    </div>
+
+  </div>
+</section>

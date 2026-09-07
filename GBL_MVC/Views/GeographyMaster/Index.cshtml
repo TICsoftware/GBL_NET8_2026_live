@@ -1,0 +1,77 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.GeographyMaster>
+@using Core_project_BusinessLogic
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Geography Master";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                          Geography Master List
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<h2>Geography Master List</h2>
+
+
+<a asp-action="AddGeography" class="btn btn-primary mb-3">Add New</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Language</th>
+            <th>Country</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.ID</td>
+        <td>@item.Language_Master_ID</td>
+        <td>@item.Country_Name</td>
+       <td>
+                    @if (item.Status == 1)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+
+        <td>
+            <a asp-action="EditGeography"
+                asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+               class="btn btn-sm btn-outline-secondary">
+               Edit
+            </a>
+
+            @if (item.Status == 1)
+            {
+                <a asp-action="Deactivate"
+                   asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                   class="btn btn-sm btn-outline-danger ms-2">
+                   Deactivate
+                </a>
+            }
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

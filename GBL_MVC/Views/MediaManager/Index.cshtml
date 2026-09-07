@@ -1,0 +1,18 @@
+﻿@model Core_project_BusinessLogic.MediaManagerViewModel
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_media_manager.cshtml";
+    ViewData["Title"] = "Media Manager | TIC CMS";
+}
+
+<title>@ViewData["Title"]</title>
+
+
+<h3>Media Manager</h3>
+
+
+<div id="DivMedia">
+
+@await Html.PartialAsync("media_partial")
+
+</div>
+

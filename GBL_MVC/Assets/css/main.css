@@ -1,0 +1,386 @@
+@import "tailwindcss";
+
+@source "../../../Views/**/*.cshtml";
+@source "../../../Pages/**/*.cshtml";
+@source "../../../wwwroot/**/*.{html,js,ts,jsx,tsx}";
+
+/* -----------------------------------------------
+   FONT FACES
+------------------------------------------------- */
+
+
+@theme{
+  /* ── Font ── */
+  --font-body: "Poppins", sans-serif;
+  --font-heading: "Cormorant Garamond", serif;
+
+  /* ── Font Scale ── */
+--text-h1: clamp(3.75rem, 2rem + 5vw, 5.25rem);     /* 60px → 84px */
+--text-h2: clamp(3.125rem, 1.8rem + 4vw, 4.5rem);      /* 50px → 72px */
+--text-h3: clamp(1.625rem, 1rem + 2vw, 2.125rem);    /* 26px → 34px */
+--text-h4: clamp(1.25rem, 0.9rem + 1vw, 1.75rem); /* 18px → 28px */
+  --text-h5:  clamp(1.125rem, 1.073rem + 0.22vw, 1.25rem); /* 18px → 20px */
+  --text-p:      clamp(1rem, 0.948rem + 0.22vw, 1.125rem);     /* 16px → 18px */
+  --text-small:   clamp(0.875rem, 0.35vw + 0.7rem,  0.875rem); /**14px - 14px**/
+  --text-button:  clamp(1rem,  0.948rem + 0.22vw, 1.125rem);
+  --text-22:     clamp(1.125rem, 1.021rem + 0.44vw, 1.375rem); /* 18px → 22px */
+  --text-12: clamp(0.7rem, 0.65rem + 0.2vw, 0.75rem);
+
+  --text-intro: clamp(1.125rem, 1.021rem + 0.44vw, 1.375rem); /* 18px → 22px */
+ 
+  /* ── Brand Colors ── */
+  --color-primary: #F6F4E6;   /**CREAM**/
+  --color-secondary: #748D6E; /**Green**/
+  --color-third: #FC713C;     /**Orange**/
+  --color-accent: #FC713C;    /**Orange accent — CTA / link-primary**/
+
+  /* Aliases so existing rules (.btn-primary etc.) that reference these
+     names resolve correctly instead of silently falling back to nothing. */
+  --color-cream: #F6F4E6;
+  --color-green: #748D6E;
+  --color-orange: #fc713c;
+  --color-darkcream: #E6DBBD;
+
+  /* ── Motion ── */
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-fast: 260ms;
+  --motion-base: 420ms;
+  --motion-slow: 720ms;
+  --color-third: #FC713C;     /**Orange**/  
+
+
+  /* ── Base Colors / Backgrounds ── */
+  --color-text:  #454545;  /**TEXT GRAY**/
+  --color-text-heading: #1C1918; /**DARK BLACK**/
+  --color-text-dark: #384634; /**dark green**/
+
+   --line: rgba(28,25,24,0.1); 
+}
+
+
+
+
+/* ---------------------------------------
+   FLUID TYPOGRAPHY TOKENS
+--------------------------------------- */
+/* .dark {
+  --color-text-heading:  #ffffff;
+  --color-text-body:     #131313;
+  --color-text-muted:    #9a9a9a;
+  --color-text-mid:      #e5e5e5;
+  --color-surface:       #0f0f0f;
+  --color-surface-alt:   #1a1a1a;
+  --color-border:        rgba(255, 255, 255, 0.12);
+  --color-white:  #ffffff;
+  --bg-light-primary: #555;
+} 
+
+.dark body { background-color: rgb(19, 19, 19);}
+.dark .title-heading-anim {color: #fff;}
+.dark .title-heading-anim .highlight-span {color: #a6a6a6;}
+
+
+.dark p {color: var(--text-white);} */
+
+
+
+
+/* ---------------------------------------
+   OPTIONAL BASE STYLES
+--------------------------------------- */
+p { font-family: var(--font-body); font-size: var(--text-p); margin-bottom: 20px; line-height: 1.5;}
+/* p:first-child { margin-bottom: 0; } */
+p:last-child { margin-bottom: 0; }
+
+/* -----------------------------------------------
+   RESET
+------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+ font-family: var(--font-body); 
+  font-size: 1rem;
+  line-height: 1.25;
+  color: var(--color-text);
+   transition:background-color 0.35s ease,color 0.35s ease;
+   font-weight: 400;
+   background-color: var(--color-primary);
+  }
+
+
+@layer base {
+/* -----------------------------------------------
+   TYPOGRAPHY BASE
+------------------------------------------------- */
+h1{font-weight: 500;}
+h2, h3, h4, h5 {font-weight: 600;}
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-heading) !important;
+  color: var(--color-text-heading);
+  line-height: 1.15;
+}
+
+h1, .text-h1{ font-size: var(--text-h1);}
+h2, .text-h2{ font-size: var(--text-h2); line-height:1 !important;}
+h3, .text-h3{ font-size: var(--text-h3);}
+h4, .text-h4{ font-size: var(--text-h4);}
+h5, .text-h5{ font-size: var(--text-h5);}
+.text-14{ font-size:var(--text-small);}
+
+.poppins{ font-family: var(--font-body);}
+.cormorant{ font-family: var(--font-heading);} 
+
+.bg-darkcream{background:var(--color-darkcream);}
+.bg-green{background:var(--color-green);}
+
+  
+/* -----------------------------------------------
+   LINKS & MEDIA
+------------------------------------------------- */
+a { text-decoration: none; color: inherit;font-size: var(--text-p); }
+button { font-family: inherit; font-size: var(--text-button); cursor: pointer; }
+
+img, picture, video, canvas {
+  display: block;
+  max-width: 100%;
+}
+}
+
+
+/* -----------------------------------------------
+   CUSTOM CONTAINER
+------------------------------------------------- */
+@layer componants  {
+  .container {    
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+       
+  width: 90%;
+  max-width: 1680px;
+  margin-inline: auto; /* centers it */
+}
+
+
+  .container-fluid{padding-left: 1.25rem; padding-right: 1.25rem;}
+  
+}
+
+@layer utilities {  
+  .rounded-lg {border-radius:1.5rem;  }
+
+
+  .text-secondary {color: var(--color-text-secondary);}
+  .bg-light-primary {background-color: var(--bg-light-primary);}
+  .dark .bg-light-primary h3 {color: #fff;}
+
+   .section-spacing {
+    @apply py-10 md:py-15 2xl:py-20;
+  }
+  .section-pt {
+    @apply pt-10 md:pt-15  2xl:pt-20;
+  }
+   .section-pb {
+    @apply pb-10 md:pb-15  2xl:pb-20;
+  }
+/* Hide system cursor on desktop */
+
+
+
+
+/* ------------------------
+    Theme Button
+    Single common class for every CTA button on the site (was split
+    across .btn-primary/.btn-secondary before — consolidated here).
+------------------------*/
+.common-btn {
+    min-height: 44px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    background: var(--color-accent);
+    color: var(--color-cream);
+    padding: 0.75rem 1.5rem;
+    transition:
+        transform var(--motion-fast) var(--ease-premium),
+        box-shadow var(--motion-fast) var(--ease-premium),
+        background-color var(--motion-fast) var(--ease-premium),
+        border-color var(--motion-fast) var(--ease-premium),
+        color var(--motion-fast) var(--ease-premium);
+}
+
+.common-btn:hover,
+.icon-button:hover {
+    transform: translateY(-2px);
+}
+
+.common-btn:hover,
+.common-btn:focus-visible {
+    background: var(--color-green);
+    border-color: var(--color-green);
+    color: var(--color-cream);
+    box-shadow: 0 14px 28px rgb(116 141 110 / 0.24);
+}
+
+.common-btn:active {
+    transform: translateY(0);
+    background: #5f7a64;
+    border-color: #5f7a64;
+}
+
+.common-btn img {
+    transition: transform var(--motion-fast) var(--ease-premium);
+}
+
+.common-btn:hover img,
+.common-btn:focus-visible img {
+    transform: translateX(3px);
+}
+
+.common-btn:focus-visible {
+    outline: 2px solid var(--color-green);
+    outline-offset: 4px;
+}
+
+
+
+/* ------------------------
+    Common CTA link effect
+    Used across "Learn More" / secondary links site-wide (feature cards,
+    playground cards, insight cards, etc.) — lifts slightly and slides
+    the arrow icon on hover/focus, same treatment everywhere.
+------------------------*/
+.link-md {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 14px;
+    font-weight: 500;
+    transition:
+        color var(--motion-fast) var(--ease-premium),
+        transform var(--motion-fast) var(--ease-premium);
+}
+
+.link-md img {
+    transition: transform var(--motion-fast) var(--ease-premium);
+}
+
+.link-md:hover,
+.link-md:focus-visible {
+    transform: translateY(-1px);
+}
+
+.link-md:hover img,
+.link-md:focus-visible img {
+    transform: translateX(3px);
+}
+
+.link-primary { color: var(--color-accent); }
+.link-primary:hover,
+.link-primary:focus-visible { color: var(--color-green); }
+
+.link-dark { color: var(--color-text-heading); }
+.link-dark:hover,
+.link-dark:focus-visible { color: var(--color-green); }
+
+.link-light { color: var(--color-cream); }
+.link-light:hover,
+.link-light:focus-visible { color: var(--color-third); }
+
+.link-md:focus-visible {
+    outline: 2px solid var(--color-green);
+    outline-offset: 4px;
+}
+
+
+
+/* =========================
+   PREMIUM LEFT → RIGHT FILL
+========================= */
+
+
+.btn-slide-fill{
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    transition:
+        transform .45s ease,
+        color .45s ease;
+}
+
+/* animated layer */
+.btn-slide-fill::before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background: linear-gradient( 90deg, #f7e9d5 0%, #fff4e5 45%, #f7e9d5 100% );
+
+    transform: scaleX(0);
+    transform-origin: left;
+
+    transition:
+        transform .7s cubic-bezier(.22,1,.36,1);
+
+    z-index:0;
+}
+
+/* content stays above */
+.btn-slide-fill span,
+.btn-slide-fill img{
+    position:relative;
+    z-index:2;
+
+    transition: all .5s ease;
+}
+
+/* Hover */
+.btn-slide-fill:hover{
+    transform: translateY(-2px);
+}
+
+.btn-slide-fill:hover::before{
+    transform: scaleX(1);
+}
+
+/* text + arrow */
+.btn-slide-fill:hover span{
+    color:#1b1b1b;
+}
+
+.btn-slide-fill:hover img{
+    transform: translateX(8px);
+    /* the arrow icons are baked-in cream/white PNGs — without this they
+       disappear against the light sweep-fill that covers the button on
+       hover. Darken to match the ".btn-slide-fill:hover span" text color. */
+    filter: brightness(0) saturate(100%);
+}
+
+/* press */
+.btn-slide-fill:active{
+    transform: scale(.98);
+}
+
+
+
+
+}
+
+@media (max-width: 992px) {
+  .container { width: 100%;}
+}

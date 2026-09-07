@@ -1,0 +1,82 @@
+﻿@model GBL_MVC.Models.Manage_Model.User_LoginModel
+@{
+   Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+   ViewData["Title"] = "Dashboard";
+   string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+  <div class="page-heading">
+                    <div class="page-title">
+                        <div class="row">
+                            <div class="col-12 col-md-6 order-md-1 order-last">
+                                <h3>Dashboard</h3>
+                                <p class="text-subtitle text-muted">Check dashboard on the page.</p>
+                            </div>
+                            <div class="col-12 col-md-6 order-md-2 order-first">
+                                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">Add Content</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <section class="section content-main">
+
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <div class="card">
+                                      @* <div class="card-body">
+                                      <div class="row">
+                                            <div class="col-12 col-sm-12 col-md-4">
+                                                <div class="list-group" role="tablist">
+                                                    <a class="list-group-item list-group-item-action active" id="list-home-list"
+                                                       data-bs-toggle="list" href="#list-home" role="tab">RHS Master</a>
+                                                    <a class="list-group-item list-group-item-action" id="list-profile-list"
+                                                       data-bs-toggle="list" href="#list-profile" role="tab">RHS Reference Master</a>
+                                                    <a class="list-group-item list-group-item-action" id="list-messages-list"
+                                                       data-bs-toggle="list" href="#list-messages" role="tab">Application Master</a>
+                                                    <a class="list-group-item list-group-item-action" id="list-settings-list"
+                                                       data-bs-toggle="list" href="#list-settings" role="tab">Content</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-md-8 mt-1">
+                                                <div class="tab-content text-justify" id="nav-tabContent">
+                                                    <div class="tab-pane show active bg-light-primary p-4" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                                                        <div class="buttons">
+                                                            <a href="#" class="btn btn-outline-primary"> Add new </a>
+                                                            <a href="#" class="btn btn-outline-primary"> Draft </a>
+                                                            <a href="#" class="btn btn-outline-primary">Published </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane bg-light-primary p-4" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                                                        <div class="buttons">
+                                                            <a href="#" class="btn btn-outline-primary"> Add new </a>
+                                                            <a href="#" class="btn btn-outline-primary"> Draft </a>
+                                                            <a href="#" class="btn btn-outline-primary">Published </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane bg-light-primary p-4" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                                                        <div class="buttons">
+                                                            <a href="#" class="btn btn-outline-primary"> Add new </a>
+                                                            <a href="#" class="btn btn-outline-primary">Published </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane bg-light-primary p-4" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                                                        <div class="buttons">
+                                                            <a href="#" class="btn btn-outline-primary"> Add new </a>
+                                                            <a href="#" class="btn btn-outline-primary"> Draft </a>
+                                                            <a href="#" class="btn btn-outline-primary">Published </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>

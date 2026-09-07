@@ -1,0 +1,31 @@
+@using System.Data
+@{
+    Layout = null;
+    var spotList = ViewBag.Spotlist as DataTable;
+}
+@if (spotList != null && spotList.Rows.Count > 0)
+{
+    <table class="table table-bordered table-striped mb-0">
+        <thead>
+            <tr>
+                <th>Spot Title</th>
+                <th style="width:60px">Seq</th>
+                <th style="width:120px">Type</th>
+            </tr>
+        </thead>
+        <tbody id="sortableBody">
+
+            @foreach (DataRow r in spotList.Rows)
+            {
+                int type = Convert.ToInt32(r["spot_type"]);
+                <tr>
+                    <td>@r["spot_title"]</td>
+                    <td>@r["cont_spot_sequence"]</td>
+
+                    <td>@(type == 1 ? "Dynamic" : "Predefined")</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}

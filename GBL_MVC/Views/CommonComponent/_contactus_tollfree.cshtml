@@ -1,0 +1,91 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var header = Model?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault()
+        ?? Model?.OrderBy(x => x.Sequence).FirstOrDefault();
+
+    var cards = Model?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList() ?? new List<ComponentModel>();
+    if (!cards.Any() && Model != null && header != null)
+    {
+        cards = Model.Where(x => x.GroupId != header.GroupId).OrderBy(x => x.Sequence).ToList();
+    }
+
+    var title = !string.IsNullOrWhiteSpace(header?.DisplayTitle) ? header.DisplayTitle : header?.Title;
+    var timeText = !string.IsNullOrWhiteSpace(header?.Intro)
+        ? header.Intro
+        : (!string.IsNullOrWhiteSpace(header?.Designation) ? header.Designation : header?.Content);
+}
+
+@if (header != null || cards.Any())
+{
+    <section class="relative overflow-hidden section-spacing customerservice-section">
+        <div class="container">
+            <div class="customerservice-inner">
+                @if (header != null)
+                {
+                    <div class="section-title-outer section-title-outer-start">
+                        @if (!string.IsNullOrWhiteSpace(title))
+                        {
+                            <h2 class="text-h2 title-section reveal-text">
+                                @Html.Raw(title.CleanParagraphTags())
+                            </h2>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(timeText))
+                        {
+                            <p class="mt-1 time-txt">@Html.Raw(timeText.CleanParagraphTags())</p>
+                        }
+                    </div>
+                }
+
+                @if (cards.Any())
+                {
+                    <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-4 lg:gap-6 customerservice-grid">
+                        @foreach (var card in cards)
+                        {
+                            var lang = !string.IsNullOrWhiteSpace(card.DisplayTitle) ? card.DisplayTitle : card.Title;
+                            var icon = !string.IsNullOrWhiteSpace(card.Component_Icon_Image)
+                                ? card.Component_Icon_Image
+                                : (!string.IsNullOrWhiteSpace(card.Icon_Image) ? card.Icon_Image : card.ThumbnailImage);
+                            var iconAlt = !string.IsNullOrWhiteSpace(card.ThumbnailAltText)
+                                ? card.ThumbnailAltText
+                                : lang;
+                            var phone = !string.IsNullOrWhiteSpace(card.Url_Text)
+                                ? card.Url_Text
+                                : (!string.IsNullOrWhiteSpace(card.Designation)
+                                    ? card.Designation
+                                    : (!string.IsNullOrWhiteSpace(card.Content) ? card.Content : card.Url));
+                            var telHref = !string.IsNullOrWhiteSpace(card.Url)
+                                ? card.Url
+                                : (!string.IsNullOrWhiteSpace(phone) ? "tel:" + phone.Replace(" ", "") : "#");
+                            if (string.IsNullOrWhiteSpace(lang) && string.IsNullOrWhiteSpace(phone)) { continue; }
+
+                            <div class="customerservice-block aspect-240/192">
+                                @if (!string.IsNullOrWhiteSpace(icon))
+                                {
+                                    <div class="lang-icon">
+                                        <img src="@icon" alt="@iconAlt" class="w-auto object-cover">
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(lang))
+                                {
+                                    <div class="font-bold text-p mt-3">@Html.Raw(lang.CleanParagraphTags())</div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(phone))
+                                {
+                                    <div class="text-p mt-2">
+                                        <a href="tel:@telHref">@Html.Raw(phone.CleanParagraphTags())</a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

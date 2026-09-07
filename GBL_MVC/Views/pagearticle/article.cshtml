@@ -1,0 +1,105 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.PageViewModel
+@{
+    ViewData["Title"] = "Article";
+    var hasContent = Model?.Content != null;
+}
+
+
+
+@section head {
+    @if (hasContent)
+    {
+        <title>@Model.Content.cont_window_title</title>
+
+        <meta content="@Model.Content.cont_metatag" name="keywords" />
+        <meta content="@Model.Content.cont_metadesc" name="description" />
+
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="" />
+        <meta name="twitter:title" content="@Model.Content.ContTitle" />
+        <meta name="twitter:description" content="@Model.Content.cont_metadesc" />
+        <link rel="canonical" href="" />
+
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Priya Cement" />
+        <meta property="og:title" content="@Model.Content.ContTitle" />
+        <meta property="og:description" content="@Model.Content.cont_metadesc" />
+        <meta property="og:url" content="https://www.priyacement.com/" />
+        <meta property="og:image" content="@Model.Content.MastheadImage" />
+
+        <meta itemprop="name" content="Priya Cement" />
+        <meta itemprop="description" content="@Model.Content.cont_metadesc" />
+        <meta itemprop="image" content="@Model.Content.MastheadImage" />
+
+        <!-- Facebook / Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Priya Cement" />
+        <meta property="og:title" content="@Model.Content.ContTitle" />
+        <meta property="og:description" content="@Model.Content.cont_metadesc" />
+        <meta property="og:image" content="@Model.Content.MastheadImage" />
+        <meta property="og:url" content="https://www.priyacement.com/" />
+        @if (!string.IsNullOrWhiteSpace(Model.Content.page_schema))
+        {
+
+            @Html.Raw(Model.Content.page_schema.Replace("<p>", "").Replace("</p>", ""))
+
+        }
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+}
+
+@if (hasContent)
+{
+
+    <section class="relative inside-banner-outer overflow-hidden blank-template-banner">
+        <div class="inside-banner-inner banner-animation relative blank-template-banner-inner">
+
+            <!-- Content (no banner image) -->
+            <div class="innerbanner-caption blank-template-banner-caption">
+                <div class="container">
+                    <div class="max-w-4xl text-left">
+
+                        <h1 class="innerbanner-title innerbanner-title-heading text-h1">
+                            @Html.Raw(Model.Content.ContTitle)
+                        </h1>
+
+                        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                            @Html.Raw(Model.Content.BreadcrumPath)
+                        </nav>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="section-pb section-spacing blank-template-section relative">
+        <div class="container">
+            <div class="blank-template-inner">
+                @Html.Raw(Model.Content.Content)
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section class="section-spacing blank-template-section relative">
+        <div class="container">
+            <div class="blank-template-inner">
+                <p>Content is currently unavailable for this page.</p>
+            </div>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script src="~/Assets/js/blanktemplate-script.js"></script>
+
+}

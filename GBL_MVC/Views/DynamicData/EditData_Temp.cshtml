@@ -1,0 +1,108 @@
+@model List<Core_project_BusinessLogic.Entity.ContextFieldWithValue>
+
+@using System.Text.Json
+@{
+    Layout = null;
+    var reference = ViewBag.Reference;
+    var mode = ViewBag.Mode as string ?? "Block";
+}
+
+<div class="page-heading">
+
+    <h2>
+        @(mode == "Main"
+            ? "Edit Main Component: " + (reference?.Context_Title ?? "Reference")
+            : "Edit Block Component 12: " + (reference?.Context_Title ?? "Reference"))
+    </h2>
+
+    <form id="EditContextDetailsForm_temp"
+          asp-action="EditDataSubmit_temp"
+          method="post"
+          asp-controller="DynamicData">
+
+        <input type="hidden" name="referenceId" value="@reference.ID" />
+        <input type="hidden" name="masterId" value="@reference.Context_Master_ID" />
+        <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
+         <input type="hidden" name="temp_cont_id" value="@ViewBag.temp_cont_id" />
+        <input type="hidden" name="is_block" value="@ViewBag.is_block" />
+        @foreach (var f in Model)
+        {
+            <div class="mb-3">
+
+                <label>@f.name</label>
+
+                @* TEXTBOX *@
+                @if (f.field_type_id == 1)
+                {
+                    <input name="@f.name_key"
+                           value="@f.content"
+                           class="form-control dynamic-field"
+                           data-required="@(f.is_required == 1 ? "true" : "false")"
+                           data-validation="@f.field_validation"
+                           data-message="@f.custom_validation"
+                           data-name="@f.name" />
+                }
+
+                @* DROPDOWN *@
+                else if (f.field_type_id == 2)
+                {
+                    var opts = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(f.field_options))
+                    {
+                        try { opts = JsonSerializer.Deserialize<List<string>>(f.field_options); } catch { }
+                    }
+
+                    <select name="@f.name_key"
+                            class="form-control dynamic-field"
+                            data-required="@(f.is_required == 1 ? "true" : "false")"
+                            data-name="@f.name">
+
+                        <option value="">-- Select --</option>
+
+                        @foreach (var o in opts)
+                        {
+                            <option value="@o" selected="@(o == f.content)">
+                                @o
+                            </option>
+                        }
+                    </select>
+                }
+
+                @* CKEDITOR *@
+                else if (f.field_type_id == 7)
+                {
+                    <textarea name="@f.name_key"
+                              class="form-control editor-full dynamic-field"
+                              data-required="@(f.is_required == 1 ? "true" : "false")"
+                              data-validation="@f.field_validation"
+                              data-message="@f.custom_validation"
+                              data-name="@f.name">@f.content</textarea>
+                }
+
+                @* IMAGE *@
+                else if (f.field_type_id == 8)
+                {
+                    <button type="button" id="btnFile"
+                            class="btn btn-outline-primary select-media"
+                            data-field="@f.name_key">
+                        Change File
+                    </button>
+                   <input type="hidden" name="@($"{f.name_key}_new")" />
+                    <input type="hidden" name="@($"{f.name_key}_existing")" value="@f.File_path" />
+
+                    <img id="img_@f.name_key" src="@f.File_path_name" style="max-height:120px" class="imgPreview" />
+                        <img id="img_@f.name_key" src="@f.File_path_name" style="max-height:120px"   />
+                }
+
+                <input type="hidden" name="@($"{f.name_key}_detail_id")" value="@f.detail_id" />
+
+                <span class="text-danger error-msg"></span>
+
+            </div>
+        }
+
+        <button class="btn btn-success">Update</button>
+    </form>
+</div>
+
+<script src="~/Assets/scripts/dynamic_data_edit_temp.js"></script>

@@ -1,0 +1,133 @@
+@model Core_project_BusinessLogic.Entity.CmsMenu
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Menu";
+}
+
+@using Core_project_BusinessLogic.Entity
+
+
+@{
+    ViewData["Title"] = "Add / Edit Menu";
+}
+
+<h2>Add / Edit Menu Item</h2>
+
+<form asp-action="AddEdit" method="post" class="form-horizontal">
+
+    @Html.HiddenFor(m => m.MenuId)
+
+    <!-- 🔹 Parent Menu -->
+    <div class="form-group">
+        <label>Parent Menu</label>
+        <select asp-for="ParentId" class="form-control">
+            <option value="">Main Menu</option>
+
+            @foreach (var m in ViewBag.ParentMenus)
+            {
+                <option value="@m.MenuId">@m.Title</option>
+            }
+        </select>
+    </div>
+
+    <!-- 🔹 Title -->
+    <div class="form-group">
+        <label>Menu Title *</label>
+        <input asp-for="Title" class="form-control" required />
+    </div>
+
+    <!-- 🔹 URL -->
+    <div class="form-group">
+        <label>Menu URL</label>
+        <input asp-for="Url" class="form-control" placeholder="/about-us" />
+    </div>
+
+    <!-- 🔹 Design Template -->
+    <div class="form-group">
+        <label>Design Template *</label>
+        <select asp-for="TemplateId" class="form-control" required>
+            <option value="">-- Select Template --</option>
+
+            @foreach (var t in ViewBag.Templates)
+            {
+                <option value="@t.TemplateId">
+                    @t.TemplateName
+                </option>
+            }
+        </select>
+    </div>
+
+    <hr />
+
+    <h4>Mega Menu Content (Optional)</h4>
+
+    <!-- 🔹 Header -->
+    <div class="form-group">
+        <label>Header Text</label>
+        <input asp-for="HeaderText" class="form-control" />
+    </div>
+
+    <!-- 🔹 Intro -->
+    <div class="form-group">
+        <label>Intro Text</label>
+        <textarea asp-for="IntroText"
+                  class="form-control"
+                  rows="3"></textarea>
+    </div>
+
+    <!-- 🔹 Image URL -->
+    <div class="form-group">
+        <label>Image URL</label>
+        <input asp-for="ImageUrl" class="form-control" />
+    </div>
+
+    <!-- 🔹 Image Link -->
+    <div class="form-group">
+        <label>Image Link</label>
+        <input asp-for="ImageLink" class="form-control" />
+    </div>
+
+    <!-- 🔹 Image Caption -->
+    <div class="form-group">
+        <label>Image Caption</label>
+        <input asp-for="ImageCaption" class="form-control" />
+    </div>
+
+    <!-- 🔹 Custom HTML -->
+    <div class="form-group">
+        <label>Custom HTML Block</label>
+        <textarea asp-for="CustomHtml"
+                  class="form-control"
+                  rows="5"
+                  placeholder="<div>Any custom content</div>"></textarea>
+    </div>
+
+    <hr />
+
+    <!-- 🔹 Display Order -->
+    <div class="form-group">
+        <label>Display Order</label>
+        <input asp-for="DisplayOrder"
+               type="number"
+               class="form-control" />
+    </div>
+
+    <!-- 🔹 Active -->
+    <div class="form-group">
+        <label>
+            <input asp-for="IsActive" /> Active
+        </label>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">
+        Save Menu
+    </button>
+
+    <a href="/CmsMenuAdmin/List" class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>

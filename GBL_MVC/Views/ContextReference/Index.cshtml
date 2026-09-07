@@ -1,0 +1,193 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContextReference>
+@using Core_project_BusinessLogic;
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    int curPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string search = ViewBag.Search ?? "";
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                           Components References List
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<h2>Components References List</h2>
+
+<form method="get" class="mb-3">
+    <input type="text" name="search" value="@search" class="form-control d-inline w-25" placeholder="Search title..." />
+    <button class="btn btn-secondary ms-2">Search</button>
+</form>
+
+<a asp-action="Add" class="btn btn-primary mb-3">Add New</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Language</th>
+            <th>Components Layout</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th width="400">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Language_Master_ID</td>
+                <td>@item.Context_Master_ID</td>
+                <td>@item.Reference_Title</td>
+                <td>
+                    @if (item.Status == 1) { <span class="badge bg-success">Active</span>; }
+                    else { <span class="badge bg-secondary">Inactive</span>; }
+                </td>
+                <td>
+                    <div class="d-inline-block me-2 mb-1">
+                    <a asp-action="Edit" asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())" class="btn btn-sm btn-outline-secondary">Edit</a></div>
+
+@{
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+@if (!item.HasData)
+{
+    <div class="d-inline-block me-2 mb-1">
+    <!-- No data exists → Show ADD button -->
+    <a asp-controller="DynamicData"
+       asp-action="AddData"
+       asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+         asp-route-returnUrl="@returnUrl"
+       class="btn btn-sm btn-outline-success">
+       Add Data
+    </a>
+    </div>
+}
+else
+{
+    <div class="d-inline-block me-2 mb-1">
+    <!-- Data exists → Show EDIT button -->
+    <a asp-controller="DynamicData"
+       asp-action="EditData"
+       asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+         asp-route-returnUrl="@returnUrl"
+       class="btn btn-sm btn-outline-primary">
+       Edit Data
+    </a>
+    </div>
+}
+
+@* <a target="_blank"
+   href="@Url.Action("Render", "ContextReference", new { encId = CryptoEngine.Encrypt(item.ID.ToString()) })"
+   class="btn btn-sm btn-dark">
+   View Page
+</a> *@
+<div class="d-inline-block me-2 mb-1">
+ <button type="button"
+        class="btn btn-sm btn-outline-primary"
+        onclick="showLayout('@CryptoEngine.Encrypt(item.ID.ToString())')">
+    View Layout
+</button>
+</div>
+
+                    @if (item.Status == 1)
+                    {
+                        <div class="d-inline-block me-2 mb-1">
+                        <a asp-action="Deactivate" asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deactivate?')">Deactivate</a>
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == curPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i, search = search })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@* <div class="modal fade spot-layoutModal" id="layoutModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Context Layout Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="layoutContainer">
+                <!-- html_layout injected here -->
+            </div>
+        </div>
+    </div>
+</div> *@
+
+</div>
+
+
+<div class="modal fade spot-layoutModal" id="layoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg rounded-4 border-0">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold">
+                    Layout Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4" id="layoutContainer">
+                  @* <!-- html_layout injected here --> *@
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer rounded-bottom-4">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+    function showLayout(encId) {
+        fetch('/ContextReference/Render?encId=' + encodeURIComponent(encId))
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('layoutContainer').innerHTML =  data.finalHtml || '<p>No layout defined</p>';
+
+                new bootstrap.Modal(
+                    document.getElementById('layoutModal')
+                ).show();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Failed to load layout');
+            });
+    }
+</script>
+}
+
+

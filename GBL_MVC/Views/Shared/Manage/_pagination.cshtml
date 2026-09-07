@@ -1,0 +1,46 @@
+@model PagedResult
+@{
+    var controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+    var actionName = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<div class="paginationgrid">
+
+    @* Previous *@
+    @if (Model.PageNumber > 1)
+    {
+        @* <a asp-action="@(actionName == "" ? "Index" : actionName)" href="javascript:" 
+           asp-route-pageNumber="@(Model.PageNumber - 1)"
+           asp-route-pageSize="@Model.PageSize">
+            Previous
+        </a> *@
+        <a  href="javascript:" data-page_no="@(Model.PageNumber - 1)" >
+            Previous
+        </a>
+    }
+
+    @* Page numbers *@
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        if (i == Model.PageNumber)
+        {
+            <strong>@i</strong>
+        }
+        else
+        {
+            <a href="javascript:" data-page_no="@i" >
+               @* asp-action="@(actionName == "" ? "Index" :actionName)" *@
+                @i
+            </a>
+        }
+    }
+
+    @* Next *@
+    @if (Model.PageNumber < Model.TotalPages)
+    {
+        <a href="javascript:" data-page_no="@(Model.PageNumber + 1)" >
+           @* asp-action="@(actionName == "" ? "Index" :actionName)" *@
+            Next
+        </a>
+    }
+<input type="hidden" name="page_no" id="page_no" value="@Model.PageNumber" />
+</div>

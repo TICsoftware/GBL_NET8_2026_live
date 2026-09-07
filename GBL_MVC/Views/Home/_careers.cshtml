@@ -1,0 +1,86 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+}
+
+@if (Component != null)
+{
+<section class="home-careers-section section-spacing overflow-hidden relative enlarge-outer-section">
+    <div class="container">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12 items-center">
+            @{
+                var mainImg = !string.IsNullOrWhiteSpace(Component.ComponentThumbnail)
+                    ? Component.ComponentThumbnail
+                    : (!string.IsNullOrWhiteSpace(Component.Component_right_image)
+                        ? Component.Component_right_image
+                        : Component.ThumbnailImage);
+            }
+            @if (!string.IsNullOrWhiteSpace(mainImg))
+            {
+            <div class="lg:col-span-7 rounded-sm parallax-wrap enlarge-wrapper">
+                <img src="@mainImg" alt="@Component.ComponentThumbnailAltText" class="w-full rounded-sm object-cover parallax-img">
+            </div>
+            }
+
+            <div class="lg:col-span-5 rightContent-wrap">
+
+               <div class="section-title-outer section-title-outer-start section-title-md">
+                  <h2 class="text-h2 title-section reveal-text">
+                    @Html.Raw(
+                        !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                            ? Component.DisplayTitle.CleanParagraphTags()
+                            : Component.Title)
+                  </h2>
+                  @if (!string.IsNullOrWhiteSpace(Component.Intro))
+                  {
+                  <p>
+                    @Html.Raw(Component.Intro.CleanParagraphTags())
+                  </p>
+                  }
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Component.Url) || !string.IsNullOrWhiteSpace(Component.component_Url2))
+                {
+                <div class="flex flex-wrap gap-10 mt-10">
+
+                    @if (!string.IsNullOrWhiteSpace(Component.Url))
+                    {
+                        <div class="outer-btn-wrap">
+                          <a class="site-link" href="@Component.Url">
+                            @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "Our Culture")
+                            <span class="site-link-arrow" aria-hidden="true">
+                              <img src="@(string.IsNullOrWhiteSpace(Component.Icon_Image) ? "/Assets/images/common-images/button-arrow-icon.svg" : Component.Icon_Image)" alt="" class="w-auto object-cover">
+                            </span>
+                          </a>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Component.component_Url2))
+                    {
+                        <div class="outer-btn-wrap">
+                          <a class="site-link" href="@Component.component_Url2" target="_blank">
+                            @(!string.IsNullOrWhiteSpace(Component.component_Url_Text2) ? Component.component_Url_Text2 : "Explore openings")
+                            <span class="site-link-arrow" aria-hidden="true">
+                              <img src="@(string.IsNullOrWhiteSpace(Component.Icon_Image2) ? "/Assets/images/common-images/button-arrow-icon.svg" : Component.Icon_Image2)" alt="" class="w-auto object-cover">
+                            </span>
+                          </a>
+                        </div>
+                    }
+
+                </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+}

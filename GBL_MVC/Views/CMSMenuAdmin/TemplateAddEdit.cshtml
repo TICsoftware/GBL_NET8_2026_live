@@ -1,0 +1,61 @@
+@model Core_project_BusinessLogic.Entity.CmsMenuTemplate
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Menu";
+}
+
+@using Core_project_BusinessLogic.Entity
+
+@{
+    ViewData["Title"] = "Add / Edit Menu Template";
+}
+
+<h2>Add / Edit Menu Template</h2>
+<form method="post">
+
+<input type="hidden" asp-for="TemplateId"/>
+
+<div class="form-group">
+
+<label>Template Name</label>
+<input asp-for="TemplateName"
+class="form-control"/>
+
+</div>
+
+<div class="form-group">
+
+<label>Template HTML</label>
+
+<textarea asp-for="TemplateHtml"
+rows="12"
+class="form-control"></textarea>
+
+</div>
+
+<div class="form-group">
+
+<label>Preview Image</label>
+
+<input asp-for="PreviewImage"
+class="form-control"/>
+
+</div>
+
+<div class="form-group">
+
+<label>Active</label>
+
+<input type="checkbox"
+asp-for="IsActive"/>
+
+</div>
+
+<br/>
+
+<button class="btn btn-success">
+Save Template
+</button>
+
+</form>

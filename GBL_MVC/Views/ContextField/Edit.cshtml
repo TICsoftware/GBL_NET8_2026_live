@@ -1,0 +1,39 @@
+@model Core_project_BusinessLogic.Entity.ContextField
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Edit Components Field";
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                          Edit Components Field
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+ </div>
+<h2 class="mb-3">Edit Components Field</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.id)
+
+    <partial name="_ContextFieldForm" model="Model" />
+
+    <button type="submit" class="btn btn-success cms-btn-custom js-prepare-json">Update</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary ms-2 cms-btnsecondary-custom">Cancel</a>
+}
+
+@section Scripts {
+    <script src="~/js/contextfields.js"></script>
+    <script src="~/Assets/scripts/contextfield_form.js"></script>
+}

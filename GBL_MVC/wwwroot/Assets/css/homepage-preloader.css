@@ -1,0 +1,199 @@
+/* ══════════════════════════════
+   SITE PRELOADER
+   Lion line-draw while loading; wordmark stays fully colored.
+   Then both fly to the header logo.
+══════════════════════════════ */
+
+html.site-preloader-pending,
+html.site-preloader-lock {
+  overflow-y: scroll !important;
+  overscroll-behavior: none;
+}
+
+html.site-preloader-pending body,
+html.site-preloader-lock body,
+html.site-preloader-exiting body {
+  overflow: hidden !important;
+  height: 100% !important;
+  overscroll-behavior: none;
+  touch-action: none;
+  background: #f5f5f5 !important;
+}
+
+#sitePreloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: #f5f5f5;
+}
+
+#sitePreloader.is-traveling,
+html.site-preloader-travel #sitePreloader {
+  background: transparent !important;
+  background-color: transparent !important;
+  pointer-events: none !important;
+}
+
+/* Progress + logos visible from first paint */
+#sitePreloader .site-preloader__logo-wrap,
+#sitePreloader .site-preloader__wordmark,
+#sitePreloader .site-preloader__progress {
+  opacity: 1;
+  visibility: visible;
+}
+
+.site-preloader__logo-wrap {
+  position: relative;
+  width: 100%;
+  max-width: min(42vw, 650px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.site-preloader__logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  line-height: 0;
+}
+
+.site-preloader__logo img,
+.site-preloader__wordmark img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.site-preloader__logo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.site-preloader__logo svg path {
+  fill: none !important;
+  stroke: #ed1c24;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.site-preloader__logo.is-filled svg path {
+  fill: #ed1c24 !important;
+  stroke: none;
+}
+
+.site-preloader__wordmark {
+  display: block;
+  width: 100%;
+  max-width: min(42vw, 240px);
+  margin: 0 auto;
+  line-height: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.site-preloader__wordmark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.site-preloader__wordmark svg path {
+  stroke: none;
+}
+
+.site-preloader__logo.is-flying {
+  position: fixed;
+  z-index: 10550;
+  margin: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-origin: 0 0;
+}
+
+.site-preloader__logo.is-flying svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-preloader__wordmark.is-flying {
+  position: fixed;
+  z-index: 10551;
+  margin: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-origin: 0 0;
+}
+
+.site-preloader__wordmark.is-flying svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-preloader__progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 200px;
+  max-width: 60vw;
+  margin-top: 4px;
+}
+
+.site-preloader__bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.site-preloader__bar-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: #ed1c24;
+  border-radius: inherit;
+}
+
+.site-preloader__counter {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.65);
+  font-variant-numeric: tabular-nums;
+}
+
+.site-preloader__counter span {
+  opacity: 0.6;
+  margin-left: 1px;
+}
+
+@media (max-width: 767px) {
+  #sitePreloader {
+    gap: 22px;
+  }
+
+  .site-preloader__logo-wrap {
+    max-width: min(58vw, 220px);
+  }
+
+  .site-preloader__wordmark {
+    max-width: min(64vw, 200px);
+  }
+}

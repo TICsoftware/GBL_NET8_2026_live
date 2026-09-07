@@ -1,0 +1,226 @@
+@using System.Runtime.Serialization
+@model CMS_pages
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+    ViewData["Title"] = "Edit Content";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+    string encrypt_reprocess_id= string.Empty;
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row justify-content-between">
+            <div class="col-12 col-md-6 order-md-1 order-first">
+                <h3>
+                    Manage Published Content</h3>
+
+            </div>
+            <div class="col-12 col-md-3 order-md-2 order-last">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                    <select class="form-select" id="inputGroupSelect01">
+                        <option selected="">Select...</option>
+                        <option value="1">Add new </option>
+                        <option value="2">Draft</option>
+                        <option value="3">Published</option>
+                        <option value="3">In-Process</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="section content-main">
+    @using (Html.BeginForm("RepublishedList", "EditContent" ,FormMethod.Post, new {  id = "RepublishedListForm", name="RepublishedListForm" , enctype = "multipart/form-data" , @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+       <input type="hidden" id="mode" name="mode" value="postform" />
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">List Republished Content</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <a asp-action="Add" class="btn btn-primary mb-3">Add New </a>                        
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+                       <div class="col-md-3">
+                            <!-- Language -->
+                            <div class="form-group mb-3">
+                                <label for="ddLanguage" class="form-label">Language</label>
+                                @Html.DropDownListFor(model => model.language_id, Model.Languages , new { id = "ddLanguage", @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.language_id, "", new { @class = "text-danger" })
+                            </div> 
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Geography -->
+                            <div class="form-group mb-3">
+                                <label for="ddGeography" class="form-label">Geography </label> 
+                                @Html.DropDownListFor(model => model.Geography_ID,
+                                    Model.Geographies , new { id = "ddGeography", @class = "form-select" })
+                                    @Html.ValidationMessageFor(model => model.Geography_ID, "", new { @class = "text-danger" })
+                                                      
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Title -->
+                            <div class="form-group mb-3">
+                                <label for="searchquery" class="form-label">Enter keywords </label> 
+                                @Html.TextBoxFor(model => model.searchquery, new { @class = "form-control", placeholder = "Enter title" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">Sections </label> 
+                                @Html.DropDownListFor(model => model.section_id,
+                                Model.Sections , new { id = "ddSection", @class = "form-select" })
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">&nbsp; </label> 
+                                @Html.DropDownListFor(model => model.subSection_id,
+                                Model.subSections , new { id = "ddsubSection", @class = "form-select" })
+                            </div>
+                        </div>
+                         <div class="col-12 col-md-12 text-center">
+                            <input type="submit" class="btn btn-primary mb-3" value="Search" /> 
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <h2>Sections</h2>  
+                          <input type="hidden" id="page_no_sect" name="page_no_sect" value="" />              
+                            @if (Model.sections_list != null)
+                            {
+                              
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Parent title</th>
+                                            <th>Language</th>
+                                            <th>Created date</th>
+                                            <th>Updated Date</th> 
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        @foreach (var item in Model.sections_list)
+                                        { 
+                                            encrypt_reprocess_id=Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Reprocess_Id.ToString());
+                                            <tr class="js-pagination-section-item">
+                                                <td>@item.Title</td>
+                                                <td>@item.Parent_title</td>
+                                                <td>@(item.Language)</td>
+                                                <td>@item.Created_date.ToString("dd-MMM-yyyy")</td>
+                                                <td>@(item.Updated_date == null ? "" : item.Updated_date?.ToString("dd-MMM-yyyy"))</td>
+                                               
+                                                <td>
+                                                    <a asp-action="EditReprocessed"
+                                                        asp-route-Id="@encrypt_reprocess_id"
+                                                        class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                    <a href="#"
+                                                        data-encId="@encrypt_reprocess_id"
+                                                        class="btn btn-sm btn-outline-secondary publish_reprocess_content_List">Publish</a>
+
+                                                    <a  href="#" data-encId="@encrypt_reprocess_id" data-contenttype="section"
+                                                        class="btn btn-sm btn-outline-danger ms-2 reprocessed-delete-content">Delete</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <nav>
+                                    <ul class="pagination justify-content-center mt-4 js-pagination-section"></ul>
+                                </nav>
+                               
+                            }
+                            else
+                            {
+                                <p>
+                                    No record found
+                                </p>
+                            }
+                    </div>
+                    <div class="row">
+                        <h2>Articles</h2>    
+                         <input type="hidden" id="page_no_art" name="page_no_art" value="" />            
+                        @if (Model.articles_list != null)
+                        {
+                            <table class="table table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Parent title</th>
+                                        <th>Language</th>
+                                        <th>Created date</th>
+                                        <th>Updated Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    @foreach (var item in Model.articles_list)
+                                    {
+                                        encrypt_reprocess_id=Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Reprocess_Id.ToString());
+                                        <tr class="js-pagination-article-item">
+                                            <td>@item.Title</td>
+                                            <td>@item.Parent_title</td>
+                                            <td>@(item.Language)</td>
+                                            <td>@item.Created_date.ToString("dd-MMM-yyyy")</td>
+                                            <td>@(item.Updated_date == null ? "" : item.Updated_date?.ToString("dd-MMM-yyyy"))</td>                                          
+                                            <td>
+                                                <a asp-action="EditReprocessed"
+                                                        asp-route-Id="@encrypt_reprocess_id"
+                                                        class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                <a href="#"
+                                                        data-encId="@encrypt_reprocess_id"
+                                                        class="btn btn-sm btn-outline-secondary publish_reprocess_content_List">Publish</a>
+                                                <a  href="#" data-encId="@encrypt_reprocess_id" data-contenttype="article"
+                                                    class="btn btn-sm btn-outline-danger ms-2 reprocessed-delete-content">Delete</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center mt-4 js-pagination-article"></ul>
+                            </nav>
+                        }
+                        else
+                        {
+                            <p>
+                                No record found
+                            </p>
+                        }
+                        <input type="hidden" id="PublishcontentreprocessId" name="PublishcontentreprocessId" />
+                        <input type="submit" value="Publish" name="Command" id="btnsubmit" class="d-none" />
+                        <input type="submit" value="Delete" name="Command" id="btndelete" class="d-none" />
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>  
+    }
+    </section>
+</div>
+
+@section Scripts {
+    <script src="~/Assets/scripts/jquery_pagination.js" type="module"></script>
+    <script src="~/Assets/scripts/manage_reprocess_content.js" type="module"></script>
+    @if (ViewBag.alert_message != null)
+    {
+        <div id="edit-content-alert" class="d-none" data-message="@ViewBag.alert_message"></div>
+        <script src="~/Assets/scripts/edit_content_alert.js"></script>
+    }
+}

@@ -1,0 +1,70 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var header = Model?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var rows = Model?
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList() ?? new List<ComponentModel>();
+
+    var sectionTitle = !string.IsNullOrWhiteSpace(header?.DisplayTitle)
+        ? header.DisplayTitle
+        : (!string.IsNullOrWhiteSpace(header?.Section_title) ? header.Section_title : header?.Title);
+
+    var htmlTable = header?.Content;
+}
+
+@if (header != null || rows.Any())
+{
+    <section class="section-spacing chemicalproperties-section">
+        <div class="container">
+            @if (!string.IsNullOrWhiteSpace(sectionTitle))
+            {
+                <h3 class="text-h4">@Html.Raw(sectionTitle.CleanParagraphTags())</h3>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(htmlTable) && htmlTable.Contains("<table", StringComparison.OrdinalIgnoreCase))
+            {
+                <div class="table-scroll mt-6" data-table-scroll>
+                    <div class="table-scroll-x">
+                        @Html.Raw(htmlTable)
+                    </div>
+                </div>
+            }
+            else if (rows.Any())
+            {
+                <div class="table-scroll mt-6" data-table-scroll>
+                    <div class="table-scroll-x">
+                        <table class="spec-table">
+                            <thead>
+                                <tr class="bg-brand-row">
+                                    <th class="w-[30%]">Parameter</th>
+                                    <th class="w-[34%]">What this measures</th>
+                                    <th class="w-[19%]">IS 269:2015<br />requirement</th>
+                                    <th class="w-[17%]">Priya Cement<br />test result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in rows)
+                                {
+                                    <tr class="@row.bg_class">
+                                        <td>@Html.Raw((!string.IsNullOrWhiteSpace(row.Title) ? row.Title : row.DisplayTitle).CleanParagraphTags())</td>
+                                        <td>@Html.Raw(row.Intro.CleanParagraphTags())</td>
+                                        <td>@Html.Raw(row.Content.CleanParagraphTags())</td>
+                                        <td>@Html.Raw((!string.IsNullOrWhiteSpace(row.Designation) ? row.Designation : row.HmpgIntro).CleanParagraphTags())</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}

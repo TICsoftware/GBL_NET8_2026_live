@@ -1,0 +1,100 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContextField>
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = " Components Field List";
+    int curPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                          Components Field List
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+ </div>
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+@if (TempData["msg"] != null)
+{
+    <div class="alert alert-success">@TempData["msg"]</div>
+}
+
+<a asp-action="Add" class="btn btn-primary mb-3">
+  Add New
+</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Field Name</th>
+            <th>Key</th>
+            <th>Type</th>
+            <th>Order</th>
+            <th>Status</th>
+            <th width="300">Actions</th>
+        </tr>
+    </thead>
+ @using Core_project_BusinessLogic
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.id</td>
+                <td>@item.name</td>
+                <td>@item.name_key</td>
+                <td>@item.field_type_id</td>
+                <td>@item.order_id</td>
+                <td>
+                    @if (item.status == 1)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-Id="@CryptoEngine.Encrypt(item.id.ToString())" 
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                       
+
+                    @if (item.status == 1)
+                    {
+                        <a asp-action="Deactivate" asp-route-Id="@CryptoEngine.Encrypt(item.id.ToString())" 
+                           class="btn btn-sm btn-outline-danger ms-2 js-confirm-deactivate">Deactivate</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == curPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script src="~/Assets/scripts/contextfield_index.js"></script>
+}

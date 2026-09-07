@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="shortcut icon" href="/Assets/compiled/svg/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/Assets/compiled/css/app.css">
+    <link rel="stylesheet" href="/Assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="/Assets/compiled/css/custom-app.css">
+
+
+    <!-- Page style -->
+    <link rel="stylesheet" href="/Assets/extensions/flatpickr/flatpickr.min.css">
+
+    @RenderSection("head", required: false)
+
+</head>
+
+<body>
+
+
+    <div id="app">
+
+        @Html.Partial("~/Views/Shared/Manage/_Layout_sidebar.cshtml")
+
+
+        <div id="main" class='layout-navbar navbar-fixed'>
+
+
+            @Html.Partial("~/Views/Shared/Manage/_Layout_header.cshtml")
+
+            <div id="main-content">
+
+                <section class="section content-main">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <div class="card">
+
+                                <div class="card-body">
+                                    @RenderBody()
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            @Html.Partial("~/Views/Shared/Manage/_Layout_footer.cshtml")
+
+
+        </div>
+    </div>
+
+
+
+    <script src="/Assets/static/js/components/dark.js"></script>
+    <script src="/Assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/Assets/compiled/js/app.js"></script>
+
+    <!-- Page Scripts -->
+    <script src="/Assets/extensions/flatpickr/flatpickr.min.js"></script>
+    <script src="/Assets/static/js/pages/date-picker.js"></script>
+    @* <script defer type="text/javascript" src="/Assets/compiled/js/jquery-3.7.1.min.js"></script>  *@
+    <script src="/Assets/compiled/js/custom-app.js"></script>
+    <script src="/Assets/scripts/jquery-3.6.0.min.js"></script>
+
+    <script src="/Assets/scripts/jquery.validate.min.js"></script>
+    <script src="/Assets/scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <link rel="stylesheet" href="/Assets/css/cropper.min.css" />
+    <script src="/Assets/scripts/cropper.min.js"></script>
+    <link rel="stylesheet" href="/Assets/css/media-manager.css" />
+    <script src="/Assets/scripts/media-manager.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

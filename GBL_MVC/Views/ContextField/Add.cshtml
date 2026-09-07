@@ -1,0 +1,40 @@
+@model Core_project_BusinessLogic.Entity.ContextField
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Add Components Field";
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                          Add Components Field
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+ </div>
+<h2 class="mb-3">Add Components Field</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contextFieldForm" }))
+{
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+    <partial name="_ContextFieldForm" model="Model" />
+
+    <button type="submit" class="btn btn-primary cms-btn-custom js-prepare-json">Save</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary ms-2 cms-btnsecondary-custom">Cancel</a>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/contextfields.js"></script>
+    <script src="~/Assets/scripts/contextfield_form.js"></script>
+    <script src="~/Assets/scripts/contextfield_validation.js"></script>
+}

@@ -1,0 +1,121 @@
+@using System.Runtime.Serialization
+@model CMS_pages
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+    ViewData["Title"] = "Edit Content";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row justify-content-between">
+            <div class="col-12 col-md-6 order-md-1 order-first">
+                <h3>Published Content</h3>
+
+            </div>
+            <div class="col-12 col-md-3 order-md-2 order-last">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                    <select class="form-select" id="inputGroupSelect01">
+                        <option selected="">Select...</option>
+                        <option value="1">Add new </option>
+                        <option value="2">Draft</option>
+                        <option value="3">Published</option>
+                        <option value="3">In-Process</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="section content-main">
+    @using (Html.BeginForm("List", "EditContent" ,FormMethod.Post, new { id = "PublishedContentForm", name="PublishedContentForm" , enctype = "multipart/form-data" , @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+       <input type="hidden" id="mode" name="mode" value="postform" />
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">List Content</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row"> 
+                       <div class="col-md-3">
+                            <!-- Language -->
+                            <div class="form-group mb-3">
+                                <label for="ddLanguage" class="form-label">Language</label>
+                                @Html.DropDownListFor(model => model.language_id, Model.Languages , new { id = "ddLanguage", @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.language_id, "", new { @class = "text-danger" })
+                            </div> 
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Geography -->
+                            <div class="form-group mb-3">
+                                <label for="ddGeography" class="form-label">Geography </label> 
+                                @Html.DropDownListFor(model => model.Geography_ID,
+                                    Model.Geographies , new { id = "ddGeography", @class = "form-select" })
+                                    @Html.ValidationMessageFor(model => model.Geography_ID, "", new { @class = "text-danger" })
+                                                      
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Title -->
+                            <div class="form-group mb-3">
+                                <label for="searchquery" class="form-label">Enter keywords </label> 
+                                @Html.TextBoxFor(model => model.searchquery, new { @class = "form-control", placeholder = "Enter title" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">Sections </label> 
+                                @Html.DropDownListFor(model => model.section_id,
+                                Model.Sections , new { id = "ddSections", @class = "form-select" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">&nbsp; </label> 
+                                @Html.DropDownListFor(model => model.subSection_id,
+                                Model.subSections , new { id = "ddSubSections", @class = "form-select" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group mb-3">
+                                <label for="ddSection" class="form-label">Content type </label> 
+                                @Html.DropDownListFor(model => model.Content_Type_ID,
+                               new List<SelectListItem>
+                                {                                    
+                                    new SelectListItem { Text = "Sections", Value = "1" },
+                                    new SelectListItem { Text = "Common Article", Value = "2" },
+                                    new SelectListItem { Text = "Related Article", Value = "3" },
+                                } , new { id = "ddContent_Type_ID", @class = "form-select" })
+                            </div>
+                        </div>
+                         <div class="col-12 col-md-12 text-center">
+                            <input type="button" class="btn btn-primary mb-3" value="Search" id="btnsearchpublishedlist" /> 
+                            
+                        </div>
+                        
+                    </div>
+                    
+                     
+                </div>
+            </div>
+        </div> 
+    </div>  
+    <div  id="divDisplaySections" class="row">
+
+    </div>
+    }
+    </section>
+</div>
+
+@section Scripts {
+     <script src="~/Assets/scripts/CMS_paging.js" type="module"></script>
+    @if (ViewBag.alert_message != null)
+    {
+        <div id="edit-content-alert" class="d-none" data-message="@ViewBag.alert_message"></div>
+        <script src="~/Assets/scripts/edit_content_alert.js"></script>
+    }
+}

@@ -1,0 +1,54 @@
+@using GBL_MVC.Models.Manage_Model
+@model CounterCardViewModel
+@{
+    var collapseId = "collapse_" + Guid.NewGuid().ToString("N");
+    var headingId = "heading_" + Guid.NewGuid().ToString("N");
+}
+
+<div class="accordion-item counter-card mb-2">
+
+    <h2 class="accordion-header d-flex align-items-center" id="@headingId">
+
+        <button class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#@collapseId"
+                aria-expanded="false"
+                aria-controls="@collapseId">
+
+            <span class="drag-handle me-2" style="cursor:move;">☰</span>
+
+            @(Model.Title ?? "Block")
+
+        </button>
+
+        <button type="button"
+                class="btn btn-danger btn-sm ms-2 remove-card">
+            ✖
+        </button>
+
+    </h2>
+
+    <div id="@collapseId"
+         class="accordion-collapse collapse"
+         aria-labelledby="@headingId"
+         data-bs-parent="#counterContainer">
+
+        <div class="accordion-body">
+
+            <input type="hidden" asp-for="DisplayOrder" />
+
+            <div class="form-group mb-2">
+                <label>Title</label>
+                <input asp-for="Title" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Value</label>
+                <input asp-for="Value" class="form-control" />
+            </div>
+
+        </div>
+    </div>
+
+</div>

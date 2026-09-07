@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+ <ItemGroup>
+    <ProjectReference Include="..\Core_project_BusinessLogic\Core_project_BusinessLogic.csproj" />
+    <ProjectReference Include="..\GBL_BusinessLogic\GBL_BusinessLogic.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.30" />
+    <PackageReference Include="Microsoft.Extensions.COnfiguration" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.84.1" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Otp.NET" Version="1.4.1" />
+    <PackageReference Include="QRCoder" Version="1.8.0" />
+    <PackageReference Include="SimpleBase" Version="5.6.0" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <Optimize>false</Optimize>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <!--
+    Tailwind CSS integration.
+    Dev workflow stays manual (npm run dev:css in watch mode, in its own terminal,
+    alongside dotnet watch run) so hot reload isn't slowed by rebuilding CSS on every save.
+    For Release builds / publish, compile Tailwind automatically so wwwroot/dist/site.css
+    is never stale or missing in a deployed build.
+  -->
+  <Target Name="TailwindRestoreNpm" BeforeTargets="TailwindBuildCss" Condition="!Exists('$(MSBuildProjectDirectory)/node_modules') AND '$(SkipTailwindBuild)' != 'true'">
+    <Exec Command="npm ci" Condition="Exists('$(MSBuildProjectDirectory)/package-lock.json')" WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <Exec Command="npm install" Condition="!Exists('$(MSBuildProjectDirectory)/package-lock.json')" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+  <Target Name="TailwindBuildCss" BeforeTargets="Publish" Condition="'$(Configuration)'=='Release' AND '$(SkipTailwindBuild)' != 'true'">
+    <Exec Command="npm run build:css" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+</Project>

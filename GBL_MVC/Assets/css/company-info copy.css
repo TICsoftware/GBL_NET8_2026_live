@@ -1,0 +1,203 @@
+
+
+/* ==================== COMPANY DETAILS SECTION ==================== */
+
+
+.company-details-section {
+    background-color: #F6F4E6;
+}
+.info-label{
+     font-family: "Balkist", serif;
+}
+
+.company-details-intro {
+    font-size: 1.375rem;
+    color: #454545;
+    font-weight: 400;
+
+    margin: 0 auto;
+    letter-spacing: 0.2px;
+}
+
+.info-card {
+    background-color: var(--color-cream);
+    border-radius: 28px;
+    padding: 2.25rem 2.25rem 2.5rem;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+/* .info-card-body , .policy-list{
+    padding-top: 1.5rem;
+} */
+
+
+.info-card-title--italic {
+    font-family: var(--font-heading);
+    color: var(--color-green);
+    font-style: italic;
+}
+
+.info-card-title--inline {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+.info-card-title__accent {
+    font-family: var(--font-heading);
+    font-style: italic;
+      color: var(--color-green);
+}
+
+.info-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.info-block--inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-label {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+}
+
+.info-label--inline {
+    margin-bottom: 0;
+}
+
+.info-text {
+    
+    color: #444;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.info-value {
+   font-family:var(--font-body);
+   color: var(--color-text);
+   font-size: var(--text-p);
+   font-weight: 400;
+}
+
+.info-value--link {
+    color: var(--color-green);
+    text-decoration: underline;
+    font-size: var(--text-p);
+}
+
+.info-icon,
+.policy-icon {
+      color: var(--color-green);
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.icon-sm {
+    width: 100%;
+    height: 100%;
+
+}
+
+.info-card-leaf {
+ 
+    right: 15%;
+    top: 42%;
+    opacity: 0.85;
+}
+
+/* Policies list */
+.policy-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.policy-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.policy-item .policy-icon {
+    margin-top: 0.15rem;
+}
+
+/* Annual Return Card */
+.annual-return-card {
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 1.75rem 2.25rem;
+}
+
+.annual-return-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+}
+
+
+.policy-link {
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
+   text-decoration: none;
+   color: inherit;
+}
+.policy-link:hover p {
+   text-decoration: underline;
+}
+.icon-md{
+    width: 40px;
+    height: 40PX;
+}
+
+
+.info-card {
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+   transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.info-card:hover {
+   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+   transform: translateY(-2px);
+}
+.annual-return-card {
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.annual-return-card:hover {
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+   transform: translateY(-3px);
+}
+/* Responsive */
+@media (max-width: 1023px) {
+    .info-card-leaf {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .company-details-intro {
+        font-size: 0.9rem;
+        padding: 0 1rem;
+    }
+
+    .info-card {
+        padding: 1.75rem 1.5rem 2rem;
+        border-radius: 20px;
+    }
+
+
+
+    .grid.lg\:grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+

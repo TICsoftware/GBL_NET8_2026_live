@@ -1,0 +1,162 @@
+@model Core_project_BusinessLogic.Entity.ContextField
+
+<div class="row">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-md-6">
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.name)
+            @Html.TextBoxFor(m => m.name, new { @class="form-control" })
+            @Html.ValidationMessageFor(m => m.name)
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.name_key)
+            @Html.TextBoxFor(m => m.name_key, new { @class="form-control" })
+            @Html.ValidationMessageFor(m => m.name_key, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.Label("Field Type")
+            @Html.DropDownListFor(m => m.field_type_id,
+                new List<SelectListItem>
+                {
+                    new("Textbox", "1"),
+                    new("Dropdown", "2"),
+                    new("Checkbox Group", "3"),
+                    new("Radio Button", "4"),
+                    new("Date Picker", "5"),
+                    new("Textarea", "6"),
+                    new("HTML Editor", "7"),
+                    new("Image Upload", "8")
+                },
+                "Select Field Type",
+                new { @class="form-control", id="field_type_id" })
+            @Html.ValidationMessageFor(m => m.field_type_id, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.order_id)
+            @Html.TextBoxFor(m => m.order_id, new { @class="form-control", type="number" })
+            @Html.ValidationMessageFor(m => m.order_id, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.Label("Required?")
+            @Html.DropDownListFor(m => m.is_required,
+                new List<SelectListItem>
+                {
+                    new("Yes", "1"),
+                    new("No", "0")
+                },
+                new { @class="form-control" })
+            @Html.ValidationMessageFor(m => m.is_required, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.Label("Status")
+            @Html.DropDownListFor(m => m.status,
+                new List<SelectListItem>
+                {
+                    new("Active", "1"),
+                    new("Inactive", "0")
+                },
+                new { @class="form-control" })
+            @Html.ValidationMessageFor(m => m.status, "", new { @class = "text-danger" })
+        </div>
+<div class="mb-3">
+    @Html.Label("Field Category")
+    @Html.DropDownListFor(m => m.is_block,
+        new List<SelectListItem>
+        {
+            new("Main Component Field", "0"),
+            new("Block Field (Repeatable)", "1")
+        },
+        new { @class="form-control" })
+    @Html.ValidationMessageFor(m => m.is_block, "", new { @class = "text-danger" })
+</div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-6">
+<div class="mb-3">
+    @Html.Label("Field Options (JSON)")
+    @Html.TextAreaFor(m => m.field_options, new { @class = "form-control", rows = 4 })
+    <small class="text-muted">
+        Example for Image Upload: <br />
+        {
+            "allowed_types": ["jpg","png","webp"],
+            "max_size_kb": 2048,
+            "multiple": false
+        }
+    </small>
+</div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.field_validation)
+            @Html.TextBoxFor(m => m.field_validation, new { @class="form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.validation_script)
+            @Html.TextBoxFor(m => m.validation_script, new { @class="form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.custom_validation) 
+            @Html.TextBoxFor(m => m.custom_validation, new { @class="form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.place_holder)
+            @Html.TextBoxFor(m => m.place_holder, new { @class="form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.help_text)
+            @Html.TextBoxFor(m => m.help_text, new { @class="form-control" })
+        </div>
+
+    </div>
+</div>
+
+<!-- ==========================
+     DROPDOWN / CHECKBOX / RADIO OPTIONS
+     ========================== -->
+<div id="optionsBuilder" class="border p-3 mb-3" style="display:none;">
+    <h5>Options</h5>
+
+    <table class="table table-bordered" id="optionsTable">
+        <thead>
+            <tr>
+                <th>Label</th>
+                <th>Value</th>
+                <th style="width: 50px;">Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary js-add-option">Add Option</button>
+
+    @Html.HiddenFor(m => m.field_options, new { id="field_options" })
+</div>
+
+<!-- ==========================
+     IMAGE CONFIG BOX
+     ========================== -->
+<div id="imageConfigBox" class="border p-3 mb-3" style="display:none;">
+    <h5>Image Upload Settings</h5>
+
+    <label>Allowed Extensions</label>
+    <input type="text" id="img_allowed" class="form-control" placeholder="jpg,png,jpeg" />
+
+    <label class="mt-2">Max Size (KB)</label>
+    <input type="number" id="img_maxsize" class="form-control" placeholder="2048" />
+
+    <label class="mt-2">Allow Multiple Upload?</label>
+    <select id="img_multiple" class="form-control">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+    </select>
+</div>

@@ -1,0 +1,266 @@
+@model List<Core_project_BusinessLogic.Entity.ContextFieldWithValue>
+
+@using System.Text.Json
+@{
+    Layout = null;
+    var reference = ViewBag.Reference;
+    var encId = ViewBag.EncId as string;
+    var mode = ViewBag.Mode as string ?? "Block";
+}
+
+<div class="page-heading">
+
+    <h2>
+        @if (mode == "Main")
+        {
+            <h2>Edit Main Component: @(reference?.Context_Title ?? "Reference")</h2>
+        }
+        else
+        {
+            <h2>Edit Block Component456: @(reference?.Context_Title ?? "Reference")</h2>
+        }
+    </h2>
+
+
+    <form id="EditContextDetailsForm"  asp-action="EditDataSubmit" method="post" asp-controller="DynamicData">
+
+        <input type="hidden" name="referenceId" value="@reference.ID" />
+        <input type="hidden" name="masterId" value="@reference.Context_Master_ID" />
+        <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
+        <input type="hidden" name="mode" value="@ViewBag.Mode" />
+        @foreach (var f in Model)
+        {
+           <div class="mb-3">
+            <label>@f.name</label>
+
+            @* TEXTBOX *@
+            @if (f.field_type_id == 1)
+            {
+                <input name="@f.name_key"
+                       value="@f.content"
+                       class="form-control dynamic-field"
+                       data-required="@(f.is_required == 1 ? "true" : "false")"
+                       data-validation="@f.field_validation"
+                       data-message="@f.custom_validation"
+                       data-name="@f.name" />
+            }
+
+            @* DROPDOWN *@
+            else if (f.field_type_id == 2)
+            {
+                List<string> opts = new();
+
+                if (!string.IsNullOrWhiteSpace(f.field_options))
+                {
+                    try
+                    {
+                        opts = JsonSerializer.Deserialize<List<string>>(f.field_options);
+                    }
+                    catch { }
+                }
+
+                <select name="@f.name_key"
+                        class="form-control dynamic-field"
+                        data-required="@(f.is_required == 1 ? "true" : "false")"
+                        data-name="@f.name">
+
+                    <option value="">-- Select --</option>
+
+                    @foreach (var o in opts)
+                    {
+                        <option value="@o" selected="@(o == f.content)">
+                            @o
+                        </option>
+                    }
+                </select>
+            }
+
+            @* TEXTAREA *@
+            else if (f.field_type_id == 7)
+            {
+                <textarea name="@f.name_key"
+                          class="form-control editor-full dynamic-field"
+                          data-required="@(f.is_required == 1 ? "true" : "false")"
+                          data-validation="@f.field_validation"
+                          data-message="@f.custom_validation"
+                          data-name="@f.name">@f.content</textarea>
+            }
+
+            @* IMAGE *@
+            else if (f.field_type_id == 8)
+            {
+                <button type="button" class="btn btn-outline-primary select-media"
+                        data-field="@f.name_key"
+                        data-bs-toggle="modal" data-bs-target="#btnSelectFiles">
+                    Change File
+                </button>
+
+                <input type="hidden" name="@($"{f.name_key}_existing")" value="@f.File_path" />
+
+                <img src="@f.File_path_name" style="max-height:120px" />
+            }
+
+            <input type="hidden" name="@($"{f.name_key}_detail_id")" value="@f.detail_id" />
+
+            <span class="text-danger error-msg"></span>
+        </div>
+    }
+
+        @Html.Hidden("returnUrl", ViewBag.ReturnUrl as string)
+
+        <button class="btn btn-success">Update</button>
+    </form>
+    <div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Media Manager</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i
+                            data-feather="x"></i></button>
+                </div>
+
+                <div class="modal-body" id="mediaManagerModalBody">
+
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                        Add image
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+@section head{
+        <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+}
+
+
+
+
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+            "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+        }
+    }
+</script>
+<script src="~/Assets/scripts/add_ck_editor.js" type="module"></script> 
+<script>
+    function onMediaSelected(fieldKey, mediaId, previewUrl) {
+
+        // set new hidden value
+        document.querySelector(`input[name='${fieldKey}_new']`).value = mediaId;
+
+        // show new image preview
+        const newImg = document.getElementById(`img_${fieldKey}_new`);
+        newImg.src = previewUrl;
+        newImg.style.display = "block";
+
+        // hide existing image
+        const existingImg = document.getElementById(`img_${fieldKey}_existing`);
+        if (existingImg) {
+            existingImg.style.display = "none";
+        }
+    }
+
+    function onMediaSelected(fieldKey, mediaId, previewUrl) {
+        document.querySelector(`input[name='${fieldKey}_new']`).value = mediaId;
+        document.querySelector(`#img_${fieldKey}`).src = previewUrl;
+    }
+
+
+
+
+function validateDynamicForm() {
+
+    let isValid = true;
+
+    $(".error-msg").text(""); // clear old errors
+
+    $(".dynamic-field").each(function () {
+
+        let value = $(this).val();
+        let required = $(this).data("required") == "true";
+        let validation = $(this).data("validation");
+        let message = $(this).data("message");
+        let name = $(this).data("name");
+
+        let errorContainer = $(this).closest(".mb-3").find(".error-msg");
+
+        // REQUIRED
+        if (required && (!value || value.trim() === "")) {
+
+            let msg = message || (name + " is required");
+
+            errorContainer.text(msg);
+            $(this).focus();
+            isValid = false;
+            return false;
+        }
+
+        // REGEX
+        if (validation && value) {
+            try {
+                let regex = new RegExp(validation);
+
+                if (!regex.test(value)) {
+
+                    let msg = message || (name + " is invalid");
+
+                    errorContainer.text(msg);
+                    $(this).focus();
+                    isValid = false;
+                    return false;
+                }
+            }
+            catch {
+                console.error("Invalid regex for", name);
+            }
+        }
+
+    });
+
+    return isValid;
+}
+
+// ================= SUBMIT =================
+
+$("#EditContextDetailsForm").submit(function (e) {
+
+    e.preventDefault();
+
+    if (!validateDynamicForm()) {
+        return;
+    }
+
+    $.ajax({
+        url: $(this).attr("action"),
+        type: "POST",
+        data: $(this).serialize(),
+
+        success: function (response) {
+
+            if (response.success) {
+                alert("Data updated successfully");
+                window.parent.Load_Edit_context_Temp_details(true);
+            } else {
+                alert(response.message);
+            }
+        },
+
+        error: function () {
+            alert("Error occurred");
+        }
+    });
+
+});
+</script>

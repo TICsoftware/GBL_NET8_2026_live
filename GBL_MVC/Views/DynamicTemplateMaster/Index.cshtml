@@ -1,0 +1,109 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContextMasterListVM>
+@using Core_project_BusinessLogic
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    string search = ViewBag.Search ?? "";
+    int curPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<h2>Components Layout List</h2>
+
+<form method="get" class="mb-3 d-flex" id="searchForm" novalidate>
+    <input type="text"
+           name="search"
+           id="search"
+           value="@search"
+           class="form-control w-25"
+           placeholder="Search title..."
+           required
+           minlength="2"
+           maxlength="100"
+           pattern="^[A-Za-z0-9\s\.\,\-\_\(\)\/&]+$"
+           title="Search is required and must be 2-100 valid characters." />
+    <button type="submit" class="btn btn-secondary ms-2">Search</button>
+</form>
+<span id="searchValidationMessage" class="text-danger d-block mb-2"></span>
+@if (ViewData.ModelState.ContainsKey("search") && ViewData.ModelState["search"].Errors.Count > 0)
+{
+    <span class="text-danger d-block mb-2">@ViewData.ModelState["search"].Errors[0].ErrorMessage</span>
+}
+
+<a asp-action="Add" class="btn btn-primary mb-3">Add New</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Language</th>
+            <th>Title</th>
+            <th>Templates</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th width="300">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Language_Name</td>
+                <td>@item.Title</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.TemplateNames))
+                    {
+                        <span >@item.TemplateNames</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Template</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Status == 1)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+                <td>@item.Created_Date?.ToString("dd-MMM-yyyy")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                    <a asp-controller="ContextFieldMaster" asp-action="Assign"
+                       asp-route-id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                       class="btn btn-sm btn-outline-primary">Edit Fields</a>
+
+                    @if (item.Status == 1)
+                    {
+                        <a asp-action="Deactivate" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                           class="btn btn-sm btn-outline-danger js-confirm-deactivate">Deactivate</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == curPage ? "active" : "")">
+                <a class="page-link"
+                   href="@Url.Action("Index", new { page = i, search = search })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script src="~/Assets/scripts/dynamic_template_master_index.js"></script>
+}

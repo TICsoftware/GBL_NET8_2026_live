@@ -1,0 +1,23 @@
+.custom-arrow {width: 40px;height: 40px;background: white; border-radius: 50%;box-shadow: 0 2px 10px rgba(0,0,0,0.2);display: flex;align-items: center;justify-content: center;cursor: pointer; transition: all 0.3s ease;}
+.custom-arrow img {width: 16px;}
+.custom-arrow:hover {transform: scale(1.1);}
+
+.custom-arrow-slider .swiper-button-prev {left: -60px;}
+.custom-arrow-slider .swiper-button-next {right: -60px;}
+.swiper-button-prev .swiper-navigation-icon,
+.swiper-button-next .swiper-navigation-icon {display: none;}
+.custom-arrow.hidden {display: none;}
+
+.dark .custom-arrow img {filter: grayscale(1);}
+
+@media (max-width: 1023px) {
+ .custom-arrow-slider .swiper-button-prev {left: 0;}
+ .custom-arrow-slider .swiper-button-next {right: 0;}
+}
+
+@media (max-width: 767px) {
+    .custom-arrow-slider .swiper-button-prev {left: 0;}
+    .custom-arrow-slider .swiper-button-next {right: 0;}
+    .custom-arrow {width: 35px;height: 35px;}
+    .custom-arrow img {width: 20px;}
+}

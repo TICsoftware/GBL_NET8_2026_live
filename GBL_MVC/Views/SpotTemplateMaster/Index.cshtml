@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Core_project_BusinessLogic.Entity.Manage.Add_Spot_Template_Master>
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Block Reference List";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+
+<h2>Block Reference List</h2>
+<!-- Success message -->
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["AlertMessage"]
+    </div>
+}
+
+<a asp-action="Add" class="btn btn-primary mb-3">Add New</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+             <th>ID</th>
+             <th>Name</th>
+             <th>Block Layout Title</th>
+             <th>Status</th>
+             <th>Created User ID</th>
+             <th>Created Date</th>
+             <th width="250">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @using Core_project_BusinessLogic
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Name</td>
+                <td>@item.Template_Type</td>
+              
+                  <td>
+                    @if (item.Content_Status.ToString().ToLower() == "publish")
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+                 <td>@(item.Created_UserID?.ToString() ?? "N/A")</td>
+                <td>@item.Created_Date?.ToString("dd-MMM-yyyy")</td>
+
+                <td>
+                    <a asp-action="Add" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                        class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                    @if (item.Status == 2)
+                    {
+                        <a asp-action="Delete" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                            class="btn btn-sm btn-outline-danger ms-2">Deactivate</a>
+                    }
+
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+

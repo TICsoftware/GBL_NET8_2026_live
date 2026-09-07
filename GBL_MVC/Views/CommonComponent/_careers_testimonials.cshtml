@@ -1,0 +1,82 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var header = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+    var testimonials = Model?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList() ?? new List<ComponentModel>();
+    if (!testimonials.Any() && Model != null && header != null)
+    {
+        testimonials = Model.Where(x => x.GroupId != header.GroupId).OrderBy(x => x.Sequence).ToList();
+    }
+
+    var mid = (testimonials.Count + 1) / 2;
+    var colUp = testimonials.Take(mid).ToList();
+    var colDown = testimonials.Skip(mid).ToList();
+
+    var title = !string.IsNullOrWhiteSpace(header?.DisplayTitle) ? header.DisplayTitle : header?.Title;
+    var intro = !string.IsNullOrWhiteSpace(header?.Intro) ? header.Intro : header?.Content;
+    var bgImg = !string.IsNullOrWhiteSpace(header?.Componentbackground)
+        ? header.Componentbackground
+        : (!string.IsNullOrWhiteSpace(header?.ThumbnailImage)
+            ? header.ThumbnailImage
+            : "/Assets/images/homepage/home-testimonials-bg.webp");
+}
+
+@if (header != null || testimonials.Any())
+{
+    <section class="home-testimonials-section section-spacing bg-light-gray relative bg-testimonials-section">
+        <div class="testimonials-outer-wrap" aria-hidden="true">
+            <img src="@bgImg" alt="" class="w-full h-full object-cover testimonials-bg-img">
+        </div>
+        <div class="container z-1">
+            <div class="testimonials-layout gap-10 lg:grid grid grid-cols-1 lg:grid-cols-12 lg:gap-16 lg:items-start">
+                <div class="testimonials-left-part lg:col-span-5">
+                    <div class="section-title-outer section-title-outer-start section-title-left">
+                        @if (!string.IsNullOrWhiteSpace(title))
+                        {
+                            <h2 class="text-h2 title-section reveal-text">
+                                @Html.Raw(title.CleanParagraphTags())
+                            </h2>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(intro))
+                        {
+                            <p>@Html.Raw(intro.CleanParagraphTags())</p>
+                        }
+                    </div>
+                </div>
+
+                @if (testimonials.Any())
+                {
+                    <div class="testimonials-marquee-col lg:col-span-7 min-h-0 overflow-hidden">
+                        <div id="marquee-section" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="marquee-viewport h-full lg:pt-16">
+                                <div id="track-up" class="marquee-track up">
+                                    @foreach (var item in colUp)
+                                    {
+                                        @await Html.PartialAsync("~/Views/CommonComponent/_careers_testimonial_card.cshtml", item)
+                                    }
+                                </div>
+                            </div>
+                            <div class="marquee-viewport h-full">
+                                <div id="track-down" class="marquee-track down">
+                                    @foreach (var item in colDown)
+                                    {
+                                        @await Html.PartialAsync("~/Views/CommonComponent/_careers_testimonial_card.cshtml", item)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 w-auto sm:w-auto flex justify-center lg:hidden">
+                            <button id="load-more-btn" type="button"
+                                    class="inline-flex items-center justify-center gap-2 text-sm font-semibold border border-neutral-900 rounded-full px-6 py-2 transition-colors">
+                                Load More
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

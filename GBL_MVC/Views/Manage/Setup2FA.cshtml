@@ -1,0 +1,18 @@
+@model Core_project_BusinessLogic.Entity.LanguageMaster
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Login.cshtml";
+    ViewData["Title"] = "Scan QR Code";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+<link rel="stylesheet" href="/Assets/css/2FA_scan.css" />
+
+
+<h2>Scan QR Code</h2>
+
+<p>Scan using Google Authenticator</p>
+
+<img src="data:image/png;base64,@ViewBag.QR" />
+
+<br />
+
+Manual Key : @ViewBag.Secret

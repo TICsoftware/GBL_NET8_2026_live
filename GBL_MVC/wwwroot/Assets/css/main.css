@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@source "../../../Views/**/*.cshtml";
+@source "../../../Pages/**/*.cshtml";
+@source "../../../wwwroot/**/*.{html,js,ts,jsx,tsx}";
+
+/* -----------------------------------------------
+   FONT FACES
+------------------------------------------------- */
+
+
+@theme{
+/* ── Font ── */
+--font-body: "Poppins", sans-serif;
+
+/* ── Font Scale ── */
+--text-h1: clamp(2rem, -0.18rem + 4.55vw, 4.1875rem);      /* 32px → 67px */
+--text-h2: clamp(1.5rem, 0.19rem + 2.73vw, 2.8125rem);     /* 24px → 45px */
+--text-h3: clamp(1.875rem, 1.56rem + 0.65vw, 2.1875rem);   /* 30px → 35px */
+--text-h4: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
+--text-24: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
+--text-h5: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
+--text-20: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
+--text-p: clamp(1rem, 0.875rem + 0.26vw, 1.125rem);        /* 16px → 18px */
+--text-small: 0.875rem;                                     /* 14px fixed, no scaling needed */
+--text-button: clamp(1rem, 0.875rem + 0.26vw, 1.125rem);   /* 16px → 18px */
+--text-12: 0.75rem;                                         /* 12px fixed, no scaling needed */
+--text-intro: clamp(1.125rem, 0.875rem + 0.52vw, 1.375rem); /* 18px → 22px */
+--text-base: 1rem;   
+--text-58: clamp(2.5625rem, calc(2.3047rem + 1.1vw), 3.625rem); /* 41px → 58px */
+--text-big: clamp(8rem, 1.7625rem + 8.95vw, 12.5rem);
+ 
+/* ── Brand Colors ── */
+--color-primary: #231F20;   /**primary**/
+--color-secondary: #ED1C24; /**secondary**/
+--color-third: #767676;     /**third**/
+--color-white: #ffffff; 
+--color-light: #F3F3F3;
+--color-gray: #969696;
+--color-extralight: #A6A6A6;
+--line: rgba(28,25,24,0.1);
+--ease:cubic-bezier(.22,1,.36,1);
+--ink-soft:#6B6664;
+--panel:#fff;
+--red-tint:rgba(237,28,36,0.06);
+--red-tint-strong:rgba(237,28,36,0.1);
+--title-grey:#b6bcc6;
+
+}
+
+
+
+
+/* ---------------------------------------
+   FLUID TYPOGRAPHY TOKENS
+--------------------------------------- */
+/* .dark {
+  --color-primary:  #ffffff;
+  --color-text-body:     #131313;
+  --color-text-muted:    #9a9a9a;
+  --color-text-mid:      #e5e5e5;
+  --color-surface:       #0f0f0f;
+  --color-surface-alt:   #1a1a1a;
+  --color-border:        rgba(255, 255, 255, 0.12);
+  --color-white:  #ffffff;
+  --bg-light-primary: #555;
+} 
+
+.dark body { background-color: rgb(19, 19, 19);}
+.dark .title-heading-anim {color: #fff;}
+.dark .title-heading-anim .highlight-span {color: #a6a6a6;}
+
+
+.dark p {color: var(--text-white);} */
+
+
+
+
+/* ---------------------------------------
+   OPTIONAL BASE STYLES
+--------------------------------------- */
+p { font-family: var(--font-body); font-size: var(--text-p); margin-bottom: 20px; line-height: 1.5;}
+/* p:first-child { margin-bottom: 0; } */
+p:last-child { margin-bottom: 0; }
+
+/* -----------------------------------------------
+   RESET
+------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+ font-family: var(--font-body); 
+  font-size: 1rem;
+  line-height: 1.25;
+  color: var(--color-text);
+   transition:background-color 0.35s ease,color 0.35s ease;
+   font-weight: 400;
+   background-color: var(--color-white);
+  }
+
+
+@layer base {
+/* -----------------------------------------------
+   TYPOGRAPHY BASE
+------------------------------------------------- */
+h1{font-weight: 900;}
+h2, h3, h4, h5 {font-weight: 700;}
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-body);
+  color: var(--color-primary);
+  line-height: 1.15;
+}
+
+/* h1, .text-h1{ font-size: var(--text-h1);}
+.text-h2{ font-size: var(--text-h2); line-height:1 !important;}
+.text-h3{ font-size: var(--text-h3);}
+.text-h4{ font-size: var(--text-h4);}
+.text-h5{ font-size: var(--text-h5);} */
+.text-14{ font-size:var(--text-small);}
+.text-base {font-size: var(--text-base);}
+.poppins{ font-family: var(--font-body);}
+
+  
+/* -----------------------------------------------
+   LINKS & MEDIA
+------------------------------------------------- */
+a { text-decoration: none; color: inherit;font-size: var(--text-p); }
+button { font-family: inherit; font-size: var(--text-button); cursor: pointer; }
+
+img, picture, video, canvas {
+  display: block;
+  max-width: 100%;
+}
+}
+
+
+/* -----------------------------------------------
+   CUSTOM CONTAINER
+------------------------------------------------- */
+@layer componants  {
+  .container {    
+ 
+       
+  width: 90%;
+  max-width: 1680px;
+  margin-inline: auto; /* centers it */
+}
+  
+  
+}
+
+@layer utilities {  
+  .rounded-sm {border-radius:0.625rem;}
+  .rounded-md {border-radius:1.25rem;}
+
+   .section-spacing {
+    @apply py-10 md:py-15 2xl:py-20;
+  }
+  .section-pt {
+    @apply pt-10 md:pt-15  2xl:pt-20;
+  }
+   .section-pb {
+    @apply pb-10 md:pb-15  2xl:pb-20;
+  }
+/* Hide system cursor on desktop */
+
+
+/* ------------------------
+    Theme Button
+------------------------*/
+.common-btn {
+  
+}
+
+
+
+}
+
+@media (max-width: 992px) {
+  .container {width: 100%;padding-left: 1.25rem;padding-right: 1.25rem;}
+  .container-fluid{padding-left: 1.25rem; padding-right: 1.25rem;}
+}

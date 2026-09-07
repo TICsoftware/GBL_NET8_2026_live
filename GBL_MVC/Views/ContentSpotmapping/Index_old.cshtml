@@ -1,0 +1,185 @@
+
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContentSpotMappingTemp>
+@using Core_project_BusinessLogic;
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    int curPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string search = ViewBag.Search ?? "";
+}
+
+
+<h3 class="mb-4">Content Spot Composer</h3>
+
+<!-- ======================================================
+     SECTION 1 : CONTEXT REFERENCES LIST
+====================================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">
+        Context References
+    </div>
+    <div class="card-body">
+
+        <form asp-action="Add" method="post" class="row g-3">
+            <input type="hidden" name="spotType" value="1" />
+
+            <div class="col-md-8">
+                <select name="spotId" class="form-control" required>
+                    <option value="">-- Select Context Reference --</option>
+                    @foreach (var c in ViewBag.ContextList)
+                    {
+                        <option value="@c.ID">
+                            @c.Reference_Title
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <button class="btn btn-success w-100">
+                    Add Context Spot
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ======================================================
+     SECTION 2 : MAIN TEMPLATE LIST
+====================================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">
+        Main Spot Templates
+    </div>
+    <div class="card-body">
+
+        <form asp-action="Add" method="post" class="row g-3">
+            <input type="hidden" name="spotType" value="2" />
+
+            <div class="col-md-8">
+                @if (ViewBag.TemplateList != null)
+             {
+                <select name="spotId" class="form-control" required>
+                    <option value="">-- Select Template --</option>
+                    @foreach (var t in ViewBag.TemplateList)
+                    {
+                        <option value="@t.ID">
+                            @t.Title
+                        </option>
+                    }
+                </select>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <button class="btn btn-primary w-100">
+                    Add Template Spot
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ======================================================
+     SECTION 3 : COMBINED PAGE ORDER LIST
+====================================================== -->
+<div class="card">
+    <div class="card-header fw-bold">
+        Page Composition Order
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-bordered table-striped mb-0" id="sortableTable">
+            <thead class="table-light">
+                <tr>
+                    <th style="width:60px;">Seq</th>
+                    <th>Spot Name</th>
+                    <th style="width:120px;">Type</th>
+                    <th style="width:120px;">Actions</th>
+                </tr>
+            </thead>
+
+        <tbody id="sortableBody">
+@{
+    var mappingList = ViewBag.MappingList as System.Data.DataTable;
+
+    if (mappingList == null || mappingList.Rows.Count == 0)
+    {
+        <tr>
+            <td colspan="4" class="text-center text-muted p-3">
+                No spots added yet
+            </td>
+        </tr>
+    }
+    else
+    {
+        for (int i = 0; i < mappingList.Rows.Count; i++)
+        {
+            var row = mappingList.Rows[i];
+            int spotType = Convert.ToInt32(row["spot_type"]);
+            <tr data-id="@row["cont_spot_temp_id"]">
+                <td>@row["cont_spot_sequence"]</td>
+                <td>
+                    @row["spot_title"] 
+                    </td>
+                <td>@(spotType == 1 ? "Context" : "Template")</td>
+                <td class="text-center">
+                    <span class="badge bg-secondary drag-handle" style="cursor:move">
+                        ⇅ Drag
+                    </span>
+                </td>
+            </tr>
+        }
+    }
+}
+</tbody>
+
+
+        </table>
+
+    </div>
+</div>
+
+<!-- ======================================================
+     DRAG & DROP (SEQUENCE UPDATE)
+====================================================== -->
+@section Scripts {
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<script>
+    $(function () {
+        $("#sortableBody").sortable({
+            handle: ".drag-handle",
+            update: function () {
+
+                var order = [];
+
+                $("#sortableBody tr").each(function (index) {
+                    order.push({
+                        id: $(this).data("id"),
+                        sequence: index + 1
+                    });
+                });
+
+                // 🔹 Save order via AJAX
+                $.ajax({
+                    url: '/ContentSpotmapping/UpdateOrder',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(order),
+                    success: function () {
+                        console.log("Sequence updated");
+                    },
+                    error: function () {
+                        alert("Failed to update order");
+                    }
+                });
+            }
+        });
+    });
+</script>
+}

@@ -1,0 +1,72 @@
+@model Core_project_BusinessLogic.Entity.GeographyMaster
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Edit Geography";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                          Edit Geography
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<h2>Edit Geography </h2>
+
+@using (Html.BeginForm("EditGeography", "GeographyMaster", FormMethod.Post))
+{
+    <div class="row">
+        @Html.HiddenFor(m => m.ID, new { @Value = Model.ID })
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+        <div class="col-md-4">
+            <!-- Language Master -->
+            <div class="form-group mb-3">
+                <label asp-for="Language_Master_ID">Language</label>
+                <select asp-for="Language_Master_ID" class="form-control form-select" asp-items="@(new SelectList(ViewBag.Languages, "ID", "Language_Name"))">
+                    <option value="">-- Select --</option>
+                </select>
+                <span asp-validation-for="Language_Master_ID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.Country_Name)
+                @Html.TextBoxFor(m => m.Country_Name, new { @class="form-control" })
+                <span asp-validation-for="Country_Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.Status)
+                @Html.DropDownListFor(m => m.Status,
+                    new List<SelectListItem>{
+                        new SelectListItem{Text="Active", Value="1"},
+                        new SelectListItem{Text="Inactive", Value="0"}
+                    },
+                    new { @class="form-control form-select" })
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <button class="btn btn-primary mt-3 cms-btn-custom">Update</button>
+        </div>
+    </div>
+   
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

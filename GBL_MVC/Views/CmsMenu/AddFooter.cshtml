@@ -1,0 +1,282 @@
+@model GBL_MVC.Models.Manage_Model.MenuFooterModel
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Menu.cshtml";
+
+    bool isEdit = Model != null && Model.FooterId > 0;
+
+    ViewData["Title"] = isEdit
+    ? "Edit Footer"
+    : "Add Footer";
+}
+
+<h2>@(isEdit ? "Edit Footer" : "Add Footer")</h2>
+
+<form asp-action="AddFooter" method="post" class="form-horizontal">
+
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.FooterId)
+
+    <div class="row">
+
+        <!-- Parent Footer -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="ParentFooterId">Parent Footer</label>
+
+                <select asp-for="ParentFooterId" class="form-select">
+                    <option value="">Main Footer</option>
+
+                    @if (ViewBag.ParentFooters != null)
+                    {
+                        foreach (var item in ViewBag.ParentFooters)
+                        {
+                            if (item.FooterId != Model.FooterId)
+                            {
+                                <option value="@item.FooterId">
+                                    @item.Title
+                                </option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Footer Type -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="FooterType">Footer Type</label>
+
+                <select asp-for="FooterType" class="form-select">
+                    <option value="CompanyInfo">Company Information</option>
+                    <option value="Column">Footer Column</option>
+                    <option value="Link">Footer Link</option>
+                    <option value="Social">Social Link</option>
+                    <option value="Copyright">Copyright</option>
+                    <option value="BottomLink">BottomLink</option>
+                </select>
+
+                <span asp-validation-for="FooterType" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Footer Title -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Title">Title *</label>
+                <input asp-for="Title" class="form-control" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- URL -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Url">URL</label>
+                <input asp-for="Url" class="form-control" placeholder="/about-us" />
+            </div>
+        </div>
+
+        <!-- Target -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Target">Target</label>
+
+                <select asp-for="Target" class="form-select">
+                    <option value="_self">Same Window (_self)</option>
+                    <option value="_blank">New Window (_blank)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Column Number -->
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="ColumnNo">Column No.</label>
+                <input asp-for="ColumnNo" type="number" min="1" class="form-control" />
+            </div>
+        </div>
+
+        <!-- Display Order -->
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="Sequence">Sequence</label>
+                <input asp-for="Sequence" type="number" min="0" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+    <hr />
+
+    <h4>Footer Content</h4>
+
+    <div class="row">
+
+        <!-- Description -->
+        <div class="col-md-12">
+            <div class="form-group mb-3">
+                <label asp-for="Description">Description</label>
+
+                <textarea asp-for="Description" class="form-control editor-full" rows="4"></textarea>
+            </div>
+        </div>
+
+        <!-- Footer Image -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+
+                <label asp-for="FooterImage">
+                    Footer Image / Logo
+                    <span class="text-muted small">(Max. size 500KB)</span>
+                </label>
+
+                <button type="button" id="btnFooterImage" class="btn btn-outline-primary d-block select-media">
+                    Select Image
+                </button>
+
+                @Html.HiddenFor(m => m.FooterImageId)
+                @Html.HiddenFor(m => m.FooterImageIsDelete)
+                @Html.HiddenFor(m => m.FooterImage)
+
+                @if (!string.IsNullOrEmpty(Model.FooterImage))
+                {
+                    <img src="@Model.FooterImage"
+                        class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height mt-2"
+                        alt="Footer Image" />
+                }
+
+                @Html.ValidationMessageFor(m => m.FooterImage, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <!-- Footer Thumbnail -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+
+                <label asp-for="FooterThumbImage">
+                    Footer Thumbnail Image
+                    <span class="text-muted small">(Max. size 500KB)</span>
+                </label>
+
+                <button type="button" id="btnFooterThumbImage" class="btn btn-outline-primary d-block select-media">
+                    Select Thumbnail
+                </button>
+
+                @Html.HiddenFor(m => m.FooterThumbImageId)
+                @Html.HiddenFor(m => m.FooterThumbImageIsDelete)
+                @Html.HiddenFor(m => m.FooterThumbImage)
+
+                @if (!string.IsNullOrEmpty(Model.FooterThumbImage))
+                {
+                    <img src="@Model.FooterThumbImage"
+                        class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height mt-2"
+                        alt="Footer Thumbnail" />
+                }
+
+                @Html.ValidationMessageFor(m => m.FooterThumbImage, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <!-- Icon Class -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="IconClass">Icon Class</label>
+                <input asp-for="IconClass" class="form-control" placeholder="fa fa-facebook" />
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-3">
+        <div class="form-group mb-3">
+            <label asp-for="Status">Status</label>
+
+            <select asp-for="Status" class="form-select">
+                <option value="2">Active</option>
+                <option value="0">Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(isEdit ? "Update Footer" : "Save Footer")
+        </button>
+
+        <a asp-action="ListFooter" class="btn btn-secondary">
+            Cancel
+        </a>
+    </div>
+
+</form>
+
+
+<!-- Media Manager Modal -->
+<div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body" id="mediaManagerModalBody">
+            </div>
+
+            <div class="modal-footer d-flex justify-content-end gap-2">
+
+                <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                    Add Image
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" id="mediaManagerModalBody">
+
+            </div>
+
+            <div class="modal-footer d-flex justify-content-end gap-2">
+                <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                    Add image
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

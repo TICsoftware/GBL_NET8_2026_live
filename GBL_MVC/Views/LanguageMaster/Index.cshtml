@@ -1,0 +1,92 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.LanguageMaster>
+@using Core_project_BusinessLogic
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Language Master List";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/manage/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                           Language Master List
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<h2>Language Master List</h2>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["AlertMessage"]
+    </div>
+}
+
+<a asp-action="AddLanguage" class="btn btn-primary mb-3">Add New</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Language</th>
+            <th>Status</th>
+            <th>Sequence</th>
+            <th>Created</th>
+            <th class="language-master-col-actions">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Language_Name</td>
+                 <td>
+                    @if (item.Status == 1)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+                <td>@item.Language_Sequence</td>
+                <td>@item.Created_Date?.ToString("dd-MMM-yyyy")</td>
+
+                <td>
+                    <a asp-action="EditLanguage" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())" class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                    @if (item.Status == 1)
+                    {
+                        <a asp-action="Deactivate"
+                           asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                           class="btn btn-sm btn-outline-danger ms-2 js-deactivate-confirm"
+                           data-confirm-message="Are you sure you want to deactivate this language?">
+                            Deactivate
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section head {
+    <link rel="stylesheet" href="~/Assets/css/language-master-style.css" />
+}
+
+@section Scripts {
+    <script src="~/Assets/scripts/language_master_index.js"></script>
+}

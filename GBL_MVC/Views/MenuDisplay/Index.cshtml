@@ -1,0 +1,17 @@
+
+
+@using Core_project_BusinessLogic
+
+    <link rel="shortcut icon" href="~/Assets/compiled/svg/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/Assets/compiled/css/app.css">
+    <link rel="stylesheet" href="~/Assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="~/Assets/compiled/css/custom-app.css">
+  @* <link rel="stylesheet" href="~/Assets/compiled/css/stride_output.css" /> *@
+   <!-- Page style -->
+    <link rel="stylesheet" href="~/Assets/extensions/flatpickr/flatpickr.min.css">
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "Menu Display";
+  
+}
+@Html.Raw(ViewBag.MenuHtml)

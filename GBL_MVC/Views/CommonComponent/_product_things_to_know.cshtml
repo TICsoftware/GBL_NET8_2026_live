@@ -1,0 +1,71 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var header = Model?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var items = Model?
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList() ?? new List<ComponentModel>();
+
+    var sectionTitle = !string.IsNullOrWhiteSpace(header?.DisplayTitle)
+        ? header.DisplayTitle
+        : (!string.IsNullOrWhiteSpace(header?.Section_title) ? header.Section_title : header?.Title);
+
+    var compareUrl = !string.IsNullOrWhiteSpace(header?.Url) ? header.Url : "#";
+    var compareText = !string.IsNullOrWhiteSpace(header?.Url_Text) ? header.Url_Text : "";
+}
+
+@if (header != null || items.Any())
+{
+    <section class="section-spacing thingstoknow-section relative overflow-hidden">
+        <div class="bgimage-outer-wrap" aria-hidden="true">
+            <img src="/Assets/images/bg-image.webp" alt="" class="w-full h-full object-cover bg-image">
+        </div>
+        <div class="container">
+            @if (!string.IsNullOrWhiteSpace(sectionTitle))
+            {
+                <h3 class="text-h4">@Html.Raw(sectionTitle.CleanParagraphTags())</h3>
+            }
+            @if (items.Any())
+            {
+                <div class="mt-4 grid gap-10 border-t border-surface-line pt-10 sm:grid-cols-2 lg:max-w-6xl product-content-max">
+                    @foreach (var item in items)
+                    {
+                        var icon = !string.IsNullOrWhiteSpace(item.Component_Icon_Image)
+                            ? item.Component_Icon_Image
+                            : (!string.IsNullOrWhiteSpace(item.Icon_Image) ? item.Icon_Image : item.ThumbnailImage);
+                        var text = !string.IsNullOrWhiteSpace(item.Content)
+                            ? item.Content
+                            : (!string.IsNullOrWhiteSpace(item.Intro) ? item.Intro : item.DisplayTitle);
+                        <div class="flex items-center gap-6">
+                            @if (!string.IsNullOrWhiteSpace(icon))
+                            {
+                                <img src="@icon" alt="" class="h-auto w-auto object-cover shrink-0">
+                            }
+                            <div class="max-w-[290px]">
+                                <p class="text-20 font-medium">@Html.Raw(text.CleanParagraphTags())</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(compareText))
+            {
+                <div class="outer-btn-wrap mt-6 sm:mt-10">
+                    <a class="site-link" href="@compareUrl">
+                        @Html.Raw(compareText.CleanParagraphTags())
+                        <span class="site-link-arrow" aria-hidden="true">
+                            <img src="/Assets/images/common-images/button-arrow-icon.svg" alt="" class="w-auto object-cover">
+                        </span>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}

@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Error - Page Not Found";
+}
+
+@section head {
+    <title>Error - Page Not Found</title>
+
+    <meta content="error, 404, page not found" name="keywords" />
+    <meta content="The page you're looking for doesn't exist or may have been moved." name="description" />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/css/error-style.css" asp-append-version="true" />
+}
+
+<div class="error-inside-page">
+    <section class="error-page-content">
+
+        <!-- 404 Number -->
+        <h1 class="error-page-code dark-textwhite">
+            404
+        </h1>
+
+        <!-- Heading -->
+        <h2 class="error-page-title dark-textwhite">
+            Oops! Page Not Found
+        </h2>
+
+        <!-- Description -->
+        <div class="error-page-desc">
+            <p>
+                The page you're looking for doesn’t exist or may have been moved.
+                Please check the URL or return to the homepage.
+            </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="error-page-actions">
+            <a href="/" class="fill-site-link">
+                <span>Back to Home</span>
+                <span class="fill-site-link-arrow" aria-hidden="true">
+                    <img src="/Assets/images/common-images/button-arrow-icon.svg" alt="">
+                </span>
+            </a>
+        </div>
+
+    </section>
+</div>

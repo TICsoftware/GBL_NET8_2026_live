@@ -1,0 +1,97 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContextReference>
+@using Core_project_BusinessLogic;
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    int curPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string search = ViewBag.Search ?? "";
+}
+
+@{
+    // optional helpers
+    var addedSet = ViewBag.AddedSet as HashSet<string> ?? new HashSet<string>();
+}
+<form method="get" class="mb-3">
+    <input type="text" name="search" value="@search" class="form-control d-inline w-25" placeholder="Search title..." />
+    <button class="btn btn-secondary ms-2">Search</button>
+</form>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Language</th>
+            <th>Context Master</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th width="400">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Language_Master_ID</td>
+                <td>@item.Context_Master_ID</td>
+                <td>@item.Reference_Title</td>
+                <td>
+                    @if (item.Status == 1) { <span class="badge bg-success">Active</span>; }
+                    else { <span class="badge bg-secondary">Inactive</span>; }
+                </td>
+                <td>
+                    <div class="d-inline-block me-2 mb-1">
+                    <a asp-action="Edit" asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())" class="btn btn-sm btn-outline-secondary">Edit</a></div>
+
+
+
+@if (!item.HasData)
+{
+    <div class="d-inline-block me-2 mb-1">
+    <!-- No data exists → Show ADD button -->
+    <a asp-controller="DynamicData"
+       asp-action="AddData"
+       asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+       class="btn btn-sm btn-outline-success">
+       Add Data
+    </a>
+    </div>
+}
+else
+{
+    <div class="d-inline-block me-2 mb-1">
+    <!-- Data exists → Show EDIT button -->
+    <a asp-controller="DynamicData"
+       asp-action="EditData"
+       asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+       class="btn btn-sm btn-outline-primary">
+       Edit Data
+    </a>
+    </div>
+}
+
+@* <a target="_blank"
+   href="@Url.Action("Render", "ContextReference", new { encId = CryptoEngine.Encrypt(item.ID.ToString()) })"
+   class="btn btn-sm btn-dark">
+   View Page
+</a> *@
+<div class="d-inline-block me-2 mb-1">
+ <button type="button"
+        class="btn btn-sm btn-outline-primary"
+        onclick="showLayout('@CryptoEngine.Encrypt(item.ID.ToString())')">
+    View Layout
+</button>
+</div>
+
+                    @if (item.Status == 1)
+                    {
+                        <div class="d-inline-block me-2 mb-1">
+                        <a asp-action="Deactivate" asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deactivate?')">Deactivate</a>
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

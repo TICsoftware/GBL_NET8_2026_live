@@ -1,0 +1,148 @@
+@model List_Components
+@{
+    Layout = null;
+   
+}
+
+<link rel="stylesheet" href="~/Assets/css/content_context_accordion.css" />
+
+<div class="row">
+
+    @if (Model.Components != null)
+    {
+        int i = 1;
+        int paging_seq = 1;
+        int show_block= 1;
+        foreach (var item in Model.Components)
+        {
+            show_block= 1;
+            var collapseId = "collapse_" + item.CTR_Id;
+
+            <div class="col-lg-6 col-md-6 col-12 mb-3 list_context" data-paging-id="@(i)">
+
+                <div class="accordion custom-accordion">
+                    <div class="accordion-item shadow-sm rounded h-100">
+
+                        <!-- HEADER (CUSTOM CLICK - NO BOOTSTRAP TOGGLE) -->
+                        <div class="accordion-header content-accordion-header js-toggle-accordion d-flex justify-content-between align-items-start p-3"
+                             data-collapse-id="@collapseId">
+
+                            <div class="d-flex gap-2">
+                                <span class="arrow" id="icon_@collapseId">▶</span>
+                                <strong>@i.</strong>
+                                <span>@Html.Raw(item.component_label)</span>
+                            </div>
+
+                        </div>
+
+                        <!-- BODY -->
+                        <div id="@collapseId" class="accordion-collapse collapse show">
+
+                            <div class="accordion-body p-2">
+
+                                <!-- ACTION BUTTONS for componenet and block-->
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    @if(item.Component_field_count > 0)
+                                    {
+                                        if (item.field_Id > 0)
+                                        {
+                                            <a href="javascript:"
+                                               data-encId="@Core_project_BusinessLogic.CryptoEngine.Encrypt(item.CTR_Id.ToString())"
+                                               data-groupid="@item.group_id"
+                                               class="btn btn-sm btn-outline-secondary edit-component-temp">
+                                                Edit Component
+                                            </a> 
+                                            
+                                        }
+                                        else
+                                        {
+                                            <a href="javascript:"
+                                               data-encId="@Core_project_BusinessLogic.CryptoEngine.Encrypt(item.CTR_Id.ToString())"
+                                               class="btn btn-sm btn-outline-secondary add_component_temp">
+                                                Add Component
+                                            </a>
+                                            show_block =0;
+                                        }
+                                    }
+
+                                    @if (item.block_field_count > 0 && show_block == 1)
+                                    {
+                                        <a href="javascript:"
+                                           data-encId="@Core_project_BusinessLogic.CryptoEngine.Encrypt(item.CTR_Id.ToString())"
+                                           class="btn btn-sm btn-outline-success add-spottemplate">
+                                        Add data
+                                        </a>
+                                    }
+                                    <button type="button" class="btn btn-sm btn-outline-primary js-show-layout"
+                                            data-enc-id="@Core_project_BusinessLogic.CryptoEngine.Encrypt(item.CTR_Id.ToString())">
+                                        View Layout
+                                    </button>
+
+                                </div>
+
+                                @{
+                                    int j = 1;
+                                    var details = Model.Field_details?
+                                        .Where(m => m.CTR_Id == item.CTR_Id)
+                                        .OrderBy(s => s.sequence)
+                                        .ToList();
+                                }
+
+                                @if (details != null && details.Any())
+                                {
+                                    foreach (var subitem in details)
+                                    {
+                                        var subitem_Id = Core_project_BusinessLogic.CryptoEngine.Encrypt(subitem.CTR_Id.ToString());
+
+                                        <div class="d-flex justify-content-between align-items-center border-bottom p-2 js-pagination-div-item@(paging_seq)">
+
+                                            <div class="d-flex gap-2">
+                                                <span class="text-muted">@j</span>
+                                                <span>@subitem.field_Title</span>
+                                            </div>
+
+                                            <div class="d-flex gap-1">
+
+                                                <a href="javascript:" data-encId="@subitem_Id" data-groupid="@subitem.context_group_id"
+                                                       class="btn btn-sm btn-outline-secondary edit-spottemplate-temp">
+                                                    Edit
+                                                </a>
+
+                                                <a href="javascript:" data-encId="@subitem_Id" data-groupid="@subitem.context_group_id"
+                                                       class="btn btn-sm btn-outline-danger delete-spottemplate ">
+                                                    Delete
+                                                </a>
+
+                                            </div>
+
+                                        </div>
+
+                                        j++;
+                                    }
+                                    <nav>
+                                        <ul class="pagination justify-content-center mt-4 js-pagination-div@(paging_seq)"></ul>
+                                    </nav>
+                                    paging_seq++;
+                                }
+                                else
+                                {
+                                    <div class="text-center text-muted py-3">
+                                        No data available
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            i++;
+        }
+    }
+
+</div>
+
+<script src="~/Assets/scripts/content_context_accordion.js"></script>

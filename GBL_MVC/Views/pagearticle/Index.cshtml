@@ -1,0 +1,129 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.PageViewModel
+@{
+    ViewData["Title"] = "Our Team";
+}
+@section head {
+    <title>@Model.Content.cont_window_title</title>
+
+    <meta content="@Model.Content.cont_metatag" name="keywords" />
+    <meta content="@Model.Content.cont_metadesc" name="description" />
+
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@Model.Content.ContTitle" />
+    <meta name="twitter:description" content="@Model.Content.cont_metadesc" />
+    <link rel="canonical" href="" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Priya Cement" />
+    <meta property="og:title" content="@Model.Content.ContTitle" />
+    <meta property="og:description" content="@Model.Content.cont_metadesc" />
+    <meta property="og:url" content="https://www.priyacement.com/" />
+    <meta property="og:image" content="https://www.priyacement.com@(Model.Content.MastheadImage)" />
+
+    <meta itemprop="name" content="Priya Cement" />
+    <meta itemprop="description" content="@Model.Content.cont_metadesc" />
+    <meta itemprop="image" content="https://www.priyacement.com@(Model.Content.MastheadImage)" />
+
+    <!-- Facebook / Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Priya Cement" />
+    <meta property="og:title" content="@Model.Content.ContTitle" />
+    <meta property="og:description" content="@Model.Content.cont_metadesc" />
+    <meta property="og:image" content="https://www.priyacement.com@(Model.Content.MastheadImage)" />
+    <meta property="og:url" content="https://www.priyacement.com/" />
+     @if (!string.IsNullOrWhiteSpace(Model.Content.page_schema))
+    {
+      
+            @Html.Raw(Model.Content.page_schema.Replace("<p>", "").Replace("</p>", ""))
+       
+    }
+
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/css/innerbanner-style.css" />
+    <link rel="stylesheet" href="~/Assets/css/contactus-style.css" />
+} 
+
+
+<section class="banner-inner-section mt-[99px] lg:mt-[153px] h-full relative">
+    <picture class="bannerinner-picture relative block w-full h-full">
+        <source media="(min-width:992px)" srcset="@Model.Content.MastheadImage" />
+        <source media="(max-width:991px)" srcset="@Model.Content.MobileMastheadImage" />
+        <img alt="" class="object-cover" src="@Model.Content.MastheadImage" />
+    </picture>
+    <div class="banner-inner-outer relative w-full h-full">
+
+
+        <div class="inner-banner-vector">
+            <img src="/Assets/images/inner-banner-vector.svg" alt="" class="banner-vector-img" />
+            <div class="banner-mask">
+                <img src="/Assets/images/abstract-elements-banner.webp" class="masked-img" />
+            </div>
+            <div
+                class="absolute top-[15%] md:top-[30%] left-0 w-full px-0 md:px-8 xl:px-6 2xl:px-8 inner-banner-caption">
+                <div class="container">
+                    <nav aria-label="breadcrumb" class="breadcrumb_container pb-2 lg:pb-0 mb-2">
+
+                        @Html.Raw(Model.Content.BreadcrumPath)
+
+
+                    </nav>
+                    <div class="w-full sm:max-w-[60vw] lg:max-w-[35vw] innerbanner-title-outer">
+                        <h1 class="text-h1 innerbanner-title-heading ">
+                            @Html.Raw(Model.Content.Cont_hmpg_intro.CleanParagraphTags())
+                            
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<input id="hdncontent" type="hidden" value="@Model.Content.ContId" />
+
+<section class="section-spacing contactus-section relative">
+    <div class="hexagon-left-wrap floating-icon"><img src="/Assets/images/common-images/hexagon-vector-white-sm.svg" class="w-full object-cover " alt=""></div>
+    <div class="hexagon-right-wrap floating-icon"><img src="/Assets/images/common-images/hexagon-vector-white-sm.svg" class="w-full object-cover " alt=""></div> 
+    <div class="container">
+        <div class="sm:max-w-[85vw] lg:max-w-[65vw] mx-auto contact-form-wrapper">
+            <div class="wrapper-title title-heading-outer title-heading-outer-center pb-5 sm:pb-10">
+                <h2 class="text-h2 title-heading-anim ">
+                    @Html.Raw(Model.Content.Cont_intro.CleanParagraphTags())
+                </h2>
+            </div>
+        </div>
+      
+    </div>
+    </section>
+
+
+
+@section Scripts {
+
+    <script src="~/Assets/js/innerbanner-script.js"></script>
+    <script>
+        $(document).ready(function () {
+            var pagename = "@Model.Content.PageName";
+            if (pagename == "contact") {
+                $("#load_contact_form").show() 
+            }
+            else {
+                $("#load_contact_form").hide()
+            }
+        });
+    </script>
+    <script src="~/Assets/js/reveal-animation.js"></script>
+      
+    @if (Model.Content.PageName == "contact")
+    {
+        <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/Assets/js/fy-select-script.js"></script>
+        <script src="~/Assets/js/contactus-script.js"></script> 
+    }
+}

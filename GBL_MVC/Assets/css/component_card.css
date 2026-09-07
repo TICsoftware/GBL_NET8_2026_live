@@ -1,0 +1,46 @@
+
+
+    /* 🔹 Parent Container */
+    .parent-section {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 🔹 Child Section Wrapper */
+    #counterContainer {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-left: 5px solid #0d6efd;
+        border-radius: 8px;
+    }
+
+    /* 🔹 Each Child Card */
+    #counterContainer .accordion-item {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* 🔹 Child Header */
+    #counterContainer .accordion-button {
+        font-weight: 600;
+        background-color: #eef4ff;
+    }
+
+    /* 🔹 Indent Effect */
+    #counterContainer {
+        margin-left: 15px;
+    }
+
+    /* Optional: Child Label */
+    .child-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0d6efd;
+        margin-bottom: 10px;
+    }

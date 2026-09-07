@@ -1,0 +1,79 @@
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "SEO Generater";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+
+<h2>SEO Generater</h2>
+
+
+<div style="max-width:600px;margin:auto">
+
+    <h3>AI SEO Test</h3>
+
+    <label>Title</label>
+    <input type="text" id="title" class="form-control" />
+
+    <br />
+
+    <label>Content</label>
+    <textarea id="content" class="form-control" rows="5"></textarea>
+
+    <br />
+
+    <button id="btnGenerate" class="btn btn-primary">
+        Generate SEO
+    </button>
+
+    <hr />
+
+    <label>Meta Keywords</label>
+    <textarea id="keywords" class="form-control" rows="3"></textarea>
+
+    <br />
+
+    <label>Meta Description</label>
+    <textarea id="description" class="form-control" rows="3"></textarea>
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $("#btnGenerate").click(function () {
+
+        var title = $("#title").val();
+        var content = $("#content").val();
+
+        if (!title) {
+            alert("Enter title");
+            return;
+        }
+
+        $.ajax({
+            url: '/SeoGenerater/GenerateSEO',
+            type: 'POST',
+            data: {
+                title: title,
+                content: content
+            },
+            success: function (res) {
+                if (res.success) {
+                    $("#keywords").val(res.keywords);
+                    $("#description").val(res.description);
+                } else {
+                    alert(res.message);
+                }
+            },
+            error: function () {
+                alert("Error");
+            }
+        });
+    });
+
+
+   
+</script>

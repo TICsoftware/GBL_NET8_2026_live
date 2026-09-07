@@ -1,0 +1,37 @@
+{
+  "name": "GBL_MVC",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:css": "npx @tailwindcss/cli -i ./wwwroot/Assets/css/main.css -o ./wwwroot/dist/site.css --watch",
+    "build:css": "npx @tailwindcss/cli -i ./wwwroot/Assets/css/main.css -o ./wwwroot/dist/site.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "detect-libc": "^2.1.2",
+    "enhanced-resolve": "^5.20.1",
+    "graceful-fs": "^4.2.11",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "jiti": "^2.6.1",
+    "lightningcss": "^1.32.0",
+    "lightningcss-win32-x64-msvc": "^1.32.0",
+    "magic-string": "^0.30.21",
+    "mri": "^1.2.0",
+    "node-addon-api": "^7.1.1",
+    "picocolors": "^1.1.1",
+    "picomatch": "^4.0.4",
+    "source-map-js": "^1.2.1",
+    "tailwindcss": "^4.2.2",
+    "tapable": "^2.3.2",
+    "vite": "^8.0.8"
+  }
+}

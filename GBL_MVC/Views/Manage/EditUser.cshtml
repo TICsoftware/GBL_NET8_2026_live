@@ -1,0 +1,106 @@
+@model Core_project_BusinessLogic.Entity.Manage.UserEdit
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Dashboard.cshtml";
+    ViewData["Title"] = "Edit User";
+}
+
+<title>Edit User - TIC CMS</title>
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Manage" asp-action="Dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">Edit User</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <h2>Edit User</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="validation-clean mb-3">
+            <i class="bi bi-exclamation-circle"></i>
+            <div asp-validation-summary="All" class="mb-0"></div>
+        </div>
+    }
+
+    <form asp-action="EditUser" asp-controller="Manage" method="post">
+
+        <!-- ✅ Hidden Fields -->
+        <input type="hidden" asp-for="user_id" />
+        <input type="hidden" asp-for="secret" />
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <!-- Username -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Username</label>
+                                <input asp-for="username" class="form-control" />
+                                <span asp-validation-for="username" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Password</label>
+                                <input asp-for="password" type="password" class="form-control" placeholder="Leave blank to keep existing password" />
+                                @* <span asp-validation-for="password" class="text-danger"></span> *@
+                            </div>
+                        </div>
+
+                        <!-- User Type -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label>User type</label>
+                                <select asp-for="UserType_Id" class="form-control form-select"
+                                        asp-items="@(new SelectList(ViewBag.UserType, "Id", "Name"))">
+                                    <option value="">Select user type</option>
+                                </select>
+                                <span asp-validation-for="UserType_Id" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Email</label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Contact No</label>
+                                <input asp-for="PhoneNo" class="form-control" />
+                                <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-12 mt-3">
+                            <button type="submit" class="btn btn-success">Update</button>
+                            <a asp-action="UserList" class="btn btn-secondary">Cancel</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

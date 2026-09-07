@@ -1,0 +1,75 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var intro = Model?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault()
+        ?? Model?.OrderBy(x => x.Sequence).FirstOrDefault();
+
+    var media = !string.IsNullOrWhiteSpace(intro?.Component_right_image)
+        ? intro.Component_right_image
+        : (!string.IsNullOrWhiteSpace(intro?.ComponentThumbnail) ? intro.ComponentThumbnail : intro?.ThumbnailImage);
+    var mediaAlt = !string.IsNullOrWhiteSpace(intro?.Component_Right_image_alt)
+        ? intro.Component_Right_image_alt
+        : intro?.ComponentThumbnailAltText;
+    var title = !string.IsNullOrWhiteSpace(intro?.DisplayTitle) ? intro.DisplayTitle : intro?.Title;
+    var body = !string.IsNullOrWhiteSpace(intro?.Intro) ? intro.Intro : intro?.Content;
+    var tab1 = !string.IsNullOrWhiteSpace(intro?.Component_Button_Title1)
+        ? intro.Component_Button_Title1.CleanParagraphTags()
+        : "Testing services";
+    var tab2 = !string.IsNullOrWhiteSpace(intro?.Component_Button_Title2)
+        ? intro.Component_Button_Title2.CleanParagraphTags()
+        : "Technical support services";
+}
+
+@if (intro != null)
+{
+    <section class="technicalservices-intro section-spacing page-intro-outer">
+        <div class="container">
+            <div class="technicalservices-intro-row flex flex-col-reverse lg:flex-row lg:items-center gap-8 lg:gap-8 xl:gap-12">
+                <div class="intro-outer-wrapper technicalservices-intro-copy lg:max-w-[40%]">
+                    <div class="section-title-outer section-title-outer-start section-with-intro">
+                        @if (!string.IsNullOrWhiteSpace(title))
+                        {
+                            <h2 class="text-h2 title-section reveal-text">
+                                @Html.Raw(title.CleanParagraphTags())
+                            </h2>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(body))
+                        {
+                            <p>@Html.Raw(body.CleanParagraphTags())</p>
+                        }
+                    </div>
+
+                    <div data-tab-anchor class="mt-6 sm:mt-6 lg:mt-8">
+                        <div data-tab-wrap class="z-40 w-full">
+                            <div class="-mx-4 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:px-0">
+                                <div id="tabbar" role="tablist" aria-label="Technical services"
+                                     class="relative inline-flex w-max min-w-full rounded-full border border-border bg-white p-0.5 transition-all duration-300 sm:w-auto sm:min-w-0 sm:p-1.5">
+                                    <span id="tabpill" aria-hidden="true" class="pointer-events-none absolute left-0 top-0 rounded-full bg-secondary"></span>
+                                    <button type="button" role="tab" data-tab="onsite" aria-selected="true"
+                                            class="tab relative z-10 flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-300 sm:flex-none sm:px-7 sm:py-3 sm:text-base">
+                                        @Html.Raw(tab1)
+                                    </button>
+                                    <button type="button" role="tab" data-tab="support" aria-selected="false"
+                                            class="tab relative z-10 flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-300 sm:flex-none sm:px-7 sm:py-3 sm:text-base">
+                                        @Html.Raw(tab2)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(media))
+                {
+                    <div class="technicalservices-intro-media rounded-md parallax-wrap lg:max-w-[60%]">
+                        <img src="@media" alt="@mediaAlt" class="rounded-md object-cover shadow-card parallax-img" />
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

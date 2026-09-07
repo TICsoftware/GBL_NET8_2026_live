@@ -1,0 +1,34 @@
+@model Core_project_BusinessLogic.Entity.LanguageMaster
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Login.cshtml";
+    ViewData["Title"] = "Scan QR Code";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<link rel="stylesheet" href="/Assets/css/2FA_scan.css" />
+
+<div class="otp-container">
+    <div class="otp-card">
+
+        <h3 class="title">Verify OTP</h3>
+        <p class="subtitle">Enter the code from your authenticator app</p>
+
+        <form method="post">
+
+            <div class="form-group">
+                <label>Authentication Code</label>
+                <input name="otp" placeholder="Enter 6-digit code" maxlength="6" required />
+            </div>
+
+            <button type="submit" class="btn-verify">Verify</button>
+
+        </form>
+
+        <!-- Error Message -->
+        @if(ViewBag.Error != null)
+        {
+            <p class="error-message">@ViewBag.Error</p>
+        }
+
+    </div>
+</div>

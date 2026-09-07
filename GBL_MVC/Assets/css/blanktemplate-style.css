@@ -1,0 +1,134 @@
+﻿.innerbanner-title-heading {
+  overflow: visible;
+  color: var(--color-primary, #231F20);
+  display: inline-block;
+  position: relative;
+  font-weight: 500;
+}
+
+.innerbanner-title-heading .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.innerbanner-title-heading .char {
+  display: inline-block;
+  color: rgba(35, 31, 32, 0.35);
+  transition: color 0.35s ease;
+}
+
+.innerbanner-title-heading .char.revealed {
+  color: var(--color-primary, #231F20);
+}
+
+.innerbanner-title-heading .char.highlight.revealed {
+  color: var(--color-secondary, #ED1C24);
+}
+
+.innerbanner-title-heading.innerbanner-title-heading-white .char {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.innerbanner-title-heading.innerbanner-title-heading-white .char.revealed {
+  color: #fff;
+}
+
+/* ══════════════════════════════
+   BLANK TEMPLATE BANNER (no image)
+══════════════════════════════ */
+.blank-template-banner.inside-banner-outer {
+  margin-top: var(--header-h, 106px);
+}
+
+.blank-template-banner .blank-template-banner-inner {
+  position: relative;
+  min-height: clamp(140px, 22vw, 220px);
+  display: flex;
+  align-items: flex-end;
+  background: #f7f7f7;
+}
+
+.blank-template-banner .blank-template-banner-caption {
+  position: relative;
+  inset: auto;
+  z-index: 30;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.blank-template-banner .innerbanner-title,
+.blank-template-banner .innerbanner-title-heading {
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: var(--color-primary, #231F20);
+}
+
+/* Override common white char-fill for no-image banner */
+.blank-template-banner .innerbanner-title .word,
+.blank-template-banner .innerbanner-title-heading .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.blank-template-banner .innerbanner-title .char,
+.blank-template-banner .innerbanner-title-heading .char {
+  display: inline-block;
+  color: rgba(35, 31, 32, 0.35);
+  transition: color 0.35s ease;
+}
+
+.blank-template-banner .innerbanner-title .char.revealed,
+.blank-template-banner .innerbanner-title-heading .char.revealed {
+  color: var(--color-primary, #231F20);
+}
+
+.blank-template-banner .innerbanner-title .char.highlight.revealed,
+.blank-template-banner .innerbanner-title-heading .char.highlight.revealed {
+  color: var(--color-secondary, #ED1C24);
+}
+
+.blank-template-banner .breadcrumb-nav ol {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blank-template-banner .breadcrumb-nav a {
+  color: rgba(35, 31, 32, 0.7);
+  transition: color 0.2s ease;
+}
+
+.blank-template-banner .breadcrumb-nav a:hover {
+  color: var(--color-primary, #231F20);
+}
+
+.blank-template-banner .breadcrumb-nav .breadcrumb-sep {
+  color: rgba(35, 31, 32, 0.6);
+}
+
+.blank-template-banner .breadcrumb-nav .breadcrumb-current {
+  color: var(--color-primary, #231F20);
+  font-weight: 500;
+}
+
+@media (max-width: 1023px) {
+  .blank-template-banner .blank-template-banner-inner {
+    min-height: clamp(120px, 28vw, 180px);
+  }
+}
+
+@media (max-width: 767px) {
+  .blank-template-banner .blank-template-banner-inner {
+    min-height: 120px;
+  }
+
+  .blank-template-banner .blank-template-banner-caption {
+    padding: 1.25rem 0 1rem;
+  }
+}

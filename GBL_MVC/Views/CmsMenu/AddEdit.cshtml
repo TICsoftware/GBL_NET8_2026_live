@@ -1,0 +1,283 @@
+@model GBL_MVC.Models.Manage_Model.MenuHeaderModel
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_Menu.cshtml";
+
+    bool isEdit = Model != null && Model.MenuId > 0;
+
+    ViewData["Title"] = isEdit
+    ? "Edit Header Menu"
+    : "Add Header Menu";
+}
+
+<h2>@(isEdit ? "Edit Header Menu" : "Add Header Menu")</h2>
+
+<form asp-action="AddEdit" method="post" class="form-horizontal">
+
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.MenuId)
+
+    <div class="row">
+
+        <!-- Parent Menu -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="ParentMenuId">Parent Menu</label>
+
+                <select asp-for="ParentMenuId" class="form-select">
+                    <option value="">Main Menu</option>
+
+                    @if (ViewBag.ParentMenus != null)
+                    {
+                        @foreach (var m in ViewBag.ParentMenus)
+                        {
+                            @if (m.MenuId != Model.MenuId)
+                            {
+                                <option value="@m.MenuId">
+                                    @m.DisplayMenuName
+                                </option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Menu Name -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="MenuName">Menu Name *</label>
+                <input asp-for="MenuName" class="form-control" required />
+                <span asp-validation-for="MenuName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- URL -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Url">Menu URL</label>
+                <input asp-for="Url" class="form-control" placeholder="/about-us" />
+            </div>
+        </div>
+
+        <!-- Target -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Target">Target</label>
+
+                <select asp-for="Target" class="form-select">
+                    <option value="_self">Same Window (_self)</option>
+                    <option value="_blank">New Window (_blank)</option>
+                </select>
+            </div>
+        </div>
+
+
+        <!-- Menu Type -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="MenuCategory">Navigation Type</label>
+
+                <select asp-for="MenuCategory" class="form-select">
+                    <option value="1">Header Logo</option>
+                    <option value="2">Top Menu</option>
+                    <option value="3">Menu</option>
+                </select>
+
+                <span asp-validation-for="MenuCategory" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Menu Type -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="MenuType">Menu Type</label>
+
+                <select asp-for="MenuType" class="form-select">
+                    <option value="Normal">Normal Menu</option>
+                    <option value="MegaMenu">Mega Menu</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Display Order -->
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="Sequence">Display Order</label>
+                <input asp-for="Sequence" type="number" min="1" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+    <hr />
+
+    <h4>Mega Menu Feature Content</h4>
+
+    <div class="row">
+
+        <!-- Feature Title -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="FeatureTitle">Feature Title</label>
+                <input asp-for="FeatureTitle" class="form-control" />
+            </div>
+        </div>
+
+        <!-- Feature Description -->
+        <div class="col-md-12">
+            <div class="form-group mb-3">
+                <label asp-for="FeatureDescription">Feature Description</label>
+
+                <textarea asp-for="FeatureDescription" class="form-control editor-full" rows="4"></textarea>
+            </div>
+        </div>
+
+        <!-- Feature Image -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="FeatureImage">
+                    Feature Image
+                    <span class="mute small">(Max. size 500KB)</span>
+                </label>
+
+                <button type="button" id="btnFeatureImage" class="btn btn-outline-primary d-block select-media">
+                    Select Image
+                </button>
+
+                @Html.HiddenFor(model => model.FeatureImageId)
+                @Html.HiddenFor(model => model.Feature_Image_IsDelete)
+                @Html.HiddenFor(model => model.FeatureImage)
+
+                @if (!string.IsNullOrEmpty(Model.FeatureImage))
+                {
+                    <img src="@Model.FeatureImage"
+                        class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height mt-2"
+                        title="@Model.Thumb_image_alttext" />
+                }
+
+                @Html.ValidationMessageFor(model => model.FeatureImage)
+            </div>
+        </div>
+
+        <!-- Thumbnail Image -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Thumb_image">
+                    Logo / Thumb Image
+                    <span class="mute small">(Max. size 500KB)</span>
+                </label>
+
+                <button type="button" id="btnThumbImage" class="btn btn-outline-primary d-block select-media">
+                    Select Image
+                </button>
+
+                @Html.HiddenFor(model => model.Thumb_image_id)
+                @Html.HiddenFor(model => model.Thumb_image_IsDelete)
+                @Html.HiddenFor(model => model.Thumb_image)
+
+                @if (!string.IsNullOrEmpty(Model.Thumb_image))
+                {
+                    <img src="@Model.Thumb_image"
+                        class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height mt-2"
+                        title="@Model.Thumb_image_alttext" />
+                }
+
+                @Html.ValidationMessageFor(model => model.Thumb_image)
+            </div>
+        </div>
+
+        <!-- Feature Button Text -->
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                <label asp-for="FeatureButtonText">Feature Button Text</label>
+                <input asp-for="FeatureButtonText" class="form-control" placeholder="Learn More" />
+            </div>
+        </div>
+
+        <!-- Feature Button URL -->
+        <div class="col-md-5">
+            <div class="form-group mb-3">
+                <label asp-for="FeatureButtonUrl">Feature Button URL</label>
+                <input asp-for="FeatureButtonUrl" class="form-control" placeholder="/about-us" />
+            </div>
+        </div>
+
+        <!-- Feature Button Target -->
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="FeatureButtonTarget">Feature Button Target</label>
+
+                <select asp-for="FeatureButtonTarget" class="form-select">
+                    <option value="_self">Same Window (_self)</option>
+                    <option value="_blank">New Window (_blank)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- CSS Class -->
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="CssClass">CSS Class</label>
+                <input asp-for="CssClass" class="form-control" placeholder="custom-menu-class" />
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Record Type -->
+    <input asp-for="MenuCategory" type="hidden" />
+
+    <!-- Status -->
+    <div class="col-md-3">
+        <div class="form-group mb-3">
+            <label asp-for="Status">Status</label>
+
+            <select asp-for="Status" class="form-select">
+                <option value="2">Active</option>
+                <option value="0">Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(isEdit ? "Update Menu" : "Save Menu")
+        </button>
+
+        <a asp-action="List" class="btn btn-secondary">
+            Cancel
+        </a>
+    </div>
+
+</form>
+
+
+
+<div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" id="mediaManagerModalBody">
+
+            </div>
+
+            <div class="modal-footer d-flex justify-content-end gap-2">
+                <button id="btnAddImage" type="button" class="btn btn-primary Add">
+                    Add image
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

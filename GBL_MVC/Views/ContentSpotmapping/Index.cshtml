@@ -1,0 +1,487 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.ContentSpotMappingTemp>
+@using System.Data
+@using Core_project_BusinessLogic
+
+@{
+     Layout = null; 
+   
+    <link rel="shortcut icon" href="~/Assets/compiled/svg/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/Assets/compiled/css/app.css">
+    <link rel="stylesheet" href="~/Assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="~/Assets/compiled/css/custom-app.css">
+  @* <link rel="stylesheet" href="~/Assets/compiled/css/stride_output.css" /> *@
+   <!-- Page style -->
+    <link rel="stylesheet" href="~/Assets/extensions/flatpickr/flatpickr.min.css">
+
+    <!-- Page style -->
+    
+    var mappingList = ViewBag.MappingList as DataTable;
+    var contextList = ViewBag.ContextList as IEnumerable<dynamic>;
+    var templateList = ViewBag.TemplateList as IEnumerable<dynamic>;
+
+    // 🔹 Build lookup for already-added spots
+    var addedSet = new HashSet<string>();
+    if (mappingList != null)
+    {
+        foreach (DataRow r in mappingList.Rows)
+        {
+            addedSet.Add($"{r["spot_type"]}-{r["spot_id"]}");
+        }
+    }
+}
+
+
+<div id="layoutSpotFormContainer">
+
+    <form id="layoutForm" asp-action="Index" asp-controller="ContentSpotmapping">
+
+
+        <!--CONTEXT REFERENCES-->
+
+        <h3 class="mb-4">Content component Composer</h3>
+        <div class="card mb-4">
+            <div class="card-header fw-bold">Components</div>
+            <div class="card-body p-0">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:40px"></th>
+                            <th>ID</th>
+                            <th>Component Title</th>
+                            <th>Actions</th>
+                            <th>Layout</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (contextList != null)
+                        {
+                            foreach (var c in contextList)
+                            {
+                                bool isAdded = addedSet.Contains($"1-{c.ID}");
+                                <tr class="@(isAdded ? "table-secondary" : "")">
+                                    <td class="text-center">
+                                        <input type="checkbox" class="spot-checkbox" data-id="@c.ID" data-type="1" @(isAdded ?
+                                                                                                                                                       "disabled" : "") />
+                                    </td>
+                                    <td>@c.ID</td>
+                                    <td>@c.Title</td>
+                                    <td>
+                                        @{
+                                            var returnUrl = Context.Request.Path + Context.Request.QueryString+ "&openModal=1";
+                                        }
+
+                                        @if (!c.HasData)
+                                        {
+                                            <div class="d-inline-block me-2 mb-1">
+                                                <!-- No data exists → Show ADD button -->
+                                                <a asp-controller="DynamicData" asp-action="AddData"
+                                                    asp-route-encId="@CryptoEngine.Encrypt(c.ID.ToString())"
+                                                    asp-route-returnUrl="@returnUrl" class="btn btn-sm btn-outline-success">
+                                                    Add Data
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-inline-block me-2 mb-1">
+                                                <!-- Data exists → Show EDIT button -->
+                                                <a asp-controller="DynamicData" asp-action="EditData"
+                                                    asp-route-encId="@CryptoEngine.Encrypt(c.ID.ToString())"
+                                                    asp-route-returnUrl="@returnUrl" class="btn btn-sm btn-outline-primary">
+                                                    Edit Data
+                                                </a>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            onclick="showLayout(event, '@CryptoEngine.Encrypt(c.ID.ToString())')">
+                                            View Layout
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ======================================================
+     MAIN TEMPLATES
+====================================================== -->
+        <div class="card mb-4">
+            <div class="card-header fw-bold">Main Spot Templates</div>
+            <div class="card-body p-0">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:40px"></th>
+                            <th>ID</th>
+                            <th>Template Title</th>
+                            <th>Layout</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (templateList != null)
+                        {
+                            foreach (var t in templateList)
+                            {
+                                bool isAdded = addedSet.Contains($"2-{t.ID}");
+                                <tr class="@(isAdded ? "table-secondary" : "")">
+                                    <td class="text-center">
+                                        <input type="checkbox" class="spot-checkbox" data-id="@t.ID" data-type="2" @(isAdded ?
+                                                                                                                                                       "disabled" : "") />
+                                    </td>
+                                    <td>@t.ID</td>
+                                    <td>@t.Title</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            onclick="showLayoutTemplate(event, '@CryptoEngine.Encrypt(t.ID.ToString())')">
+                                            View Layout
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-end mb-4">
+            <input type="hidden" value="@TempData["tempid"]" id="hdntempid" />
+            <input type="hidden" value="@TempData["templateid_encrypted"]" id="hdntemplateid" />
+            <input type="hidden" value="@TempData["content_id_encrypted"]" id="hdncontentid" />
+            <button class="btn btn-success" id="btnAddSelected" type="button">
+                Add Selected Spots
+            </button>
+        </div>
+
+        <!-- ======================================================
+     PAGE ORDER / COMPOSITION
+====================================================== -->
+        <div class="card">
+            <div class="card-header fw-bold">Page Composition Order</div>
+            <div class="card-body p-0">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:60px">Seq</th>
+                            <th>Spot Title</th>
+                            <th style="width:120px">Type</th>
+                            <th style="width:160px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sortableBody">
+                        @if (mappingList == null || mappingList.Rows.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted p-3">
+                                    No spots added yet
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (DataRow r in mappingList.Rows)
+                            {
+                                int type = Convert.ToInt32(r["spot_type"]);
+                                <tr data-id="@r["cont_spot_temp_id"]" data-spotid="@r["spot_id"]" data-type="@r["spot_type"]">
+                                    <td>@r["cont_spot_sequence"]</td>
+                                    <td>@r["spot_title"]</td>
+                                    <td>@(type == 1 ? "Dynamic" : "Predefined")</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-secondary drag-handle" style="cursor:move">⇅ Drag</span>
+                                        <button class="btn btn-sm btn-outline-danger btn-delete"
+                                            data-id="@r["cont_spot_temp_id"]" data-cont="@r["cont_id"]">
+                                            ✖
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-end mb-3">
+                <button type="button" class="btn btn-outline-dark" id="btnPreviewPage">
+                    👁 Preview Page Order
+                </button>
+            </div>
+        </div>
+
+        <!--  MODALS-->
+        <div class="modal fade spot-layoutModal" id="layoutModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Layout Preview</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="layoutContainer"></div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="modal fade spot-layoutModal" id="layoutModalTemplate" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Template Preview</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="layoutContainerTemplate"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade spot-layoutModal" id="pagePreviewModal" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-semibold">Page Preview (Ordered)</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body" id="pagePreviewContainer">
+                        <!-- ordered preview injected here -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var openModal = '@ViewBag.OpenModal';
+
+        if (openModal === '1') {
+            var modal = new bootstrap.Modal(
+                document.getElementById('layoutModal')
+            );
+            modal.show();
+        }
+    });
+</script>
+<script>
+
+    $("#btnPreviewPage").click(function () {
+        let orderedSpots = [];
+
+        // Read current visual order
+        $("#sortableBody tr").each(function () {
+            alert('in');
+            orderedSpots.push({
+                spotId: $(this).data("spotid"),
+                spotType: $(this).data("type")
+            });
+        });
+
+        if (orderedSpots.length === 0) {
+            alert("No spots added to preview.");
+            return;
+        }
+
+        // Call server to build preview HTML
+        $.ajax({
+            url: '/ContentSpotMapping/PreviewPage',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(orderedSpots),
+            success: function (html) {
+                $("#pagePreviewContainer").html(html);
+                $("#pagePreviewModal").modal("show");
+            },
+            error: function () {
+                alert("Failed to generate preview.");
+            }
+        });
+    });
+</script>
+<script>
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+</script>
+<script>
+    //Read URL params
+    var contId = $("#hdncontentid").val();
+    var tempId = $("#hdntempid").val();
+alert(contId);
+    function reloadLayoutForm() { 
+        if(contId == 0)
+        {
+        $("#layoutSpotFormContainer").load(
+            "/ContentSpotmapping/Index?tempid=" + tempId + "&templateid=" + "@(TempData["templateid_encrypted"])"
+        );
+        }
+        else
+        {
+
+$("#layoutSpotFormContainer").load(
+            "/ContentSpotmapping/Index?contid=" + contId + "&templateid=" + "@(TempData["templateid_encrypted"])"
+        );
+
+        }
+        if($(".spot-checkbox").length>0)
+        {
+            $("#btnsubmit_spot_templates").text("Save and Continue");
+        }
+        else
+        {
+            $("#btnsubmit_spot_templates").text("Close");
+        }
+    }
+
+    $("#btnAddSelected").click(function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let selected = [];
+
+        $(".spot-checkbox:checked:not(:disabled)").each(function () {
+            selected.push({
+                SpotId: $(this).data("id"),
+                SpotType: $(this).data("type")
+            });
+        });
+
+        if (selected.length === 0) {
+            alert("Please select at least one new spot.");
+            return;
+        }
+
+
+
+        $.ajax({
+            url: '/ContentSpotMapping/AddMultiple',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                contId: contId,
+                tempId: tempId,
+                spots: selected
+            }),
+            success: function () {
+                reloadLayoutForm();
+            },
+            error: function () {
+                alert("Failed to add spots");
+            }
+        });
+    });
+
+    @* $("#btnAddSelected").click(function () {
+
+    let selected = [];
+
+    $(".spot-checkbox:checked:not(:disabled)").each(function () {
+        selected.push({
+            SpotId: $(this).data("id"),
+            SpotType: $(this).data("type")
+        });
+    });
+
+    if (selected.length === 0) {
+        alert("Please select at least one new spot.");
+        return;
+    }
+
+    $.ajax({
+        url: '/ContentSpotMapping/AddMultiple',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(selected),
+        success: () => location.reload(),
+        error: () => alert("Failed to add spots")
+    });
+}); *@
+
+        $(document).on("click", ".btn-delete", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!confirm("Remove this spot?")) return;
+
+            $.post('/ContentSpotMapping/DeleteMapping',
+                { id: $(this).data("id"), contId: $(this).data("cont") },
+                () => reloadLayoutForm()
+            );
+
+            var mapping_list_has_records = "@(mappingList != null && mappingList.Rows.Count > 0 ? "1" : 0)";
+            if (mapping_list_has_records == "1") {
+                $("#sortableBody").sortable({
+                    handle: ".drag-handle",
+                    update: function () {
+
+                        var order = [];
+
+                        $("#sortableBody tr").each(function (index) {
+                            order.push({
+                                id: $(this).data("id"),
+                                sequence: index + 1
+                            });
+                        });
+
+                        // 🔹 Save order via AJAX
+                        $.ajax({
+                            url: '/ContentSpotmapping/UpdateOrder',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(order),
+                            success: function () {
+                                reloadLayoutForm();
+                                console.log("Sequence updated");
+                            },
+                            error: function () {
+                                alert("Failed to update order");
+                            }
+                        });
+                    }
+                });
+            }
+
+             if($(".spot-checkbox").length>0)
+            {
+                $("#btnsubmit_spot_templates").text("Save and Continue");
+            }
+            else
+            {
+                $("#btnsubmit_spot_templates").text("Close");
+            }
+
+
+        });
+    function showLayout(e, encId) {
+        e.preventDefault();
+        e.stopPropagation();
+        fetch('/ContextReference/Render?encId=' + encId)
+            .then(r => r.json())
+            .then(d => {
+                $("#layoutContainer").html(d.finalHtml);
+                $("#layoutModal").modal('show');
+            });
+    }
+
+    function showLayoutTemplate(e, encId) {
+        e.preventDefault();
+        e.stopPropagation();
+        $.get('/MainSpotTemplateDetails/ViewLayout', { id: encId }, html => {
+            $("#layoutContainerTemplate").html(html);
+            $("#layoutModalTemplate").modal('show');
+        });
+    }
+
+    function load_selected_spot_templates_List() {  
+        window.parent.load_spot_templates_List();
+
+    }
+</script>

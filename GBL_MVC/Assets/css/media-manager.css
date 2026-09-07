@@ -1,0 +1,329 @@
+/* ===================================================
+   MEDIA MANAGER CONTAINER
+=================================================== */
+.media-container {
+    background-color: #ffffff;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,.04);
+}
+
+/* ===================================================
+   DRAG DROP ZONE
+=================================================== */
+#dropZone {
+    width: 100%;
+    min-height: 160px;
+    border: 2px dashed #d0d0d0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    background-color: #fafafa;
+    cursor: pointer;
+    transition: .2s ease;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6a6a6a;
+}
+
+#dropZone:hover {
+    border-color: #0d6efd;
+    background-color: #f0f6ff;
+}
+
+#dropZone.drag-active {
+    border-color: #0d6efd;
+    background-color: #e9f1ff;
+}
+
+/* ===================================================
+   PREVIEW CARD (INSIDE DROPZONE)
+=================================================== */
+.preview-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.preview-item {
+    width: 150px;
+    border: 1px solid #e1e1e1;
+    background: #ffffff;
+    padding: 6px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    position: relative;
+    text-align: center;
+    font-size: 11px;
+    transition: .15s ease;
+}
+
+.preview-item:hover {
+    transform: scale(1.05);
+    border-color: #0d6efd;
+    box-shadow: 0 3px 10px rgba(13,110,253,.2);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* ===================================================
+   REMOVE BUTTON (ON PREVIEW)
+=================================================== */
+.remove-image {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 18px;
+    height: 18px;
+    background: #ff4242;
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+
+/* ===================================================
+   FILE NAME (PREVIEW)
+=================================================== */
+.filename {
+    margin-top: 6px;
+    padding: 3px;
+    border-radius: 4px;
+    background: #f6f6f6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+/* ===================================================
+   FILE TYPE BADGE
+=================================================== */
+.file-badge {
+    display: inline-block;
+    padding: 3px 7px;
+    font-size: 9px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    border-radius: 3px;
+    margin-top: 4px;
+}
+
+.badge-pdf  { background: #e74c3c; }
+.badge-docx { background: #2980b9; }
+.badge-ppt  { background: #e67e22; }
+.badge-img  { background: #16a085; }
+.badge-file { background: #7f8c8d; }
+
+/* ===================================================
+   FILE ICON FOR NON-IMAGES (PREVIEW)
+=================================================== */
+.file-icon {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    border-radius: 4px;
+}
+
+.file-icon.pdf { background: #e74c3c; }
+.file-icon.doc { background: #2980b9; }
+.file-icon.ppt { background: #e67e22; }
+.file-icon.file { background: #7f8c8d; }
+
+/* ===================================================
+   FILTER TOOLBAR
+=================================================== */
+.toolbar {
+    margin-top: 12px;
+}
+
+.toolbar select,
+.toolbar input {
+    height: 36px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+/* ===================================================
+   MEDIA GRID (DISPLAY SECTION - LISTING)
+=================================================== */
+.media-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+    padding: 8px;
+    text-align: center;
+    border-radius: 6px;
+    height: 100%;
+    transition: .15s ease;
+    cursor: pointer;
+}
+
+.media-card:hover {
+    box-shadow: 0 4px 12px rgba(13,110,253,0.18);
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+}
+
+.media-card img {
+    width: 100%;
+    height: 120px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+/* title under image */
+.media-title {
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* alt for older template */
+.file-title {
+    font-size: 12px;
+    margin-top: 6px;
+    word-wrap: break-word;
+}
+
+/* actions */
+.file-actions {
+    margin-top: 6px;
+}
+
+.file-actions button {
+    width: 100%;
+    font-size: 11px;
+}
+
+/* ===================================================
+   FORM SPACING
+=================================================== */
+.filetype-margin {
+    margin-top: 10px !important;
+}
+
+/* ===================================================
+   ALERTS
+=================================================== */
+.alert {
+    margin-top: 12px;
+}
+
+/* ===================================================
+   PREVIEW SIDE PANEL (FIXED)
+=================================================== */
+.preview-panel {
+    position: relative;
+    right: 0px;
+    top: auto;
+    width: auto;
+    background: white;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+    border: 1px solid #e5e5e5;
+    display: none;
+    /* z-index: 2000; */
+}
+
+/* Inner preview box */
+#previewArea {
+    width: 100%;
+    height: 200px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+/* image inside preview panel */
+#previewArea img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+.outerflex-row { display: flex; flex-wrap: wrap;position: relative;}
+
+/* ===================================================
+   MOBILE VIEW
+=================================================== */
+@media (max-width: 576px) {
+
+    #dropZone { min-height: 130px; }
+
+    .preview-item { width: 95px; }
+
+    .preview-item img { height: 65px; }
+
+    .preview-panel {
+        position: static;
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+#btnSelectFiles{
+    z-index: 999999999999;
+}
+
+.imgPreview {
+    max-width: 150px;
+    max-height: 150px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    padding: 4px;
+    margin-top: 6px;
+    border-radius: 6px;
+    /* display: none; */
+    background-color: #f8f9fa;
+}
+
+
+.pdfPreview{
+    display: none;
+}
+
+#cropModal .modal-body {
+    max-height: 70vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cropImage {
+    max-width: 100%;
+    max-height: 60vh;
+    display: block;
+}

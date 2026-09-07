@@ -1,0 +1,150 @@
+@{
+    var cspNonce = Context.Items["CSPNonce"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <link rel="shortcut icon" href="~/Assets/compiled/svg/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/Assets/compiled/css/app.css">
+    <link rel="stylesheet" href="~/Assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="~/Assets/compiled/css/custom-app.css">
+  @* <link rel="stylesheet" href="~/Assets/compiled/css/stride_output.css" /> *@
+   <!-- Page style -->
+    <link rel="stylesheet" href="~/Assets/extensions/flatpickr/flatpickr.min.css">
+<link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+    <link rel="stylesheet" href="~/Assets/css/content_ckeditor.css" />
+    <link rel="stylesheet" href="~/Assets/css/content_context_accordion.css" />
+    <link rel="stylesheet" href="~/Assets/css/content_form.css" />
+     @await RenderSectionAsync("head", required: false)
+</head>
+<body>
+
+
+<div id="app">
+
+   @Html.Partial("~/Views/Shared/Manage/_Layout_sidebar.cshtml")
+
+
+        <div id="main" class='layout-navbar navbar-fixed'>
+
+
+            @Html.Partial("~/Views/Shared/Manage/_Layout_header.cshtml")
+
+            <div id="main-content">
+               @RenderBody()
+            </div>
+
+@Html.Partial("~/Views/Shared/Manage/_Layout_footer.cshtml")
+  
+
+        </div>
+    </div>
+
+    <!-- Vertically Centered modal Modal -->
+    <div class="modal fade" id="btnaddserverimages" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-6 col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical" class="form-label">Keyword</label>
+                                <input type="text" id="txtKeyword" class="form-control" name="fname" placeholder="Enter Keyword">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group ">
+                                <label for="first-name-vertical" class="form-label">Images</label>
+                                <select class="form-select" id="ddthumbimg">
+                                    <option>Select</option>
+                                    <option>Thumbnail webp images</option>
+                                    <option>Thumbnail images</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary"> <span class="d-none d-sm-block">Search</span> </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="btnaddserver_iconimages" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-6 col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical" class="form-label">Keyword</label>
+                                <input type="text" id="txtKeywordicon" class="form-control" name="fname" placeholder="Enter Keyword">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group ">
+                                <label for="first-name-vertical" class="form-label">Images</label>
+                                <select class="form-select" id="ddthumbimgicon">
+                                    <option>Select</option>
+                                    <option>icons images</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary"> <span class="d-none d-sm-block">Search</span> </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/Assets/static/js/components/dark.js"></script>
+    <script src="/Assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/Assets/compiled/js/app.js"></script>
+
+    <!-- Page Scripts -->
+    <script src="/Assets/extensions/flatpickr/flatpickr.min.js"></script>
+    <script src="/Assets/static/js/pages/date-picker.js"></script>
+    <!-- <script defer type="text/javascript" src="assets/compiled/js/jquery-3.7.1.min.js"></script> -->
+    <script src="/Assets/compiled/js/custom-app.js"></script>
+    <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="~/Assets/css/media-manager.css" />
+    <script src="~/Assets/scripts/media-manager.js"></script>
+
+        <script type="importmap" nonce="@cspNonce">
+         {
+            "imports": {
+            "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+            "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+            }
+        }
+    </script>
+    <script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+    <script src="~/Assets/scripts/manage_content.js" type="module"></script>
+    <script src="~/Assets/scripts/content_context_accordion.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

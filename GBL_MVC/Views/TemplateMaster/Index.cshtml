@@ -1,0 +1,99 @@
+@model IEnumerable<Core_project_BusinessLogic.Entity.TemplateMaster>
+@using Core_project_BusinessLogic
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "List Template Master";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["AlertMessage"]
+    </div>
+}
+
+<div class="mb-3">
+    <a asp-action="AddTemplateMaster" class="btn btn-primary">
+        Add New
+    </a>
+</div>
+
+<table class="table table-bordered table-striped table-hover template-master-table">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Language Master</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th class="template-master-col-actions">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ID</td>
+                    <td>@item.Language_Master_ID</td>
+                    <td>@item.Name</td>
+                    <td>
+                        @if (item.Status == 1)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </td>
+                    <td>@item.Created_Date?.ToString("dd-MMM-yyyy")</td>
+                    <td>@item.Updated_Date?.ToString("dd-MMM-yyyy")</td>
+
+                    <td>
+                        <div class="template-master-actions">
+                            <a asp-action="EditTemplateMaster" asp-route-Id="@CryptoEngine.Encrypt(item.ID.ToString())" class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                            @if (item.Status == 1)
+                            {
+                                <a asp-action="Deactivate"
+                                   asp-route-encId="@CryptoEngine.Encrypt(item.ID.ToString())"
+                                   class="btn btn-sm btn-outline-danger js-deactivate-confirm"
+                                   data-confirm-message="Are you sure you want to deactivate this template?">
+                                    Deactivate
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    No templates found.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section head {
+    <link rel="stylesheet" href="~/Assets/css/template-master-style.css" />
+}
+
+@section Scripts {
+    <script src="~/Assets/scripts/template_master_index.js"></script>
+}

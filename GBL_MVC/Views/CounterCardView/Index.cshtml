@@ -1,0 +1,137 @@
+@using GBL_MVC.Models.Manage_Model
+@model OurStoryViewModel
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    /* 🔹 Parent Container */
+    .parent-section {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 🔹 Child Section Wrapper */
+    #counterContainer {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-left: 5px solid #0d6efd;
+        border-radius: 8px;
+    }
+
+    /* 🔹 Each Child Card */
+    #counterContainer .accordion-item {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* 🔹 Child Header */
+    #counterContainer .accordion-button {
+        font-weight: 600;
+        background-color: #eef4ff;
+    }
+
+    /* 🔹 Indent Effect */
+    #counterContainer {
+        margin-left: 15px;
+    }
+
+    /* Optional: Child Label */
+    .child-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0d6efd;
+        margin-bottom: 10px;
+    }
+</style>
+
+<form asp-action="SaveOurStory" method="post">
+    <div class="container parent-section">
+        <div class="child-label">
+            About-us
+        </div>
+        <div class="form-group mb-3">
+            <label>Main Title</label>
+            <input asp-for="MainTitle" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+
+        <hr />
+
+        <div class="child-label">
+            Blocks (<span id="blockCount">@Model.CounterCards.Count</span>)
+        </div>
+
+        <div id="counterContainer" class="accordion">
+
+            @for (int i = 0; i < Model.CounterCards.Count; i++)
+            {
+                <partial name="_CounterCardPartial" for="CounterCards[i]" />
+            }
+
+        </div>
+
+        <button type="button" id="addCounter" class="btn btn-primary mt-2">
+            + Add Block
+        </button>
+
+        <button type="submit" class="btn btn-success mt-3">
+            Save
+        </button>
+
+    </div>
+</form>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <script>
+        $(function () {
+
+            var index = @Model.CounterCards.Count;
+
+            function updateBlockCount() {
+                var total = $("#counterContainer .accordion-item").length;
+                $("#blockCount").text(total);
+            }
+
+            $("#addCounter").click(function () {
+
+                $.get('@Url.Action("LoadCounterCard", "CounterCardView")',
+                    { index: index },
+                    function (data) {
+
+                        $("#counterContainer").append(data);
+                        index++;
+                        updateBlockCount();   // 🔥 Update count
+                    });
+            });
+
+            $(document).on("click", ".remove-card", function () {
+                $(this).closest(".accordion-item").remove();
+                updateBlockCount();       // 🔥 Update count
+            });
+
+            $("#counterContainer").sortable({
+                handle: ".drag-handle"
+            });
+
+            // Initial count set
+            updateBlockCount();
+
+        });
+    </script>
+}

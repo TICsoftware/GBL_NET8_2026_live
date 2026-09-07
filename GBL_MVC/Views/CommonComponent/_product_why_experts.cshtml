@@ -1,0 +1,69 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var header = Model?
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var items = Model?
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList() ?? new List<ComponentModel>();
+
+    var sectionTitle = !string.IsNullOrWhiteSpace(header?.DisplayTitle)
+        ? header.DisplayTitle
+        : (!string.IsNullOrWhiteSpace(header?.Title) ? header.Title : (!string.IsNullOrWhiteSpace(header?.Section_title) ? header.Section_title : ""));
+}
+
+@if (items.Any() || header != null)
+{
+    <section class="section-spacing whyexperts-section relative overflow-hidden">
+        <div class="bgimage-outer-wrap" aria-hidden="true">
+            <img src="/Assets/images/bg-image.webp" alt="" class="w-full h-full object-cover bg-image">
+        </div>
+        <div class="container">
+            @if (!string.IsNullOrWhiteSpace(sectionTitle))
+            {
+                <h3 class="text-h4">@Html.Raw(sectionTitle.CleanParagraphTags())</h3>
+            }
+            <div class="mt-4 grid gap-10 border-t border-[#EAEAEA] pt-6 product-content-max lg:max-w-6xl lg:grid-cols-2 lg:gap-x-16">
+                @foreach (var item in items)
+                {
+                    var icon = !string.IsNullOrWhiteSpace(item.Component_Icon_Image)
+                        ? item.Component_Icon_Image
+                        : (!string.IsNullOrWhiteSpace(item.Icon_Image) ? item.Icon_Image : item.ThumbnailImage);
+                    var title = !string.IsNullOrWhiteSpace(item.DisplayTitle) ? item.DisplayTitle : item.Title;
+                    var body = !string.IsNullOrWhiteSpace(item.Content) ? item.Content : item.Intro;
+                    <article class="flex gap-7 whyexperts-article">
+                        <span class="grid shrink-0 place-items-center bg-white shadow-tile whyexperts-icon">
+                            @if (!string.IsNullOrWhiteSpace(icon))
+                            {
+                                <img src="@icon" alt="" class="h-auto w-auto object-cover shrink-0">
+                            }
+                        </span>
+                        <div class="whyexperts-content">
+                            <h4 class="text-20">@Html.Raw(title.CleanParagraphTags())</h4>
+                            @if (!string.IsNullOrWhiteSpace(body))
+                            {
+                                <p>@Html.Raw(body.CleanParagraphTags())</p>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+
+                  @if (!string.IsNullOrWhiteSpace(header.Content))
+                        {
+            <div class="product-content-max mt-5">
+           
+                           @Html.Raw((!string.IsNullOrWhiteSpace(header.Content) ? header.Content : ""))
+                      
+                        </div>
+
+                          }
+        </div>
+    </section>
+}
