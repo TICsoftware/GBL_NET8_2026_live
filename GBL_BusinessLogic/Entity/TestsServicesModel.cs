@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Priya_Cement_BusinessLogic.Entity
+namespace GBL_BusinessLogic.Entity
 {
     public class TestsServicesModel
     {
