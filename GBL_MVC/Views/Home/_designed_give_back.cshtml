@@ -1,0 +1,83 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var cells = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null)
+{
+<section class="section-spacing designedGiveBack">
+  <div class="container">
+    <div class="section-intro">
+      <div class="section-intro__title title-section">
+        <h2 class="text-h2">
+          @Html.Raw(
+              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                  ? Component.DisplayTitle.CleanParagraphTags()
+                  : Component.Title)
+        </h2>
+      </div>
+
+      <div class="section-intro__content">
+        @if (!string.IsNullOrWhiteSpace(Component.Intro))
+        {
+            <p>@Html.Raw(Component.Intro.CleanParagraphTags())</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Component.Url))
+        {
+            <a href="@Component.Url" class="site-link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "Know More")
+            </a>
+        }
+      </div>
+    </div>
+
+    @if (cells.Any())
+    {
+    <div class="giveback-grid">
+      @foreach (var item in cells)
+      {
+          var img = !string.IsNullOrWhiteSpace(item.ComponentThumbnail)
+              ? item.ComponentThumbnail
+              : item.ThumbnailImage;
+          var isMedia = !string.IsNullOrWhiteSpace(img)
+              && string.IsNullOrWhiteSpace(item.Landing_Intro)
+              && string.IsNullOrWhiteSpace(item.Intro);
+          var extraClass = !string.IsNullOrWhiteSpace(item.bg_class)
+              ? item.bg_class
+              : "";
+
+          if (isMedia)
+          {
+              var mediaClass = string.IsNullOrWhiteSpace(extraClass)
+                  ? "giveback-cell giveback-cell--media"
+                  : $"giveback-cell giveback-cell--media {extraClass}";
+              var alt = !string.IsNullOrWhiteSpace(item.ComponentThumbnailAltText)
+                  ? item.ComponentThumbnailAltText
+                  : item.Title;
+              <div class="@mediaClass">
+                <img src="@img" alt="@alt">
+              </div>
+          }
+          else
+          {
+                @Html.Raw(item.Intro.CleanParagraphTags())
+              
+          }
+      }
+    </div>
+    }
+  </div>
+</section>
+}

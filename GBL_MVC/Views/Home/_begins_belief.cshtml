@@ -1,0 +1,79 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var slides = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+
+    var sectionTitle = Component != null
+        ? (!string.IsNullOrWhiteSpace(Component.DisplayTitle)
+            ? Component.DisplayTitle.CleanParagraphTags()
+            : Component.Title)
+        : "It Begins with a Belief";
+}
+
+@if (slides.Any())
+{
+<section class="section-pt beginsBelief bg-gray">
+  <div class="container">
+    <div class="belief-layout">
+      <div class="swiper belief-media-swiper">
+        <div class="swiper-wrapper">
+          @foreach (var item in slides)
+          {
+              var img = !string.IsNullOrWhiteSpace(item.ComponentThumbnail)
+                  ? item.ComponentThumbnail
+                  : item.ThumbnailImage;
+              var alt = !string.IsNullOrWhiteSpace(item.ComponentThumbnailAltText)
+                  ? item.ComponentThumbnailAltText
+                  : item.ThumbnailAltText;
+              <div class="swiper-slide">
+                <div class="belief-slide__media">
+                  <img src="@img" alt="@alt">
+                </div>
+              </div>
+          }
+        </div>
+      </div>
+
+      <div class="belief-copy">
+        <h2 class="text-h2 belief-slide__title">@Html.Raw(sectionTitle)</h2>
+        <div class="swiper belief-text-swiper">
+          <div class="swiper-wrapper">
+            @foreach (var item in slides)
+            {
+                var quote = !string.IsNullOrWhiteSpace(item.Content) ? item.Content : item.Intro;
+                var name = !string.IsNullOrWhiteSpace(item.BlockDisplayTitle) ? item.BlockDisplayTitle : item.Title;
+                <div class="swiper-slide">
+                  @if (!string.IsNullOrWhiteSpace(quote))
+                  {
+                      <blockquote class="belief-slide__quote">
+                        <p>@Html.Raw(quote.CleanParagraphTags())</p>
+                      </blockquote>
+                  }
+                  @if (!string.IsNullOrWhiteSpace(name))
+                  {
+                      <p class="belief-slide__name">@Html.Raw(name.CleanParagraphTags())</p>
+                  }
+                  @if (!string.IsNullOrWhiteSpace(item.Designation))
+                  {
+                      <p class="belief-slide__role">@Html.Raw(item.Designation.CleanParagraphTags())</p>
+                  }
+                </div>
+            }
+          </div>
+        </div>
+        <div class="swiper-pagination belief-pagination"></div>
+      </div>
+    </div>
+  </div>
+</section>
+}

@@ -1,0 +1,128 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var principles = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null)
+{
+    var frameImg = !string.IsNullOrWhiteSpace(Component.ComponentThumbnail)
+        ? Component.ComponentThumbnail
+        : (!string.IsNullOrWhiteSpace(Component.Component_Background_image)
+            ? Component.Component_Background_image
+            : Component.ThumbnailImage);
+    var frameAlt = !string.IsNullOrWhiteSpace(Component.ComponentThumbnailAltText)
+        ? Component.ComponentThumbnailAltText
+        : Component.ThumbnailAltText;
+
+<section class="ourPhilosophy" aria-label="Our Philosophy and Guiding Principles">
+  <div class="philosophy-track">
+  <div class="philosophy-sticky">
+
+    <div class="container philosophy-copy  section-spacing">
+      <div class="section-intro">
+        <div class="section-intro__title title-section">
+          <h2 class="text-h2">
+            @Html.Raw(
+                !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                    ? Component.DisplayTitle.CleanParagraphTags()
+                    : Component.Title)
+          </h2>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Component.Intro))
+        {
+            <div class="section-intro__content">
+              <p>@Html.Raw(Component.Intro.CleanParagraphTags())</p>
+            </div>
+        }
+      </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(frameImg))
+    {
+        <div class="philosophy-frame" data-philosophy-frame>
+          <img src="@frameImg" alt="@frameAlt">
+          <div class="philosophy-frame__veil" aria-hidden="true"></div>
+        </div>
+    }
+
+    @if (principles.Any())
+    {
+    <div class="philosophy-infographic" data-philosophy-infographic>
+      <div class="philosophy-infographic__grid">
+        @{
+            var topLeft = principles.ElementAtOrDefault(0);
+            var topRight = principles.ElementAtOrDefault(1);
+            var bottomLeft = principles.ElementAtOrDefault(2);
+            var bottomRight = principles.ElementAtOrDefault(3);
+              var Center = principles.ElementAtOrDefault(4);
+        }
+
+        @if (topLeft != null)
+        {
+            <article class="philosophy-card" data-principle="tl">
+              <h3>@Html.Raw((!string.IsNullOrWhiteSpace(topLeft.BlockDisplayTitle) ? topLeft.BlockDisplayTitle : topLeft.Title).CleanParagraphTags())</h3>
+              @if (!string.IsNullOrWhiteSpace(topLeft.Intro) || !string.IsNullOrWhiteSpace(topLeft.Content))
+              {
+                  <p>@Html.Raw((!string.IsNullOrWhiteSpace(topLeft.Intro) ? topLeft.Intro : topLeft.Content).CleanParagraphTags())</p>
+              }
+            </article>
+        }
+        @if (topRight != null)
+        {
+            <article class="philosophy-card" data-principle="tr">
+              <h3>@Html.Raw((!string.IsNullOrWhiteSpace(topRight.BlockDisplayTitle) ? topRight.BlockDisplayTitle : topRight.Title).CleanParagraphTags())</h3>
+              @if (!string.IsNullOrWhiteSpace(topRight.Intro) || !string.IsNullOrWhiteSpace(topRight.Content))
+              {
+                  <p>@Html.Raw((!string.IsNullOrWhiteSpace(topRight.Intro) ? topRight.Intro : topRight.Content).CleanParagraphTags())</p>
+              }
+            </article>
+        }
+
+        @if (Center != null)
+        {
+        <div class="philosophy-hub">
+          <div class="philosophy-hub__inner">
+              <h3>@Html.Raw((!string.IsNullOrWhiteSpace(Center.BlockDisplayTitle) ? Center.BlockDisplayTitle : Center.Title).CleanParagraphTags())</h3>
+          
+          </div>
+        </div>
+        }
+
+        @if (bottomLeft != null)
+        {
+            <article class="philosophy-card" data-principle="bl">
+              <h3>@Html.Raw((!string.IsNullOrWhiteSpace(bottomLeft.BlockDisplayTitle) ? bottomLeft.BlockDisplayTitle : bottomLeft.Title).CleanParagraphTags())</h3>
+              @if (!string.IsNullOrWhiteSpace(bottomLeft.Intro) || !string.IsNullOrWhiteSpace(bottomLeft.Content))
+              {
+                  <p>@Html.Raw((!string.IsNullOrWhiteSpace(bottomLeft.Intro) ? bottomLeft.Intro : bottomLeft.Content).CleanParagraphTags())</p>
+              }
+            </article>
+        }
+        @if (bottomRight != null)
+        {
+            <article class="philosophy-card" data-principle="br">
+              <h3>@Html.Raw((!string.IsNullOrWhiteSpace(bottomRight.BlockDisplayTitle) ? bottomRight.BlockDisplayTitle : bottomRight.Title).CleanParagraphTags())</h3>
+              @if (!string.IsNullOrWhiteSpace(bottomRight.Intro) || !string.IsNullOrWhiteSpace(bottomRight.Content))
+              {
+                  <p>@Html.Raw((!string.IsNullOrWhiteSpace(bottomRight.Intro) ? bottomRight.Intro : bottomRight.Content).CleanParagraphTags())</p>
+              }
+            </article>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  </div>
+</section>
+}

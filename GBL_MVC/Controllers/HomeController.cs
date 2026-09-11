@@ -26,12 +26,12 @@ public class HomeController : Controller
        
         //string connstr1 = "user id=sa;data source=192.168.2.6;persist security info=True;initial catalog=GBL_2026;password=26%TiC@SqL20;Encrypt=True;TrustServerCertificate=True";
         string connstr1 = "user id=sa;data source=tic_dbnet;persist security info=True;initial catalog=GBL_2026;password=DB#SqL2023TiC;Encrypt=True;TrustServerCertificate=True";
-        string connstrlive = "user id=sa;data source=Priyacement\\SQLEXPRESS;persist security info=True;initial catalog=GBL_2026;password=T!5h0@A7i4rD;Encrypt=True;TrustServerCertificate=True";
-         string connstr2 = "user id=sa;data source=tic_dbnet;persist security info=True;initial catalog=Priyacement_2026_phase2;password=DB#SqL2023TiC;Encrypt=True;TrustServerCertificate=True";
+        string connstrlive = "user id=sa;data source=godavaribiorefineries\\SQLEXPRESS;persist security info=True;initial catalog=GBL_2026;password=T!5h0@A7i4rD;Encrypt=True;TrustServerCertificate=True";
+         string connstr2 = "user id=sa;data source=tic_dbnet;persist security info=True;initial catalog=godavaribiorefineries_2026_phase2;password=DB#SqL2023TiC;Encrypt=True;TrustServerCertificate=True";
  
         //ViewBag.encryptstr = Core_project_BusinessLogic.CryptoEngine.Encrypt(connstr);
         //  string connstr = "user id=sa;data source=49.50.111.21;persist security info=True;initial catalog=Oncopath_2026;password=D#$%%6QWe@@#4;Encrypt=True;TrustServerCertificate=True";
-        string encryptstr = Core_project_BusinessLogic.CryptoEngine.Encrypt(connstr2);
+        string encryptstr = Core_project_BusinessLogic.CryptoEngine.Encrypt(connstr1);
 
 
 

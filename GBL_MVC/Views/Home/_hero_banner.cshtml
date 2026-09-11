@@ -1,0 +1,113 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var slides = Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList();
+    var total = slides.Count;
+}
+
+@if (slides.Any())
+{
+<section class="heroBanner" aria-label="Homepage banner">
+  <div class="swiper hero-swiper">
+    <div class="swiper-wrapper">
+      @for (var i = 0; i < slides.Count; i++)
+      {
+          var item = slides[i];
+          var desktopImg = !string.IsNullOrWhiteSpace(item.banner_image_webp)
+              ? item.banner_image_webp
+              : (!string.IsNullOrWhiteSpace(item.Component_Background_image)
+                  ? item.Component_Background_image
+                  : item.ThumbnailImage);
+          var mobileImg = !string.IsNullOrWhiteSpace(item.banner_mobile_image) ? item.banner_mobile_image : desktopImg;
+          var thumbImg = !string.IsNullOrWhiteSpace(item.ComponentThumbnail) ? item.ComponentThumbnail : desktopImg;
+          var alt = !string.IsNullOrWhiteSpace(item.ComponentThumbnailAltText)
+              ? item.ComponentThumbnailAltText
+              : item.ThumbnailAltText;
+          var titleHtml = !string.IsNullOrWhiteSpace(item.DisplayTitle)
+              ? item.DisplayTitle.CleanParagraphTags()
+              : item.Title;
+          var videoPath = !string.IsNullOrWhiteSpace(item.component_Video_path)
+              ? item.component_Video_path
+              : item.Video_path;
+          var poster = !string.IsNullOrWhiteSpace(item.Video_poster) ? item.Video_poster : desktopImg;
+          var hasVideo = !string.IsNullOrWhiteSpace(videoPath);
+          var slideClass = i == 0 ? "swiper-slide swiper-slide-diff" : "swiper-slide";
+
+          <div class="@slideClass">
+            <article class="hero-slide">
+              <div class="hero-slide__media">
+                @if (hasVideo)
+                {
+                    <video class="hero-slide__video" muted playsinline preload="metadata" poster="@poster">
+                      <source src="@videoPath" type="video/mp4">
+                    </video>
+                }
+                else
+                {
+                    <picture>
+                      <source media="(max-width: 767px)" srcset="@mobileImg" type="image/webp">
+                      <source media="(min-width: 768px)" srcset="@desktopImg" type="image/webp">
+                      <img src="@desktopImg" alt="@alt">
+                    </picture>
+                }
+              </div>
+              <div class="container hero-slide__content">
+                @if (i == 0)
+                {
+                    <h1 class="hero-slide__caption">
+                      @Html.Raw(titleHtml)
+                    </h1>
+                }
+                else
+                {
+                    <h2 class="hero-slide__caption">
+                      @Html.Raw(titleHtml)
+                    </h2>
+                }
+                @if (!string.IsNullOrWhiteSpace(item.Url))
+                {
+                    <a href="@item.Url" class="hero-slide__cta">
+                      <span aria-hidden="true">&rarr;</span>
+                      @(!string.IsNullOrWhiteSpace(item.Url_Text) ? item.Url_Text : "Read more")
+                    </a>
+                }
+              </div>
+            </article>
+          </div>
+      }
+    </div>
+  </div>
+
+  <button type="button" class="hero-nav hero-nav--prev" aria-label="Previous slide">
+    <span aria-hidden="true">&lsaquo;</span>
+  </button>
+  <button type="button" class="hero-nav hero-nav--next" aria-label="Next slide">
+    <span aria-hidden="true">&rsaquo;</span>
+  </button>
+
+  <div class="hero-thumbs-wrap">
+    <div class="swiper hero-thumbs">
+      <div class="swiper-wrapper">
+        @for (var i = 0; i < slides.Count; i++)
+        {
+            var item = slides[i];
+            var thumbImg = !string.IsNullOrWhiteSpace(item.ComponentThumbnail)
+                ? item.ComponentThumbnail
+                : (!string.IsNullOrWhiteSpace(item.banner_image_webp)
+                    ? item.banner_image_webp
+                    : item.Component_Background_image);
+            var activeClass = i == 0 ? "swiper-slide is-active" : "swiper-slide";
+            <div class="@activeClass" data-hero-index="@i">
+              <img src="@thumbImg" alt="">
+            </div>
+        }
+      </div>
+    </div>
+    <p class="hero-counter" aria-live="polite">
+      <span class="hero-counter__current">01</span><span class="hero-counter__total"> / @(total.ToString("00"))</span>
+    </p>
+  </div>
+</section>
+}

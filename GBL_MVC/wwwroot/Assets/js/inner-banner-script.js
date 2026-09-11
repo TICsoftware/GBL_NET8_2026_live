@@ -1,171 +1,145 @@
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
-
-  const banner = document.querySelector(".inside-banner-outer");
-  const image = document.querySelector(".innerbanner-image");
-  const caption = document.querySelector(".innerbanner-caption");
-  const title = document.querySelector(".innerbanner-title");
-  const breadcrumb = document.querySelector(".breadcrumb-nav");
-  if (!banner || !image) return;
+/* ---------------------------------------
+   INNER BANNER — scroll zoom (site-wide)
+   Scales the banner image up on scroll down,
+   and eases back on scroll up.
+   Markup: .inside-banner-outer .innerbanner-image
+--------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+  }
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.matchMedia("(max-width: 992px)").matches;
+  const stScroller = isMobile ? window : document.documentElement;
 
-  function splitText(el) {
-    const chars = [];
-    const frag = document.createDocumentFragment();
-    let currentWord = null;
+  initInnerBannerZoom();
+  initPageIntroFill();
 
-    function flushWord() {
-      if (currentWord && currentWord.childNodes.length) {
-        frag.appendChild(currentWord);
-      }
-      currentWord = null;
-    }
-
-    function newWord() {
-      const w = document.createElement("span");
-      w.className = "word";
-      w.style.display = "inline-block";
-      return w;
-    }
-
-    function addChar(letter, highlight) {
-      if (!currentWord) currentWord = newWord();
-      const c = document.createElement("span");
-      c.className = "char" + (highlight ? " highlight" : "");
-      c.textContent = letter;
-      c.style.display = "inline-block";
-      currentWord.appendChild(c);
-      chars.push(c);
-    }
-
-    function processText(text, highlight) {
-      text.split(/(\s+)/).forEach((part) => {
-        if (part === "") return;
-        if (/^\s+$/.test(part)) {
-          flushWord();
-          frag.appendChild(document.createTextNode(" "));
-        } else {
-          [...part].forEach((letter) => addChar(letter, highlight));
-        }
-      });
-    }
-
-    function walk(node, highlight) {
-      node.childNodes.forEach((child) => {
-        if (child.nodeType === Node.TEXT_NODE) {
-          processText(child.textContent, highlight);
-        } else if (child.nodeType === Node.ELEMENT_NODE) {
-          walk(child, highlight || child.tagName === "SPAN");
-        }
-      });
-    }
-
-    walk(el, false);
-    flushWord();
-
-    el.textContent = "";
-    el.appendChild(frag);
-
-    return { chars };
-  }
-
-  // Natural size on load — zoom only happens while scrolling
-  gsap.set(image, {
-    scale: 1,
-    yPercent: 0,
-    transformOrigin: "50% 50%",
-    force3D: true,
-  });
-
-  if (!reduceMotion) {
-    gsap.to(image, {
-      yPercent: 12,
-      scale: 1.12,
-      ease: "none",
-      force3D: true,
-      scrollTrigger: {
-        trigger: banner,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-  }
-
-  // Title char fill on load + light breadcrumb fade (no whole-caption slide)
-  if (!caption) return;
-
-  if (reduceMotion) {
-    if (title) {
-      const { chars } = splitText(title);
-      chars.forEach((c) => c.classList.add("revealed"));
-    }
-    return;
-  }
-
-  if (breadcrumb) {
-    gsap.set(breadcrumb, { autoAlpha: 0, y: 12 });
-  }
-
-  if (title) {
-    const { chars } = splitText(title);
-    const total = chars.length;
-
-    if (!total) {
-      if (breadcrumb) {
-        gsap.to(breadcrumb, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-        });
-      }
+  function initInnerBannerZoom() {
+    const banners = document.querySelectorAll(".inside-banner-outer");
+    if (!banners.length) return;
+    if (reduceMotion || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
       return;
     }
 
-    // Snappy banner fill — readable fast, still reads as a wave
-    const stagger = total > 40 ? 0.012 : 0.016;
-    const duration = Math.min(0.75, Math.max(0.5, total * stagger));
+    banners.forEach(function (section) {
+      const image =
+        section.querySelector(".innerbanner-image") ||
+        section.querySelector(".inside-banner-inner img");
+      if (!image) return;
 
-    const syncChars = (progress) => {
-      chars.forEach((c, i) => {
-        if (progress > i / total) c.classList.add("revealed");
-        else c.classList.remove("revealed");
-      });
-    };
-
-    const tl = gsap.timeline({
-      delay: 0,
-      onUpdate() {
-        syncChars(this.progress());
-      },
-      onComplete() {
-        syncChars(1);
-      },
-    });
-
-    tl.to({}, { duration });
-
-    if (breadcrumb) {
-      tl.to(
-        breadcrumb,
+      gsap.fromTo(
+        image,
+        { scale: 1 },
         {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.45,
-          ease: "power2.out",
-        },
-        0.12
+          scale: 1.22,
+          ease: "none",
+          force3D: true,
+          overwrite: "auto",
+          scrollTrigger: {
+            trigger: section,
+            scroller: stScroller,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+          },
+        }
       );
-    }
-  } else if (breadcrumb) {
-    gsap.to(breadcrumb, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.7,
-      ease: "power2.out",
-      delay: 0.2,
     });
+  }
+  
+
+  /* ---------------------------------------
+     PAGE INTRO — text fill on enter / enter-back
+     #565B65 → #282B31 when .page-intro-inner
+     comes into view, both scroll directions.
+  --------------------------------------- */
+  function wrapIntroWords(el) {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(function (node) {
+      const text = node.nodeValue;
+      if (!text || !text.trim()) return;
+
+      const frag = document.createDocumentFragment();
+      text.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          frag.appendChild(document.createTextNode(part));
+          return;
+        }
+        const span = document.createElement("span");
+        span.className = "page-intro-fill-word";
+        span.textContent = part;
+        frag.appendChild(span);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+
+  function initPageIntroFill() {
+    const intros = document.querySelectorAll(".page-intro-inner");
+    if (!intros.length) return;
+
+    const FILL_FROM = "#B2B2B2";
+    const FILL_TO = "#282B31";
+
+    intros.forEach(function (inner, index) {
+      if (inner.dataset.pageIntroFill === "ready") return;
+
+      const paragraphs = inner.querySelectorAll("p");
+      if (!paragraphs.length) {
+        wrapIntroWords(inner);
+      } else {
+        paragraphs.forEach(wrapIntroWords);
+      }
+
+      inner.dataset.pageIntroFill = "ready";
+
+      const words = inner.querySelectorAll(".page-intro-fill-word");
+      if (!words.length) return;
+
+      if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+        words.forEach(function (word) {
+          word.style.color = FILL_TO;
+        });
+        return;
+      }
+
+      gsap.set(words, { color: FILL_FROM });
+
+      if (reduceMotion) {
+        gsap.set(words, { color: FILL_TO });
+        return;
+      }
+
+      gsap.to(words, {
+        color: FILL_TO,
+        stagger: 0.06,
+        ease: "none",
+        immediateRender: false,
+        overwrite: "auto",
+        scrollTrigger: {
+          id: "page-intro-fill-" + index,
+          trigger: inner,
+          scroller: stScroller,
+          start: "top 82%",
+          end: "bottom 48%",
+          scrub: 1.15,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+
+    function refreshFill() {
+      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+    }
+
+    window.requestAnimationFrame(refreshFill);
+    window.addEventListener("load", refreshFill);
   }
 });

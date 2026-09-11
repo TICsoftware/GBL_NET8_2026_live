@@ -8,36 +8,72 @@
    FONT FACES
 ------------------------------------------------- */
 
+@font-face {
+  font-family: 'uni_neuebold';
+  src: url('/Assets/fonts/unineue-bold-webfont.eot');
+  src: url('/Assets/fonts/unineue-bold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/Assets/fonts/unineue-bold-webfont.woff2') format('woff2'),
+       url('/Assets/fonts/unineue-bold-webfont.woff') format('woff'),
+       url('/Assets/fonts/unineue-bold-webfont.ttf') format('truetype'),
+       url('/Assets/fonts/unineue-bold-webfont.svg#uni_neuebold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'uni_neuelight';
+  src: url('/Assets/fonts/unineue-light-webfont.eot');
+  src: url('/Assets/fonts/unineue-light-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/Assets/fonts/unineue-light-webfont.woff2') format('woff2'),
+       url('/Assets/fonts/unineue-light-webfont.woff') format('woff'),
+       url('/Assets/fonts/unineue-light-webfont.ttf') format('truetype'),
+       url('/Assets/fonts/unineue-light-webfont.svg#uni_neuelight') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'uni_neueregular';
+  src: url('/Assets/fonts/unineue-regular-webfont.eot');
+  src: url('/Assets/fonts/unineue-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/Assets/fonts/unineue-regular-webfont.woff2') format('woff2'),
+       url('/Assets/fonts/unineue-regular-webfont.woff') format('woff'),
+       url('/Assets/fonts/unineue-regular-webfont.ttf') format('truetype'),
+       url('/Assets/fonts/unineue-regular-webfont.svg#uni_neueregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 
 @theme{
 /* ── Font ── */
---font-body: "Poppins", sans-serif;
+--font-body: 'uni_neueregular', sans-serif;
+--font-uniNeue: 'uni_neueregular', sans-serif;
+--font-uniNeueRegular: 'uni_neueregular', sans-serif;
+--font-uniNeueBold: 'uni_neuebold', sans-serif;
+--font-uniNeueLight: 'uni_neuelight', sans-serif;
 
 /* ── Font Scale ── */
---text-h1: clamp(2rem, -0.18rem + 4.55vw, 4.1875rem);      /* 32px → 67px */
---text-h2: clamp(1.5rem, 0.19rem + 2.73vw, 2.8125rem);     /* 24px → 45px */
---text-h3: clamp(1.875rem, 1.56rem + 0.65vw, 2.1875rem);   /* 30px → 35px */
+--text-h1:  clamp(2rem, calc(40px + 2.82vw), 70px);      /* 40px → 70px */
+--text-h2: clamp(2rem, 1.5rem + 1.14vw, 2.75rem);  /* 38px → 44px */
+--text-h3: clamp(1.75rem, 1.5rem + 0.65vw, 2.1875rem); /* 32px → 35px */
 --text-h4: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
 --text-24: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
+
 --text-h5: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
 --text-20: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
 --text-p: clamp(1rem, 0.875rem + 0.26vw, 1.125rem);        /* 16px → 18px */
 --text-small: 0.875rem;                                     /* 14px fixed, no scaling needed */
---text-button: clamp(1rem, 0.875rem + 0.26vw, 1.125rem);   /* 16px → 18px */
---text-12: 0.75rem;                                         /* 12px fixed, no scaling needed */
+--text-button: clamp(1rem, 0.875rem + 0.26vw, 1rem);   /* 16px → 16px */
 --text-intro: clamp(1.125rem, 0.875rem + 0.52vw, 1.375rem); /* 18px → 22px */
+--text-22: clamp(1.125rem, 0.875rem + 0.52vw, 1.375rem); /* 18px → 22px */
 --text-base: 1rem;   
---text-58: clamp(2.5625rem, calc(2.3047rem + 1.1vw), 3.625rem); /* 41px → 58px */
---text-big: clamp(8rem, 1.7625rem + 8.95vw, 12.5rem);
  
 /* ── Brand Colors ── */
---color-primary: #231F20;   /**primary**/
---color-secondary: #ED1C24; /**secondary**/
---color-third: #767676;     /**third**/
+--color-primary: #282B31;   /**primary/ Black**/
+--color-secondary: #67815A; /**secondary/ Green**/
+--color-gray: #F4F4F4;     /**third/ Gray**/
 --color-white: #ffffff; 
---color-light: #F3F3F3;
---color-gray: #969696;
---color-extralight: #A6A6A6;
+
 --line: rgba(28,25,24,0.1);
 --ease:cubic-bezier(.22,1,.36,1);
 --ink-soft:#6B6664;
@@ -45,35 +81,7 @@
 --red-tint:rgba(237,28,36,0.06);
 --red-tint-strong:rgba(237,28,36,0.1);
 --title-grey:#b6bcc6;
-
 }
-
-
-
-
-/* ---------------------------------------
-   FLUID TYPOGRAPHY TOKENS
---------------------------------------- */
-/* .dark {
-  --color-primary:  #ffffff;
-  --color-text-body:     #131313;
-  --color-text-muted:    #9a9a9a;
-  --color-text-mid:      #e5e5e5;
-  --color-surface:       #0f0f0f;
-  --color-surface-alt:   #1a1a1a;
-  --color-border:        rgba(255, 255, 255, 0.12);
-  --color-white:  #ffffff;
-  --bg-light-primary: #555;
-} 
-
-.dark body { background-color: rgb(19, 19, 19);}
-.dark .title-heading-anim {color: #fff;}
-.dark .title-heading-anim .highlight-span {color: #a6a6a6;}
-
-
-.dark p {color: var(--text-white);} */
-
-
 
 
 /* ---------------------------------------
@@ -82,6 +90,8 @@
 p { font-family: var(--font-body); font-size: var(--text-p); margin-bottom: 20px; line-height: 1.5;}
 /* p:first-child { margin-bottom: 0; } */
 p:last-child { margin-bottom: 0; }
+
+
 
 /* -----------------------------------------------
    RESET
@@ -101,10 +111,11 @@ body {
  font-family: var(--font-body); 
   font-size: 1rem;
   line-height: 1.25;
-  color: var(--color-text);
+  color: var(--color-primary);
    transition:background-color 0.35s ease,color 0.35s ease;
    font-weight: 400;
    background-color: var(--color-white);
+
   }
 
 
@@ -112,22 +123,25 @@ body {
 /* -----------------------------------------------
    TYPOGRAPHY BASE
 ------------------------------------------------- */
-h1{font-weight: 900;}
-h2, h3, h4, h5 {font-weight: 700;}
+h1, h2, h3, h4, h5 {font-weight: 700;}
 h1, h2, h3, h4, h5 {
   font-family: var(--font-body);
   color: var(--color-primary);
-  line-height: 1.15;
+  line-height: 1.25;
+  margin-bottom: 1rem;
 }
 
+p{ font-size: var(--text-p); margin-bottom: 1rem;}
+p:last-child { margin-bottom: 0; }
+
 /* h1, .text-h1{ font-size: var(--text-h1);}
-.text-h2{ font-size: var(--text-h2); line-height:1 !important;}
-.text-h3{ font-size: var(--text-h3);}
-.text-h4{ font-size: var(--text-h4);}
-.text-h5{ font-size: var(--text-h5);} */
+h2, .text-h2{ font-size: var(--text-h2); line-height:1 !important;}
+h3, .text-h3{ font-size: var(--text-h3);}
+h4, .text-h4{ font-size: var(--text-h4);}
+h5, .text-h5{ font-size: var(--text-h5);} */
 .text-14{ font-size:var(--text-small);}
 .text-base {font-size: var(--text-base);}
-.poppins{ font-family: var(--font-body);}
+
 
   
 /* -----------------------------------------------
@@ -147,15 +161,11 @@ img, picture, video, canvas {
    CUSTOM CONTAINER
 ------------------------------------------------- */
 @layer componants  {
-  .container {    
- 
-       
+  .container {  
   width: 90%;
   max-width: 1680px;
   margin-inline: auto; /* centers it */
-}
-  
-  
+}   
 }
 
 @layer utilities {  
@@ -175,14 +185,15 @@ img, picture, video, canvas {
 
 
 /* ------------------------
-    Theme Button
+Background BG
 ------------------------*/
-.common-btn {
-  
-}
 
 
 
+/* ------------------------
+Common 
+------------------------*/
+.bg-gray{ background-color: var(--color-gray);}
 }
 
 @media (max-width: 992px) {

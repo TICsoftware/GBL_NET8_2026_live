@@ -185,7 +185,7 @@ namespace GBL_MVC.Classes
                     "password"
                 );
 
-                message.From = new MailAddress("ticworks2022@gmail.com", "Priya Cement");
+                message.From = new MailAddress("ticworks2022@gmail.com", "Godavari Biorefineries");
                 message.To.Add("ashabbir72@gmail.com");
 
                 message.Subject = strSubject;

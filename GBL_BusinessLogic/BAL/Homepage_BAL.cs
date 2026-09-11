@@ -44,11 +44,15 @@ namespace GBL_BusinessLogic.BAL
                 model.Home_Components = groupedData;
 
                 model.Banners = MapComponentCommon(groupedData, 1);
-                model.Products_List = MapComponentCommon(groupedData, 2);
-                model.WhatWeStandFor_List = MapComponentCommon(groupedData, 3);
-                model.Sustainability_List = MapComponentCommon(groupedData, 4);
-                model.Testimonials_List = MapComponentCommon(groupedData, 5);
-                model.Careers_List = MapComponentCommon(groupedData, 6);
+                model.Belief_List = MapComponentCommon(groupedData, 2);
+                model.Philosophy_List = MapComponentCommon(groupedData, 3);
+                model.TranslatingProducts_List = MapComponentCommon(groupedData, 4);
+                model.AtAGlance_List = MapComponentCommon(groupedData, 5);
+                model.SoilToTable_List = MapComponentCommon(groupedData, 6);
+                model.GiveBack_List = MapComponentCommon(groupedData, 7);
+                model.HealthierTomorrow_List = MapComponentCommon(groupedData, 8);
+                model.Latest_List = MapComponentCommon(groupedData, 9);
+                model.GlobalStandards_List = MapComponentCommon(groupedData, 10);
             }
 
             // Our team
@@ -156,6 +160,8 @@ namespace GBL_BusinessLogic.BAL
                 component_icon_image = Config_Application_Website.GetPath(group, "component icon image"),
                 component_icon_image_alt = Config_Application_Website.GetValue(dict, "component icon image alt"),
                 Designation = Config_Application_Website.GetValue(dict, "Designation"),
+                Block_Company_Name=Config_Application_Website.GetValue(dict, "Block Company Name"),
+                  bg_class = Config_Application_Website.GetValue(dict, "bg class"),
             });
         }
 

@@ -1,0 +1,60 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var logos = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null)
+{
+<section class="section-spacing globalStandards bg-gray">
+  <div class="container">
+      <div class="title-section">
+        <h2 class="text-h2">
+          @Html.Raw(
+              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                  ? Component.DisplayTitle.CleanParagraphTags()
+                  : Component.Title)
+        </h2>
+      </div>
+
+      @if (logos.Any())
+      {
+      <div class="logo-marquee">
+        <div class="logo-marquee-track">
+          @foreach (var item in logos)
+          {
+              var img = !string.IsNullOrWhiteSpace(item.Icon_Image)
+                  ? item.Icon_Image
+                  : (!string.IsNullOrWhiteSpace(item.ComponentThumbnail)
+                      ? item.ComponentThumbnail
+                      : item.ThumbnailImage);
+              var caption = !string.IsNullOrWhiteSpace(item.BlockDisplayTitle) ? item.BlockDisplayTitle : item.Title;
+              var alt = !string.IsNullOrWhiteSpace(item.ComponentThumbnailAltText)
+                  ? item.ComponentThumbnailAltText
+                  : caption;
+              <div class="logo-item">
+                <div class="logo-box">
+                  <img src="@img" alt="@alt">
+                </div>
+                @if (!string.IsNullOrWhiteSpace(caption))
+                {
+                    <p>@Html.Raw(caption.CleanParagraphTags())</p>
+                }
+              </div>
+          }
+        </div>
+      </div>
+      }
+  </div>
+</section>
+}

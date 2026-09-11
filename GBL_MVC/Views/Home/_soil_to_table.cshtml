@@ -1,0 +1,55 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+}
+
+@if (Component != null)
+{
+    var bgImg = !string.IsNullOrWhiteSpace(Component.Component_Background_image)
+        ? Component.Component_Background_image
+        : (!string.IsNullOrWhiteSpace(Component.background_image)
+            ? Component.background_image
+            : Component.ThumbnailImage);
+
+<section class="section-spacing  bg-parallax-section fromSoiltable overflow-hidden">
+  @if (!string.IsNullOrWhiteSpace(bgImg))
+  {
+      <div class="parallax-wrap" aria-hidden="true">
+        <img src="@bgImg" alt="" class="parallax-img">
+      </div>
+  }
+
+  <div class="container relative z-20 ">
+    <div class="section-intro white-copy">
+      <div class="section-intro__title title-section title-section-white white-copy">
+        <h2 class="text-h2 text-white">
+          @Html.Raw(
+              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                  ? Component.DisplayTitle.CleanParagraphTags()
+                  : Component.Title)
+        </h2>
+      </div>
+
+      <div class="section-intro__content">
+        @if (!string.IsNullOrWhiteSpace(Component.Intro))
+        {
+            <p>@Html.Raw(Component.Intro.CleanParagraphTags())</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Component.Url))
+        {
+            <a href="@Component.Url" class="site-link white-link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "Know More")
+            </a>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+}

@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
 
 
 /* ---------------------------------------------
@@ -12,9 +12,17 @@ const DURATION_PER_ROLL = 220;     // ms per full 10-digit roll
 /* ---------------------------------------------
    FORMAT NUMBER WITH COMMAS
 --------------------------------------------- */
-function formatNumberString(nStr) {
+function formatNumberString(nStr, locale) {
   const num = Number(nStr);
   if (isNaN(num)) return "0";
+
+  if (locale) {
+    try {
+      return new Intl.NumberFormat(locale).format(Math.abs(num));
+    } catch (e) {
+      /* fall through to default */
+    }
+  }
 
   const abs = Math.abs(num);
   const [intPartRaw, decPartRaw] = abs.toString().split(".");
@@ -40,7 +48,8 @@ function formatNumberString(nStr) {
 function buildOdometer(counterEl) {
   const rawTarget = counterEl.getAttribute("data-target") || "0";
   const suffix = counterEl.getAttribute("data-suffix") || "";
-  const targetStr = formatNumberString(rawTarget);
+  const locale = counterEl.getAttribute("data-locale") || "";
+  const targetStr = formatNumberString(rawTarget, locale);
 
   counterEl.textContent = "";
 
@@ -89,7 +98,6 @@ function buildOdometer(counterEl) {
     odometer.appendChild(slot);
 
     slot._finalIndex = rolls * 10 + digit;
-    slot._finalDigit = digit;
     slot._rolls = rolls;
   }
 
@@ -113,60 +121,19 @@ function resetOdometerSlots(slots) {
   slots.forEach(slot => {
     const column = slot.querySelector(".odometer-column");
     column.style.transition = "none";
-    column.style.transform = "translate3d(0, 0, 0)";
+    column.style.transform = "translateY(0px)";
   });
-}
-
-/* ---------------------------------------------
-   LOCK INTEGER DIGIT HEIGHTS
-   Browser zoom (125%/150%) makes 1em fractional; glyph paint then
-   leaks into the clip window as a thin line of the neighbor digit.
---------------------------------------------- */
-function lockDigitHeights(slots) {
-  if (!slots.length) return 0;
-
-  const probe = slots[0];
-  const cs = window.getComputedStyle(probe);
-  let h = Math.ceil(parseFloat(cs.fontSize) || 0);
-  if (!h) h = Math.ceil(probe.offsetHeight || 0);
-  if (!h) return 0;
-
-  slots.forEach((slot) => {
-    slot.style.height = h + "px";
-    slot.style.lineHeight = h + "px";
-    slot.querySelectorAll(".odometer-digit-line").forEach((line) => {
-      line.style.height = h + "px";
-      line.style.lineHeight = h + "px";
-      line.style.fontSize = h + "px";
-    });
-  });
-
-  return h;
 }
 
 /* ---------------------------------------------
    ANIMATE DIGITS TO TARGET
 --------------------------------------------- */
 function getDigitHeight(slots) {
-  return lockDigitHeights(slots);
-}
-
-function collapseOdometerSlot(slot) {
-  const column = slot.querySelector(".odometer-column");
-  if (!column) return;
-  const digit = slot._finalDigit;
-  if (digit === undefined || digit === null) return;
-  column.style.transition = "none";
-  column.style.transform = "translate3d(0, 0, 0)";
-  column.innerHTML = "";
-  const line = document.createElement("span");
-  line.className = "odometer-digit-line";
-  line.textContent = String(digit);
-  const h = slot.style.height || (Math.ceil(parseFloat(getComputedStyle(slot).fontSize)) + "px");
-  line.style.height = h;
-  line.style.lineHeight = h;
-  line.style.fontSize = h;
-  column.appendChild(line);
+  const firstLine = slots[0] && slots[0].querySelector(".odometer-digit-line");
+  if (!firstLine) return 0;
+  // Stats cards scale while pinned — use layout height, not scaled rect
+  if (slots[0].closest("[data-stats-scope]")) return firstLine.offsetHeight;
+  return firstLine.getBoundingClientRect().height;
 }
 
 function animateOdometerSlots(slots) {
@@ -189,17 +156,11 @@ function animateOdometerSlots(slots) {
 
     column.style.transition = `transform ${duration}ms cubic-bezier(.22,.9,.35,1) ${delay}ms`;
 
-    const offset = Math.round(finalIndex * digitHeight);
+    const offset = finalIndex * digitHeight;
 
     setTimeout(() => {
-      column.style.transform = `translate3d(0, -${offset}px, 0)`;
+      column.style.transform = `translateY(-${offset}px)`;
     }, 20);
-
-    // After roll settles, keep only the final digit — removes neighbor-digit bleed at zoom
-    clearTimeout(slot._collapseTimer);
-    slot._collapseTimer = setTimeout(() => {
-      collapseOdometerSlot(slot);
-    }, delay + duration + 60);
   });
 }
 
@@ -209,10 +170,13 @@ function animateOdometerSlots(slots) {
 function snapOdometerSlotsToFinal(slots) {
   if (!slots.length) return;
 
-  getDigitHeight(slots);
+  const digitHeight = getDigitHeight(slots);
 
   slots.forEach(slot => {
-    collapseOdometerSlot(slot);
+    const column = slot.querySelector(".odometer-column");
+    const offset = slot._finalIndex * digitHeight;
+    column.style.transition = "none";
+    column.style.transform = `translateY(-${offset}px)`;
   });
 }
 
@@ -243,30 +207,13 @@ window.addEventListener("scroll", function() {
       again next time you scroll down to it.
 
    Counters inside .home-sustainability-section are
-   deferred â€” they wait for the section scroll anim
+   deferred — they wait for the section scroll anim
    to reveal content (see PriyaOdometer API below).
 --------------------------------------------- */
 const counters = document.querySelectorAll(".counter");
 const slotsMap = new WeakMap(); // el -> built digit slots
 const playedMap = new WeakMap(); // el -> has played this pass
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function clearCollapseTimers(slots) {
-  if (!slots) return;
-  slots.forEach((slot) => {
-    if (slot && slot._collapseTimer) {
-      clearTimeout(slot._collapseTimer);
-      slot._collapseTimer = null;
-    }
-  });
-}
-
-function isCollapsedSlots(slots) {
-  if (!slots || !slots.length) return true;
-  const col = slots[0].querySelector(".odometer-column");
-  if (!col) return true;
-  return col.querySelectorAll(".odometer-digit-line").length <= 1;
-}
 
 function ensureSlots(el) {
   let slots = slotsMap.get(el);
@@ -277,41 +224,22 @@ function ensureSlots(el) {
   return slots;
 }
 
-function rebuildSlots(el) {
-  const prev = slotsMap.get(el);
-  clearCollapseTimers(prev);
-  slotsMap.delete(el);
-  el.textContent = "";
-  const slots = buildOdometer(el);
-  slotsMap.set(el, slots);
-  return slots;
-}
-
 function playCounter(el, { animate = true } = {}) {
+  const slots = ensureSlots(el);
   if (animate) {
-    // Always rebuild full roll strips before animating.
-    // Collapsed single-digit columns would translate off-screen (blank).
-    const slots = rebuildSlots(el);
+    resetOdometerSlots(slots);
     void el.offsetHeight;
     animateOdometerSlots(slots);
   } else {
-    let slots = ensureSlots(el);
-    if (isCollapsedSlots(slots)) {
-      // already final digit — just ensure height lock / visibility
-      getDigitHeight(slots);
-    } else {
-      snapOdometerSlotsToFinal(slots);
-    }
+    snapOdometerSlotsToFinal(slots);
   }
   playedMap.set(el, true);
 }
 
 function resetCounter(el) {
-  // Do NOT leave the counter empty — keep final value visible while
-  // scrolling aboutus-stats cards up/down, but allow replay next time.
-  clearCollapseTimers(slotsMap.get(el));
-  const slots = rebuildSlots(el);
-  snapOdometerSlotsToFinal(slots);
+  const slots = slotsMap.get(el);
+  if (!slots) return;
+  resetOdometerSlots(slots);
   playedMap.set(el, false);
 }
 

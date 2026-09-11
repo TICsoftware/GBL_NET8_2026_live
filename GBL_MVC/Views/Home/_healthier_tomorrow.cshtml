@@ -1,0 +1,54 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+}
+
+@if (Component != null)
+{
+    var bgImg = !string.IsNullOrWhiteSpace(Component.Component_Background_image)
+        ? Component.Component_Background_image
+        : (!string.IsNullOrWhiteSpace(Component.background_image)
+            ? Component.background_image
+            : Component.ThumbnailImage);
+    var body = !string.IsNullOrWhiteSpace(Component.Content) ? Component.Content : Component.Intro;
+
+<section class="healthierTomorrow bg-parallax-section section-spacing">
+  @if (!string.IsNullOrWhiteSpace(bgImg))
+  {
+      <div class="parallax-wrap" aria-hidden="true">
+        <img src="@bgImg" alt="" class="parallax-img">
+      </div>
+  }
+
+  <div class="container relative z-10">
+    <div class="title-section title-section-white white-copy">
+      <h2 class="text-h2">
+        @Html.Raw(
+            !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                ? Component.DisplayTitle.CleanParagraphTags()
+                : Component.Title)
+      </h2>
+    </div>
+
+    <div class="healthier-panel">
+      @if (!string.IsNullOrWhiteSpace(body))
+      {
+          <p>@Html.Raw(body.CleanParagraphTags())</p>
+      }
+      @if (!string.IsNullOrWhiteSpace(Component.Url))
+      {
+          <a href="@Component.Url" class="site-link white-link">
+            <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+            @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "Know More")
+          </a>
+      }
+    </div>
+  </div>
+</section>
+}

@@ -1,11 +1,11 @@
 /* ---------------------------------------
    SITE PRELOADER
    Lion stroke-draws while loading; wordmark stays fully colored.
-   Then both fly to the header logo and swap to priyacement-logo-red.
+   Then both fly to the header logo and swap to godavaribiorefineries-logo-red.
 --------------------------------------- */
 (function () {
   const LOADER_SEEN_KEY = 'priyaHomepageLoaderSeen';
-  // Lion + wordmark regions inside priyacement-logo-red.svg (viewBox 438×98)
+  // Lion + wordmark regions inside godavaribiorefineries-logo-red.svg (viewBox 438×98)
   const LION_SLOT = { x: 0.0, y: 0.08, w: 0.27, h: 0.85 };
   const WORDMARK_SLOT = { x: 0.28, y: 0.12, w: 0.70, h: 0.78 };
 

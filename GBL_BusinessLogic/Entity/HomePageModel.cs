@@ -11,7 +11,37 @@ namespace GBL_BusinessLogic.Entity
 
         public List<ComponentGroup> Home_Components { get; set; } = new();
 
+        // Seq 1 – Hero Banner
         public List<HomeCommonModel> Banners { get; set; } = new();
+
+        // Seq 2 – It Begins with a Belief
+        public List<HomeCommonModel> Belief_List { get; set; } = new();
+
+        // Seq 3 – Our Philosophy & Guiding Principles
+        public List<HomeCommonModel> Philosophy_List { get; set; } = new();
+
+        // Seq 4 – Translating Purpose into Products
+        public List<HomeCommonModel> TranslatingProducts_List { get; set; } = new();
+
+        // Seq 5 – At a Glance
+        public List<HomeCommonModel> AtAGlance_List { get; set; } = new();
+
+        // Seq 6 – From Soil to Your Table
+        public List<HomeCommonModel> SoilToTable_List { get; set; } = new();
+
+        // Seq 7 – Designed to Give Back
+        public List<HomeCommonModel> GiveBack_List { get; set; } = new();
+
+        // Seq 8 – Creating a Healthier Tomorrow
+        public List<HomeCommonModel> HealthierTomorrow_List { get; set; } = new();
+
+        // Seq 9 – Latest at GBL
+        public List<HomeCommonModel> Latest_List { get; set; } = new();
+
+        // Seq 10 – Global compliance and operational standards
+        public List<HomeCommonModel> GlobalStandards_List { get; set; } = new();
+
+        // Legacy lists kept for Index-old.cshtml compile compatibility
         public List<HomeCommonModel> Products_List { get; set; } = new();
         public List<HomeCommonModel> WhatWeStandFor_List { get; set; } = new();
         public List<HomeCommonModel> Sustainability_List { get; set; } = new();
@@ -66,6 +96,10 @@ namespace GBL_BusinessLogic.Entity
         public string component_icon_image2_alt { get; set; }
         public string Designation { get; set; }
          public string component_Video_path { get; set; }
+          
+           public string Block_Company_Name { get; set; }
+         public string bg_class{get;set;}
+
 
     }
 }

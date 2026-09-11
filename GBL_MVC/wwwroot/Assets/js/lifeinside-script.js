@@ -1,5 +1,5 @@
 ﻿/* =====================================================================
-   LIFE INSIDE PRIYA CEMENT â€” cinematic scroll story
+   LIFE INSIDE Godavari Biorefineries â€” cinematic scroll story
    GSAP + ScrollTrigger + HTML5 Canvas image sequence (120 frames)
    ===================================================================== */
 (() => {

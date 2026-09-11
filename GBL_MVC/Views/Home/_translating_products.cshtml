@@ -1,0 +1,181 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var products = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null)
+{
+<section class="section-spacing translatingProducts relative bg-gray">
+  <div class="container relative z-20">
+    <div class="section-intro">
+      <div class="section-intro__title title-section">
+        <h2 class="text-h2">
+          @Html.Raw(
+              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                  ? Component.DisplayTitle.CleanParagraphTags()
+                  : Component.Title)
+        </h2>
+      </div>
+
+      @if (!string.IsNullOrWhiteSpace(Component.Intro))
+      {
+          <div class="section-intro__content">
+            <p>@Html.Raw(Component.Intro.CleanParagraphTags())</p>
+          </div>
+      }
+    </div>
+  </div>
+
+  @if (products.Any())
+  {
+  <div class="container-fluid relative z-20">
+    <div class="translating-slider">
+      <div class="swiper translating-swiper">
+        <div class="swiper-wrapper">
+          @foreach (var item in products)
+          {
+              var img = !string.IsNullOrWhiteSpace(item.ThumbnailImage)
+                ? item.ThumbnailImage
+                : "";
+              var alt = !string.IsNullOrWhiteSpace(item.ThumbnailAltText)
+                  ? item.ThumbnailAltText
+                  : "";
+              var cardTitle = !string.IsNullOrWhiteSpace(item.BlockDisplayTitle) ? item.BlockDisplayTitle : item.Title;
+              var cardBody = !string.IsNullOrWhiteSpace(item.Intro) ? item.Intro : item.Content;
+              <div class="swiper-slide">
+                <article class="translating-card">
+                  <div class="translating-card__media">
+                    <img src="@img" alt="@alt">
+                    @if (!string.IsNullOrWhiteSpace(cardTitle))
+                    {
+                        <div class="card__caption">@Html.Raw(cardTitle.CleanParagraphTags())</div>
+                    }
+                  </div>
+                  <div class="translating-card__caption">
+                    <div class="translating-card__caption-inner">
+                      @if (!string.IsNullOrWhiteSpace(cardTitle))
+                      {
+                          <h3 class="translating-card__title">@Html.Raw(cardTitle.CleanParagraphTags())</h3>
+                      }
+                      @if (!string.IsNullOrWhiteSpace(cardBody))
+                      {
+                          <p>@Html.Raw(cardBody.CleanParagraphTags())</p>
+                      }
+                      @if (!string.IsNullOrWhiteSpace(item.Url))
+                      {
+                          <a href="@item.Url" class="translating-card__cta">
+                            <span class="translating-card__cta-arrow" aria-hidden="true">&rarr;</span>
+                            @(!string.IsNullOrWhiteSpace(item.Url_Text) ? item.Url_Text : "Read more")
+                          </a>
+                      }
+                    </div>
+                  </div>
+                </article>
+              </div>
+          }
+        </div>
+      </div>
+
+      <div class="translating-expand" aria-hidden="true">
+        <div class="translating-expand__media">
+          <img src="" alt="">
+        </div>
+        <div class="translating-expand__caption">
+          <div class="translating-expand__inner"></div>
+        </div>
+      </div>
+
+      <button type="button" class="translating-nav translating-nav--prev" aria-label="Previous products">
+        <span aria-hidden="true">&larr;</span>
+      </button>
+      <button type="button" class="translating-nav translating-nav--next" aria-label="Next products">
+        <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+
+    <div class="translating-popup" hidden aria-hidden="true">
+      <div class="translating-popup__overlay" data-popup-close></div>
+      <div class="translating-popup__dialog" role="dialog" aria-modal="true" aria-label="Product details">
+        <button type="button" class="translating-popup__close" aria-label="Close" data-popup-close>
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="translating-popup__media">
+          <img src="" alt="">
+        </div>
+        <div class="translating-popup__caption">
+          <div class="translating-popup__inner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  @* Products for a Better World / industry dropdown / search — intentionally not CMS-bound *@
+  <div class="container relative z-20">
+    <div class="translating-explore">
+      <div class="translating-explore__lead">
+        @if (!string.IsNullOrWhiteSpace(Component.Url))
+        {
+            <a href="@Component.Url" class="translating-explore__cta">
+              <span class="translating-explore__cta-arrow" aria-hidden="true">&rarr;</span>
+              @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "Explore Solutions Across Industries")
+            </a>
+        }
+        else
+        {
+            <a href="#" class="translating-explore__cta">
+              <span class="translating-explore__cta-arrow" aria-hidden="true">&rarr;</span>
+              Explore Solutions Across Industries
+            </a>
+        }
+        <span class="translating-explore__rule" aria-hidden="true"></span>
+        <p class="translating-explore__heading">Products for a Better World</p>
+      </div>
+
+      <form class="translating-explore__filters" action="#" method="get">
+        <div class="translating-select">
+          <label class="translating-select__sr" for="translating-industry">By Industries</label>
+          <select id="translating-industry" name="industry" class="translating-select__control">
+            <option value="" selected>By Industries</option>
+            <option value="personal-care">Personal Care</option>
+            <option value="pharmaceuticals">Pharmaceuticals</option>
+            <option value="food-nutrition">Food &amp; Nutrition</option>
+            <option value="flavours-fragrances">Flavours &amp; Fragrances</option>
+            <option value="industrial">Industrial</option>
+          </select>
+        </div>
+
+        <div class="translating-select">
+          <label class="translating-select__sr" for="translating-product">Our Products</label>
+          <select id="translating-product" name="product" class="translating-select__control">
+            <option value="" selected>Our Products</option>
+            <option value="bio-based-chemicals">Bio-based chemicals</option>
+            <option value="biofuels-bio-energy">Biofuels &amp; Bio-energy</option>
+            <option value="sugar">Sugar</option>
+            <option value="jivana">Jivana</option>
+          </select>
+        </div>
+
+        <button type="submit" class="translating-explore__search">
+          <svg class="translating-explore__search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="7" cy="7" r="5.25" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M11.2 11.2L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Search
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+}

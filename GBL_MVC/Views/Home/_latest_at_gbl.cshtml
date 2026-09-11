@@ -1,0 +1,93 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var items = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+
+    var newsItems = items
+        .Where(x => string.IsNullOrWhiteSpace(x.Url)
+            || !x.Url.Contains("linkedin.com/embed", StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+    var linkedInItems = items
+        .Where(x => !string.IsNullOrWhiteSpace(x.Url)
+            && x.Url.Contains("linkedin.com/embed", StringComparison.OrdinalIgnoreCase))
+        .ToList();
+}
+
+@if (Component != null)
+{
+<section class="section-spacing latestatGBL bg-gray">
+  <div class="container">
+      <div class="title-section">
+        <h2 class="text-h2">
+          @Html.Raw(
+              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                  ? Component.DisplayTitle.CleanParagraphTags()
+                  : Component.Title)
+        </h2>
+      </div>
+
+ <div class="latest-grid card-list-items">
+            <div class="latest-news">
+              <article class="latest-news-card card-rise">
+                <div class="latest-news-card__meta">
+                  <span class="latest-badge">Story</span>
+                  <span class="latest-news-card__date">Mar 09, 2026 | chinimandi.com</span>
+                </div>
+
+                <p>GBL subsidiary Solar Magic&rsquo;s premium sugarcane seedlings are shortening the crop cycle for farmers</p>
+
+                <a href="#" class="site-link">
+                  <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+                  Learn More
+                </a>
+              </article>
+
+              <article class="latest-news-card card-rise">
+                <div class="latest-news-card__meta">
+                  <span class="latest-badge">Press Release</span>
+                  <span class="latest-news-card__date">Feb 07, 2026</span>
+                </div>
+                <p>Sathgen Therapeutics Division of Godavari Biorefineries Ltd expands to the US with launch of Princeton-based subsidiary</p>
+
+                <a href="#" class="site-link">
+                  <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+                  Learn More
+                </a>
+              </article>
+            </div>
+
+            @* Top 2 posts from linkedin.com/company/godavari-biorefineries-limited *@
+            <article class="latest-li-card card-rise">
+              <div class="latest-li-card__feed">
+                <iframe
+                  src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7496430911568367617"
+                  title="Godavari Biorefineries Limited — Sean Reagan board appointment"
+                  loading="lazy"
+                  allowfullscreen=""></iframe>
+              </div>
+            </article>
+
+            <article class="latest-li-card card-rise">
+              <div class="latest-li-card__feed">
+                <iframe
+                  src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7496082346551660544"
+                  title="Godavari Biorefineries Limited — European patent grant"
+                  loading="lazy"
+                  allowfullscreen=""></iframe>
+              </div>
+            </article>
+          </div>
+  </div>
+</section>
+}

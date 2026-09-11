@@ -1,0 +1,79 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<HomeCommonModel>
+
+@{
+    var Component = Model
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+
+    var items = Model
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}
+
+@if (Component != null && items.Any())
+{
+<section class="section-spacing ataglance">
+  <div class="container">
+    <div class="title-section">
+      <h2 class="text-h2">
+        @Html.Raw(
+            !string.IsNullOrWhiteSpace(Component.DisplayTitle)
+                ? Component.DisplayTitle.CleanParagraphTags()
+                : Component.Title)
+      </h2>
+    </div>
+
+    <div class="ataglance-layout">
+      <div class="ataglance-media">
+        <div class="ataglance-cards" data-glance-stack>
+          @for (var i = 0; i < items.Count; i++)
+          {
+              var item = items[i];
+              var img = !string.IsNullOrWhiteSpace(item.ThumbnailImage)
+                  ? item.ThumbnailImage
+                  : "";
+              var alt = !string.IsNullOrWhiteSpace(item.ThumbnailAltText)
+                  ? item.ThumbnailAltText
+                  : (!string.IsNullOrWhiteSpace(item.BlockDisplayTitle) ? item.BlockDisplayTitle : item.Title);
+              var activeClass = i == 0 ? "ataglance-card is-active" : "ataglance-card";
+              <div class="ataglance-card-wrapper" data-glance-index="@i">
+                <div class="@activeClass" data-glance-card>
+                  <img src="@img" alt="@alt">
+                </div>
+              </div>
+          }
+        </div>
+      </div>
+
+      <aside class="ataglance-panel">
+        <ul class="ataglance-list" role="list">
+          @for (var i = 0; i < items.Count; i++)
+          {
+              var item = items[i];
+              var label = !string.IsNullOrWhiteSpace(item.BlockDisplayTitle) ? item.BlockDisplayTitle : item.Title;
+              var pressed = i == 0 ? "true" : "false";
+              var itemClass = i == 0 ? "ataglance-item is-active" : "ataglance-item";
+              <li>
+                <button type="button" class="@itemClass" data-glance-index="@i" aria-pressed="@pressed">
+                  @Html.Raw(label.CleanParagraphTags())
+                </button>
+              </li>
+          }
+        </ul>
+
+        @if (!string.IsNullOrWhiteSpace(Component.Url))
+        {
+            <a href="@Component.Url" class="site-link ataglance-cta">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "About us")
+            </a>
+        }
+      </aside>
+    </div>
+  </div>
+</section>
+}

@@ -1,120 +1,19 @@
-﻿@using GBL_MVC.Helpers
+@using GBL_MVC.Helpers
 @model GBL_BusinessLogic.Entity.HomePageModel
 @{
-    ViewData["Title"] = "Priya Cement";
+    ViewData["Title"] = "Godavari Biorefineries";
     Layout = "~/Views/Shared/_Layout_home_page.cshtml";
     var content = Model?.Home_Content;
 }
 
 @section head {
     <title>@(content?.cont_window_title)</title>
-
-    <script nonce="@(Context.Items["CSPNonce"])">
-      (function () {
-        var KEY = 'priyaHomepageLoaderSeen';
-        var isReload = false;
-        try {
-          var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-          if (nav) isReload = nav.type === 'reload';
-          else if (performance.navigation) isReload = performance.navigation.type === 1;
-        } catch (e) {}
-        var seen = false;
-        try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
-        if (!isReload && seen) {
-          document.documentElement.classList.add('site-preloader-skip');
-        } else {
-          document.documentElement.classList.add('site-preloader-pending');
-          // Kick SVG fetch immediately so draw is ready ASAP (no long blank)
-          try {
-            window.__priyaLoaderSvgs = {
-              lion: fetch('/Assets/images/logo/lion-vector-loader.svg', { credentials: 'same-origin' }).then(function (r) { return r.text(); }),
-              wordmark: fetch('/Assets/images/logo/logo-vector-loader.svg', { credentials: 'same-origin' }).then(function (r) { return r.text(); })
-            };
-          } catch (e) {}
-        }
-      })();
-    </script>
-    <link rel="preload" href="~/Assets/images/logo/lion-vector-loader.svg" as="image" asp-append-version="true" />
-    <link rel="preload" href="~/Assets/images/logo/logo-vector-loader.svg" as="image" asp-append-version="true" />
-    <link rel="preload" href="~/Assets/css/homepage-preloader.css" as="style" asp-append-version="true">
-    <link rel="stylesheet" href="~/Assets/css/homepage-preloader.css" asp-append-version="true" />
+    <script nonce="@(Context.Items["CSPNonce"])">document.documentElement.classList.add('site-preloader-pending');</script>
     <style nonce="@(Context.Items["CSPNonce"])">
-      /* Gray cover from first paint — never pure white blank */
-      html.site-preloader-pending {
-        overflow-y: scroll !important;
-        background: #f5f5f5 !important;
-      }
-      html.site-preloader-pending body {
-        overflow: hidden !important;
-        height: 100% !important;
-        background: #f5f5f5 !important;
-      }
-      html.site-preloader-exiting body {
-        background: #f5f5f5 !important;
-      }
       html.site-preloader-pending .site-header {
         opacity:0 !important;
         visibility:hidden !important;
         pointer-events:none !important;
-      }
-      html.site-preloader-pending #sitePreloader,
-      html.site-preloader-lock #sitePreloader {
-        position: fixed !important;
-        inset: 0 !important;
-        z-index: 10500 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: #f5f5f5 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-      /* During logo travel — no gray/white sheet; banner shows under flyers */
-      html.site-preloader-travel #sitePreloader {
-        background: transparent !important;
-        background-color: transparent !important;
-        pointer-events: none !important;
-      }
-      html.site-preloader-travel body {
-        background: transparent !important;
-      }
-      /* Progress + logos visible from first paint (no blank wait) */
-      html.site-preloader-pending .site-preloader__logo-wrap,
-      html.site-preloader-pending .site-preloader__wordmark,
-      html.site-preloader-pending .site-preloader__progress {
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-      html.site-preloader-pending .site-preloader__progress {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        width: 200px;
-        max-width: 60vw;
-      }
-      html.site-preloader-pending .site-preloader__bar {
-        width: 100%;
-        height: 3px;
-        border-radius: 999px;
-        background: rgba(0,0,0,.12);
-        overflow: hidden;
-      }
-      html.site-preloader-pending .site-preloader__bar-fill {
-        display: block;
-        height: 100%;
-        width: 0%;
-        background: #ed1c24;
-      }
-      html.site-preloader-pending .site-preloader__counter {
-        font-family: Poppins, sans-serif;
-        font-size: 13px;
-        letter-spacing: .08em;
-        color: rgba(0,0,0,.65);
-      }
-      html.site-preloader-skip #sitePreloader {
-        display:none !important;
       }
     </style>
 
@@ -127,75 +26,268 @@
     <meta name="twitter:description" content="@(content?.cont_metadesc)" />
 
     <meta property="og:type" content="article" />
-    <meta property="og:site_name" content="Priya Cement" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
     <meta property="og:title" content="@(content?.ContTitle)" />
     <meta property="og:description" content="@(content?.cont_metadesc)" />
-    <meta property="og:url" content="https://www.priyacement.com" />
+    <meta property="og:url" content="https://www.godavaribiorefineries.com/" />
     <meta property="og:image" content="@(content?.cont_meta_image)" />
 
-    <meta itemprop="name" content="Priya Cement" />
+    <meta itemprop="name" content="Godavari Biorefineries" />
     <meta itemprop="description" content="@(content?.cont_metadesc)" />
     <meta itemprop="image" content="@(content?.cont_meta_image)" />
 
     <!-- Facebook / Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Priya Cement" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
     <meta property="og:title" content="@(content?.ContTitle)" />
     <meta property="og:description" content="@(content?.cont_metadesc)" />
     <meta property="og:image" content="@(content?.cont_meta_image)" />
-    <meta property="og:url" content="https://www.priyacement.com" />
+    <meta property="og:url" content="https://www.godavaribiorefineries.com/" />
 
-    <link rel="canonical" href="https://www.priyacement.com" />
+    <link rel="canonical" href="https://www.godavaribiorefineries.com/" />
 
-      @if (!string.IsNullOrWhiteSpace(content?.page_schema))
+    @if (!string.IsNullOrWhiteSpace(content?.page_schema))
     {
-      
-            @Html.Raw(content?.page_schema.Replace("<p>", "").Replace("</p>", ""))
-       
+        @Html.Raw(content?.page_schema.Replace("<p>", "").Replace("</p>", ""))
     }
-    
 }
 
 @section Styles {
     <link rel="preload" href="~/Assets/css/swiper-bundle.min.css" as="style">
     <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" />
 
-    <link rel="preload" href="~/Assets/css/homepage-style.css" as="style" asp-append-version="true">
+    <link rel="preload" href="~/Assets/css/hero-banner.css" as="style">
+    <link rel="stylesheet" href="~/Assets/css/hero-banner.css" asp-append-version="true" />
+
+    <link rel="preload" href="~/Assets/css/homepage-style.css" as="style">
     <link rel="stylesheet" href="~/Assets/css/homepage-style.css" asp-append-version="true" />
+
+    <link rel="preload" href="~/Assets/css/translating-products.css" as="style">
+    <link rel="stylesheet" href="~/Assets/css/translating-products.css" asp-append-version="true" />
+
+    <link rel="preload" href="~/Assets/css/philosophy-principles.css" as="style">
+    <link rel="stylesheet" href="~/Assets/css/philosophy-principles.css" asp-append-version="true" />
 }
 
 @if (Model?.Banners != null && Model.Banners.Any())
 {
-    @await Html.PartialAsync("_banner", Model.Banners)
+    @await Html.PartialAsync("_hero_banner", Model.Banners)
 }
 
-@if (Model?.Products_List != null && Model.Products_List.Any())
+@if (Model?.Belief_List != null && Model.Belief_List.Any())
 {
-    @await Html.PartialAsync("_products", Model.Products_List)
+    @await Html.PartialAsync("_begins_belief", Model.Belief_List)
 }
 
-@if (Model?.WhatWeStandFor_List != null && Model.WhatWeStandFor_List.Any())
+@if (Model?.Philosophy_List != null && Model.Philosophy_List.Any())
 {
-    @await Html.PartialAsync("_what_we_stand_for", Model.WhatWeStandFor_List)
+    @await Html.PartialAsync("_philosophy", Model.Philosophy_List)
 }
 
-@if (Model?.Sustainability_List != null && Model.Sustainability_List.Any())
+@if (Model?.TranslatingProducts_List != null && Model.TranslatingProducts_List.Any())
 {
-    @await Html.PartialAsync("_sustainability", Model.Sustainability_List)
+    @await Html.PartialAsync("_translating_products", Model.TranslatingProducts_List)
 }
 
-@if (Model?.Testimonials_List != null && Model.Testimonials_List.Any())
+@if (Model?.AtAGlance_List != null && Model.AtAGlance_List.Any())
 {
-    @await Html.PartialAsync("_testimonials", Model.Testimonials_List)
+    @await Html.PartialAsync("_at_a_glance", Model.AtAGlance_List)
 }
 
-@if (Model?.Careers_List != null && Model.Careers_List.Any())
+@if (Model?.SoilToTable_List != null && Model.SoilToTable_List.Any())
 {
-    @await Html.PartialAsync("_careers", Model.Careers_List)
+    @await Html.PartialAsync("_soil_to_table", Model.SoilToTable_List)
+}
+
+@if (Model?.GiveBack_List != null && Model.GiveBack_List.Any())
+{
+    @await Html.PartialAsync("_designed_give_back", Model.GiveBack_List)
+}
+
+@if (Model?.HealthierTomorrow_List != null && Model.HealthierTomorrow_List.Any())
+{
+    @await Html.PartialAsync("_healthier_tomorrow", Model.HealthierTomorrow_List)
+}
+
+@* Our Performance — intentionally not CMS-bound *@
+<section class="section-spacing ourPerformance">
+  <div class="container">
+      <div class="title-section">
+        <h2 class="text-h2">Our Performance</h2>
+      </div>
+
+      <div class="performance-row card-list-items">
+        <article class="performance-card card-rise">
+          <h3 class="text-h5">Investor Call</h3>
+          <ul class="doc-list">
+            <li>
+              <a href="#">
+                <span class="doc-icon" aria-hidden="true">
+                    <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
+                </span>
+                Transcript Q3 FY 26
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="doc-icon" aria-hidden="true">
+                  <img src="/Assets/images/homepage/our-performance/voice-icon.svg" />
+                </span>
+                Audio of Investor Call &ndash; December-2025
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="doc-icon" aria-hidden="true">
+                  <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
+                </span>
+                Investor Presentation for Q3 9M FY 26
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="doc-icon" aria-hidden="true">
+                  <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
+                </span>
+                Investor Presentation Q2 H1 FY 26
+              </a>
+            </li>
+          </ul>
+        </article>
+
+        <article class="performance-card card-rise">
+          <h3 class="text-h5">Quarterly Results: Godavari Biorefineries Q3 FY26</h3>
+          <ul class="doc-list">
+            <li>
+              <a href="#">
+                <span class="doc-icon" aria-hidden="true">
+                  <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
+                </span>
+                Earnings Release
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="doc-icon" aria-hidden="true">
+                    <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
+                </span>
+                Analyst presentation
+              </a>
+            </li>
+          </ul>
+        </article>
+
+        <article class="performance-card performance-card--report card-rise">
+          <div class="performance-card__copy">
+            <h3 class="text-h5">Godavari Biorefineries Annual Report FY25</h3>
+            <a href="#" class="site-link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              Download
+            </a>
+          </div>
+          <div class="performance-card__media">
+            <img src="/Assets/images/homepage/performance/annual-report-fy25.png" alt="Godavari Biorefineries Annual Report FY25 cover">
+          </div>
+        </article>
+      </div>
+
+      <div class="flex justify-center">
+        <a href="#" class="fill-site-link">
+          <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+          Learn more
+        </a>
+      </div>
+  </div>
+</section>
+
+@if (Model?.Latest_List != null && Model.Latest_List.Any())
+{
+    @await Html.PartialAsync("_latest_at_gbl", Model.Latest_List)
+}
+
+@* Stories of Change — intentionally not CMS-bound *@
+<section class="section-spacing storiesofChange">
+  <div class="container">
+      <div class="title-section">
+        <h2 class="text-h2">Stories of Change</h2>
+      </div>
+
+      <div class="stories-grid">
+        <article class="story-card ">
+          <div class="story-card__media parallax-wrap">
+            <img src="/Assets/images/homepage/stories/stories-img1.webp" alt="Shankar Jadhav standing in his sugarcane field" class="parallax-img img-fluid">
+          </div>
+          <div class="story-card__content">
+            <h3 class="story-card__title text-h5">More Than a Better Harvest</h3>
+            <p class="story-card__desc">Sugarcane farming no longer means uncertain returns for Shankar Jadhav</p>
+            <a href="#" class="site-link story-card__link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              Learn More
+            </a>
+          </div>
+        </article>
+
+        <article class="story-card story-card--reverse">
+          <div class="story-card__media parallax-wrap">
+            <img src="/Assets/images/homepage/stories/stories-img2.webp" alt="His Place in the Story" class="parallax-img img-fluid">
+          </div>
+
+          <div class="story-card__content">
+            <h3 class="story-card__title text-h5">His Place in the Story</h3>
+            <p class="story-card__desc">Vishnu&rsquo;s barbershop shows how growth is measured in relationships at Godavari Biorefineries</p>
+            <a href="#" class="site-link story-card__link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              Learn More
+            </a>
+          </div>
+        </article>
+
+        <article class="story-card">
+          <div class="story-card__media  parallax-wrap">
+            <img src="/Assets/images/homepage/stories/stories-img3.webp" alt="Scientists reviewing samples in a Godavari Biorefineries lab" class="parallax-img img-fluid" />
+          </div>
+          <div class="story-card__content">
+            <h3 class="story-card__title text-h5">Enabling a Low-Carbon Future</h3>
+            <p class="story-card__desc">As industries look to reduce their carbon footprint, partnerships matter</p>
+            <a href="#" class="site-link story-card__link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              Learn More
+            </a>
+          </div>
+        </article>
+
+        <article class="story-card story-card--reverse">
+          <div class="story-card__media  parallax-wrap">
+            <img src="/Assets/images/homepage/stories/stories-img4.webp" alt="Woman applying perfume" class="parallax-img img-fluid" />
+          </div>
+          <div class="story-card__content">
+            <h3 class="story-card__title text-h5">Not just a cosmetic make-over</h3>
+            <p class="story-card__desc">Godavari Biorefineries&rsquo; bio-based chemicals are the go-to ingredients in personal care products</p>
+            <a href="#" class="site-link story-card__link">
+              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
+              Learn More
+            </a>
+          </div>
+        </article>
+      </div>
+  </div>
+</section>
+
+@if (Model?.GlobalStandards_List != null && Model.GlobalStandards_List.Any())
+{
+    @await Html.PartialAsync("_global_standards", Model.GlobalStandards_List)
 }
 
 @section Scripts {
   <script src="~/Assets/js/swiper-bundle.min.js"></script>
+  <script src="~/Assets/js/hero-banner.js" asp-append-version="true"></script>
   <script src="~/Assets/js/homepage-script.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/translating-products.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/philosophy-principles.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/logo-marquee-script.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/giveback-animation.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/stories-card-animation.js" asp-append-version="true"></script>
   <script src="~/Assets/js/odometer-counter-script.js"></script>
+  <script src="~/Assets/js/ataglance-script.js" asp-append-version="true"></script>
 }

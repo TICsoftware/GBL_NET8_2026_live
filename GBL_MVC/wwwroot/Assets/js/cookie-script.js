@@ -44,7 +44,7 @@ $(document).ready(function () {
     if (!document.querySelector('script[src*="GA_Header_Script.js"]')) {
       let script = document.createElement("script");
       script.type = "text/javascript";
-      script.src = "/Assets/js/GA_Header_Script.js?v=" + new Date().getTime();
+      script.src = "/Assets/js/GA_Header_Script.js";
       document.head.appendChild(script);
     }
   }

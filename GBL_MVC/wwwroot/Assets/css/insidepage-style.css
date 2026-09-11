@@ -1,0 +1,42 @@
+/**=====================================
+INSIDE BANNER CSS
+======================================**/
+.inside-banner-outer .innerbanner-image {
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.innerbanner-caption{ bottom:80px; top:inherit;}
+.innerbanner-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(0,0,0,0) 93%); 
+}
+
+
+.page-intro-inner{ max-width:1000px; margin: 0 auto; width: 90%; text-align:left;}
+.page-intro-inner p{
+  font-size: var(--text-20);
+  color: #B2B2B2;
+}
+.page-intro-inner .page-intro-fill-word{
+  display: inline;
+  color: #b2b2b2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-intro-inner p,
+  .page-intro-inner .page-intro-fill-word{
+    color: #282B31;
+  }
+}
+
+@media all and (max-width: 1179px) {
+  .innerbanner-image-wrapper{ height:auto;}
+  .inside-banner-outer .innerbanner-image{ position: relative;}
+  .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:10px 0; text-align: center;}
+  .innerbanner-caption *{ color: var(--text-black);}
+}
+

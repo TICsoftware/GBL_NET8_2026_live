@@ -10,7 +10,6 @@
   /* Tall pin scroll must stay dark — never flash page white */
   min-height: 100vh;
   min-height: 100svh;
-  overflow: hidden;
 }
 
 /* GSAP wraps the pinned panel; spacer is otherwise page-white */
@@ -79,7 +78,7 @@
   width: 100%;
   height: 100%;
   display: block;
-  opacity: 1;
+  opacity: 0;
 }
 
 /* ---------- Nodes (icons + logo) ---------- */
@@ -177,22 +176,15 @@
     max-width: 9.5rem;
   }
 }
-@media (max-width: 992px){
-#life-inside #section-title{top: clamp(10.5rem, 18vh, 40rem);}
-}
 
-
-
-/* Same radial layout as desktop — slightly larger stage + readable nodes */
+/* Same radial layout as desktop — scaled down so labels fit in side gutters */
 @media (max-width: 767px) {
   :root {
-    --stage: min(64vmin, 300px);
+    --stage: min(56vmin, 248px);
   }
 
   #life-inside .stage {
     top: 54%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
 
   #life-inside #section-title {
@@ -204,17 +196,17 @@
   }
 
   #life-inside .label-txt {
-    max-width: 8.5rem;
+    max-width: 5.75rem;
   }
 
   #life-inside .label-txt h2 {
-    font-size: clamp(0.78rem, 3.3vw, 0.95rem);
+    font-size: clamp(0.72rem, 3.1vw, 0.9rem);
     line-height: 1.15;
   }
 
   #life-inside .label-txt p {
     margin-top: 0.1rem;
-    font-size: clamp(0.62rem, 2.6vw, 0.75rem);
+    font-size: clamp(0.58rem, 2.5vw, 0.72rem);
     line-height: 1.25;
   }
 }
@@ -235,12 +227,9 @@
   }
 }
 
-@media (max-width: 375px) {
-      #life-inside #section-title {
-        top: clamp(6.5rem, 18vh, 40rem);
-    }
+@media (max-width: 992px){
+#life-inside #section-title{top: clamp(10.5rem, 18vh, 40rem);}
 }
-
 
 @media (min-width: 1200px) and (max-width: 1366px) {
   #life-inside #section-title{left: clamp(1rem, 20vw, 6rem);}

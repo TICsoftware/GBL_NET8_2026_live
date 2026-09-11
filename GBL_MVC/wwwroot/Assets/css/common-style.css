@@ -1,9 +1,32 @@
-﻿/**=====================================
+/**=====================================
 TITLE ANIMATION
 =====================================**/
+.text-anim__mask {
+  display: block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.text-anim__line,
+.text-anim__word {
+  display: inline-block;
+  color: inherit;
+  font: inherit;
+}
+.text-anim__line {
+  display: block;
+  will-change: transform;
+}
+
+/* Webflow letter slide-down — .text-h2 / .title-animation */
+.text-h2,
+.title-animation,
+.reveal-text {
+  will-change: transform, filter, clip-path;
+}
 .section-title-outer {margin-bottom: 30px;}
-.title-section{color: var(--color-primary);margin-bottom: 15px;} 
-.title-section span {color: var(--color-secondary);}
+.title-section{color: var(--color-primary);margin-bottom: 20px;} 
+.title-section span {color: var(--color-primary);}
+.title-section-white span {color: var(--color-white);}
 .eyebrow-text {color: var(--color-third); font-size: var(--text-12); text-transform: uppercase;font-weight: 400;letter-spacing: 1.2px; margin-bottom: 10px;}
 .section-title-outer p {font-size: var(--text-intro); max-width: 85%;}
 .section-title-outer-center {text-align: center;}
@@ -23,6 +46,62 @@ TITLE ANIMATION
 .no-p-width p {max-width: 100%;}
 .section-with-intro .color-text {color: var(--color-secondary);}
 .section-with-intro .bold-text {font-weight: 700;}
+
+/**=====================================
+SECTION INTRO (common — all pages)
+Title left | copy + CTA right
+=====================================**/
+.section-intro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+  justify-content: space-between;
+}
+
+.section-intro__title {
+  margin-bottom: 0;
+}
+
+.section-intro__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 44rem;
+  gap: 1rem;
+}
+
+.section-intro__content p {
+  margin: 0;
+  font-size: var(--text-intro);
+  line-height: 1.55;
+  color: #ccc;
+}
+
+.section-intro__content .intro-fill-word {
+  display: inline;
+  color: #ccc;
+}
+
+.white-copy .section-intro__content p,
+.white-copy .section-intro__content .intro-fill-word {
+  color: #ccc;
+}
+
+.ourPhilosophy.is-on-media .section-intro__content .intro-fill-word {
+  color: #fff !important;
+}
+
+@media (max-width: 767px) {
+  .section-intro {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .section-intro__title .text-h2 {
+    max-width: none;
+  }
+}
 
 
 body{overflow-x: hidden;}
@@ -55,72 +134,21 @@ BACK TO TOP
 }
 
 /**=====================================
-FOOTER VECTOR
-=====================================**/
-.footer-vector{
-  z-index: 1;
-  opacity: 0.9;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-@media (prefers-reduced-motion: reduce) {
-  .footer-vector{
-    will-change: auto;
-    opacity: 0.9 !important;
-    transform: none !important;
-  }
-}
-
-/**=====================================
 TEXT REVEAL CSS
 =====================================**/
-.reveal-text .char {color: var(--title-grey);transition: color 0.6s ease;}
-.reveal-text .char.revealed {color: var(--color-primary);}
-.reveal-text .char.highlight.revealed {color: var(--color-secondary);}
-.white-copy .reveal-text .char.highlight.revealed {color: var(--color-white);}
-.white-copy .reveal-text .char.revealed {color: var(--color-white);}
+
 
 /**=====================================
 INNER BANNER CSS
 =====================================**/
-.overlay-scrim{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-background: linear-gradient(90deg, rgba(0, 0, 0, 0.90) -5.49%, rgba(0, 0, 0, 0.77) 11.58%, rgba(0, 0, 0, 0.64) 29.36%, rgba(0, 0, 0, 0.51) 45.06%, rgba(0, 0, 0, 0.00) 74.59%);
-}
 
-
-.innerbanner-overlay {
-  background: linear-gradient( 95deg,rgba(0, 0, 0, 0.6) 1.16%,  rgba(0, 0, 0, 0) 50.63%);
- inset: calc(var(--spacing) * 0);
- position:absolute;
-  left:0;
-  bottom:0;
-  width:100%;
-  height: 100%;
-}
-
- .inside-banner-outer{margin-top: var(--header-h, 106px);}
- .innerbanner-title {text-transform: uppercase;margin-bottom: 10px;}
- .innerbanner-title .char {
-   color: rgba(255, 255, 255, 0.35);
-   transition: color 0.35s ease;
- }
- .innerbanner-title .char.revealed {
-   color: #fff;
- }
- .innerbanner-title .char.highlight.revealed {
-   color: #fff;
- }
 
 /* ==========================================================
    Common Link/Button Style
    ========================================================== */
 .site-link{
-  --link-color: #231F20;
-  --link-hover: #ED1C24;
+  --link-color: var(--color-primary);
+  --link-hover: var(--color-secondary);
   --link-ease: cubic-bezier(.22,1,.36,1);
   display:inline-flex;
   align-items:center;
@@ -132,6 +160,7 @@ background: linear-gradient(90deg, rgba(0, 0, 0, 0.90) -5.49%, rgba(0, 0, 0, 0.7
   padding-bottom:10px;
   transition: color .28s var(--link-ease);
   font-size: var(--text-button);
+  width: max-content;
 }
 
 /* base underline â€” always visible, default color */
@@ -193,20 +222,16 @@ background: linear-gradient(90deg, rgba(0, 0, 0, 0.90) -5.49%, rgba(0, 0, 0, 0.7
 .outer-bg-white {background-color: #fff;}
 .outer-btn-spacing {padding: 25px 25px;}
 
-
-
-
-
 .fill-site-link{
     display:inline-flex;
     align-items:center;
     gap:4px;
     padding:6px 6px 6px 18px;
-    background:#231F20;
+    background:var(--color-primary);
     color:#fff;
     border-radius:10px;
     text-decoration:none;
-  font-size: var(--text-button);
+    font-size: var(--text-button);
     font-weight:500;
     line-height:1;
     transition:all .35s ease;
@@ -242,9 +267,6 @@ background: linear-gradient(90deg, rgba(0, 0, 0, 0.90) -5.49%, rgba(0, 0, 0, 0.7
     transform:translateX(2px);
 }
 
-
-
-
 .parallax-wrap {
   overflow: hidden;
   position: relative;
@@ -277,6 +299,7 @@ background: linear-gradient(90deg, rgba(0, 0, 0, 0.90) -5.49%, rgba(0, 0, 0, 0.7
   object-position:center;
 }
 
+
 .section-title-outer-center.white-copy{margin-left:auto;}
 .white-copy{
   margin-left:0;
@@ -294,251 +317,32 @@ background: linear-gradient(90deg, rgba(0, 0, 0, 0.90) -5.49%, rgba(0, 0, 0, 0.7
 /**=====================================
 ODOMETER CSS
 =====================================**/
-.counter-odometer {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0ch;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  overflow: hidden;
-}
-.odometer-digit {
-  position: relative;
-  display: inline-block;
-  vertical-align: bottom;
-  height: 1em;
-  width: 1ch;
-  text-align: center;
-  font-family: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  line-height: 1;
-  /* Strict clip — overflow:hidden alone leaks digit slivers at browser zoom (e.g. 150%) */
-  overflow: hidden;
-  overflow: clip;
-  clip-path: inset(2px 0);
-  -webkit-clip-path: inset(2px 0);
-  isolation: isolate;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  contain: paint;
-  /* Extra safety for glyph bleed at non-100% zoom */
-  -webkit-mask-image: linear-gradient(#000 0 100%);
-  mask-image: linear-gradient(#000 0 100%);
-}
-.odometer-column {
-  display: block;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-}
-.odometer-digit-line {
-  display: block;
-  height: 1em;
-  line-height: 1;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-.counter-suffix {
-  display: inline-block;
-  margin-left: 0.35ch;
-  font-family: inherit;
-  font-size: var(--text-58);
-  line-height: 1;
-  color: var(--color-primary);
-  font-weight: 500;
-}
-.odometer-comma {
-  display: inline-block;
-  width: 0.4em;
-  text-align: center;
-  font-weight: inherit;
-  vertical-align: bottom;
-}
-.counter-wrap .counter,
-.counter-wrap .counter-no {
-  font-size: var(--text-58);
-  font-weight: 500;
-  line-height: 1;
-}
+.counter-odometer {display: inline-flex;align-items: baseline;gap: 0ch;font-variant-numeric: tabular-nums;line-height: 1;overflow: hidden;}
+.odometer-digit {overflow: hidden;display: inline-block;vertical-align: bottom;height: 1em;width: 1ch;text-align: center;font-family: inherit;font-weight: inherit;font-size: inherit;}
+.odometer-column {display: block;transform: translateY(0);will-change: transform; overflow: hidden;}
+.odometer-digit-line {display: block;height: 1em;line-height: 1em;box-sizing: border-box;}
+.counter-suffix {display: inline-block;margin-left: 0.35ch;font-family: inherit;font-size: var(--text-58);line-height: 1; color: var(--color-primary);font-weight: 500;}
+.odometer-comma {display: inline-block; width: 0.4em; text-align: center;font-weight: inherit;vertical-align: bottom;}
+.counter-wrap .counter, .counter-wrap .counter-no {font-size: var(--text-58);font-weight: 500;line-height: 1;}
 
-.lion-logo-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-width: min(45vw, 480px);
-}
-.lion-logo-stroke {
-  fill: none;
-}
-.lion-logo-fill {
-  will-change: opacity;
-}
 
-/**=====================================
-TABLE CSS
-=====================================**/
-/* Shared product / spec tables */
-.spec-table {
-  width: 100%;
-  min-width: 900px;
-  text-align: left;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 10px 10px 0 0;
-  overflow: hidden;
-}
-@media (min-width: 1024px) {
-  .spec-table {
-    max-width: 72rem; /* lg:max-w-6xl */
-  }
-}
-.spec-table th,
-.spec-table td {
-  padding: 18px 14px;
-  font-size: var(--text-p);
-  line-height: 1.5;
-  vertical-align: top;
-}
-.spec-table tbody td {
-  border-right: 1px solid #EAEAEA;
-  border-bottom: 1px solid #EAEAEA;
-  background-color: #fff;
-}
-.spec-table tbody td:first-child {
-  border-left: 1px solid #EAEAEA;
-}
-.spec-table .bg-brand-row {
-  background: radial-gradient(222.5% 222.5% at 50% 50%, #ED1C24 0%, #231F20 100%);
-}
-.spec-table .bg-gradient-row {
-background: linear-gradient(90deg, rgba(237, 28, 36, 0.30) 0%, rgba(237, 28, 36, 0.16) 10%, rgba(237, 28, 36, 0.00) 100%);
-}
-.spec-table .bg-gradient-row td {background: transparent;}
 
-.spec-table .bg-brand-row th {
-  color: #fff;
-  font-weight: 700;
-  font-size: var(--text-20);
-  border: 0;
-}
-.spec-table .bg-brand-row th:first-child {
-  border-top-left-radius: 10px;
-}
-.spec-table .bg-brand-row th:last-child {
-  border-top-right-radius: 10px;
-}
 
-/* Legacy helpers (kept for any older markup) */
-.border-surface-line,
-table .border-surface-line {
-  --tw-border-opacity: 1;
-  border-color: #EAEAEA;
-}
-.divide-surface-line > :not(:last-child),
-table tbody.divide-surface-line > tr:not(:last-child) {
-  --tw-divide-opacity: 1;
-  border-color: #EAEAEA;
-}
-.cell-border-r  {
-  border-right: 1px solid #EAEAEA;
-}
-.cell-border-b {
-  border-bottom: 1px solid #EAEAEA;
-}
-table .cell {
-  padding: 18px 14px;
-  font-size: var(--text-p);
-  line-height: 1.5;
-}
-table tbody td:first-child {  border-left: 1px solid #EAEAEA;}
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 10px 10px 0 0;
-  overflow: hidden;
-}
-table .bg-brand-row {
-  background: radial-gradient(222.5% 222.5% at 50% 50%, #ED1C24 0%, #231F20 100%);
-}
-table .bg-brand-row th {
-  color: #fff;
-  font-weight: 700;
-  font-size: var(--text-20);
-  border: 0;
-}
-table .bg-brand-row th:first-child {
-  border-top-left-radius: 10px;
-}
-table .bg-brand-row th:last-child {
-  border-top-right-radius: 10px;
-}
-.caption-bottom {text-align: left; font-size: var(--text-small);  margin-top: 10px; line-height: 1.5;}
 
-.bg-brand-band {background: radial-gradient(155.56% 155.56% at 50% 130.35%, #ED1C24 0%, #231F20 100%);}
-.cta-band {height: calc(85vh - var(--header-h, 0px)); min-height: calc(85vh - var(--header-h, 0px));display: flex;align-items: center; justify-content: center;}
-
-.bgimage-outer-wrap .bg-image{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  max-width:none;
-  object-fit:cover;
-  object-position:center;
-z-index: -1;
-}
-
-/**=====================================
-BULLET LIST CSS
-=====================================**/
-.common-bullet-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.common-bullet-list li {
-  position: relative;
-  padding-left: 1.35rem;
-  color: var(--color-primary, #231f20);
-  font-size: var(--text-p, 1rem);
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-.common-bullet-list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.45em;
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 9999px;
-  background: var(--color-secondary, #ed1c24);
-}
-
-.form-Submitbtn-wrap {margin-top: 30px;}
-
-.breadcrumb-nav li, .breadcrumb-nav li a {font-size: var(--text-small);}
-
-.field-validation-valid {color: red; font-size: 0.75rem; }
-.breadcrumb-nav ol {flex-wrap: wrap;}
 
 
 /* Image on the right, content on the left â€” no HTML reorder */
 @media (min-width: 1024px) {
-  .leftright-grid-section.leftright-grid-reverse {
-    flex-direction: row-reverse !important;
-  }
+ 
 }
 
 
 @media (prefers-reduced-motion: reduce) {
+  .inside-banner-outer .innerbanner-image {
+    will-change: auto;
+    transform: none !important;
+  }
+
   .parallax-img {
     height: 100%;
     will-change: auto;
@@ -557,44 +361,15 @@ BULLET LIST CSS
 
 
 @media (max-width: 992px){
-.innerbanner-image-wrapper {height: 90vh;}
 }
 
 @media (max-width: 767px){
-.section-title-outer p {max-width: 100%;}
-.section-title-md {max-width: 100%; }
-.section-title-sm {max-width: 100%; }
-.intro-copy-col p,
-.intro-outer-wrapper > p { max-width: 100%;}
- .innerbanner-overlay {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.60) 0%,
-      rgba(0, 0, 0, 0.45) 30%,
-      rgba(0, 0, 0, 0.15) 55%,
-      rgba(0, 0, 0, 0) 70%
-    );
-  }
-.innerbanner-image-wrapper {height: 75vh;}
-
-.inside-banner-outer .innerbanner-caption{justify-content: end; align-items: end;padding-bottom: 120px;}
-
 }
 
-@media (max-width: 480px){
-
-}
-@media (max-width: 393px){
-.inside-banner-outer .innerbanner-caption{justify-content: end; align-items: end;padding-bottom: 100px;}
-}
 
 @media (min-width: 1200px) and (max-width: 1366px) {
-  .counter-wrap .counter, .counter-wrap .counter-no{font-size: 2.875rem;}
-  .cta-band {height: calc(90vh - var(--header-h, 0px)); min-height: calc(90vh - var(--header-h, 0px));}
-  .spec-table th, .spec-table td, .spec-table td p {font-size: 1rem;}
-  .spec-table th, .spec-table td {padding: 14px 10px;}
-  .fill-site-link{font-size: 1rem;padding: 4px 4px 4px 14px;}
-  .inside-banner-outer .innerbanner-caption .max-w-5xl{max-width: 46rem;}
+  .counter-wrap .counter, .counter-wrap .counter-no{font-size: 2.875rem;}  
+  .fill-site-link{font-size: 1rem;padding: 4px 4px 4px 14px;}  
 }
 
 /* 150% zoom */
@@ -607,88 +382,3 @@ BULLET LIST CSS
 @media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio:1.25),screen and (min-width:1025px) and (min-resolution:120dpi) {
 
 }
-
-/* ==========================================================
-   Common form checkbox (reuse on all public forms)
-   ========================================================== */
-.form-check {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  cursor: pointer;
-  color: #fff;
-  font-size: 0.875rem;
-  line-height: 1.45;
-  user-select: none;
-}
-
-.form-check-input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
-}
-
-.form-check-box {
-  width: 20px;
-  height: 20px;
-  flex: none;
-  margin-top: 1px;
-  border-radius: 5px;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form-check-box::after {
-  content: "";
-  width: 5px;
-  height: 9px;
-  border: solid #231F20;
-  border-width: 0 2px 2px 0;
-  transform: scale(0) rotate(45deg);
-  transition: transform 0.18s ease;
-  margin-top: -1px;
-}
-
-.form-check-input:checked + .form-check-box {
-  border-color: #fff;
-  background: #fff;
-}
-
-.form-check-input:checked + .form-check-box::after {
-  transform: scale(1) rotate(45deg);
-}
-
-.form-check-input:focus-visible + .form-check-box {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
-}
-
-.form-check-label {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.875rem;
-}
-.label-check-txt p {font-size: 0.875rem; color:#fff;}
-/* Light surfaces (if checkbox is used on white background) */
-.form-check.form-check-light {
-  color: var(--color-primary, #231F20);
-}
-.form-check.form-check-light .form-check-box {
-  border-color: rgba(35, 31, 32, 0.45);
-}
-.form-check.form-check-light .form-check-input:checked + .form-check-box {
-  border-color: var(--color-secondary, #ED1C24);
-  background: var(--color-secondary, #ED1C24);
-}
-.form-check.form-check-light .form-check-box::after {
-  border-color: #fff;
-}
-.form-check.form-check-light .form-check-input:focus-visible + .form-check-box {
-  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.25);
-}
-
