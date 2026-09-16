@@ -23,6 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
   var timeline = null;
   var activeCard = null;
   var isOpen = false;
+  var scrollLocked = false;
+  var scrollIdleTimer = 0;
+  var lastScrollY = 0;
+  var pointerX = 0;
+  var pointerY = 0;
 
   section.classList.toggle("has-nav", showNav);
 
@@ -57,10 +62,50 @@ document.addEventListener("DOMContentLoaded", function () {
     return list;
   }
 
+  function isCardReady(card) {
+    return reduceMotion || (card && card.getAttribute("data-hover-ready") === "true");
+  }
+
+  function setCardReady(card, ready) {
+    if (!card) return;
+    if (ready) card.setAttribute("data-hover-ready", "true");
+    else card.removeAttribute("data-hover-ready");
+    if (isDesktopHover()) card.style.pointerEvents = ready ? "" : "none";
+    else card.style.pointerEvents = "";
+  }
+
+  function cardFromPointer() {
+    var el = document.elementFromPoint(pointerX, pointerY);
+    if (!el || !sliderWrap.contains(el)) return null;
+    var card = el.closest(".translating-card");
+    if (!card || !isCardReady(card)) return null;
+    return card;
+  }
+
+  function resumePointerHover() {
+    if (!isDesktopHover() || scrollLocked || isOpen) return;
+    var card = cardFromPointer();
+    if (!card) return;
+    window.clearTimeout(hoverTimer);
+    window.clearTimeout(closeTimer);
+    hoverTimer = window.setTimeout(function () {
+      if (scrollLocked || !isCardReady(card)) return;
+      openExpand(card);
+    }, 16);
+  }
+
   function playCardRise(cardList) {
-    if (!hasGsap || reduceMotion || !cardList.length) return;
+    if (!cardList.length) return;
+
+    if (!hasGsap || reduceMotion) {
+      cardList.forEach(function (card) {
+        setCardReady(card, true);
+      });
+      return;
+    }
 
     cardList.forEach(function (card, i) {
+      setCardReady(card, false);
       gsap.fromTo(
         card,
         { autoAlpha: 0, y: 140 },
@@ -72,6 +117,15 @@ document.addEventListener("DOMContentLoaded", function () {
           ease: "power2.out",
           overwrite: "auto",
           force3D: true,
+          onUpdate: function () {
+            if (this.progress() < 0.8 || isCardReady(card)) return;
+            setCardReady(card, true);
+            resumePointerHover();
+          },
+          onComplete: function () {
+            setCardReady(card, true);
+            resumePointerHover();
+          },
         }
       );
     });
@@ -151,6 +205,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       if (hasGsap && hiddenCards.length) {
         gsap.set(hiddenCards, { autoAlpha: 0, y: 140 });
+        hiddenCards.forEach(function (card) {
+          setCardReady(card, false);
+        });
       }
       playCardRise(firstCards);
       lastVisibleCards = firstCards.slice();
@@ -160,7 +217,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function playExit() {
     if (!sectionInView) return;
     sectionInView = false;
-    closeExpand();
+    scrollLocked = false;
+    window.clearTimeout(scrollIdleTimer);
+    cards.forEach(function (card) {
+      setCardReady(card, false);
+    });
+    closeExpand(true);
     if (!hasGsap || reduceMotion) return;
 
     gsap.to(cards, {
@@ -178,6 +240,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (reduceMotion) {
       createSlider();
       if (hasGsap) gsap.set(cards, { autoAlpha: 1, y: 0 });
+      cards.forEach(function (card) {
+        setCardReady(card, true);
+      });
       return;
     }
 
@@ -234,6 +299,64 @@ document.addEventListener("DOMContentLoaded", function () {
     return desktopQuery.matches;
   }
 
+  function onSectionScroll(payload) {
+    if (!sectionInView || !isDesktopHover()) return;
+
+    var y =
+      payload && typeof payload.scroll === "number"
+        ? payload.scroll
+        : window.lenis && typeof window.lenis.scroll === "number"
+          ? window.lenis.scroll
+          : window.pageYOffset;
+    var velocity =
+      payload && typeof payload.velocity === "number" ? Math.abs(payload.velocity) : 0;
+    var dy = Math.abs(y - lastScrollY);
+    lastScrollY = y;
+
+    if (velocity < 0.14 && dy < 1.75) return;
+
+    scrollLocked = true;
+    window.clearTimeout(hoverTimer);
+    window.clearTimeout(scrollIdleTimer);
+    scrollIdleTimer = window.setTimeout(function () {
+      scrollLocked = false;
+      resumePointerHover();
+    }, 50);
+  }
+
+  function bindScrollLock() {
+    window.addEventListener(
+      "pointermove",
+      function (event) {
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+      },
+      { passive: true }
+    );
+
+    function onNativeScroll() {
+      onSectionScroll();
+    }
+
+    window.addEventListener("scroll", onNativeScroll, { passive: true });
+    document.documentElement.addEventListener("scroll", onNativeScroll, { passive: true });
+
+    var lenisBound = false;
+    function bindLenis() {
+      if (lenisBound || !window.lenis || typeof window.lenis.on !== "function") return lenisBound;
+      window.lenis.on("scroll", onSectionScroll);
+      lenisBound = true;
+      window.removeEventListener("scroll", onNativeScroll);
+      document.documentElement.removeEventListener("scroll", onNativeScroll);
+      return true;
+    }
+
+    if (!bindLenis()) {
+      window.setTimeout(bindLenis, 0);
+      window.addEventListener("load", bindLenis, { once: true });
+    }
+  }
+
   function cardHeight() {
     var card = cards[0];
     return card ? Math.round(card.getBoundingClientRect().height) : 0;
@@ -275,14 +398,14 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  function toRect() {
+  function toRect(from) {
     var wrapRect = sliderWrap.getBoundingClientRect();
     var left = showNav ? navOffset : 0;
     return {
       x: left,
-      y: 0,
+      y: from ? from.y : 0,
       w: wrapRect.width - (showNav ? navOffset * 2 : 0),
-      h: largeHeight(),
+      h: from ? from.h : largeHeight(),
     };
   }
 
@@ -293,17 +416,62 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function hideExpand() {
+    if (expand) {
+      if (hasGsap) {
+        gsap.set(expand, {
+          autoAlpha: 0,
+          visibility: "hidden",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+        });
+        if (expandCaption) gsap.set(expandCaption, { opacity: 0 });
+        if (expandInner) gsap.set(expandInner, { opacity: 0, y: 14 });
+      } else {
+        expand.style.opacity = "0";
+        expand.style.visibility = "hidden";
+      }
+      expand.setAttribute("aria-hidden", "true");
+    }
+    sliderWrap.classList.remove("is-expanded");
+    isOpen = false;
+    activeCard = null;
+    timeline = null;
+  }
+
+  function currentExpandRect(fallback) {
+    if (!hasGsap || !expand) return fallback;
+    var x = gsap.getProperty(expand, "x");
+    var y = gsap.getProperty(expand, "y");
+    var w = gsap.getProperty(expand, "width");
+    var h = gsap.getProperty(expand, "height");
+    if (typeof x !== "number" || typeof w !== "number" || w < 2) return fallback;
+    return { x: x, y: y, w: w, h: h };
+  }
+
   function openExpand(card) {
-    if (!expand || !isDesktopHover()) return;
+    if (!expand || !isDesktopHover() || scrollLocked || !isCardReady(card)) return;
+
+    if (activeCard === card && timeline) {
+      isOpen = true;
+      sliderWrap.classList.add("is-expanded");
+      expand.setAttribute("aria-hidden", "false");
+      if (timeline.reversed()) timeline.play();
+      return;
+    }
+
+    var from = fromRect(card);
+    var to = toRect(from);
+    var visible = hasGsap && gsap.getProperty(expand, "autoAlpha") > 0.05;
+    var start = visible ? currentExpandRect(from) : from;
 
     fillExpand(card);
     activeCard = card;
     isOpen = true;
     sliderWrap.classList.add("is-expanded");
     expand.setAttribute("aria-hidden", "false");
-
-    var from = fromRect(card);
-    var to = toRect();
 
     if (!hasGsap || reduceMotion) {
       expand.style.visibility = "visible";
@@ -319,81 +487,82 @@ document.addEventListener("DOMContentLoaded", function () {
     killTimeline();
 
     gsap.set(expand, {
-      visibility: "visible",
-      autoAlpha: 1,
-      x: from.x,
-      y: from.y,
-      width: from.w,
-      height: from.h,
+      x: start.x,
+      y: start.y,
+      width: start.w,
+      height: start.h,
+      transformOrigin: "0 0",
+      visibility: "hidden",
+      autoAlpha: 0,
       force3D: true,
     });
-    gsap.set(expandImg, { scale: 1.04, transformOrigin: "50% 50%" });
-    gsap.set(expandCaption, { opacity: 0 });
-    gsap.set(expandInner, { opacity: 0, y: 18 });
+    gsap.set(expand, {
+      visibility: "visible",
+      autoAlpha: 1,
+    });
 
-    timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
-    timeline
-      .to(
-        expand,
-        {
-          x: to.x,
-          y: to.y,
-          width: to.w,
-          height: to.h,
-          duration: 0.95,
-          ease: "power3.inOut",
-          force3D: true,
-        },
-        0
-      )
-      .to(
-        expandImg,
-        { scale: 1, duration: 1.05, ease: "power2.out" },
-        0
-      )
-      .to(
+    timeline = gsap.timeline({
+      defaults: { ease: "power2.inOut" },
+      onReverseComplete: hideExpand,
+    });
+
+    timeline.to(
+      expand,
+      {
+        x: to.x,
+        y: to.y,
+        width: to.w,
+        height: to.h,
+        duration: 0.7,
+        force3D: true,
+      },
+      0
+    );
+
+    if (expandCaption) {
+      timeline.fromTo(
         expandCaption,
-        { opacity: 1, duration: 0.55, ease: "power2.out" },
-        0.38
-      )
-      .to(
-        expandInner,
-        { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" },
-        0.42
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: "power2.out" },
+        0.28
       );
+    }
+    if (expandInner) {
+      timeline.fromTo(
+        expandInner,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+        0.3
+      );
+    }
   }
 
-  function closeExpand() {
+  function closeExpand(immediate) {
     if (!isOpen || !expand) return;
 
-    var from = activeCard ? fromRect(activeCard) : null;
-
-    if (!hasGsap || reduceMotion) {
-      expand.style.opacity = "0";
-      expand.style.visibility = "hidden";
-      sliderWrap.classList.remove("is-expanded");
-      expand.setAttribute("aria-hidden", "true");
-      isOpen = false;
-      activeCard = null;
+    if (!hasGsap || reduceMotion || immediate) {
+      killTimeline();
+      hideExpand();
       return;
     }
 
-    killTimeline();
+    if (timeline) {
+      timeline.reverse();
+      return;
+    }
+
+    var from = activeCard ? fromRect(activeCard) : null;
     timeline = gsap.timeline({
-      defaults: { overwrite: "auto" },
-      onComplete: function () {
-        gsap.set(expand, { autoAlpha: 0, visibility: "hidden" });
-        sliderWrap.classList.remove("is-expanded");
-        expand.setAttribute("aria-hidden", "true");
-        isOpen = false;
-        activeCard = null;
-        if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
-      },
+      defaults: { ease: "power2.inOut" },
+      onComplete: hideExpand,
     });
 
-    timeline
-      .to(expandInner, { opacity: 0, y: 10, duration: 0.28, ease: "power2.in" }, 0)
-      .to(expandCaption, { opacity: 0, duration: 0.32, ease: "power2.in" }, 0);
+    if (expandInner) {
+      timeline.to(expandInner, { opacity: 0, y: 10, duration: 0.22, ease: "power2.in" }, 0);
+    }
+    if (expandCaption) {
+      timeline.to(expandCaption, { opacity: 0, duration: 0.22, ease: "power2.in" }, 0);
+    }
 
     if (from) {
       timeline.to(
@@ -403,27 +572,28 @@ document.addEventListener("DOMContentLoaded", function () {
           y: from.y,
           width: from.w,
           height: from.h,
-          duration: 0.8,
-          ease: "power3.inOut",
+          duration: 0.55,
           force3D: true,
         },
-        0.04
+        0
       );
     } else {
-      timeline.to(expand, { autoAlpha: 0, duration: 0.35, ease: "power2.in" }, 0.04);
+      timeline.to(expand, { autoAlpha: 0, duration: 0.28, ease: "power2.in" }, 0);
     }
   }
 
   watchViewport();
+  bindScrollLock();
 
   cards.forEach(function (card) {
     card.addEventListener("mouseenter", function () {
-      if (!isDesktopHover()) return;
+      if (!isDesktopHover() || scrollLocked || !isCardReady(card)) return;
       window.clearTimeout(hoverTimer);
       window.clearTimeout(closeTimer);
       hoverTimer = window.setTimeout(function () {
+        if (scrollLocked || !isCardReady(card)) return;
         openExpand(card);
-      }, 70);
+      }, 20);
     });
   });
 

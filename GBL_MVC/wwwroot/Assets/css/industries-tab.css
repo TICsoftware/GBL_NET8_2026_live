@@ -1,0 +1,194 @@
+/**=====================================
+INDUSTRIES INSIDE — tabs + product cards
+Desktop: 1280px and up
+Between: 1180px – 1279px
+Mobile: below 1180px
+=====================================**/
+.industry-tabs {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid rgba(40, 43, 49, 0.16);
+  border-radius: 999px;
+  background: var(--color-white, #fff);
+  margin-bottom: 2rem;
+}
+
+.industry-tabs__thumb {
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  z-index: 0;
+  height: calc(100% - 1rem);
+  border-radius: 999px;
+  background: var(--color-secondary, #67815a);
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+.industry-tab {
+  position: relative;
+  z-index: 1;
+  min-height: 2.5rem;
+  padding:0.75rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary, #282b31);
+  font-size: var(--text-24);
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.35s ease;
+  font-weight: 400;
+}
+
+.industry-tab.is-active {
+  background: transparent;
+  color: var(--color-white, #fff);
+
+}
+
+.industry-tab-heading {
+  margin: 0 0 clamp(1.25rem, 2.5vw, 2rem);
+  color: var(--color-primary, #282b31);
+}
+
+.industry-tab-panel[hidden] {
+  display: none;
+}
+
+.industry-product-grid {
+  display: grid;
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.industry-product-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-gray, #f4f4f4);
+}
+
+.industry-product-card__media {
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+
+.industry-product-card__media img {
+  display: block;
+  width: 100%;
+  height: 105%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.industry-product-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding:2rem 2rem 5rem;
+  position: relative;
+}
+
+
+
+.industry-product-card__apps-label{ margin-bottom:10px; font-weight: 700;}
+
+.industry-product-card__apps ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.industry-product-card__apps li {
+  padding: 0.28rem 0.7rem;
+  border: 1px solid rgba(40, 43, 49, 0.18);
+  border-radius: 999px;
+  /* background: var(--color-white, #fff); */
+  color: var(--color-primary, #282b31);
+  font-size: var(--text-small);
+}
+
+.industry-product-card__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.65rem; 
+  position: absolute;
+  bottom: 1.25rem;
+  left: 1.15rem;
+  right: 1.15rem;
+}
+
+.industry-product-card__actions .site-btn {
+  min-height: 2.5rem;
+  font-size: var(--text-button);
+}
+
+.industry-product-card__actions .site-btn--fill {
+  background: var(--color-secondary, #67815a);
+  border-color: var(--color-secondary, #67815a);
+  color: #fff;
+}
+
+.industry-product-card__actions .site-btn--outline {
+  background: #fff;
+  border-color: var(--color-primary, #282b31);
+  color: var(--color-primary, #282b31);
+}
+
+.industry-product-card__actions .site-btn--outline:hover,
+.industry-product-card__actions .site-btn--outline:focus-visible {
+  color: #fff;
+  border-color: var(--color-secondary, #67815a);
+  background-color: var(--color-secondary, #67815a);
+}
+
+@media (min-width: 1280px) {
+  .industry-product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) and (max-width: 1279px) {
+  .industry-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .industry-product-card__media img {
+    height: 105%;   
+  }
+}
+
+@media (max-width: 1179px) {
+  /* .industry-tabs {
+    width: 100%;
+  } */
+
+  .industry-tab {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
+  .industry-product-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .industry-product-card__body{ padding:1.25rem 1.25rem 5rem;}
+}
+
+@media (max-width: 767px) {
+
+.industry-product-grid {
+    grid-template-columns: 1fr;
+  }
+}

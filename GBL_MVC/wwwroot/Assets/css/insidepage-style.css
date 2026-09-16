@@ -15,6 +15,19 @@ INSIDE BANNER CSS
 background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(0,0,0,0) 93%); 
 }
 
+.breadcrumb-nav,
+.breadcrumb-nav ol,
+.breadcrumb-nav li,
+.breadcrumb-nav a {
+  font-size: 14px;
+}
+
+/* Desktop: 700px at 100% zoom; at ~125%/150% zoom use 80vh so banner fits viewport */
+@media (min-width: 1180px) {
+  .innerbanner-image-wrapper {
+    height: min(700px, 80vh) !important;
+  }
+}
 
 .page-intro-inner{ max-width:1000px; margin: 0 auto; width: 90%; text-align:left;}
 .page-intro-inner p{
@@ -34,9 +47,11 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
 }
 
 @media all and (max-width: 1179px) {
-  .innerbanner-image-wrapper{ height:auto;}
+  .innerbanner-image-wrapper{ height:auto !important;}
   .inside-banner-outer .innerbanner-image{ position: relative;}
   .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:10px 0; text-align: center;}
   .innerbanner-caption *{ color: var(--text-black);}
-}
 
+
+  .page-intro-inner{  width: 100%;}
+}

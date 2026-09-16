@@ -27,7 +27,9 @@
         return node.closest('.testimonial-content')
           || node.closest('#products-section')
           || node.closest('.cselect-menu')
-          || node.closest('.cselect');
+          || node.closest('.cselect')
+          || node.closest('.mega-menu')
+          || node.closest('.site-header__nav-wrap');
       }
     });
   

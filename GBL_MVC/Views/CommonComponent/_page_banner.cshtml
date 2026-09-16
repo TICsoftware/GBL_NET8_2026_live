@@ -1,0 +1,57 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model ContentViewModel
+
+@{
+    var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage
+: "~/Assets/images/banners/AdhesivesLubricants-desktop.webp";
+    var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage
+: "~/Assets/images/banners/AdhesivesLubricants-desktop.webp";
+    var title = !string.IsNullOrWhiteSpace(Model?.ContTitle) ? Model.ContTitle : "";
+    var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "Products";
+    var alt = !string.IsNullOrWhiteSpace(Model?.Masthead_image_Alt_text) ? Model.Masthead_image_Alt_text : title;
+}
+
+<section class="relative inside-banner-outer">
+    <div class="inside-banner-inner banner-animation relative">
+        <!-- Banner -->
+        <div class="overflow-hidden h-[75vh] sm:h-131.25 relative innerbanner-image-wrapper">
+            <!-- Parallax Image -->
+            <picture>
+                <!-- Desktop -->
+                <source media="(min-width:1024px)" srcset="@desktopImg">
+                <source media="(min-width:992px)" srcset="@mobileImg">
+
+                <!-- Mobile -->
+                <img src="@mobileImg" alt="@alt"
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover" loading="eager"
+                     fetchpriority="high">
+            </picture>
+            <!-- Keep Existing Overlay -->
+            <div class="innerbanner-overlay"></div>
+        </div>
+        <!-- Content -->
+
+        <!--Breadcrumb-->
+        <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+            <div class="container">
+                <div class="max-w-4xl text-left">
+                    @if (!string.IsNullOrWhiteSpace(title))
+                    {
+                        <h1 class="innerbanner-title text-h1 text-white">
+                            @Html.Raw(title.CleanParagraphTags())
+                        </h1>
+                    }
+
+                    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        @Html.Raw(crumb)
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+

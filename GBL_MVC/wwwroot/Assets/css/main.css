@@ -53,17 +53,17 @@
 --font-uniNeueLight: 'uni_neuelight', sans-serif;
 
 /* ── Font Scale ── */
---text-h1:  clamp(2rem, calc(40px + 2.82vw), 70px);      /* 40px → 70px */
---text-h2: clamp(2rem, 1.5rem + 1.14vw, 2.75rem);  /* 38px → 44px */
---text-h3: clamp(1.75rem, 1.5rem + 0.65vw, 2.1875rem); /* 32px → 35px */
+--text-h1:  clamp(2rem, calc(1.65rem + 2.82vw), 70px);      /* 40px → 70px */
+--text-h2: clamp(1.5rem, 1.25rem + 1.14vw, 2.75rem);  /* 38px → 44px */
+--text-h3: clamp(1.25rem, 1rem + 0.65vw, 2.1875rem); /* 32px → 35px */
 --text-h4: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
 --text-24: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
 
 --text-h5: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
---text-20: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
---text-p: clamp(1rem, 0.875rem + 0.26vw, 1.125rem);        /* 16px → 18px */
+--text-20: clamp(1rem, 0.875rem + 0.26vw, 1.25rem);        /* 18px → 20px */
+--text-p: clamp(0.875rem, 0.65rem + 0.26vw, 1.125rem);        /* 16px → 18px */
 --text-small: 0.875rem;                                     /* 14px fixed, no scaling needed */
---text-button: clamp(1rem, 0.875rem + 0.26vw, 1rem);   /* 16px → 16px */
+--text-button: clamp(0.875rem, 0.65rem + 0.26vw, 1rem);   /* 16px → 16px */
 --text-intro: clamp(1.125rem, 0.875rem + 0.52vw, 1.375rem); /* 18px → 22px */
 --text-22: clamp(1.125rem, 0.875rem + 0.52vw, 1.375rem); /* 18px → 22px */
 --text-base: 1rem;   
@@ -109,7 +109,7 @@ html {
 
 body {
  font-family: var(--font-body); 
-  font-size: 1rem;
+  font-size: var(--text-p);
   line-height: 1.25;
   color: var(--color-primary);
    transition:background-color 0.35s ease,color 0.35s ease;
@@ -197,6 +197,6 @@ Common
 }
 
 @media (max-width: 992px) {
-  .container {width: 100%;padding-left: 1.25rem;padding-right: 1.25rem;}
-  .container-fluid{padding-left: 1.25rem; padding-right: 1.25rem;}
+  .container {width: 100%;padding-left: 1rem;padding-right: 1rem;}
+  .container-fluid{padding-left: 1rem; padding-right: 1rem;}
 }

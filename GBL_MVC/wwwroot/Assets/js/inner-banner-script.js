@@ -117,6 +117,55 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
+      const isProductBannerIntro = !!(inner.closest && inner.closest(".product-inside-banner"));
+
+      // Product banner intro: smooth timed fill on load / enter (not scrub jump).
+      if (isProductBannerIntro) {
+        function playFill() {
+          gsap.to(words, {
+            color: FILL_TO,
+            stagger: 0.05,
+            duration: 0.45,
+            ease: "power1.out",
+            overwrite: "auto",
+          });
+        }
+
+        function reverseFill() {
+          if (ScrollTrigger.isRefreshing) return;
+          gsap.to(words, {
+            color: FILL_FROM,
+            stagger: 0.03,
+            duration: 0.3,
+            ease: "power1.in",
+            overwrite: "auto",
+          });
+        }
+
+        ScrollTrigger.create({
+          id: "page-intro-fill-" + index,
+          trigger: inner,
+          scroller: stScroller,
+          start: "top 90%",
+          onEnter: playFill,
+          onEnterBack: playFill,
+          onLeaveBack: reverseFill,
+        });
+
+        function playIfInView() {
+          const rect = inner.getBoundingClientRect();
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          if (rect.top < vh * 0.9 && rect.bottom > 0) playFill();
+        }
+
+        window.requestAnimationFrame(playIfInView);
+        window.addEventListener("load", function () {
+          ScrollTrigger.refresh();
+          window.requestAnimationFrame(playIfInView);
+        });
+        return;
+      }
+
       gsap.to(words, {
         color: FILL_TO,
         stagger: 0.06,

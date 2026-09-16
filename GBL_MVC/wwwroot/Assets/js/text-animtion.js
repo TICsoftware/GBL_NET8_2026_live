@@ -169,6 +169,8 @@
     return Array.prototype.slice.call((root || document).querySelectorAll(SELECTOR));
   }
 
+  
+
   function initScrollTitles() {
     var hasScroll = typeof ScrollTrigger !== "undefined";
     if (hasScroll) gsap.registerPlugin(ScrollTrigger);

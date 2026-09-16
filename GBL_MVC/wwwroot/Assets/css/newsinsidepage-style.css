@@ -1,0 +1,252 @@
+/* Press Release Detail — content section */
+
+.press-release-outer {
+    background-color: #f5f5f5;
+}
+
+.press-release-card {
+background: #ffffff;
+    margin: -135px auto 0;
+    padding: 55px 110px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 10;
+    max-width: 1380px;
+}
+
+.press-release-card__date {
+    font-size: 0.875rem;
+
+    margin-bottom: 24px;
+}
+
+/* Rich text body coming from the CMS via Html.Raw */
+.press-release-card__content p {
+    margin-bottom: 16px;
+    line-height: 1.7;
+
+}
+
+.press-release-card__content h2,
+.press-release-card__content h3 {
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.press-release-card__content strong {
+    color: #111827;
+}
+
+.press-release-card__content a {
+    color: var(--color-secondary, #67815a);
+    text-decoration: underline;
+}
+
+.press-release-card__content blockquote {
+    margin: 20px 0;
+    padding-left: 20px;
+    border-left: 3px solid #d1d5db;
+    font-style: italic;
+    color: #4b5563;
+}
+
+.press-release-card__footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9375rem;
+}
+
+.press-release-card__footer-label {
+    color: #6b7280;
+    border-left: 2PX solid #2f6b3e;
+    padding-left: 8px;
+}
+
+.press-release-card__footer .fill-site-link {
+    color: var(--color-secondary, #67815a);;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .press-release-card {
+        margin-top: -70px;
+        padding: 32px 24px;
+    }
+}
+
+
+/* More Press Release */
+.morePressRelease{
+    background-color: #ebebeb;
+}
+.morePressRelease .title-section {
+    margin-bottom: 32px;
+}
+
+.press-release-mini-card {
+    background: #ffffff;
+    height: 100%;
+    padding: 55px 80px 95px 66px;
+}
+
+.press-release-mini-card__date {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.press-release-mini-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #111827;
+    margin: 0;
+}
+
+/* Desktop: static 3-up row (works even before Swiper JS runs) */
+.press-release-swiper .swiper-wrapper {
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.press-release-swiper .swiper-slide {
+    flex: 1 1 0;
+    height: auto;
+    width: auto;
+}
+
+/* prev/next + dots row — hidden on desktop, shown on mobile below */
+.press-release-controls {
+    display: none;
+}
+
+.morePressRelease__cta {
+    margin-top: 40px;
+}
+
+.btn-outline-pill {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid #111827;
+    border-radius: 999px;
+    color: #111827;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline-pill:hover {
+    background-color: #111827;
+    color: #ffffff;
+}
+.press-release-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #6b7280;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.press-release-nav svg {
+    display: block;
+}
+
+.press-release-nav:hover {
+    border-color: #9ca3af;
+    color: #111827;
+}
+
+.press-release-nav.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+}
+/* Mobile: real Swiper slider, controls centered under the cards */
+@media (max-width: 768px) {
+    .press-release-swiper .swiper-wrapper {
+        gap: 16px;
+    }
+
+    .press-release-swiper .swiper-slide {
+        flex: 0 0 88%;
+    }
+
+    .press-release-mini-card {
+        padding: 45px;
+    }
+
+    .press-release-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+.press-release-controls .press-release-pagination.swiper-pagination {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    bottom: auto;
+    left: auto;
+}
+
+    .press-release-pagination .swiper-pagination-bullet {
+        margin: 0;
+        background: #d1d5db;
+        opacity: 1;
+    }
+
+    .press-release-pagination .swiper-pagination-bullet-active {
+        background: #2f6b3e;
+    }
+
+    .press-release-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #111827;
+        font-size: 1rem;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .press-release-nav:hover {
+        background-color: #2f6b3e;
+        border-color: #2f6b3e;
+        color: #ffffff;
+    }
+
+    .press-release-nav.swiper-button-disabled {
+        opacity: 0.35;
+        cursor: default;
+        pointer-events: none;
+    }
+}

@@ -146,7 +146,7 @@ INNER BANNER CSS
 /* ==========================================================
    Common Link/Button Style
    ========================================================== */
-.site-link{
+/* .site-link{
   --link-color: var(--color-primary);
   --link-hover: var(--color-secondary);
   --link-ease: cubic-bezier(.22,1,.36,1);
@@ -162,8 +162,6 @@ INNER BANNER CSS
   font-size: var(--text-button);
   width: max-content;
 }
-
-/* base underline â€” always visible, default color */
 .site-link::before{
   content:"";
   position:absolute;
@@ -174,7 +172,6 @@ INNER BANNER CSS
   background: var(--link-color);
 }
 
-/* traveling underline â€” hidden, scales in on hover */
 .site-link::after{
   content:"";
   position:absolute;
@@ -208,8 +205,6 @@ INNER BANNER CSS
 .site-link:hover .site-link-arrow{
   transform: translateX(6px);
 }
-
-/* dark hero override */
 .hero-slide-link{
   --link-color: #fff;
   --link-hover: #ED1C24;
@@ -241,7 +236,7 @@ INNER BANNER CSS
     width:34px;
     height:34px;
     /* border-radius:50%;
-    background:rgba(255,255,255,.12); */
+    background:rgba(255,255,255,.12); 
     display:flex;
     align-items:center;
     justify-content:center;
@@ -265,6 +260,327 @@ INNER BANNER CSS
 
 .fill-site-link:hover .fill-site-link-arrow{
     transform:translateX(2px);
+} */
+
+/* ==========================================================
+   Site buttons (3 types) — use anywhere
+   1. .site-btn--outline  white pill + black border → green fill
+   2. .site-btn--fill     green fill → black fill
+   3. .site-btn--line     black text + bottom border → green line fill
+   Arrow + text swap sides smoothly; button width stays constant.
+   ========================================================== */
+.site-btn {
+  --btn-black: var(--color-primary, #282b31);
+  --btn-green: var(--color-secondary, #67815a);
+  --btn-white: var(--color-white, #fff);
+  --btn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --btn-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --btn-fill: var(--btn-green);
+  --btn-pad-x: 1.25rem;
+  --btn-arrow: 0.9rem;
+  --btn-gap: 0.5rem;
+  --btn-slot: calc(var(--btn-arrow) + var(--btn-gap));
+  --btn-dur: 0.55s;
+  --btn-dur-in: 0.4s;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0;
+  width: auto;
+  max-width: 100%;
+  min-height: 2.75rem;
+  padding: 0.6rem var(--btn-pad-x);
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--btn-black);
+  font-family: inherit;
+  font-size: var(--text-button);
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    color var(--btn-dur) var(--btn-ease-out),
+    border-color var(--btn-dur) var(--btn-ease-out),
+    background-color var(--btn-dur) var(--btn-ease-out);
+}
+
+.site-btn__label {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  white-space: nowrap;
+  /* Slot for arrow stays on one side — swaps on hover, width unchanged */
+  padding-left: var(--btn-slot);
+  padding-right: 0;
+  transition: padding var(--btn-dur) var(--btn-ease);
+}
+
+.site-btn__arrow {
+  position: absolute;
+  top: 50%;
+  left: var(--btn-pad-x);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--btn-arrow);
+  height: var(--btn-arrow);
+  overflow: visible;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: left var(--btn-dur) var(--btn-ease);
+  will-change: left;
+}
+
+.site-btn__arrow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-btn::before {
+  content: "";
+  position: absolute;
+  /* Cover under the 1px border so white bg never peeks as a jagged ring */
+  inset: -1px;
+  z-index: 0;
+  background: var(--btn-fill);
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  backface-visibility: hidden;
+  transition:
+    transform var(--btn-dur) var(--btn-ease),
+    opacity 0.2s var(--btn-ease-out),
+    visibility 0s linear var(--btn-dur);
+}
+
+.site-btn:hover,
+.site-btn:focus-visible,
+.site-btn:active {
+  color: var(--btn-white);
+  transition-duration: var(--btn-dur-in);
+}
+
+.site-btn:hover::before,
+.site-btn:focus-visible::before,
+.site-btn:active::before {
+  transform: scaleX(1);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform var(--btn-dur-in) var(--btn-ease),
+    opacity 0.08s linear,
+    visibility 0s linear 0s;
+}
+
+.site-btn:hover .site-btn__label,
+.site-btn:focus-visible .site-btn__label,
+.site-btn:active .site-btn__label,
+a:hover > .site-btn .site-btn__label,
+a:focus-visible > .site-btn .site-btn__label,
+a:active > .site-btn .site-btn__label,
+a:hover .site-btn:hover .site-btn__label,
+a:focus-visible .site-btn:focus-visible .site-btn__label {
+  padding-left: 0;
+  padding-right: var(--btn-slot);
+  transition-duration: var(--btn-dur-in);
+}
+
+.site-btn:hover .site-btn__arrow,
+.site-btn:focus-visible .site-btn__arrow,
+.site-btn:active .site-btn__arrow,
+a:hover > .site-btn .site-btn__arrow,
+a:focus-visible > .site-btn .site-btn__arrow,
+a:active > .site-btn .site-btn__arrow,
+a:hover .site-btn:hover .site-btn__arrow,
+a:focus-visible .site-btn:focus-visible .site-btn__arrow {
+  left: calc(100% - var(--btn-pad-x) - var(--btn-arrow));
+  transition-duration: var(--btn-dur-in);
+}
+
+a:hover > .site-btn,
+a:focus-visible > .site-btn,
+a:active > .site-btn {
+  color: var(--btn-white);
+}
+
+a:hover > .site-btn::before,
+a:focus-visible > .site-btn::before,
+a:active > .site-btn::before {
+  transform: scaleX(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.site-btn--fill::before {
+  background: var(--btn-black);
+}
+
+.site-btn--fill:not(:hover):not(:focus-visible):not(:active)::before {
+  transform: scaleX(0);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.site-btn:focus-visible {
+  outline: 2px solid var(--btn-green);
+  outline-offset: 3px;
+}
+
+/* 1 — outline: white pill + black border/text → green fill, white text */
+.site-btn--outline {
+  background: #fff;
+  border-color: var(--btn-black);
+  color: var(--btn-black);
+  --btn-fill: var(--btn-green);
+  /* Avoid subpixel white fringe between border and fill */
+  background-clip: padding-box;
+}
+
+.site-btn--outline:hover,
+.site-btn--outline:focus-visible,
+.site-btn--outline:active,
+a:hover > .site-btn--outline,
+a:focus-visible > .site-btn--outline,
+a:active > .site-btn--outline {
+  color: var(--btn-white);
+  border-color: var(--btn-fill);
+  background-color: var(--btn-fill);
+}
+
+/* 2 — fill: green → black fill overlay */
+.site-btn--fill {
+  background: var(--btn-green);
+  border-color: var(--btn-green);
+  color: var(--btn-white);
+  --btn-fill: var(--btn-black);
+}
+
+.site-btn--fill:hover,
+.site-btn--fill:focus-visible,
+.site-btn--fill:active,
+a:hover > .site-btn--fill,
+a:focus-visible > .site-btn--fill {
+  border-color: var(--btn-black);
+}
+
+/* 3 — line: underline only. Green line draws L→R; arrow + text swap sides */
+.site-btn--line {
+  --btn-pad-x: 0px;
+  min-height: 0;
+  padding: 0.35rem 0 0.5rem;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--btn-black);
+}
+
+.site-btn.site-btn--line::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  z-index: 2;
+  background: var(--btn-green);
+  border-radius: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 1;
+  visibility: visible;
+  transition: transform var(--btn-dur) var(--btn-ease);
+  will-change: transform;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.site-btn.site-btn--line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 1px;
+  background: var(--btn-black);
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--btn-dur-in) var(--btn-ease-out);
+  pointer-events: none;
+}
+
+.site-btn--line:hover,
+.site-btn--line:focus-visible,
+.site-btn--line:active,
+a:hover > .site-btn--line,
+a:focus-visible > .site-btn--line,
+a:active > .site-btn--line {
+  color: var(--btn-green);
+  background: transparent;
+}
+
+.site-btn--line:hover::before,
+.site-btn--line:focus-visible::before,
+.site-btn--line:active::before,
+a:hover > .site-btn--line::before,
+a:focus-visible > .site-btn--line::before,
+a:active > .site-btn--line::before {
+  transform: scaleX(1);
+  opacity: 1;
+  visibility: visible;
+  transition-duration: var(--btn-dur-in);
+}
+
+.site-btn--line:hover::after,
+.site-btn--line:focus-visible::after,
+.site-btn--line:active::after,
+a:hover > .site-btn--line::after,
+a:focus-visible > .site-btn--line::after,
+a:active > .site-btn--line::after {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-btn,
+  .site-btn::before,
+  .site-btn.site-btn--line::after,
+  .site-btn__label,
+  .site-btn__arrow {
+    transition: none;
+  }
+
+  .site-btn:hover .site-btn__arrow,
+  .site-btn:focus-visible .site-btn__arrow,
+  .site-btn:active .site-btn__arrow,
+  a:hover > .site-btn .site-btn__arrow,
+  a:active > .site-btn .site-btn__arrow {
+    left: var(--btn-pad-x);
+  }
+
+  .site-btn:hover .site-btn__label,
+  .site-btn:focus-visible .site-btn__label,
+  .site-btn:active .site-btn__label {
+    padding-left: var(--btn-slot);
+    padding-right: 0;
+  }
 }
 
 .parallax-wrap {
@@ -327,6 +643,24 @@ ODOMETER CSS
 
 
 
+/**=====================================
+IMAGE card COMMON CSS
+=====================================**/
+.image-card {
+  margin: 0;
+  background: var(--color-gray, #f4f4f4);
+  padding: 10px;
+}
+
+.image-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.image-card .image-box{ overflow: hidden; margin-bottom: 20px;}
+.image-card  figcaption{ font-size: var(--text-20);}
 
 
 

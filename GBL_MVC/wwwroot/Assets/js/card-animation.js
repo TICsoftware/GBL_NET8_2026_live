@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     soloEnd: 'top 58%',
   };
 
+  
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -35,14 +36,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const isMobile = window.matchMedia('(max-width: 992px)').matches;
   const stScroller = isMobile ? window : document.documentElement;
 
+  /** Skip story cards — they are animated in stories-card-animation.js. */
   function isStoryCard(el) {
     return el.classList.contains('story-card') || !!el.closest('.stories-grid');
   }
 
+  /** LinkedIn / embed cards need a smaller Y so the iframe stays stable. */
   function isIframeCard(el) {
     return el.classList.contains('latest-li-card') || !!el.querySelector('iframe');
   }
 
+  /** Direct .card-rise children of one list (not nested lists, not stories). */
   function listCards(list) {
     return Array.from(list.querySelectorAll('.card-rise')).filter(function (el) {
       if (isStoryCard(el)) return false;
@@ -50,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  /** Grouped lists: one scrubbed timeline, stagger between cards in the row. */
   document.querySelectorAll('.card-list-items').forEach(function (list, listIndex) {
     const cards = listCards(list);
     if (!cards.length) return;
@@ -86,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  /** Standalone .card-rise cards (not inside a .card-list-items group). */
   Array.from(document.querySelectorAll('.card-rise')).forEach(function (card, i) {
     if (isStoryCard(card)) return;
     if (card.closest('.card-list-items')) return;
@@ -112,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
     );
   });
 
+  /** Recalc start/end after layout, fonts, or iframe height change. */
   function refreshTriggers() {
     ScrollTrigger.refresh();
   }
