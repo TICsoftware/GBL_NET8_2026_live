@@ -3,10 +3,8 @@
 @model ContentViewModel
 
 @{
-    var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage
-: "~/Assets/images/banners/AdhesivesLubricants-desktop.webp";
-    var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage
-: "~/Assets/images/banners/AdhesivesLubricants-desktop.webp";
+    var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage : "~/Assets/images/banners/AdhesivesLubricants-desktop.webp";
+    var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage : "~/Assets/images/banners/AdhesivesLubricants-desktop.webp";
     var title = !string.IsNullOrWhiteSpace(Model?.ContTitle) ? Model.ContTitle : "";
     var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "Products";
     var alt = !string.IsNullOrWhiteSpace(Model?.Masthead_image_Alt_text) ? Model.Masthead_image_Alt_text : title;
@@ -20,10 +18,10 @@
             <picture>
                 <!-- Desktop -->
                 <source media="(min-width:1024px)" srcset="@desktopImg">
-                <source media="(min-width:992px)" srcset="@mobileImg">
+               
 
                 <!-- Mobile -->
-                <img src="@mobileImg" alt="@alt"
+                <img src="@desktopImg" alt="@alt"
                      class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover" loading="eager"
                      fetchpriority="high">
             </picture>
