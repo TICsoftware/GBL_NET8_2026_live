@@ -42,11 +42,13 @@ namespace GBL_BusinessLogic.BAL
                 cont_window_title = row.Field<string>("cont_window_title") ?? "",
                 cont_metadesc = row.Field<string>("cont_metadesc") ?? "",
                 cont_metatag = row.Field<string>("cont_metatag") ?? "",
-                 page_schema = row.Field<string>("page_schema") ?? "",
+                page_schema = row.Field<string>("page_schema") ?? "",
                 Hmpg_thumbnail = row.Field<string>("Hmpg_thumbnail") ?? "",
                 Hmpg_thumbnail_alt_text = row.Field<string>("Hmpg_thumbnail_alt_text") ?? "",
                 Masthead_image_Alt_text = row.Field<string>("Masthead_alt_text") ?? "",
                 CanonicalUrl = Config_Application_Website.GetMetaUrl(baseurl, canUrl),
+                ParentLink = row.Field<string>("parentLink") ?? "",
+                
                 cont_meta_image = Config_Application_Website.GetMetaUrl(baseurl, image),
                 cont_displaydate = row.Table.Columns.Contains("cont_displaydate")
                     ? row.Field<DateTime?>("cont_displaydate")

@@ -1,0 +1,160 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.MediaModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Press release";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Priya Cement" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+
+ 
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/newsinsidepage-style.css" asp-append-version="true" />
+   <link rel="preload" href="~/Assets/css/swiper-bundle.min.css" as="style">
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" />
+}
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+
+<!--PRESS RELEASE CONTENT-->
+<section class="relative section-spacing press-release-outer">
+   <div class="container">
+      <div class="press-release-card">
+
+         @if (Model?.Content?.cont_displaydate.HasValue == true)
+         {
+            <div class="press-release-card__date">
+               @(Model.Content.cont_displaydate?.ToString("MMM dd, yyyy") ?? "")
+            </div>
+         }
+
+         <div class="press-release-card__content">
+            @if (!string.IsNullOrWhiteSpace(Model.Content?.Content))
+            {
+               @Html.Raw(Model.Content.Content)
+            }
+         </div>
+
+         @if (!string.IsNullOrWhiteSpace(Model.Content?.ParentLink))
+         {
+            <div class="press-release-card__footer">
+               <span class="press-release-card__footer-label">Link:</span>
+               <a href="@Model.Content.ParentLink" target="_self" rel="noopener" class="fill-site-link">
+                  Press release
+               </a>
+            </div>
+         }
+
+      </div>
+   </div>
+</section>
+<!--PRESS RELEASE CONTENT END-->
+
+<!--==================================
+More Press Release
+===================================-->
+
+@if (Model.Related_Articles_List != null && Model.Related_Articles_List.Any())
+{
+   <section class="section-spacing morePressRelease ">
+      <div class="container">
+         <div class="title-section">
+            <h2 class="text-h2">More Press Release</h2>
+         </div>
+
+         <div class="press-release-slider">
+            <div class="swiper press-release-swiper">
+               <div class="swiper-wrapper">
+                  @foreach (var item in Model.Related_Articles_List)
+                  {
+                     <div class="swiper-slide">
+                        <article class="press-release-mini-card card-rise">
+                           <div class="press-release-mini-card__date">
+                              @(item.DisplayDate?.ToString("MMM dd, yyyy") ?? "")
+                           </div>
+                           <h3 class="press-release-mini-card__title">
+                              @item.Title
+                           </h3>
+                        </article>
+                     </div>
+                  }
+               </div>
+            </div>
+
+            <!-- prev / pagination dots / next — centered, shown on mobile only -->
+            <div class="press-release-controls">
+               <button type="button" class="press-release-nav press-release-nav--prev" aria-label="Previous press release">
+                  <svg width="8" height="13" viewBox="0 0 8 13" fill="none" aria-hidden="true">
+                     <path d="M7 1L1.5 6.5L7 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                           stroke-linejoin="round" />
+                  </svg>
+               </button>
+
+               <div class="swiper-pagination press-release-pagination"></div>
+
+               <button type="button" class="press-release-nav press-release-nav--next" aria-label="Next press release">
+                  <svg width="8" height="13" viewBox="0 0 8 13" fill="none" aria-hidden="true">
+                     <path d="M1 1L6.5 6.5L1 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                           stroke-linejoin="round" />
+                  </svg>
+               </button>
+            </div>
+         </div>
+
+
+         @if (!string.IsNullOrWhiteSpace(Model.Content?.ParentLink))
+         {
+            <div class="flex justify-center morePressRelease__cta">
+               <a href="@Model.Content.ParentLink" class="btn-outline-pill">Back To Listing</a>
+            </div>
+         }
+      </div>
+   </section>
+}
+<!--=========== More Press Release END ===========-->
+
+
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/more-press-release.js" asp-append-version="true"></script>
+}

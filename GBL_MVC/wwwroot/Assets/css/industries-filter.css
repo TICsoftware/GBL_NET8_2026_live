@@ -5,12 +5,15 @@ INDUSTRIES FILTER — custom select
   padding:0 0 2.25rem 0;
   margin: 0rem 0 0;
   position: relative;
-  z-index: 99; display: flex;
+  z-index: 99;
+  display: flex;
+  flex: 0 0 auto;
+  max-width: 100%;
 }
 
 .filter-inner {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 0.75rem 0.85rem;
@@ -18,17 +21,17 @@ INDUSTRIES FILTER — custom select
   max-width: 100%;
   margin: 0;
   padding: 0.65rem 0.7rem;
-  background: var(--color-white, #fff);
+  background:#f5f5f5;
   border: 1px solid rgba(40, 43, 49, 0.16);
   border-radius: 999px;
-  box-shadow: 0 8px 28px rgba(40, 43, 49, 0.06);
+  box-shadow: 0 0px 28px rgba(40, 43, 49, 0.06);
 }
 
 .cselect {
   position: relative;
   z-index: 1;
-  min-width: 11.5rem;
-  flex: 1 1 10rem;
+  flex: 0 0 auto;
+  width: auto;
 }
 
 .cselect.is-open {
@@ -49,7 +52,8 @@ INDUSTRIES FILTER — custom select
 
 .cselect-native {
   display: block;
-  width: 100%;
+  width: auto;
+  min-width: max-content;
   min-height: 2.85rem;
   padding: 0.55rem 2.4rem 0.55rem 1.2rem;
   appearance: none;
@@ -100,7 +104,8 @@ INDUSTRIES FILTER — custom select
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  width: 100%;
+  width:max-content;
+  min-width: 180px;
   min-height: 2.85rem;
   padding: 0.55rem 1.15rem 0.55rem 1.25rem;
   border: 1px solid rgba(40, 43, 49, 0.18);
@@ -115,9 +120,7 @@ INDUSTRIES FILTER — custom select
 }
 
 .cselect-value {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: 0 0 auto;
   white-space: nowrap;
 }
 
@@ -218,30 +221,63 @@ INDUSTRIES FILTER — custom select
 
 @media (min-width: 1180px) and (max-width: 1279px) {
   .filter-inner {
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
     border-radius: 1.5rem;
   }
 
   .cselect,
   .filter-submit {
-    flex: 1 1 calc(50% - 0.5rem);
+    flex: 0 0 auto;
+    width: auto;
   }
 }
 
-@media (max-width: 1179px) {
-  .filter-inner {
-    flex-direction: column;
-    align-items: stretch;
+@media (max-width: 767px) {
+  .filter-outer {
     width: 100%;
+    max-width: 100%;
+    padding-bottom: 1.5rem;
+  }
+
+  /*
+    Aligned 2×2:
+    [ Industry ] [ Application ]
+    [ Product Categories ] [ Filter ]
+  */
+  .filter-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 0.65rem;
+    width: 100%;
+    max-width: 100%;
     border-radius: 1.25rem;
     padding: 0.85rem;
   }
 
   .cselect,
   .filter-submit {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .cselect-native,
+  .cselect-trigger {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .cselect-value {
     flex: 1 1 auto;
     min-width: 0;
-    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .filter-submit {

@@ -67,6 +67,7 @@ namespace GBL_BusinessLogic.Entity
         public DateTime? cont_displaydate { get; set; }
         public string ByLine { get; set; }
         public string Publication { get; set; }
+        public string ParentLink { get; set; }
 
     }
 

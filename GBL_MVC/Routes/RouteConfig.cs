@@ -13,76 +13,25 @@ namespace GBL_MVC.Routes
 
 
 
-app.MapControllerRoute(
-                  name: "aboutus",
-                  pattern: "about-us",
-                  defaults: new { controller = "About", action = "AboutUs", title = "about-us" }
-              );
-
-              app.MapControllerRoute(
-                  name: "financialInformation",
-                  pattern: "about-us/financial-Information",
-                  defaults: new { controller = "About", action = "FinancialInformation", title = "financial-Information" }
-              );
-
-                app.MapControllerRoute(
-                  name: "sustainability",
-                  pattern: "esg/sustainability",
-                  defaults: new { controller = "ESG", action = "Sustainability", title = "sustainability" }
-              );
-
- app.MapControllerRoute(
-                  name: "ourproducts",
-                  pattern: "solutions",
-                  defaults: new { controller = "Product", action = "Index", title = "solutions" }
-              );
             app.MapControllerRoute(
-                  name: "ourproducts",
-                  pattern: "solutions",
-                  defaults: new { controller = "Product", action = "Index", title = "solutions" }
-              );
-
-
-
-        app.MapControllerRoute(
-                      name: "technical-services",
-                      pattern: "solutions/technical-services",
-                      defaults: new { controller = "Product", action = "TechnicalServices", title = "technical-services" }
-                  );
-
-                  app.MapControllerRoute(
-                      name: "solutions-enquiry",
-                      pattern: "solutions/enquiry",
-                      defaults: new { controller = "Product", action = "SolutionsCenter", title = "enquiry" }
-                  );
-
-            app.MapControllerRoute(
-                          name: "products-inside",
-                          pattern: "solutions/{title?}",
-                          defaults: new { controller = "Product", action = "Inside" }
-                      );
-
-            app.MapControllerRoute(
-                          name: "careers",
-                          pattern: "careers",
-                          defaults: new { controller = "Careers", action = "Index", title = "careers" }
-                      );
+                    name: "aboutus",
+                    pattern: "about-us",
+                    defaults: new { controller = "About", action = "AboutUs", title = "about-us" }
+                );
 
 
             app.MapControllerRoute(
-              name: "SubmitTechnicalSupport",
-              pattern: "Product/SubmitTechnicalSupport",
-              defaults: new { controller = "Product", action = "SubmitTechnicalSupport" }
-          );
+                 name: "press-release-inside",
+                 pattern: "media/press-release/{title?}",
+                 defaults: new { controller = "Media", action = "PressReleasesInside" }
+            );
+
 
             app.MapControllerRoute(
-              name: "SubmitSolutionsEnquiry",
-              pattern: "Product/SubmitSolutionsEnquiry",
-              defaults: new { controller = "Product", action = "SubmitSolutionsEnquiry" }
-          );
-
-
-            
+                    name: "careers",
+                    pattern: "careers",
+                    defaults: new { controller = "Careers", action = "Index", title = "careers" }
+            );
 
 
             app.MapControllerRoute(
@@ -104,11 +53,7 @@ app.MapControllerRoute(
                 defaults: new { controller = "Contactus", action = "Index", title = "contact-us" }
             );
 
-            app.MapControllerRoute(
-                name: "SubmitContactEnquiry",
-                pattern: "Contactus/SubmitEnquiry",
-                defaults: new { controller = "Contactus", action = "SubmitEnquiry" }
-            );
+
 
             app.MapControllerRoute(
                 name: "legal-disclaimer",
@@ -139,11 +84,11 @@ app.MapControllerRoute(
                 pattern: "Error",
                 defaults: new { controller = "pagearticle", action = "Error" }
             );
-  app.MapControllerRoute(
-                name: "logout",
-                pattern: "manage/logout",
-                defaults: new { controller = "Manage", action = "Logout" }
-            );
+            app.MapControllerRoute(
+                          name: "logout",
+                          pattern: "manage/logout",
+                          defaults: new { controller = "Manage", action = "Logout" }
+                      );
             // ✅ Area / Admin route (before default)
             app.MapControllerRoute(
                 name: "manage",

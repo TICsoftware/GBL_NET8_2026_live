@@ -1,0 +1,346 @@
+/**=====================================
+PRODUCT INSIDE — split banner
+.product-inside-banner-outer
+=====================================**/
+.product-inside-banner-outer {
+  background: var(--color-gray, #f4f4f4);
+  padding-top: clamp(0rem, 10vw, 10rem);
+}
+
+.product-inside-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(1.5rem, 4vw, 4.5rem);
+  align-items: center;
+}
+
+.product-inside-banner__title {
+  margin: 0 0 2rem;
+}
+
+.product-inside-banner__intro {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  text-align: left;
+}
+
+.product-inside-banner__intro p {
+  font-size: var(--text-22);
+  margin: 0;
+}
+
+.product-inside-banner__intro .page-intro-fill-word {
+  display: inline;
+  color: #b2b2b2;
+}
+
+.product-inside-banner__media {
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+}
+
+.product-inside-banner__media img {
+  display: block;
+  width: 100%;
+  height: 105%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@media (max-width: 1179px) {
+  .product-inside-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .product-inside-banner__media {
+    order: -1;
+  }
+
+  .product-inside-banner__intro {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-inside-banner__media img {
+    height: 100%;
+    will-change: auto;
+    transform: none !important;
+  }
+}
+
+/**=====================================
+PACKAGING / APPLICATIONS
+=====================================**/
+.packaging-application {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(2rem, 4vw, 4.5rem);
+}
+
+.packaging-application > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.packaging-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+
+.packaging-block__nav {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.packaging-block.is-slider .packaging-block__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+}
+
+.packaging-nav,
+.packaging-nav.swiper-button-prev,
+.packaging-nav.swiper-button-next {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0;
+  border: 1px solid rgba(40, 43, 49, 0.18);
+  border-radius: 50%;
+  background: var(--color-white, #fff);
+  color: var(--color-primary, #282b31);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.packaging-nav::before,
+.packaging-nav::after {
+  content: none;
+  display: none;
+}
+
+.packaging-nav svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+}
+
+.packaging-nav.swiper-button-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.packaging-pagination.swiper-pagination {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: auto !important;
+  transform: none !important;
+  margin: 0;
+  height: 2.25rem;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.packaging-pagination .swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+  margin: 0 3px !important;
+  background: #cfcfcf;
+  opacity: 1;
+  flex-shrink: 0;
+  transform: scale(0.72);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.packaging-pagination .swiper-pagination-bullet-active {
+  background: var(--color-primary, #282b31);
+  transform: scale(1.2);
+}
+
+.packaging-swiper:not(.swiper-initialized) .swiper-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.packaging-swiper.swiper-initialized {
+  overflow: hidden;
+}
+
+.packaging-application-outer .packaging-block {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.packaging-application-outer .packaging-swiper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.packaging-swiper .swiper-slide {
+  height: auto;
+  box-sizing: border-box;
+}
+
+
+.application-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.application-list li {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(40, 43, 49, 0.12);
+  font-size: var(--text-p);
+  line-height: 1.45;
+  color: var(--color-primary, #282b31);
+}
+
+.application-list li:first-child {
+ padding-top: 0;
+}
+
+@media (max-width: 1179px) {
+  .packaging-application {
+    flex-direction: column;
+  }
+
+  .packaging-application > * {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 699px) {
+  .packaging-swiper:not(.swiper-initialized) .swiper-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+/**=====================================
+TECHNICAL OVERVIEW / SDS
+=====================================**/
+.technical-Safety-outer .packaging-application {
+  align-items: stretch;
+}
+
+.technical-Safety-outer .packaging-block,
+.technical-Safety-outer .application-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.technical-Safety-outer .tech-overview,
+.technical-Safety-outer .sds-panel {
+  flex: 1 1 auto;
+}
+
+.technical-Safety-outer .tech-overview {
+  overflow-x: auto;
+}
+
+.technical-Safety-outer .tech-overview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.technical-Safety-outer .tech-overview-table th,
+.technical-Safety-outer .tech-overview-table td {
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  font-size: var(--text-p);
+  vertical-align: top;
+}
+
+.technical-Safety-outer .tech-overview-table thead th {
+  background: var(--color-gray, #f4f4f4);
+  font-weight: 700;
+}
+
+.technical-Safety-outer .tech-overview-table tbody td {
+  border-bottom: 1px solid rgba(40, 43, 49, 0.12);
+}
+
+.technical-Safety-outer .sds-panel {
+  background: var(--color-gray, #f4f4f4);
+  padding: clamp(1.5rem, 3vw, 2.5rem); 
+  align-content: center;
+}
+
+.technical-Safety-outer .sds-panel__name {
+  margin: 0 0 1.35rem;
+  font-size: var(--text-p);
+  font-weight: 700;
+  color: var(--color-primary, #282b31);
+}
+
+.technical-Safety-outer .sds-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.technical-Safety-outer .sds-download,
+.technical-Safety-outer .sds-enquire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  font-size: var(--text-button);
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.technical-Safety-outer .sds-download {
+  background: var(--color-secondary, #67815a);
+  color: var(--color-white, #fff);
+  border: 1px solid var(--color-secondary, #67815a);
+}
+
+.technical-Safety-outer .sds-download:hover {
+  background: #556c4c;
+  border-color: #556c4c;
+}
+
+.technical-Safety-outer .sds-enquire {
+  background: var(--color-white, #fff);
+  color: var(--color-primary, #282b31);
+  border: 1px solid rgba(40, 43, 49, 0.28);
+}
+
+.technical-Safety-outer .sds-enquire:hover {
+  border-color: var(--color-primary, #282b31);
+}

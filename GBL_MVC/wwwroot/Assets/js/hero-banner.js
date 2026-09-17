@@ -598,6 +598,13 @@ document.addEventListener("DOMContentLoaded", function () {
         animateClip(this);
         playActiveHeroVideo(this);
         scheduleHeroMobileHeight(this);
+        this.slides.forEach(function (slide) {
+          var content = slide.querySelector(".hero-slide__content");
+          if (!content || slide.classList.contains("swiper-slide-active")) return;
+          content.style.opacity = "";
+          content.style.transform = "";
+          content.style.pointerEvents = "";
+        });
       },
     },
   });
@@ -831,9 +838,6 @@ document.addEventListener("DOMContentLoaded", function () {
     Page scroll: scale the banner, lift captions out, stop autoplay
   ---------------------------------------------------------- */
   var bannerEl = document.querySelector(".heroBanner");
-  var liftEls = bannerEl
-    ? bannerEl.querySelectorAll(".hero-slide__content, .hero-thumbs-wrap")
-    : [];
   var SCALE_MIN = 0.75;
   var AUTOPLAY_STOP_AT_VH = 0.5;
   var CAPTION_FADE_BY = 0.42;
@@ -865,13 +869,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* Caption, CTA, and thumbs travel up and fade as the banner leaves */
+  function heroLiftTargets() {
+    var thumbs = bannerEl ? bannerEl.querySelector(".hero-thumbs-wrap") : null;
+    var activeContent = heroEl.querySelector(".swiper-slide-active .hero-slide__content");
+    var list = [];
+    if (activeContent) list.push(activeContent);
+    if (thumbs) list.push(thumbs);
+    return list;
+  }
+
+  /* Caption, CTA, and thumbs travel up and fade as the banner leaves.
+     Only the active slide copy is moved — inactive copy stays hidden. */
   function syncHeroCaption(progress) {
     var t = Math.min(1, progress / CAPTION_FADE_BY);
     var y = reduceMotion ? 0 : -(t * CAPTION_LIFT_PX);
     var opacity = 1 - t;
     var hidden = t > 0.92;
+    var activeContent = heroEl.querySelector(".swiper-slide-active .hero-slide__content");
+    var contents = bannerEl ? bannerEl.querySelectorAll(".hero-slide__content") : [];
 
+    for (var c = 0; c < contents.length; c += 1) {
+      if (contents[c] === activeContent) continue;
+      contents[c].style.transform = "";
+      contents[c].style.opacity = "";
+      contents[c].style.pointerEvents = "";
+    }
+
+    var liftEls = heroLiftTargets();
     for (var i = 0; i < liftEls.length; i += 1) {
       var el = liftEls[i];
       el.style.transform = y ? "translate3d(0, " + y + "px, 0)" : "none";
