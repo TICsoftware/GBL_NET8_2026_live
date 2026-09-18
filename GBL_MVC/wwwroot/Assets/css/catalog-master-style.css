@@ -1,0 +1,15 @@
+.drag-handle {
+    cursor: move;
+}
+
+.inactive-row {
+    background-color: #f8d7da;
+}
+
+.catalog-master-col-drag {
+    width: 50px;
+}
+
+.catalog-master-col-action {
+    width: 200px;
+}

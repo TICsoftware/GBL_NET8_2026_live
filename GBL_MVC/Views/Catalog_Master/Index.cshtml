@@ -1,0 +1,261 @@
+@model Core_project_BusinessLogic.Entity.CatalogMasterEntity
+@using Core_project_BusinessLogic.Entity
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    var list = ViewBag.List as List<CatalogMasterEntity>;
+    var industries = ViewBag.Industries as List<CatalogLookupItem> ?? new List<CatalogLookupItem>();
+    var subcategories = ViewBag.Subcategories as List<CatalogLookupItem> ?? new List<CatalogLookupItem>();
+    bool isMapping = string.Equals(Model.MasterType, "Mapping", StringComparison.OrdinalIgnoreCase);
+    bool showPageName = string.Equals(Model.MasterType, "Industry", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(Model.MasterType, "Product", StringComparison.OrdinalIgnoreCase);
+    string[] types = { "Industry", "Subcategory", "Application", "Product", "Mapping" };
+    int colCount = isMapping ? 6 : (showPageName ? 6 : 5);
+}
+
+<div data-master-type="@Model.MasterType">
+
+<div class="page-heading">
+    <h4>Catalog Master - @Model.MasterType</h4>
+
+    <form method="get">
+        <input type="hidden" name="type" value="@Model.MasterType" />
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text"
+                       name="search"
+                       value="@Model.SearchText"
+                       class="form-control"
+                       placeholder="@(isMapping ? "Search industry or subcategory..." : "Search name...")" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-3 mt-3">
+        @foreach (var t in types)
+        {
+            <a href="@Url.Action("Index", new { type = t })"
+               class="btn @(Model.MasterType == t ? "btn-primary" : "btn-outline-primary") me-1 mb-1">
+                @t
+            </a>
+        }
+    </div>
+
+    <button type="button" class="btn btn-success mb-3 js-open-modal">+ Add New</button>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="catalog-master-col-drag"></th>
+                @if (isMapping)
+                {
+                    <th>Industry</th>
+                    <th>Subcategory</th>
+                }
+                else
+                {
+                    <th>Name</th>
+                    if (showPageName)
+                    {
+                        <th>Page Name</th>
+                    }
+                }
+                <th>Display Order</th>
+                <th>Status</th>
+                <th class="catalog-master-col-action">Action</th>
+            </tr>
+        </thead>
+        <tbody id="sortable">
+            @if (list != null && list.Count > 0)
+            {
+                foreach (var item in list)
+                {
+                    <tr data-id="@item.ID"
+                        data-industry-id="@(item.IndustryId ?? 0)"
+                        data-category-id="@(item.Category_Master_Id ?? 0)"
+                        class="@((item.Status ?? 1) == 0 ? "inactive-row" : "")">
+                        <td class="drag-handle">☰</td>
+
+                        @if (isMapping)
+                        {
+                            <td>
+                                <span id="lbl_@item.ID">@item.Name</span>
+                                <select id="ddlIndustry_@item.ID" class="form-select d-none">
+                                    @foreach (var ind in industries)
+                                    {
+                                        <option value="@ind.Id" selected="@(ind.Id == item.IndustryId)">@ind.Name</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <span id="lblrel_@item.ID">@item.RelatedName</span>
+                                <select id="ddlCategory_@item.ID" class="form-select d-none">
+                                    @foreach (var sub in subcategories)
+                                    {
+                                        <option value="@sub.Id" selected="@(sub.Id == item.Category_Master_Id)">@sub.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <span id="lbl_@item.ID">@item.Name</span>
+                                <input type="text" value="@item.Name"
+                                       class="form-control d-none"
+                                       id="txt_@item.ID"
+                                       maxlength="500" />
+                            </td>
+                            if (showPageName)
+                            {
+                                <td>
+                                    <span id="lblpage_@item.ID">@item.PageName</span>
+                                    <input type="text" value="@item.PageName"
+                                           class="form-control d-none"
+                                           id="txtpage_@item.ID"
+                                           maxlength="300" />
+                                </td>
+                            }
+                        }
+
+                        <td>
+                            <span id="lblseq_@item.ID">@item.Sequence</span>
+                            <input type="number" value="@item.Sequence"
+                                   class="form-control d-none"
+                                   id="txtseq_@item.ID"
+                                   min="1" max="9999" />
+                        </td>
+
+                        <td>
+                            @if ((item.Status ?? 1) == 1)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="@item.ID">Edit</button>
+                            <button type="button" class="btn btn-sm btn-success save-btn d-none" data-id="@item.ID">Save</button>
+
+                            @if ((item.Status ?? 1) == 1)
+                            {
+                                <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ID">
+                                    Deactivate
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-sm btn-success activate-btn" data-id="@item.ID">
+                                    Activate
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="@colCount">No records found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @{
+        int totalPages = Model.PageSize > 0
+            ? (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)
+            : 0;
+    }
+
+    <div class="mt-3">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <a href="@Url.Action("Index", new {
+                type = Model.MasterType,
+                search = Model.SearchText,
+                page = i
+            })"
+               class="btn btn-sm @(i == Model.PageNumber ? "btn-primary" : "btn-outline-primary")">
+                @i
+            </a>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Add @Model.MasterType</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="addMasterForm" novalidate>
+                <div class="modal-body">
+                    @if (isMapping)
+                    {
+                        <label class="form-label" for="newIndustryId">Industry <span class="text-danger">*</span></label>
+                        <select id="newIndustryId" class="form-select mb-1">
+                            <option value="">Select Industry</option>
+                            @foreach (var ind in industries)
+                            {
+                                <option value="@ind.Id">@ind.Name</option>
+                            }
+                        </select>
+                        <span id="newIndustryError" class="text-danger d-none"></span>
+
+                        <label class="form-label mt-2" for="newCategoryId">Subcategory <span class="text-danger">*</span></label>
+                        <select id="newCategoryId" class="form-select mb-1">
+                            <option value="">Select Subcategory</option>
+                            @foreach (var sub in subcategories)
+                            {
+                                <option value="@sub.Id">@sub.Name</option>
+                            }
+                        </select>
+                        <span id="newCategoryError" class="text-danger d-none"></span>
+                    }
+                    else
+                    {
+                        <label class="form-label" for="newName">Name <span class="text-danger">*</span></label>
+                        <input type="text" id="newName" name="Name" maxlength="500" placeholder="Name" class="form-control mb-1" />
+                        <span id="newNameError" class="text-danger d-none"></span>
+
+                        @if (showPageName)
+                        {
+                            <label class="form-label mt-2" for="newPageName">Page Name</label>
+                            <input type="text" id="newPageName" maxlength="300" placeholder="Page name" class="form-control mb-1" />
+                        }
+                    }
+
+                    <label class="form-label mt-2" for="newSeq">Display Order <span class="text-danger">*</span></label>
+                    <input type="number" id="newSeq" name="Sequence" min="1" max="9999" placeholder="Display Order" class="form-control mb-1" />
+                    <span id="newSeqError" class="text-danger d-none"></span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success js-save-new">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Assets/css/catalog-master-style.css" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="~/Assets/scripts/catalog_master.js"></script>
+}
