@@ -4,6 +4,8 @@
 
   Industry also persists:
     Banner_Image_media_id, Landing_Thumbnail_Image_media_id,
+    Banner_Image_Alt, Landing_Thumbnail_Image_Alt,
+    Window_Title, Meta_Title, Meta_Description,
     Intro, Content, Language_Master_Id
 
   Status: 1 = Active, 0 = Inactive
@@ -28,6 +30,32 @@ GO
 
 IF COL_LENGTH('dbo.Industry_Subcategory_Master', 'Status') IS NULL
     ALTER TABLE dbo.Industry_Subcategory_Master ADD [Status] INT NOT NULL CONSTRAINT DF_Industry_Subcategory_Master_Status DEFAULT (1);
+GO
+
+/* ========== Ensure Industry SEO / image alt columns ========== */
+
+IF COL_LENGTH('dbo.Industry_Master', 'Banner_Image_Alt') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Banner_Image_Alt NVARCHAR(500) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Landing_Thumbnail_Image_Alt') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Landing_Thumbnail_Image_Alt NVARCHAR(500) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Window_Title') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Window_Title NVARCHAR(2000) NULL;
+ELSE
+    ALTER TABLE dbo.Industry_Master ALTER COLUMN Window_Title NVARCHAR(2000) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Meta_Title') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Meta_Title NVARCHAR(2000) NULL;
+ELSE
+    ALTER TABLE dbo.Industry_Master ALTER COLUMN Meta_Title NVARCHAR(2000) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Meta_Description') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Meta_Description NVARCHAR(2000) NULL;
 GO
 
 /* ========== GetPaged ========== */
@@ -58,6 +86,11 @@ BEGIN
             i.Landing_Thumbnail_Image_media_id,
             mb.file_path AS Banner_Image_Url,
             mt.file_path AS Landing_Thumbnail_Image_Url,
+            i.Banner_Image_Alt,
+            i.Landing_Thumbnail_Image_Alt,
+            i.Window_Title,
+            i.Meta_Title,
+            i.Meta_Description,
             i.Intro,
             i.Content
         FROM dbo.Industry_Master i
@@ -86,6 +119,11 @@ BEGIN
             CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
             CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
             CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+            CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+            CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+            CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
             CAST(NULL AS NVARCHAR(MAX)) AS Intro,
             CAST(NULL AS NVARCHAR(MAX)) AS Content
         FROM dbo.Application_Master
@@ -111,6 +149,11 @@ BEGIN
             CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
             CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
             CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+            CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+            CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+            CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
             CAST(NULL AS NVARCHAR(MAX)) AS Intro,
             CAST(NULL AS NVARCHAR(MAX)) AS Content
         FROM dbo.Industry_Subcategory_Master
@@ -148,6 +191,11 @@ BEGIN
             i.Landing_Thumbnail_Image_media_id,
             mb.file_path AS Banner_Image_Url,
             mt.file_path AS Landing_Thumbnail_Image_Url,
+            i.Banner_Image_Alt,
+            i.Landing_Thumbnail_Image_Alt,
+            i.Window_Title,
+            i.Meta_Title,
+            i.Meta_Description,
             i.Intro,
             i.Content
         FROM dbo.Industry_Master i
@@ -165,6 +213,11 @@ BEGIN
                CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
                CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
                CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+               CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+               CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+               CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
                CAST(NULL AS NVARCHAR(MAX)) AS Intro,
                CAST(NULL AS NVARCHAR(MAX)) AS Content
         FROM dbo.Application_Master WHERE ApplicationId = @ID;
@@ -178,6 +231,11 @@ BEGIN
                CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
                CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
                CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+               CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+               CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+               CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
                CAST(NULL AS NVARCHAR(MAX)) AS Intro,
                CAST(NULL AS NVARCHAR(MAX)) AS Content
         FROM dbo.Industry_Subcategory_Master WHERE SubcategoryId = @ID;
@@ -195,6 +253,11 @@ CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Insert
     @Language_Master_Id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @Landing_Thumbnail_Image_media_id INT = NULL,
+    @Banner_Image_Alt NVARCHAR(500) = NULL,
+    @Landing_Thumbnail_Image_Alt NVARCHAR(500) = NULL,
+    @Window_Title NVARCHAR(2000) = NULL,
+    @Meta_Title NVARCHAR(2000) = NULL,
+    @Meta_Description NVARCHAR(2000) = NULL,
     @Intro NVARCHAR(MAX) = NULL,
     @Content NVARCHAR(MAX) = NULL,
     @Create_UserId INT = NULL,
@@ -212,6 +275,8 @@ BEGIN
         (
             IndustryName, Industry_pagename,
             Banner_Image_media_id, Landing_Thumbnail_Image_media_id,
+            Banner_Image_Alt, Landing_Thumbnail_Image_Alt,
+            Window_Title, Meta_Title, Meta_Description,
             Intro, Content,
             Language_Master_Id, DisplayOrder, [Status],
             Create_UserId, CreatedDate
@@ -220,6 +285,8 @@ BEGIN
         (
             @Name, @PageName,
             @Banner_Image_media_id, @Landing_Thumbnail_Image_media_id,
+            @Banner_Image_Alt, @Landing_Thumbnail_Image_Alt,
+            @Window_Title, @Meta_Title, @Meta_Description,
             @Intro, @Content,
             @Language_Master_Id, @Sequence, @Status,
             @Create_UserId, SYSUTCDATETIME()
@@ -255,6 +322,11 @@ CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Update
     @Language_Master_Id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @Landing_Thumbnail_Image_media_id INT = NULL,
+    @Banner_Image_Alt NVARCHAR(500) = NULL,
+    @Landing_Thumbnail_Image_Alt NVARCHAR(500) = NULL,
+    @Window_Title NVARCHAR(2000) = NULL,
+    @Meta_Title NVARCHAR(2000) = NULL,
+    @Meta_Description NVARCHAR(2000) = NULL,
     @Intro NVARCHAR(MAX) = NULL,
     @Content NVARCHAR(MAX) = NULL,
     @Update_UserId INT = NULL,
@@ -270,6 +342,11 @@ BEGIN
             Industry_pagename = @PageName,
             Banner_Image_media_id = @Banner_Image_media_id,
             Landing_Thumbnail_Image_media_id = @Landing_Thumbnail_Image_media_id,
+            Banner_Image_Alt = @Banner_Image_Alt,
+            Landing_Thumbnail_Image_Alt = @Landing_Thumbnail_Image_Alt,
+            Window_Title = @Window_Title,
+            Meta_Title = @Meta_Title,
+            Meta_Description = @Meta_Description,
             Intro = @Intro,
             Content = @Content,
             Language_Master_Id = @Language_Master_Id,

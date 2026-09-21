@@ -33,6 +33,21 @@ namespace Core_project_BusinessLogic.Entity
         public string? Banner_Image_Url { get; set; }
         public string? Landing_Thumbnail_Image_Url { get; set; }
 
+        [StringLength(500, ErrorMessage = "Banner image alt cannot exceed 500 characters.")]
+        public string? Banner_Image_Alt { get; set; }
+
+        [StringLength(500, ErrorMessage = "Thumbnail image alt cannot exceed 500 characters.")]
+        public string? Landing_Thumbnail_Image_Alt { get; set; }
+
+        [StringLength(2000, ErrorMessage = "Window title cannot exceed 2000 characters.")]
+        public string? Window_Title { get; set; }
+
+        [StringLength(2000, ErrorMessage = "Meta title cannot exceed 2000 characters.")]
+        public string? Meta_Title { get; set; }
+
+        [StringLength(2000, ErrorMessage = "Meta description cannot exceed 2000 characters.")]
+        public string? Meta_Description { get; set; }
+
         public string? Intro { get; set; }
         public string? Content { get; set; }
 

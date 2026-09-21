@@ -171,6 +171,11 @@ function resetIndustryForm() {
     document.getElementById("industrySeq").value = "";
     document.getElementById("industryBannerMediaId").value = "";
     document.getElementById("industryThumbMediaId").value = "";
+    document.getElementById("industryBannerImageAlt").value = "";
+    document.getElementById("industryThumbnailImageAlt").value = "";
+    document.getElementById("industryWindowTitle").value = "";
+    document.getElementById("industryMetaTitle").value = "";
+    document.getElementById("industryMetaDescription").value = "";
     setImagePreview(document.getElementById("industryBannerPreview"), "");
     setImagePreview(document.getElementById("industryThumbPreview"), "");
     setEditorData("industryIntro", "");
@@ -208,6 +213,11 @@ function buildIndustryPayload() {
         Language_Master_Id: parseOptionalInt(document.getElementById("industryLanguageId").value),
         Banner_Image_media_id: parseOptionalInt(document.getElementById("industryBannerMediaId").value),
         Landing_Thumbnail_Image_media_id: parseOptionalInt(document.getElementById("industryThumbMediaId").value),
+        Banner_Image_Alt: (document.getElementById("industryBannerImageAlt").value || "").trim(),
+        Landing_Thumbnail_Image_Alt: (document.getElementById("industryThumbnailImageAlt").value || "").trim(),
+        Window_Title: (document.getElementById("industryWindowTitle").value || "").trim(),
+        Meta_Title: (document.getElementById("industryMetaTitle").value || "").trim(),
+        Meta_Description: (document.getElementById("industryMetaDescription").value || "").trim(),
         Intro: document.getElementById("industryIntro").value || "",
         Content: document.getElementById("industryContent").value || "",
         Status: 1,
@@ -242,6 +252,31 @@ async function openIndustryModal(editId) {
             data,
             "landing_Thumbnail_Image_media_id",
             "Landing_Thumbnail_Image_media_id"
+        );
+        document.getElementById("industryBannerImageAlt").value = pickValue(
+            data,
+            "banner_Image_Alt",
+            "Banner_Image_Alt"
+        );
+        document.getElementById("industryThumbnailImageAlt").value = pickValue(
+            data,
+            "landing_Thumbnail_Image_Alt",
+            "Landing_Thumbnail_Image_Alt"
+        );
+        document.getElementById("industryWindowTitle").value = pickValue(
+            data,
+            "window_Title",
+            "Window_Title"
+        );
+        document.getElementById("industryMetaTitle").value = pickValue(
+            data,
+            "meta_Title",
+            "Meta_Title"
+        );
+        document.getElementById("industryMetaDescription").value = pickValue(
+            data,
+            "meta_Description",
+            "Meta_Description"
         );
         setImagePreview(
             document.getElementById("industryBannerPreview"),
