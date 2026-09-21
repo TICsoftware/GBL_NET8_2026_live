@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.BAL;
 using Core_project_BusinessLogic.Entity;
@@ -13,18 +14,18 @@ namespace GBL_MVC.Controllers.Manage
 {
     [Authorize]
     [SessionAuthorize]
-    public class Catalog_masterController : Controller
+    public class Industry_Category_masterController : Controller
     {
-        private readonly Catalog_Master_BAL _bal;
+        private readonly Industry_Category_Master_BAL _bal;
 
-        public Catalog_masterController(IConfiguration config)
+        public Industry_Category_masterController(IConfiguration config)
         {
-            _bal = new Catalog_Master_BAL(config);
+            _bal = new Industry_Category_Master_BAL(config);
         }
 
         public IActionResult Index(string type = "Industry", string search = "", int page = 1)
         {
-            CatalogMasterEntity entity = new()
+            Industry_Category_Master_Entity entity = new()
             {
                 MasterType = type,
                 SearchText = search,
@@ -35,26 +36,33 @@ namespace GBL_MVC.Controllers.Manage
             var result = _bal.GetPaged(entity);
             ViewBag.List = result.Item1;
             entity.TotalRecords = result.Item2;
-
-            if (IsMapping(type))
-            {
-                ViewBag.Industries = _bal.GetLookup("Industry");
-                ViewBag.Subcategories = _bal.GetLookup("Subcategory");
-            }
-
+            ViewBag.Languages = new SelectList(_bal.GetLanguages(), "ID", "Language_Name");
             return View(entity);
         }
 
+        [HttpGet]
+        public IActionResult GetById(int id, string type)
+        {
+            if (id <= 0 || string.IsNullOrWhiteSpace(type))
+                return BadRequest(new { message = "Invalid request." });
+
+            var data = _bal.GetById(id, type);
+            if (data == null)
+                return NotFound(new { message = "Record not found." });
+
+            return Ok(data);
+        }
+
         [HttpPost]
-        public IActionResult AddAjax([FromBody] CatalogMasterEntity model)
+        public IActionResult AddAjax([FromBody] Industry_Category_Master_Entity model)
         {
             if (model == null)
                 return BadRequest(new { message = "Invalid request." });
 
             if (string.IsNullOrWhiteSpace(model.MasterType))
                 ModelState.AddModelError(nameof(model.MasterType), "Master type is required.");
-
-            ClearValidationForType(model);
+            if (string.IsNullOrWhiteSpace(model.Name))
+                ModelState.AddModelError(nameof(model.Name), "Name is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(new { message = GetValidationMessage() });
@@ -73,7 +81,7 @@ namespace GBL_MVC.Controllers.Manage
         }
 
         [HttpPost]
-        public IActionResult UpdateAjax([FromBody] CatalogMasterEntity model)
+        public IActionResult UpdateAjax([FromBody] Industry_Category_Master_Entity model)
         {
             if (model == null)
                 return BadRequest(new { message = "Invalid request." });
@@ -82,8 +90,8 @@ namespace GBL_MVC.Controllers.Manage
                 ModelState.AddModelError(nameof(model.ID), "Invalid record id.");
             if (string.IsNullOrWhiteSpace(model.MasterType))
                 ModelState.AddModelError(nameof(model.MasterType), "Master type is required.");
-
-            ClearValidationForType(model);
+            if (string.IsNullOrWhiteSpace(model.Name))
+                ModelState.AddModelError(nameof(model.Name), "Name is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(new { message = GetValidationMessage() });
@@ -101,7 +109,7 @@ namespace GBL_MVC.Controllers.Manage
         }
 
         [HttpPost]
-        public IActionResult ChangeStatus([FromBody] CatalogStatusModel model)
+        public IActionResult ChangeStatus([FromBody] IndustryCategoryStatusModel model)
         {
             if (model == null || model.Id == 0 || string.IsNullOrEmpty(model.Type))
                 return BadRequest(new { message = "Invalid data" });
@@ -118,14 +126,14 @@ namespace GBL_MVC.Controllers.Manage
         }
 
         [HttpPost]
-        public IActionResult Deactivate([FromBody] CatalogDeleteModel model)
+        public IActionResult Delete([FromBody] IndustryCategoryDeleteModel model)
         {
             if (model == null || model.Id == 0 || string.IsNullOrEmpty(model.Type))
                 return BadRequest(new { message = "Invalid data" });
 
             try
             {
-                _bal.Deactivate(model.Id, model.Type, GetCurrentUserId());
+                _bal.Delete(model.Id, model.Type);
                 return Ok();
             }
             catch (Exception ex)
@@ -135,7 +143,7 @@ namespace GBL_MVC.Controllers.Manage
         }
 
         [HttpPost]
-        public IActionResult UpdateSequence([FromBody] List<CatalogMasterEntity> list)
+        public IActionResult UpdateSequence([FromBody] List<Industry_Category_Master_Entity> list)
         {
             if (list == null || list.Count == 0)
                 return BadRequest(new { message = "Invalid data" });
@@ -148,22 +156,6 @@ namespace GBL_MVC.Controllers.Manage
             return Ok();
         }
 
-        private void ClearValidationForType(CatalogMasterEntity model)
-        {
-            if (IsMapping(model.MasterType))
-            {
-                ModelState.Remove(nameof(model.Name));
-                if (!model.IndustryId.HasValue || model.IndustryId <= 0)
-                    ModelState.AddModelError(nameof(model.IndustryId), "Industry is required.");
-                if (!model.Category_Master_Id.HasValue || model.Category_Master_Id <= 0)
-                    ModelState.AddModelError(nameof(model.Category_Master_Id), "Subcategory is required.");
-            }
-            else if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                ModelState.AddModelError(nameof(model.Name), "Name is required.");
-            }
-        }
-
         private string GetValidationMessage() =>
             string.Join(" ", ModelState.Values.SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage).Where(m => !string.IsNullOrWhiteSpace(m)));
@@ -173,8 +165,5 @@ namespace GBL_MVC.Controllers.Manage
             var raw = User.GetUserId();
             return int.TryParse(raw, out var id) ? id : null;
         }
-
-        private static bool IsMapping(string? type) =>
-            string.Equals(type, "Mapping", StringComparison.OrdinalIgnoreCase);
     }
 }

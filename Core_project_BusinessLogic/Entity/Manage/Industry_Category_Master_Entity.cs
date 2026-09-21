@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core_project_BusinessLogic.Entity
 {
-    public class CatalogMasterEntity
+    public class Industry_Category_Master_Entity
     {
         public const string TextBoxPattern = @"^[^~<>|/\\!@#]*$";
         public const string TextBoxPatternMessage =
@@ -10,6 +10,7 @@ namespace Core_project_BusinessLogic.Entity
 
         public int ID { get; set; }
 
+        [Required(ErrorMessage = "Name is required.")]
         [StringLength(500, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 500 characters.")]
         [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Name { get; set; }
@@ -25,9 +26,15 @@ namespace Core_project_BusinessLogic.Entity
         public int? Status { get; set; }
 
         public int? Language_Master_Id { get; set; }
-        public int? IndustryId { get; set; }
-        public int? Category_Master_Id { get; set; }
-        public string? RelatedName { get; set; }
+        public string? LanguageName { get; set; }
+
+        public int? Banner_Image_media_id { get; set; }
+        public int? Landing_Thumbnail_Image_media_id { get; set; }
+        public string? Banner_Image_Url { get; set; }
+        public string? Landing_Thumbnail_Image_Url { get; set; }
+
+        public string? Intro { get; set; }
+        public string? Content { get; set; }
 
         public string? MasterType { get; set; }
         public int? Create_UserId { get; set; }
@@ -39,22 +46,16 @@ namespace Core_project_BusinessLogic.Entity
         public int TotalRecords { get; set; }
     }
 
-    public class CatalogDeleteModel
+    public class IndustryCategoryDeleteModel
     {
         public int Id { get; set; }
         public string? Type { get; set; }
     }
 
-    public class CatalogStatusModel
+    public class IndustryCategoryStatusModel
     {
         public int Id { get; set; }
         public int Status { get; set; }
         public string? Type { get; set; }
-    }
-
-    public class CatalogLookupItem
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
     }
 }

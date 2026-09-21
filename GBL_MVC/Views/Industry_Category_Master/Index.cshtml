@@ -1,0 +1,318 @@
+@model Core_project_BusinessLogic.Entity.Industry_Category_Master_Entity
+@using Core_project_BusinessLogic.Entity
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    var list = ViewBag.List as List<Industry_Category_Master_Entity>;
+    var languages = ViewBag.Languages as SelectList;
+    bool isIndustry = string.Equals(Model.MasterType, "Industry", StringComparison.OrdinalIgnoreCase);
+    string[] types = { "Industry", "Application", "IndustryCategory" };
+    string GetTypeLabel(string t) => t switch
+    {
+        "IndustryCategory" => "Industry Category",
+        _ => t
+    };
+    int colCount = isIndustry ? 7 : 5;
+    var cspNonce = Context.Items["CspNonce"]?.ToString() ?? "";
+}
+
+<div data-master-type="@Model.MasterType">
+
+<div class="page-heading">
+    <h4>Industry Category Master - @GetTypeLabel(Model.MasterType ?? "Industry")</h4>
+
+    <form method="get">
+        <input type="hidden" name="type" value="@Model.MasterType" />
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text" name="search" value="@Model.SearchText" class="form-control" placeholder="Search name..." />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-3 mt-3">
+        @foreach (var t in types)
+        {
+            <a href="@Url.Action("Index", new { type = t })"
+               class="btn @(Model.MasterType == t ? "btn-primary" : "btn-outline-primary") me-1 mb-1">
+                @GetTypeLabel(t)
+            </a>
+        }
+    </div>
+
+    <button type="button" class="btn btn-success mb-3 js-open-modal">+ Add New</button>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="icm-col-drag"></th>
+                <th>Name</th>
+                @if (isIndustry)
+                {
+                    <th>Page Name</th>
+                    <th>Language</th>
+                }
+                <th>Display Order</th>
+                <th>Status</th>
+                <th class="icm-col-action">Action</th>
+            </tr>
+        </thead>
+        <tbody id="sortable">
+            @if (list != null && list.Count > 0)
+            {
+                foreach (var item in list)
+                {
+                    <tr data-id="@item.ID" class="@((item.Status ?? 1) == 0 ? "inactive-row" : "")">
+                        <td class="drag-handle">☰</td>
+                        <td>
+                            <span id="lbl_@item.ID">@item.Name</span>
+                            @if (!isIndustry)
+                            {
+                                <input type="text" value="@item.Name" class="form-control d-none" id="txt_@item.ID" maxlength="500" />
+                            }
+                        </td>
+                        @if (isIndustry)
+                        {
+                            <td>@item.PageName</td>
+                            <td>@item.LanguageName</td>
+                        }
+                        <td>
+                            <span id="lblseq_@item.ID">@item.Sequence</span>
+                            @if (!isIndustry)
+                            {
+                                <input type="number" value="@item.Sequence" class="form-control d-none" id="txtseq_@item.ID" min="1" max="9999" />
+                            }
+                        </td>
+                        <td>
+                            @if ((item.Status ?? 1) == 1)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            @if (isIndustry)
+                            {
+                                <button type="button" class="btn btn-sm btn-primary industry-edit-btn" data-id="@item.ID">Edit</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="@item.ID">Edit</button>
+                                <button type="button" class="btn btn-sm btn-success save-btn d-none" data-id="@item.ID">Save</button>
+                            }
+
+                            @if ((item.Status ?? 1) == 1)
+                            {
+                                <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ID">Deactivate</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-sm btn-success activate-btn" data-id="@item.ID">Activate</button>
+                            }
+                            <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="@item.ID">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="@colCount">No records found</td></tr>
+            }
+        </tbody>
+    </table>
+
+    @{
+        int totalPages = Model.PageSize > 0
+            ? (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)
+            : 0;
+    }
+    <div class="mt-3">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { type = Model.MasterType, search = Model.SearchText, page = i })"
+               class="btn btn-sm @(i == Model.PageNumber ? "btn-primary" : "btn-outline-primary")">@i</a>
+        }
+    </div>
+</div>
+
+@* Simple add modal for Application / Industry Category *@
+@if (!isIndustry)
+{
+<div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Add @GetTypeLabel(Model.MasterType ?? "")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addMasterForm" novalidate>
+                <div class="modal-body">
+                    <label class="form-label" for="newName">Name <span class="text-danger">*</span></label>
+                    <input type="text" id="newName" maxlength="500" class="form-control mb-1" />
+                    <span id="newNameError" class="text-danger d-none"></span>
+
+                    <label class="form-label mt-2" for="newLanguageId">Language</label>
+                    <select id="newLanguageId" class="form-select mb-1">
+                        <option value="">Select Language</option>
+                        @if (languages != null)
+                        {
+                            foreach (var opt in languages)
+                            {
+                                <option value="@opt.Value">@opt.Text</option>
+                            }
+                        }
+                    </select>
+
+                    <label class="form-label mt-2" for="newSeq">Display Order <span class="text-danger">*</span></label>
+                    <input type="number" id="newSeq" min="1" max="9999" class="form-control mb-1" />
+                    <span id="newSeqError" class="text-danger d-none"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success js-save-new">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+}
+
+@* Industry add/edit modal with media + CKEditor *@
+@if (isIndustry)
+{
+<div class="modal fade" id="industryModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable industry-modal-dialog">
+        <div class="modal-content industry-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="industryModalTitle">Add Industry</h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-bs-dismiss="modal" aria-label="Close">
+                    Close
+                </button>
+            </div>
+            <div class="modal-body industry-modal-body">
+                <form id="industryMasterForm" novalidate>
+                    <input type="hidden" id="industryId" value="0" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="industryName">Name <span class="text-danger">*</span></label>
+                            <input type="text" id="industryName" maxlength="500" class="form-control" />
+                            <span id="industryNameError" class="text-danger d-none"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="industryPageName">Page Name</label>
+                            <input type="text" id="industryPageName" maxlength="300" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="industryLanguageId">Language</label>
+                            <select id="industryLanguageId" class="form-select">
+                                <option value="">Select Language</option>
+                                @if (languages != null)
+                                {
+                                    foreach (var opt in languages)
+                                    {
+                                        <option value="@opt.Value">@opt.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="industrySeq">Display Order <span class="text-danger">*</span></label>
+                            <input type="number" id="industrySeq" min="1" max="9999" class="form-control" />
+                            <span id="industrySeqError" class="text-danger d-none"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Banner Image</label>
+                            <button type="button"
+                                    class="btn btn-outline-primary select-media"
+                                    data-media-hidden="#industryBannerMediaId"
+                                    data-media-preview="#industryBannerPreview">
+                                Select Banner
+                            </button>
+                            <input type="hidden" id="industryBannerMediaId" value="" />
+                            <img id="industryBannerPreview" src="" alt="Banner preview"
+                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Landing Thumbnail Image</label>
+                            <button type="button"
+                                    class="btn btn-outline-primary select-media"
+                                    data-media-hidden="#industryThumbMediaId"
+                                    data-media-preview="#industryThumbPreview">
+                                Select Thumbnail
+                            </button>
+                            <input type="hidden" id="industryThumbMediaId" value="" />
+                            <img id="industryThumbPreview" src="" alt="Thumbnail preview"
+                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label" for="industryIntro">Intro</label>
+                            <textarea id="industryIntro" class="form-control editor-full" rows="6"></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label" for="industryContent">Content</label>
+                            <textarea id="industryContent" class="form-control editor-full" rows="8"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success js-save-industry">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaManagerModalBody"></div>
+            <div class="modal-footer d-flex justify-content-end gap-2">
+                <button id="btnAddImage" type="button" class="btn btn-primary">Add image</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+</div>
+
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Assets/css/industry-category-master-style.css" />
+    @if (isIndustry)
+    {
+        <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+    }
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    @if (isIndustry)
+    {
+        <script type="importmap" nonce="@cspNonce">
+        {
+            "imports": {
+                "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+                "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+            }
+        }
+        </script>
+        <script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+    }
+    <script src="~/Assets/scripts/industry_category_master.js"></script>
+}

@@ -1,0 +1,59 @@
+.drag-handle {
+    cursor: move;
+}
+
+.inactive-row {
+    background-color: #f8d7da;
+}
+
+.icm-col-drag {
+    width: 50px;
+}
+
+.icm-col-action {
+    width: 260px;
+}
+
+/* Industry modal: keep header/footer fixed, scroll body */
+#industryModal .industry-modal-dialog {
+    max-height: 92vh;
+    margin: 1rem auto;
+}
+
+#industryModal .industry-modal-content {
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#industryModal .industry-modal-body {
+    overflow-y: auto !important;
+    max-height: calc(92vh - 130px);
+    flex: 1 1 auto;
+}
+
+#industryModal .modal-header,
+#industryModal .modal-footer {
+    flex-shrink: 0;
+}
+
+/* Hide empty media previews; show once src is set */
+.industry-media-preview {
+    max-height: 120px;
+    width: auto;
+    display: none !important;
+}
+
+.industry-media-preview.is-visible {
+    display: inline-block !important;
+}
+
+/* Keep Media Manager above Industry modal */
+#btnSelectFiles {
+    z-index: 1065;
+}
+
+#btnSelectFiles + .modal-backdrop,
+body.modal-open .modal-backdrop:nth-of-type(2) {
+    z-index: 1060;
+}

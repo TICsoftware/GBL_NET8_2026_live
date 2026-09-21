@@ -7,11 +7,11 @@ using Core_project_BusinessLogic.Entity;
 
 namespace Core_project_BusinessLogic.DAL
 {
-    public class Catalog_Master_DAL : DBHelper
+    public class Industry_Category_Master_DAL : DBHelper
     {
-        public Catalog_Master_DAL(IConfiguration configuration) : base(configuration) { }
+        public Industry_Category_Master_DAL(IConfiguration configuration) : base(configuration) { }
 
-        public (List<CatalogMasterEntity> Data, int Total) GetPaged(string type, string search, int page, int pageSize)
+        public (List<Industry_Category_Master_Entity> Data, int Total) GetPaged(string type, string search, int page, int pageSize)
         {
             SqlParameter[] p =
             {
@@ -21,8 +21,8 @@ namespace Core_project_BusinessLogic.DAL
                 new("@PageSize", pageSize)
             };
 
-            DataSet ds = GetDataSet("Catalog_master_GetPaged", p);
-            List<CatalogMasterEntity> list = new();
+            DataSet ds = GetDataSet("Industry_Category_master_GetPaged", p);
+            List<Industry_Category_Master_Entity> list = new();
 
             foreach (DataRow r in ds.Tables[0].Rows)
             {
@@ -33,7 +33,7 @@ namespace Core_project_BusinessLogic.DAL
             return (list, total);
         }
 
-        public CatalogMasterEntity GetById(int id, string type)
+        public Industry_Category_Master_Entity GetById(int id, string type)
         {
             SqlParameter[] p =
             {
@@ -41,14 +41,14 @@ namespace Core_project_BusinessLogic.DAL
                 new("@MasterType", type)
             };
 
-            DataTable dt = GetDataSet("Catalog_master_GetById", p).Tables[0];
+            DataTable dt = GetDataSet("Industry_Category_master_GetById", p).Tables[0];
             if (dt.Rows.Count == 0)
                 return null!;
 
             return MapRow(dt.Rows[0], type);
         }
 
-        public int Insert(CatalogMasterEntity m)
+        public int Insert(Industry_Category_Master_Entity m)
         {
             SqlParameter[] p =
             {
@@ -57,16 +57,18 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Sequence", m.Sequence.HasValue ? m.Sequence.Value : DBNull.Value),
                 new("@Status", m.Status ?? 1),
                 new("@Language_Master_Id", m.Language_Master_Id.HasValue ? m.Language_Master_Id.Value : DBNull.Value),
-                new("@IndustryId", m.IndustryId.HasValue ? m.IndustryId.Value : DBNull.Value),
-                new("@Category_Master_Id", m.Category_Master_Id.HasValue ? m.Category_Master_Id.Value : DBNull.Value),
+                new("@Banner_Image_media_id", m.Banner_Image_media_id.HasValue ? m.Banner_Image_media_id.Value : DBNull.Value),
+                new("@Landing_Thumbnail_Image_media_id", m.Landing_Thumbnail_Image_media_id.HasValue ? m.Landing_Thumbnail_Image_media_id.Value : DBNull.Value),
+                new("@Intro", (object?)m.Intro ?? DBNull.Value),
+                new("@Content", (object?)m.Content ?? DBNull.Value),
                 new("@Create_UserId", m.Create_UserId.HasValue ? m.Create_UserId.Value : DBNull.Value),
                 new("@MasterType", m.MasterType)
             };
 
-            return SqlInsertReturnIdentity_withSP("Catalog_master_Insert", "@NewID", p);
+            return SqlInsertReturnIdentity_withSP("Industry_Category_master_Insert", "@NewID", p);
         }
 
-        public void Update(CatalogMasterEntity m)
+        public void Update(Industry_Category_Master_Entity m)
         {
             SqlParameter[] p =
             {
@@ -75,13 +77,15 @@ namespace Core_project_BusinessLogic.DAL
                 new("@PageName", (object?)m.PageName ?? DBNull.Value),
                 new("@Sequence", m.Sequence.HasValue ? m.Sequence.Value : DBNull.Value),
                 new("@Language_Master_Id", m.Language_Master_Id.HasValue ? m.Language_Master_Id.Value : DBNull.Value),
-                new("@IndustryId", m.IndustryId.HasValue ? m.IndustryId.Value : DBNull.Value),
-                new("@Category_Master_Id", m.Category_Master_Id.HasValue ? m.Category_Master_Id.Value : DBNull.Value),
+                new("@Banner_Image_media_id", m.Banner_Image_media_id.HasValue ? m.Banner_Image_media_id.Value : DBNull.Value),
+                new("@Landing_Thumbnail_Image_media_id", m.Landing_Thumbnail_Image_media_id.HasValue ? m.Landing_Thumbnail_Image_media_id.Value : DBNull.Value),
+                new("@Intro", (object?)m.Intro ?? DBNull.Value),
+                new("@Content", (object?)m.Content ?? DBNull.Value),
                 new("@Update_UserId", m.Update_UserId.HasValue ? m.Update_UserId.Value : DBNull.Value),
                 new("@MasterType", m.MasterType)
             };
 
-            SQLInsert_Update_Delete_Data("Catalog_master_Update", p);
+            SQLInsert_Update_Delete_Data("Industry_Category_master_Update", p);
         }
 
         public void Activate(int id, string type, int? updateUserId)
@@ -92,8 +96,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@MasterType", type),
                 new("@Update_UserId", updateUserId.HasValue ? updateUserId.Value : DBNull.Value)
             };
-
-            SQLInsert_Update_Delete_Data("Catalog_master_Activate", p);
+            SQLInsert_Update_Delete_Data("Industry_Category_master_Activate", p);
         }
 
         public void Deactivate(int id, string type, int? updateUserId)
@@ -104,8 +107,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@MasterType", type),
                 new("@Update_UserId", updateUserId.HasValue ? updateUserId.Value : DBNull.Value)
             };
-
-            SQLInsert_Update_Delete_Data("Catalog_master_Deactivate", p);
+            SQLInsert_Update_Delete_Data("Industry_Category_master_Deactivate", p);
         }
 
         public void ChangeStatus(int id, string type, int status, int? updateUserId)
@@ -123,11 +125,10 @@ namespace Core_project_BusinessLogic.DAL
                 new("@ID", id),
                 new("@MasterType", type)
             };
-
-            SQLInsert_Update_Delete_Data("Catalog_master_Delete", p);
+            SQLInsert_Update_Delete_Data("Industry_Category_master_Delete", p);
         }
 
-        public void UpdateSequence(List<CatalogMasterEntity> list, string type)
+        public void UpdateSequence(List<Industry_Category_Master_Entity> list, string type)
         {
             foreach (var item in list)
             {
@@ -137,52 +138,35 @@ namespace Core_project_BusinessLogic.DAL
                     new("@Sequence", item.Sequence),
                     new("@MasterType", type)
                 };
-
-                SQLInsert_Update_Delete_Data("Catalog_master_UpdateSequence", p);
+                SQLInsert_Update_Delete_Data("Industry_Category_master_UpdateSequence", p);
             }
         }
 
-        public List<CatalogLookupItem> GetLookup(string lookupType)
+        private static Industry_Category_Master_Entity MapRow(DataRow r, string type)
         {
-            SqlParameter[] p =
-            {
-                new("@LookupType", lookupType)
-            };
-
-            DataTable dt = GetDataSet("Catalog_master_GetLookup", p).Tables[0];
-            List<CatalogLookupItem> list = new();
-
-            foreach (DataRow r in dt.Rows)
-            {
-                list.Add(new CatalogLookupItem
-                {
-                    Id = Convert.ToInt32(r["Id"]),
-                    Name = r["Name"]?.ToString() ?? string.Empty
-                });
-            }
-
-            return list;
-        }
-
-        private static CatalogMasterEntity MapRow(DataRow r, string type)
-        {
-            return new CatalogMasterEntity
+            return new Industry_Category_Master_Entity
             {
                 ID = Convert.ToInt32(r["ID"]),
-                Name = r.Table.Columns.Contains("Name") && r["Name"] != DBNull.Value ? r["Name"].ToString() : null,
-                PageName = r.Table.Columns.Contains("PageName") && r["PageName"] != DBNull.Value ? r["PageName"].ToString() : null,
-                Sequence = r.Table.Columns.Contains("Sequence") && r["Sequence"] != DBNull.Value ? Convert.ToInt32(r["Sequence"]) : null,
-                Status = r.Table.Columns.Contains("Status") && r["Status"] != DBNull.Value ? Convert.ToInt32(r["Status"]) : 1,
-                Language_Master_Id = r.Table.Columns.Contains("Language_Master_Id") && r["Language_Master_Id"] != DBNull.Value
-                    ? Convert.ToInt32(r["Language_Master_Id"]) : null,
-                IndustryId = r.Table.Columns.Contains("IndustryId") && r["IndustryId"] != DBNull.Value
-                    ? Convert.ToInt32(r["IndustryId"]) : null,
-                Category_Master_Id = r.Table.Columns.Contains("Category_Master_Id") && r["Category_Master_Id"] != DBNull.Value
-                    ? Convert.ToInt32(r["Category_Master_Id"]) : null,
-                RelatedName = r.Table.Columns.Contains("RelatedName") && r["RelatedName"] != DBNull.Value
-                    ? r["RelatedName"].ToString() : null,
+                Name = ColStr(r, "Name"),
+                PageName = ColStr(r, "PageName"),
+                Sequence = ColInt(r, "Sequence"),
+                Status = ColInt(r, "Status") ?? 1,
+                Language_Master_Id = ColInt(r, "Language_Master_Id"),
+                LanguageName = ColStr(r, "LanguageName"),
+                Banner_Image_media_id = ColInt(r, "Banner_Image_media_id"),
+                Landing_Thumbnail_Image_media_id = ColInt(r, "Landing_Thumbnail_Image_media_id"),
+                Banner_Image_Url = ColStr(r, "Banner_Image_Url"),
+                Landing_Thumbnail_Image_Url = ColStr(r, "Landing_Thumbnail_Image_Url"),
+                Intro = ColStr(r, "Intro"),
+                Content = ColStr(r, "Content"),
                 MasterType = type
             };
         }
+
+        private static string? ColStr(DataRow r, string col) =>
+            r.Table.Columns.Contains(col) && r[col] != DBNull.Value ? r[col].ToString() : null;
+
+        private static int? ColInt(DataRow r, string col) =>
+            r.Table.Columns.Contains(col) && r[col] != DBNull.Value ? Convert.ToInt32(r[col]) : null;
     }
 }
