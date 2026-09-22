@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.DAL;
 using Core_project_BusinessLogic.Entity;
@@ -59,5 +60,42 @@ namespace Core_project_BusinessLogic.BAL
 
         public void UpdateSequence(List<Industry_Category_Master_Entity> list, string type) =>
             _dal.UpdateSequence(list, type);
+
+        public List<IndustryCategoryLookupItem> GetActiveIndustries() => _dal.GetActiveIndustries();
+
+        public List<IndustryCategoryLookupItem> GetActiveCategories() => _dal.GetActiveCategories();
+
+        public List<Industry_Subcategory_Mapping_Entity> GetMappings()
+        {
+            return _dal.GetMappings()
+                .OrderBy(m => m.IndustryName, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(m => m.DisplayOrder)
+                .ThenBy(m => m.CategoryName, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        public void SaveMappings(List<int> industryIds, List<int> categoryIds, int? createUserId)
+        {
+            if (industryIds == null || industryIds.Count == 0)
+                throw new Exception("Select at least one industry.");
+            if (categoryIds == null || categoryIds.Count == 0)
+                throw new Exception("Select at least one category.");
+
+            _dal.SaveMappings(industryIds, categoryIds, createUserId);
+        }
+
+        public void DeleteMapping(int industrySubcategoryId)
+        {
+            if (industrySubcategoryId <= 0)
+                throw new Exception("Invalid mapping id.");
+            _dal.DeleteMapping(industrySubcategoryId);
+        }
+
+        public void UpdateMappingSequence(List<Industry_Subcategory_Mapping_Entity> list)
+        {
+            if (list == null || list.Count == 0)
+                throw new Exception("Invalid mapping sequence data.");
+            _dal.UpdateMappingSequence(list);
+        }
     }
 }

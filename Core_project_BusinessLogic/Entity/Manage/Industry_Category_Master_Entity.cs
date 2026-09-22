@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Core_project_BusinessLogic.Entity
 {
@@ -72,5 +73,29 @@ namespace Core_project_BusinessLogic.Entity
         public int Id { get; set; }
         public int Status { get; set; }
         public string? Type { get; set; }
+    }
+
+    public class Industry_Subcategory_Mapping_Entity
+    {
+        public int IndustrySubcategoryId { get; set; }
+        public int IndustryId { get; set; }
+        public int Category_Master_Id { get; set; }
+        public int DisplayOrder { get; set; }
+        public string? IndustryName { get; set; }
+        public string? CategoryName { get; set; }
+        public int? Create_UserId { get; set; }
+        public int? Update_UserId { get; set; }
+    }
+
+    public class IndustryCategoryLookupItem
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+    }
+
+    public class IndustryCategoryTaggingSaveModel
+    {
+        public List<int>? IndustryIds { get; set; }
+        public List<int>? CategoryIds { get; set; }
     }
 }

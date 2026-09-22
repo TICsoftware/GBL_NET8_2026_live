@@ -6,13 +6,21 @@
     var list = ViewBag.List as List<Industry_Category_Master_Entity>;
     var languages = ViewBag.Languages as SelectList;
     bool isIndustry = string.Equals(Model.MasterType, "Industry", StringComparison.OrdinalIgnoreCase);
-    string[] types = { "Industry", "Application", "IndustryCategory" };
+    bool isTagging = string.Equals(Model.MasterType, "Tagging", StringComparison.OrdinalIgnoreCase);
+    var industries = ViewBag.Industries as List<IndustryCategoryLookupItem> ?? new List<IndustryCategoryLookupItem>();
+    var categories = ViewBag.Categories as List<IndustryCategoryLookupItem> ?? new List<IndustryCategoryLookupItem>();
+    var mappings = ViewBag.Mappings as List<Industry_Subcategory_Mapping_Entity> ?? new List<Industry_Subcategory_Mapping_Entity>();
+    string[] types = { "Industry", "Application", "IndustryCategory", "Tagging" };
     string GetTypeLabel(string t) => t switch
     {
         "IndustryCategory" => "Industry Category",
+        "Tagging" => "Industry / Category Tagging",
         _ => t
     };
     int colCount = isIndustry ? 7 : 5;
+    int totalPages = Model.PageSize > 0
+        ? (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)
+        : 0;
     var cspNonce = Context.Items["CspNonce"]?.ToString() ?? "";
 }
 
@@ -21,6 +29,8 @@
 <div class="page-heading">
     <h4>Industry Category Master - @GetTypeLabel(Model.MasterType ?? "Industry")</h4>
 
+    @if (!isTagging)
+    {
     <form method="get">
         <input type="hidden" name="type" value="@Model.MasterType" />
         <div class="row">
@@ -32,6 +42,7 @@
             </div>
         </div>
     </form>
+    }
 
     <div class="mb-3 mt-3">
         @foreach (var t in types)
@@ -43,6 +54,118 @@
         }
     </div>
 
+    @if (isTagging)
+    {
+    <div class="icm-tagging-panel">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5 class="mb-1">Industries</h5>
+                <p class="text-muted small mb-2">Select industries and move them to the Selected list.</p>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label class="form-label" for="availableIndustries">Available Industries</label>
+                <select id="availableIndustries" class="form-select icm-listbox" multiple size="12">
+                    @foreach (var item in industries)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
+                <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableIndustries" data-to="#selectedIndustries" title="Add selected">&gt;&gt;</button>
+                <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedIndustries" data-to="#availableIndustries" title="Remove selected">&lt;&lt;</button>
+                <button type="button" class="btn btn-outline-primary w-100 js-move-all-right" data-from="#availableIndustries" data-to="#selectedIndustries" title="Add all">&gt;&gt;&gt;</button>
+                <button type="button" class="btn btn-outline-secondary w-100 js-move-all-left" data-from="#selectedIndustries" data-to="#availableIndustries" title="Remove all">&lt;&lt;&lt;</button>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label class="form-label" for="selectedIndustries">Selected Industries</label>
+                <select id="selectedIndustries" class="form-select icm-listbox" multiple size="12"></select>
+            </div>
+        </div>
+
+        <hr class="my-3" />
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5 class="mb-1">Categories</h5>
+                <p class="text-muted small mb-2">Select categories from Industry Category master and move them to the Selected list.</p>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label class="form-label" for="availableCategories">Available Categories</label>
+                <select id="availableCategories" class="form-select icm-listbox" multiple size="12">
+                    @foreach (var item in categories)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
+                <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableCategories" data-to="#selectedCategories" title="Add selected">&gt;&gt;</button>
+                <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedCategories" data-to="#availableCategories" title="Remove selected">&lt;&lt;</button>
+                <button type="button" class="btn btn-outline-primary w-100 js-move-all-right" data-from="#availableCategories" data-to="#selectedCategories" title="Add all">&gt;&gt;&gt;</button>
+                <button type="button" class="btn btn-outline-secondary w-100 js-move-all-left" data-from="#selectedCategories" data-to="#availableCategories" title="Remove all">&lt;&lt;&lt;</button>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label class="form-label" for="selectedCategories">Selected Categories</label>
+                <select id="selectedCategories" class="form-select icm-listbox" multiple size="12"></select>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <button type="button" class="btn btn-success js-save-tagging">Save Tagging</button>
+        </div>
+
+        <h5 class="mb-2">Current Mappings</h5>
+        <table class="table table-bordered table-sm" id="mappingTable">
+            <thead>
+                <tr>
+                    <th class="icm-col-drag"></th>
+                    <th>
+                        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none icm-sort-btn"
+                                data-sort="industry" data-dir="asc" title="Sort by Industry">
+                            Industry <span class="icm-sort-indicator">▲</span>
+                        </button>
+                    </th>
+                    <th>
+                        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none icm-sort-btn"
+                                data-sort="category" data-dir="asc" title="Sort by Category">
+                            Category <span class="icm-sort-indicator">▲▼</span>
+                        </button>
+                    </th>
+                    <th>Display Order</th>
+                    <th class="icm-col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody id="mappingSortable">
+                @if (mappings.Count > 0)
+                {
+                    foreach (var map in mappings)
+                    {
+                        <tr data-id="@map.IndustrySubcategoryId"
+                            data-industry="@map.IndustryName"
+                            data-category="@map.CategoryName">
+                            <td class="drag-handle">☰</td>
+                            <td>@map.IndustryName</td>
+                            <td>@map.CategoryName</td>
+                            <td class="js-mapping-order">@map.DisplayOrder</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-danger js-delete-mapping"
+                                        data-id="@map.IndustrySubcategoryId">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr class="js-mapping-empty"><td colspan="5">No mappings found</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    else
+    {
     <button type="button" class="btn btn-success mb-3 js-open-modal">+ Add New</button>
 
     <table class="table table-bordered">
@@ -127,11 +250,6 @@
         </tbody>
     </table>
 
-    @{
-        int totalPages = Model.PageSize > 0
-            ? (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)
-            : 0;
-    }
     <div class="mt-3">
         @for (int i = 1; i <= totalPages; i++)
         {
@@ -139,10 +257,11 @@
                class="btn btn-sm @(i == Model.PageNumber ? "btn-primary" : "btn-outline-primary")">@i</a>
         }
     </div>
+    }
 </div>
 
 @* Simple add modal for Application / Industry Category *@
-@if (!isIndustry)
+@if (!isIndustry && !isTagging)
 {
 <div class="modal fade" id="addModal">
     <div class="modal-dialog">

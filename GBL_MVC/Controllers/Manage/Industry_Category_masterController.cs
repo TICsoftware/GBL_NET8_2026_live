@@ -33,6 +33,15 @@ namespace GBL_MVC.Controllers.Manage
                 PageSize = 10
             };
 
+            if (string.Equals(type, "Tagging", StringComparison.OrdinalIgnoreCase))
+            {
+                ViewBag.Industries = _bal.GetActiveIndustries();
+                ViewBag.Categories = _bal.GetActiveCategories();
+                ViewBag.Mappings = _bal.GetMappings();
+                ViewBag.Languages = new SelectList(_bal.GetLanguages(), "ID", "Language_Name");
+                return View(entity);
+            }
+
             var result = _bal.GetPaged(entity);
             ViewBag.List = result.Item1;
             entity.TotalRecords = result.Item2;
@@ -154,6 +163,61 @@ namespace GBL_MVC.Controllers.Manage
 
             _bal.UpdateSequence(list, type);
             return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult SaveTagging([FromBody] IndustryCategoryTaggingSaveModel model)
+        {
+            if (model == null)
+                return BadRequest(new { message = "Invalid request." });
+
+            try
+            {
+                _bal.SaveMappings(
+                    model.IndustryIds ?? new List<int>(),
+                    model.CategoryIds ?? new List<int>(),
+                    GetCurrentUserId()
+                );
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteMapping([FromBody] IndustryCategoryDeleteModel model)
+        {
+            if (model == null || model.Id <= 0)
+                return BadRequest(new { message = "Invalid mapping id." });
+
+            try
+            {
+                _bal.DeleteMapping(model.Id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateMappingSequence([FromBody] List<Industry_Subcategory_Mapping_Entity> list)
+        {
+            if (list == null || list.Count == 0)
+                return BadRequest(new { message = "Invalid data" });
+
+            try
+            {
+                _bal.UpdateMappingSequence(list);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         private string GetValidationMessage() =>

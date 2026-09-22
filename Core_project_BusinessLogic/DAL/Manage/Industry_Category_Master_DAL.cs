@@ -178,6 +178,90 @@ namespace Core_project_BusinessLogic.DAL
             };
         }
 
+        public List<IndustryCategoryLookupItem> GetActiveIndustries()
+        {
+            DataTable dt = GetDataSet("Industry_Category_Mapping_GetIndustries").Tables[0];
+            var list = new List<IndustryCategoryLookupItem>();
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(new IndustryCategoryLookupItem
+                {
+                    Id = Convert.ToInt32(r["Id"]),
+                    Name = ColStr(r, "Name")
+                });
+            }
+            return list;
+        }
+
+        public List<IndustryCategoryLookupItem> GetActiveCategories()
+        {
+            DataTable dt = GetDataSet("Industry_Category_Mapping_GetCategories").Tables[0];
+            var list = new List<IndustryCategoryLookupItem>();
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(new IndustryCategoryLookupItem
+                {
+                    Id = Convert.ToInt32(r["Id"]),
+                    Name = ColStr(r, "Name")
+                });
+            }
+            return list;
+        }
+
+        public List<Industry_Subcategory_Mapping_Entity> GetMappings()
+        {
+            DataTable dt = GetDataSet("Industry_Category_Mapping_GetAll").Tables[0];
+            var list = new List<Industry_Subcategory_Mapping_Entity>();
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(new Industry_Subcategory_Mapping_Entity
+                {
+                    IndustrySubcategoryId = Convert.ToInt32(r["IndustrySubcategoryId"]),
+                    IndustryId = Convert.ToInt32(r["IndustryId"]),
+                    Category_Master_Id = Convert.ToInt32(r["Category_Master_Id"]),
+                    DisplayOrder = Convert.ToInt32(r["DisplayOrder"]),
+                    IndustryName = ColStr(r, "IndustryName"),
+                    CategoryName = ColStr(r, "CategoryName")
+                });
+            }
+            return list;
+        }
+
+        public void SaveMappings(List<int> industryIds, List<int> categoryIds, int? createUserId)
+        {
+            var industryCsv = string.Join(",", industryIds);
+            var categoryCsv = string.Join(",", categoryIds);
+            SqlParameter[] p =
+            {
+                new("@IndustryIds", industryCsv),
+                new("@CategoryIds", categoryCsv),
+                new("@Create_UserId", createUserId.HasValue ? createUserId.Value : DBNull.Value)
+            };
+            SQLInsert_Update_Delete_Data("Industry_Category_Mapping_Save", p);
+        }
+
+        public void DeleteMapping(int industrySubcategoryId)
+        {
+            SqlParameter[] p =
+            {
+                new("@IndustrySubcategoryId", industrySubcategoryId)
+            };
+            SQLInsert_Update_Delete_Data("Industry_Category_Mapping_Delete", p);
+        }
+
+        public void UpdateMappingSequence(List<Industry_Subcategory_Mapping_Entity> list)
+        {
+            foreach (var item in list)
+            {
+                SqlParameter[] p =
+                {
+                    new("@IndustrySubcategoryId", item.IndustrySubcategoryId),
+                    new("@DisplayOrder", item.DisplayOrder)
+                };
+                SQLInsert_Update_Delete_Data("Industry_Category_Mapping_UpdateSequence", p);
+            }
+        }
+
         private static string? ColStr(DataRow r, string col) =>
             r.Table.Columns.Contains(col) && r[col] != DBNull.Value ? r[col].ToString() : null;
 

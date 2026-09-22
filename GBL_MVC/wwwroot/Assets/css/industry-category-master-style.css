@@ -57,3 +57,28 @@
 body.modal-open .modal-backdrop:nth-of-type(2) {
     z-index: 1060;
 }
+
+/* Industry / Category tagging dual listboxes */
+.icm-tagging-panel .icm-listbox {
+    min-height: 280px;
+    width: 100%;
+}
+
+.icm-tagging-panel .icm-listbox-actions {
+    min-height: 280px;
+}
+
+.icm-tagging-panel .icm-listbox-actions .btn {
+    max-width: 90px;
+}
+
+.icm-tagging-panel .icm-sort-btn {
+    color: inherit;
+    font-weight: 600;
+}
+
+.icm-tagging-panel .icm-sort-indicator {
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+    opacity: 0.8;
+}

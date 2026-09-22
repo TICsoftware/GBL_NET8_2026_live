@@ -44,6 +44,203 @@ function isIndustryType(masterType) {
     return (masterType || "").toLowerCase() === "industry";
 }
 
+function isTaggingType(masterType) {
+    return (masterType || "").toLowerCase() === "tagging";
+}
+
+function moveSelectedOptions(fromSel, toSel) {
+    if (!fromSel || !toSel) return;
+    const selected = Array.from(fromSel.selectedOptions);
+    selected.forEach((opt) => {
+        toSel.appendChild(opt);
+    });
+    sortSelectOptions(toSel);
+    sortSelectOptions(fromSel);
+}
+
+function moveAllOptions(fromSel, toSel) {
+    if (!fromSel || !toSel) return;
+    Array.from(fromSel.options).forEach((opt) => {
+        toSel.appendChild(opt);
+    });
+    sortSelectOptions(toSel);
+}
+
+function sortSelectOptions(sel) {
+    if (!sel) return;
+    const options = Array.from(sel.options);
+    options.sort((a, b) => (a.text || "").localeCompare(b.text || "", undefined, { sensitivity: "base" }));
+    options.forEach((opt) => sel.appendChild(opt));
+}
+
+function getSelectValues(sel) {
+    if (!sel) return [];
+    return Array.from(sel.options).map((opt) => parseInt(opt.value, 10)).filter((n) => !Number.isNaN(n));
+}
+
+function bindTaggingListboxes() {
+    document.querySelectorAll(".js-move-right, .js-move-left").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const from = document.querySelector(btn.getAttribute("data-from"));
+            const to = document.querySelector(btn.getAttribute("data-to"));
+            moveSelectedOptions(from, to);
+        });
+    });
+
+    document.querySelectorAll(".js-move-all-right, .js-move-all-left").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const from = document.querySelector(btn.getAttribute("data-from"));
+            const to = document.querySelector(btn.getAttribute("data-to"));
+            moveAllOptions(from, to);
+        });
+    });
+
+    document.querySelector(".js-save-tagging")?.addEventListener("click", function () {
+        const industryIds = getSelectValues(document.getElementById("selectedIndustries"));
+        const categoryIds = getSelectValues(document.getElementById("selectedCategories"));
+
+        if (industryIds.length === 0) {
+            alert("Select at least one industry.");
+            return;
+        }
+        if (categoryIds.length === 0) {
+            alert("Select at least one category.");
+            return;
+        }
+
+        postMaster("/Industry_Category_master/SaveTagging", {
+            IndustryIds: industryIds,
+            CategoryIds: categoryIds
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.classList.contains("js-delete-mapping")) return;
+        const id = parseInt(e.target.dataset.id, 10);
+        if (!id || !confirm("Delete this mapping?")) return;
+
+        fetch("/Industry_Category_master/DeleteMapping", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Id: id })
+        }).then(async (res) => {
+            if (res.ok) location.reload();
+            else {
+                let message = "Delete failed.";
+                try {
+                    const data = await res.json();
+                    if (data?.message) message = data.message;
+                } catch { /* ignore */ }
+                alert(message);
+            }
+        });
+    });
+
+    bindMappingSortHeaders();
+    bindMappingDragDrop();
+}
+
+function getMappingRows() {
+    return Array.from(document.querySelectorAll("#mappingSortable tr[data-id]"));
+}
+
+function refreshMappingOrderLabels() {
+    getMappingRows().forEach((row, index) => {
+        const cell = row.querySelector(".js-mapping-order");
+        if (cell) cell.textContent = String(index + 1);
+    });
+}
+
+function persistMappingOrder() {
+    const order = getMappingRows().map((row, index) => ({
+        IndustrySubcategoryId: parseInt(row.dataset.id, 10),
+        DisplayOrder: index + 1
+    }));
+
+    if (order.length === 0) return;
+
+    fetch("/Industry_Category_master/UpdateMappingSequence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order)
+    }).then(async (res) => {
+        if (res.ok) {
+            refreshMappingOrderLabels();
+            return;
+        }
+        let message = "Failed to update display order.";
+        try {
+            const data = await res.json();
+            if (data?.message) message = data.message;
+        } catch { /* ignore */ }
+        alert(message);
+    });
+}
+
+function updateSortIndicators(activeBtn, dir) {
+    document.querySelectorAll(".icm-sort-btn").forEach((btn) => {
+        const indicator = btn.querySelector(".icm-sort-indicator");
+        if (!indicator) return;
+        if (btn === activeBtn) {
+            indicator.textContent = dir === "desc" ? "▼" : "▲";
+            btn.setAttribute("data-dir", dir === "desc" ? "desc" : "asc");
+        } else {
+            indicator.textContent = "▲▼";
+            btn.setAttribute("data-dir", "asc");
+        }
+    });
+}
+
+function bindMappingSortHeaders() {
+    document.querySelectorAll(".icm-sort-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const tbody = document.getElementById("mappingSortable");
+            if (!tbody) return;
+
+            const field = btn.getAttribute("data-sort");
+            const currentDir = btn.getAttribute("data-dir") || "asc";
+            const nextDir = currentDir === "asc" ? "desc" : "asc";
+            const rows = getMappingRows();
+
+            rows.sort((a, b) => {
+                const aVal = (a.getAttribute("data-" + field) || "").toLowerCase();
+                const bVal = (b.getAttribute("data-" + field) || "").toLowerCase();
+                const cmp = aVal.localeCompare(bVal, undefined, { sensitivity: "base" });
+                if (cmp !== 0) return nextDir === "desc" ? -cmp : cmp;
+
+                // Secondary: keep industry grouping when sorting by category, and vice versa
+                const aIndustry = (a.getAttribute("data-industry") || "").toLowerCase();
+                const bIndustry = (b.getAttribute("data-industry") || "").toLowerCase();
+                const aCategory = (a.getAttribute("data-category") || "").toLowerCase();
+                const bCategory = (b.getAttribute("data-category") || "").toLowerCase();
+                if (field === "category") {
+                    return aIndustry.localeCompare(bIndustry, undefined, { sensitivity: "base" });
+                }
+                return aCategory.localeCompare(bCategory, undefined, { sensitivity: "base" });
+            });
+
+            rows.forEach((row) => tbody.appendChild(row));
+            updateSortIndicators(btn, nextDir);
+            persistMappingOrder();
+        });
+    });
+}
+
+function bindMappingDragDrop() {
+    const sortableElement = document.getElementById("mappingSortable");
+    if (!sortableElement || typeof Sortable === "undefined") return;
+    if (getMappingRows().length === 0) return;
+
+    new Sortable(sortableElement, {
+        animation: 150,
+        handle: ".drag-handle",
+        draggable: "tr[data-id]",
+        onEnd: function () {
+            persistMappingOrder();
+        }
+    });
+}
+
 async function postMaster(url, payload) {
     const response = await fetch(url, {
         method: "POST",
@@ -311,6 +508,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!masterType) {
         alert("MasterType is missing.");
+        return;
+    }
+
+    if (isTaggingType(masterType)) {
+        bindTaggingListboxes();
         return;
     }
 

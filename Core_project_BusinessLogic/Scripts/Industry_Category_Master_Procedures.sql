@@ -1,12 +1,15 @@
 /*
   Industry Category Master
-  Industry / Application / IndustryCategory
+  Industry / Application / IndustryCategory / Tagging
 
   Industry also persists:
     Banner_Image_media_id, Landing_Thumbnail_Image_media_id,
     Banner_Image_Alt, Landing_Thumbnail_Image_Alt,
     Window_Title, Meta_Title, Meta_Description,
     Intro, Content, Language_Master_Id
+
+  Tagging persists Industry ↔ Category in Industry_Subcategory_Mapping
+    (IndustryId × Category_Master_Id → Industry_Subcategory_Master.SubcategoryId)
 
   Status: 1 = Active, 0 = Inactive
   Media preview joins dbo.media (ID, file_path).
@@ -446,5 +449,157 @@ BEGIN
         DELETE FROM dbo.Application_Master WHERE ApplicationId = @ID;
     ELSE IF @MasterType = N'IndustryCategory'
         DELETE FROM dbo.Industry_Subcategory_Master WHERE SubcategoryId = @ID;
+END
+GO
+
+/* ========== Industry / Category Tagging Mapping ========== */
+
+IF OBJECT_ID(N'dbo.Industry_Subcategory_Mapping', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Industry_Subcategory_Mapping
+    (
+        IndustrySubcategoryId INT IDENTITY(1,1) NOT NULL,
+        IndustryId INT NOT NULL,
+        Category_Master_Id INT NOT NULL,
+        DisplayOrder INT NOT NULL,
+        Create_UserId INT NULL,
+        Update_UserId INT NULL,
+        CreatedDate DATETIME2(7) NOT NULL CONSTRAINT DF_Industry_Subcategory_Mapping_CreatedDate DEFAULT (SYSUTCDATETIME()),
+        ModifiedDate DATETIME2(7) NULL,
+        CONSTRAINT PK_Industry_Subcategory_Mapping PRIMARY KEY CLUSTERED (IndustrySubcategoryId ASC)
+    );
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetIndustries
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT IndustryId AS Id, IndustryName AS Name
+    FROM dbo.Industry_Master
+    WHERE ISNULL([Status], 1) = 1
+    ORDER BY DisplayOrder, IndustryName;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetCategories
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT SubcategoryId AS Id, SubcategoryName AS Name
+    FROM dbo.Industry_Subcategory_Master
+    WHERE ISNULL([Status], 1) = 1
+    ORDER BY DisplayOrder, SubcategoryName;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetAll
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        m.IndustrySubcategoryId,
+        m.IndustryId,
+        m.Category_Master_Id,
+        m.DisplayOrder,
+        i.IndustryName,
+        c.SubcategoryName AS CategoryName
+    FROM dbo.Industry_Subcategory_Mapping m
+    INNER JOIN dbo.Industry_Master i ON i.IndustryId = m.IndustryId
+    INNER JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = m.Category_Master_Id
+    ORDER BY i.IndustryName, m.DisplayOrder, c.SubcategoryName;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_Save
+    @IndustryIds NVARCHAR(MAX),
+    @CategoryIds NVARCHAR(MAX),
+    @Create_UserId INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @IndustryIds IS NULL OR LTRIM(RTRIM(@IndustryIds)) = N''
+        THROW 50001, 'Select at least one industry.', 1;
+    IF @CategoryIds IS NULL OR LTRIM(RTRIM(@CategoryIds)) = N''
+        THROW 50002, 'Select at least one category.', 1;
+
+    DECLARE @Industries TABLE (IndustryId INT NOT NULL PRIMARY KEY);
+    DECLARE @Categories TABLE (Category_Master_Id INT NOT NULL PRIMARY KEY);
+
+    INSERT INTO @Industries (IndustryId)
+    SELECT DISTINCT TRY_CAST(value AS INT)
+    FROM STRING_SPLIT(@IndustryIds, ',')
+    WHERE TRY_CAST(value AS INT) IS NOT NULL;
+
+    INSERT INTO @Categories (Category_Master_Id)
+    SELECT DISTINCT TRY_CAST(value AS INT)
+    FROM STRING_SPLIT(@CategoryIds, ',')
+    WHERE TRY_CAST(value AS INT) IS NOT NULL;
+
+    IF NOT EXISTS (SELECT 1 FROM @Industries)
+        THROW 50001, 'Select at least one industry.', 1;
+    IF NOT EXISTS (SELECT 1 FROM @Categories)
+        THROW 50002, 'Select at least one category.', 1;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DELETE m
+        FROM dbo.Industry_Subcategory_Mapping m
+        INNER JOIN @Industries i ON i.IndustryId = m.IndustryId;
+
+        ;WITH pairs AS
+        (
+            SELECT
+                i.IndustryId,
+                c.Category_Master_Id,
+                ROW_NUMBER() OVER (
+                    ORDER BY ISNULL(im.IndustryName, N''), ISNULL(cm.SubcategoryName, N''), i.IndustryId, c.Category_Master_Id
+                ) AS DisplayOrder
+            FROM @Industries i
+            CROSS JOIN @Categories c
+            LEFT JOIN dbo.Industry_Master im ON im.IndustryId = i.IndustryId
+            LEFT JOIN dbo.Industry_Subcategory_Master cm ON cm.SubcategoryId = c.Category_Master_Id
+        )
+        INSERT INTO dbo.Industry_Subcategory_Mapping
+        (
+            IndustryId, Category_Master_Id, DisplayOrder,
+            Create_UserId, CreatedDate
+        )
+        SELECT
+            p.IndustryId, p.Category_Master_Id, p.DisplayOrder,
+            @Create_UserId, SYSUTCDATETIME()
+        FROM pairs p;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_Delete
+    @IndustrySubcategoryId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.Industry_Subcategory_Mapping
+    WHERE IndustrySubcategoryId = @IndustrySubcategoryId;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_UpdateSequence
+    @IndustrySubcategoryId INT,
+    @DisplayOrder INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE dbo.Industry_Subcategory_Mapping
+    SET DisplayOrder = @DisplayOrder,
+        ModifiedDate = SYSUTCDATETIME()
+    WHERE IndustrySubcategoryId = @IndustrySubcategoryId;
 END
 GO
