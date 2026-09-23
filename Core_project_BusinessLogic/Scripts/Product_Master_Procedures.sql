@@ -217,6 +217,12 @@ BEGIN
     SET @NewID = 0;
     IF @Status IS NULL SET @Status = 1;
 
+    IF EXISTS (
+        SELECT 1 FROM dbo.Product_Master
+        WHERE LOWER(LTRIM(RTRIM(ProductName))) = LOWER(LTRIM(RTRIM(@ProductName)))
+          AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
     INSERT INTO dbo.Product_Master
     (
         ProductName, Product_pagename, Intro, Content, Technical_Overview,
@@ -250,6 +256,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    IF EXISTS (
+        SELECT 1 FROM dbo.Product_Master
+        WHERE LOWER(LTRIM(RTRIM(ProductName))) = LOWER(LTRIM(RTRIM(@ProductName)))
+          AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+          AND ProductId <> @ProductId)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
     UPDATE dbo.Product_Master
     SET ProductName = @ProductName,
         Product_pagename = @Product_pagename,
@@ -264,6 +277,22 @@ BEGIN
         Update_UserId = @Update_UserId,
         ModifiedDate = SYSUTCDATETIME()
     WHERE ProductId = @ProductId;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Product_Master_NameExists
+    @ProductName NVARCHAR(500),
+    @Language_Master_Id INT = NULL,
+    @ProductId INT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.Product_Master
+        WHERE LOWER(LTRIM(RTRIM(ProductName))) = LOWER(LTRIM(RTRIM(@ProductName)))
+          AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+          AND ProductId <> ISNULL(@ProductId, 0)
+    ) THEN 1 ELSE 0 END AS IsExists;
 END
 GO
 

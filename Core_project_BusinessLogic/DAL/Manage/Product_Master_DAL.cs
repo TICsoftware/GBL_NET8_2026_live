@@ -45,6 +45,18 @@ namespace Core_project_BusinessLogic.DAL
             return entity;
         }
 
+        public bool NameExists(string name, int? languageId, int excludeId)
+        {
+            SqlParameter[] p =
+            {
+                new("@ProductName", name ?? string.Empty),
+                new("@Language_Master_Id", languageId.HasValue ? languageId.Value : DBNull.Value),
+                new("@ProductId", excludeId)
+            };
+            DataTable dt = GetDataSet("Product_Master_NameExists", p).Tables[0];
+            return dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0]["IsExists"]) == 1;
+        }
+
         public int Insert(Product_Master_Entity m)
         {
             SqlParameter[] p =

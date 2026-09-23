@@ -5,9 +5,9 @@ namespace Core_project_BusinessLogic.Entity
 {
     public class Industry_Category_Master_Entity
     {
-        public const string TextBoxPattern = @"^[^~<>|/\\!@#]*$";
+        public const string TextBoxPattern = @"^[^<>@#$~^`!*]*$";
         public const string TextBoxPatternMessage =
-            "Special characters ~ < > | / \\ ! @ # are not allowed.";
+            "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
 
         public int ID { get; set; }
 
@@ -17,6 +17,7 @@ namespace Core_project_BusinessLogic.Entity
         public string? Name { get; set; }
 
         [StringLength(300, ErrorMessage = "Page name cannot exceed 300 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? PageName { get; set; }
 
         [Required(ErrorMessage = "Display order is required.")]
@@ -35,18 +36,23 @@ namespace Core_project_BusinessLogic.Entity
         public string? Landing_Thumbnail_Image_Url { get; set; }
 
         [StringLength(500, ErrorMessage = "Banner image alt cannot exceed 500 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Banner_Image_Alt { get; set; }
 
         [StringLength(500, ErrorMessage = "Thumbnail image alt cannot exceed 500 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Landing_Thumbnail_Image_Alt { get; set; }
 
         [StringLength(2000, ErrorMessage = "Window title cannot exceed 2000 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Window_Title { get; set; }
 
         [StringLength(2000, ErrorMessage = "Meta title cannot exceed 2000 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Meta_Title { get; set; }
 
         [StringLength(2000, ErrorMessage = "Meta description cannot exceed 2000 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Meta_Description { get; set; }
 
         public string? Intro { get; set; }

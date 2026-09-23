@@ -5,9 +5,9 @@ namespace Core_project_BusinessLogic.Entity
 {
     public class Product_Master_Entity
     {
-        public const string TextBoxPattern = @"^[^~<>|/\\!@#]*$";
+        public const string TextBoxPattern = @"^[^<>@#$~^`!*]*$";
         public const string TextBoxPatternMessage =
-            "Special characters ~ < > | / \\ ! @ # are not allowed.";
+            "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
 
         public int ProductId { get; set; }
 
@@ -16,7 +16,9 @@ namespace Core_project_BusinessLogic.Entity
         [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? ProductName { get; set; }
 
-        [StringLength(300, ErrorMessage = "Page name cannot exceed 300 characters.")]
+        [Required(ErrorMessage = "Page name is required.")]
+        [StringLength(300, MinimumLength = 2, ErrorMessage = "Page name must be between 2 and 300 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Product_pagename { get; set; }
 
         public string? Intro { get; set; }

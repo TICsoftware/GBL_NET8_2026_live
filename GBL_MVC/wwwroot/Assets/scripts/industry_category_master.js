@@ -1,14 +1,57 @@
-const ICM_TEXTBOX_REGEX = /^[^~<>|/\\!@#]*$/;
+const ICM_TEXTBOX_REGEX = /^[^<>@#$~^`!*]*$/;
+const ICM_FORBIDDEN_CHARS = /[<>@#$~^`!*]/g;
 const ICM_TEXTBOX_MESSAGE =
-    "Special characters ~ < > | / \\ ! @ # are not allowed.";
+    "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
+const ICM_UNIQUE_MESSAGE = "This name already exists for the selected language.";
+
+function validateTextValue(value, required, minLen, maxLen) {
+    const text = (value || "").trim();
+    if (!text) return required ? "Name is required." : "";
+    if (minLen && text.length < minLen) return "Name must be at least " + minLen + " characters.";
+    if (maxLen && text.length > maxLen) return "Cannot exceed " + maxLen + " characters.";
+    if (!ICM_TEXTBOX_REGEX.test(text)) return ICM_TEXTBOX_MESSAGE;
+    return "";
+}
 
 function validateMasterName(name) {
+    return validateTextValue(name, true, 2, 500);
+}
+
+function validatePageName(name) {
     const value = (name || "").trim();
-    if (!value) return "Name is required.";
-    if (value.length < 2) return "Name must be at least 2 characters.";
-    if (value.length > 500) return "Name cannot exceed 500 characters.";
+    if (!value) return "Page name is required.";
+    if (value.length < 2) return "Page name must be at least 2 characters.";
+    if (value.length > 300) return "Page name cannot exceed 300 characters.";
     if (!ICM_TEXTBOX_REGEX.test(value)) return ICM_TEXTBOX_MESSAGE;
     return "";
+}
+
+function validateOptionalText(value, maxLen) {
+    return validateTextValue(value, false, 0, maxLen);
+}
+
+async function checkNameUnique(name, languageId, id, type) {
+    const params = new URLSearchParams({
+        name: name || "",
+        languageId: languageId || "",
+        id: String(id || 0),
+        type: type || ""
+    });
+    const res = await fetch("/Industry_Category_master/CheckNameExists?" + params.toString());
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.exists || data.Exists ? ICM_UNIQUE_MESSAGE : "";
+}
+
+function bindTextBoxGuards(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll("input[type='text']:not([name='search']), textarea:not(.editor-full)").forEach((el) => {
+        if (el.dataset.specialBound === "1") return;
+        el.dataset.specialBound = "1";
+        el.addEventListener("input", function () {
+            this.value = this.value.replace(ICM_FORBIDDEN_CHARS, "");
+        });
+    });
 }
 
 function validateSequence(seq) {
@@ -378,6 +421,12 @@ function resetIndustryForm() {
     setEditorData("industryIntro", "");
     setEditorData("industryContent", "");
     setFieldError(document.getElementById("industryName"), document.getElementById("industryNameError"), "");
+    setFieldError(document.getElementById("industryPageName"), document.getElementById("industryPageNameError"), "");
+    setFieldError(document.getElementById("industryBannerImageAlt"), document.getElementById("industryBannerImageAltError"), "");
+    setFieldError(document.getElementById("industryThumbnailImageAlt"), document.getElementById("industryThumbnailImageAltError"), "");
+    setFieldError(document.getElementById("industryWindowTitle"), document.getElementById("industryWindowTitleError"), "");
+    setFieldError(document.getElementById("industryMetaTitle"), document.getElementById("industryMetaTitleError"), "");
+    setFieldError(document.getElementById("industryMetaDescription"), document.getElementById("industryMetaDescriptionError"), "");
     setFieldError(document.getElementById("industrySeq"), document.getElementById("industrySeqError"), "");
 }
 
@@ -387,12 +436,42 @@ function validateIndustryForm() {
         document.getElementById("industryNameError"),
         validateMasterName(document.getElementById("industryName")?.value)
     );
+    const pageValid = setFieldError(
+        document.getElementById("industryPageName"),
+        document.getElementById("industryPageNameError"),
+        validatePageName(document.getElementById("industryPageName")?.value)
+    );
+    const bannerAltValid = setFieldError(
+        document.getElementById("industryBannerImageAlt"),
+        document.getElementById("industryBannerImageAltError"),
+        validateOptionalText(document.getElementById("industryBannerImageAlt")?.value, 500)
+    );
+    const thumbAltValid = setFieldError(
+        document.getElementById("industryThumbnailImageAlt"),
+        document.getElementById("industryThumbnailImageAltError"),
+        validateOptionalText(document.getElementById("industryThumbnailImageAlt")?.value, 500)
+    );
+    const windowValid = setFieldError(
+        document.getElementById("industryWindowTitle"),
+        document.getElementById("industryWindowTitleError"),
+        validateOptionalText(document.getElementById("industryWindowTitle")?.value, 2000)
+    );
+    const metaTitleValid = setFieldError(
+        document.getElementById("industryMetaTitle"),
+        document.getElementById("industryMetaTitleError"),
+        validateOptionalText(document.getElementById("industryMetaTitle")?.value, 2000)
+    );
+    const metaDescValid = setFieldError(
+        document.getElementById("industryMetaDescription"),
+        document.getElementById("industryMetaDescriptionError"),
+        validateOptionalText(document.getElementById("industryMetaDescription")?.value, 2000)
+    );
     const seqValid = setFieldError(
         document.getElementById("industrySeq"),
         document.getElementById("industrySeqError"),
         validateSequence(document.getElementById("industrySeq")?.value)
     );
-    return nameValid && seqValid;
+    return nameValid && pageValid && bannerAltValid && thumbAltValid && windowValid && metaTitleValid && metaDescValid && seqValid;
 }
 
 function buildIndustryPayload() {
@@ -520,6 +599,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (industryMode) {
         bindIndustryMediaPreviewFix();
     }
+    bindTextBoxGuards(document);
 
     document.querySelector(".js-open-modal")?.addEventListener("click", function () {
         if (industryMode) {
@@ -533,25 +613,46 @@ document.addEventListener("DOMContentLoaded", function () {
         bootstrap.Modal.getOrCreateInstance(document.getElementById("addModal")).show();
     });
 
-    document.querySelector(".js-save-new")?.addEventListener("click", function () {
+    document.querySelector(".js-save-new")?.addEventListener("click", async function () {
         const nameInput = document.getElementById("newName");
         const seqInput = document.getElementById("newSeq");
+        const languageId = parseOptionalInt(document.getElementById("newLanguageId")?.value);
         const nameValid = setFieldError(nameInput, document.getElementById("newNameError"), validateMasterName(nameInput?.value));
         const seqValid = setFieldError(seqInput, document.getElementById("newSeqError"), validateSequence(seqInput?.value));
         if (!nameValid || !seqValid) return;
 
+        const uniqueMessage = await checkNameUnique(nameInput.value.trim(), languageId, 0, masterType);
+        if (uniqueMessage) {
+            setFieldError(nameInput, document.getElementById("newNameError"), uniqueMessage);
+            return;
+        }
+
         postMaster("/Industry_Category_master/AddAjax", {
             Name: nameInput.value.trim(),
             Sequence: parseInt(seqInput.value, 10),
-            Language_Master_Id: parseOptionalInt(document.getElementById("newLanguageId")?.value),
+            Language_Master_Id: languageId,
             Status: 1,
             MasterType: masterType
         });
     });
 
-    document.querySelector(".js-save-industry")?.addEventListener("click", function () {
+    document.querySelector(".js-save-industry")?.addEventListener("click", async function () {
         if (!validateIndustryForm()) return;
         const payload = buildIndustryPayload();
+        const uniqueMessage = await checkNameUnique(
+            payload.Name,
+            payload.Language_Master_Id,
+            payload.ID,
+            "Industry"
+        );
+        if (uniqueMessage) {
+            setFieldError(
+                document.getElementById("industryName"),
+                document.getElementById("industryNameError"),
+                uniqueMessage
+            );
+            return;
+        }
         const url = payload.ID > 0
             ? "/Industry_Category_master/UpdateAjax"
             : "/Industry_Category_master/AddAjax";
@@ -588,11 +689,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            postMaster("/Industry_Category_master/UpdateAjax", {
-                ID: parseInt(id, 10),
-                Name: nameInput.value.trim(),
-                Sequence: parseInt(seqInput.value, 10),
-                MasterType: masterType
+            checkNameUnique(nameInput.value.trim(), null, parseInt(id, 10), masterType).then((uniqueMessage) => {
+                if (uniqueMessage) {
+                    alert(uniqueMessage);
+                    return;
+                }
+                postMaster("/Industry_Category_master/UpdateAjax", {
+                    ID: parseInt(id, 10),
+                    Name: nameInput.value.trim(),
+                    Sequence: parseInt(seqInput.value, 10),
+                    MasterType: masterType
+                });
             });
         }
 

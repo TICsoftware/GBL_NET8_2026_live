@@ -30,6 +30,19 @@ namespace Core_project_BusinessLogic.BAL
 
         public Industry_Category_Master_Entity GetById(int id, string type) => _dal.GetById(id, type);
 
+        public bool NameExists(string name, int? languageId, int excludeId, string type)
+        {
+            if (!languageId.HasValue && excludeId > 0
+                && (string.Equals(type, "Application", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(type, "IndustryCategory", StringComparison.OrdinalIgnoreCase)))
+            {
+                var existing = _dal.GetById(excludeId, type);
+                languageId = existing?.Language_Master_Id;
+            }
+
+            return _dal.NameExists(name, languageId, excludeId, type);
+        }
+
         public List<LanguageMaster> GetLanguages() => _langDal.GetAllActive();
 
         public int Save(Industry_Category_Master_Entity entity)
@@ -40,8 +53,24 @@ namespace Core_project_BusinessLogic.BAL
             if (string.IsNullOrWhiteSpace(entity.Name))
                 throw new Exception("Name is required");
 
+            if (string.Equals(entity.MasterType, "Industry", StringComparison.OrdinalIgnoreCase)
+                && string.IsNullOrWhiteSpace(entity.PageName))
+                throw new Exception("Page name is required");
+
             if (!entity.Sequence.HasValue || entity.Sequence < 1)
                 throw new Exception("Display order is required");
+
+            if (entity.ID > 0 && !entity.Language_Master_Id.HasValue
+                && (string.Equals(entity.MasterType, "Application", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(entity.MasterType, "IndustryCategory", StringComparison.OrdinalIgnoreCase)))
+            {
+                var existing = _dal.GetById(entity.ID, entity.MasterType!);
+                if (existing != null)
+                    entity.Language_Master_Id = existing.Language_Master_Id;
+            }
+
+            if (NameExists(entity.Name!, entity.Language_Master_Id, entity.ID, entity.MasterType!))
+                throw new Exception("This name already exists for the selected language.");
 
             if (entity.ID == 0)
             {

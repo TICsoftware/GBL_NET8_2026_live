@@ -68,6 +68,15 @@ namespace GBL_MVC.Controllers.Manage
             return Ok(_bal.GetSubcategoriesByIndustries(ids));
         }
 
+        [HttpGet]
+        public IActionResult CheckNameExists(string name, int? languageId, int id = 0)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return Ok(new { exists = false });
+
+            return Ok(new { exists = _bal.NameExists(name.Trim(), languageId, id) });
+        }
+
         [HttpPost]
         public IActionResult AddAjax([FromBody] Product_Master_Entity model)
         {
@@ -76,6 +85,8 @@ namespace GBL_MVC.Controllers.Manage
 
             if (string.IsNullOrWhiteSpace(model.ProductName))
                 ModelState.AddModelError(nameof(model.ProductName), "Name is required.");
+            if (string.IsNullOrWhiteSpace(model.Product_pagename))
+                ModelState.AddModelError(nameof(model.Product_pagename), "Page name is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(new { message = GetValidationMessage() });
@@ -103,6 +114,8 @@ namespace GBL_MVC.Controllers.Manage
                 ModelState.AddModelError(nameof(model.ProductId), "Invalid record id.");
             if (string.IsNullOrWhiteSpace(model.ProductName))
                 ModelState.AddModelError(nameof(model.ProductName), "Name is required.");
+            if (string.IsNullOrWhiteSpace(model.Product_pagename))
+                ModelState.AddModelError(nameof(model.Product_pagename), "Page name is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(new { message = GetValidationMessage() });

@@ -22,6 +22,9 @@ namespace Core_project_BusinessLogic.BAL
 
         public Product_Packaging_Master_Entity GetById(int id) => _dal.GetById(id);
 
+        public bool NameExists(string name, int? languageId, int excludeId) =>
+            _dal.NameExists(name, languageId, excludeId);
+
         public List<LanguageMaster> GetLanguages() => _langDal.GetAllActive();
 
         public int Save(Product_Packaging_Master_Entity entity)
@@ -31,6 +34,9 @@ namespace Core_project_BusinessLogic.BAL
 
             if (!entity.Sequence.HasValue || entity.Sequence < 1)
                 throw new Exception("Display order is required");
+
+            if (NameExists(entity.Name!, entity.Language_Master_Id, entity.product_packaging_MasterId))
+                throw new Exception("This name already exists for the selected language.");
 
             entity.Thumbnailimage_Id ??= string.Empty;
             entity.Thumbnailimage_alt ??= string.Empty;

@@ -1,14 +1,47 @@
-const PKG_TEXTBOX_REGEX = /^[^~<>|/\\!@#]*$/;
+const PKG_TEXTBOX_REGEX = /^[^<>@#$~^`!*]*$/;
+const PKG_FORBIDDEN_CHARS = /[<>@#$~^`!*]/g;
 const PKG_TEXTBOX_MESSAGE =
-    "Special characters ~ < > | / \\ ! @ # are not allowed.";
+    "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
+const PKG_UNIQUE_MESSAGE = "This name already exists for the selected language.";
+
+function validateTextValue(value, required, minLen, maxLen) {
+    const text = (value || "").trim();
+    if (!text) return required ? "Name is required." : "";
+    if (minLen && text.length < minLen) return "Name must be at least " + minLen + " characters.";
+    if (maxLen && text.length > maxLen) return "Cannot exceed " + maxLen + " characters.";
+    if (!PKG_TEXTBOX_REGEX.test(text)) return PKG_TEXTBOX_MESSAGE;
+    return "";
+}
 
 function validateMasterName(name) {
-    const value = (name || "").trim();
-    if (!value) return "Name is required.";
-    if (value.length < 2) return "Name must be at least 2 characters.";
-    if (value.length > 250) return "Name cannot exceed 250 characters.";
-    if (!PKG_TEXTBOX_REGEX.test(value)) return PKG_TEXTBOX_MESSAGE;
-    return "";
+    return validateTextValue(name, true, 2, 250);
+}
+
+function validateOptionalText(value, maxLen) {
+    return validateTextValue(value, false, 0, maxLen);
+}
+
+async function checkNameUnique(name, languageId, id) {
+    const params = new URLSearchParams({
+        name: name || "",
+        languageId: languageId || "",
+        id: String(id || 0)
+    });
+    const res = await fetch("/Product_Packaging_Master/CheckNameExists?" + params.toString());
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.exists || data.Exists ? PKG_UNIQUE_MESSAGE : "";
+}
+
+function bindTextBoxGuards(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll("input[type='text']:not([name='search']), textarea:not(.editor-full)").forEach((el) => {
+        if (el.dataset.specialBound === "1") return;
+        el.dataset.specialBound = "1";
+        el.addEventListener("input", function () {
+            this.value = this.value.replace(PKG_FORBIDDEN_CHARS, "");
+        });
+    });
 }
 
 function validateSequence(seq) {
@@ -146,6 +179,7 @@ function resetPackagingForm() {
     document.getElementById("packagingThumbAlt").value = "";
     setImagePreview(document.getElementById("packagingThumbPreview"), "");
     setFieldError(document.getElementById("packagingName"), document.getElementById("packagingNameError"), "");
+    setFieldError(document.getElementById("packagingThumbAlt"), document.getElementById("packagingThumbAltError"), "");
     setFieldError(document.getElementById("packagingSeq"), document.getElementById("packagingSeqError"), "");
 }
 
@@ -155,12 +189,17 @@ function validatePackagingForm() {
         document.getElementById("packagingNameError"),
         validateMasterName(document.getElementById("packagingName")?.value)
     );
+    const altValid = setFieldError(
+        document.getElementById("packagingThumbAlt"),
+        document.getElementById("packagingThumbAltError"),
+        validateOptionalText(document.getElementById("packagingThumbAlt")?.value, 250)
+    );
     const seqValid = setFieldError(
         document.getElementById("packagingSeq"),
         document.getElementById("packagingSeqError"),
         validateSequence(document.getElementById("packagingSeq")?.value)
     );
-    return nameValid && seqValid;
+    return nameValid && altValid && seqValid;
 }
 
 function buildPackagingPayload() {
@@ -207,14 +246,28 @@ async function openPackagingModal(editId) {
 
 document.addEventListener("DOMContentLoaded", function () {
     bindPackagingMediaPreviewFix();
+    bindTextBoxGuards(document);
 
     document.querySelector(".js-open-modal")?.addEventListener("click", function () {
         openPackagingModal(null);
     });
 
-    document.querySelector(".js-save-packaging")?.addEventListener("click", function () {
+    document.querySelector(".js-save-packaging")?.addEventListener("click", async function () {
         if (!validatePackagingForm()) return;
         const payload = buildPackagingPayload();
+        const uniqueMessage = await checkNameUnique(
+            payload.Name,
+            payload.Language_Master_Id,
+            payload.product_packaging_MasterId
+        );
+        if (uniqueMessage) {
+            setFieldError(
+                document.getElementById("packagingName"),
+                document.getElementById("packagingNameError"),
+                uniqueMessage
+            );
+            return;
+        }
         const url = payload.product_packaging_MasterId > 0
             ? "/Product_Packaging_Master/UpdateAjax"
             : "/Product_Packaging_Master/AddAjax";

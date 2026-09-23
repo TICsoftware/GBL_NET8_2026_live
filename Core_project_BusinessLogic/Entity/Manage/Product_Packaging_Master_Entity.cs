@@ -4,9 +4,9 @@ namespace Core_project_BusinessLogic.Entity
 {
     public class Product_Packaging_Master_Entity
     {
-        public const string TextBoxPattern = @"^[^~<>|/\\!@#]*$";
+        public const string TextBoxPattern = @"^[^<>@#$~^`!*]*$";
         public const string TextBoxPatternMessage =
-            "Special characters ~ < > | / \\ ! @ # are not allowed.";
+            "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
 
         public int product_packaging_MasterId { get; set; }
 
@@ -22,6 +22,7 @@ namespace Core_project_BusinessLogic.Entity
         public string? Thumbnail_Image_Url { get; set; }
 
         [StringLength(250, ErrorMessage = "Thumbnail image alt cannot exceed 250 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Thumbnailimage_alt { get; set; }
 
         [Required(ErrorMessage = "Display order is required.")]

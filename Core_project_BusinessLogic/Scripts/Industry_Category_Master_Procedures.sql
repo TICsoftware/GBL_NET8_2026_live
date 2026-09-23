@@ -273,6 +273,25 @@ BEGIN
     IF @Status IS NULL SET @Status = 1;
 
     IF @MasterType = N'Industry'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(IndustryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'Application'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Application_Master
+            WHERE LOWER(LTRIM(RTRIM(ApplicationName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'IndustryCategory'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Subcategory_Master
+            WHERE LOWER(LTRIM(RTRIM(SubcategoryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
+    IF @MasterType = N'Industry'
     BEGIN
         INSERT INTO dbo.Industry_Master
         (
@@ -338,6 +357,34 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    DECLARE @Lang INT = @Language_Master_Id;
+    IF @Lang IS NULL AND @MasterType = N'Application'
+        SELECT @Lang = Language_Master_Id FROM dbo.Application_Master WHERE ApplicationId = @ID;
+    ELSE IF @Lang IS NULL AND @MasterType = N'IndustryCategory'
+        SELECT @Lang = Language_Master_Id FROM dbo.Industry_Subcategory_Master WHERE SubcategoryId = @ID;
+
+    IF @MasterType = N'Industry'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(IndustryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Lang, 0)
+              AND IndustryId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'Application'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Application_Master
+            WHERE LOWER(LTRIM(RTRIM(ApplicationName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Lang, 0)
+              AND ApplicationId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'IndustryCategory'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Subcategory_Master
+            WHERE LOWER(LTRIM(RTRIM(SubcategoryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Lang, 0)
+              AND SubcategoryId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
     IF @MasterType = N'Industry'
     BEGIN
         UPDATE dbo.Industry_Master
@@ -362,7 +409,7 @@ BEGIN
     BEGIN
         UPDATE dbo.Application_Master
         SET ApplicationName = @Name,
-            Language_Master_Id = @Language_Master_Id,
+            Language_Master_Id = ISNULL(@Language_Master_Id, Language_Master_Id),
             DisplayOrder = @Sequence,
             Update_UserId = @Update_UserId,
             ModifiedDate = SYSUTCDATETIME()
@@ -372,12 +419,47 @@ BEGIN
     BEGIN
         UPDATE dbo.Industry_Subcategory_Master
         SET SubcategoryName = @Name,
-            Language_Master_Id = @Language_Master_Id,
+            Language_Master_Id = ISNULL(@Language_Master_Id, Language_Master_Id),
             DisplayOrder = @Sequence,
             Update_UserId = @Update_UserId,
             ModifiedDate = SYSUTCDATETIME()
         WHERE SubcategoryId = @ID;
     END
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_NameExists
+    @Name NVARCHAR(500),
+    @Language_Master_Id INT = NULL,
+    @ID INT = 0,
+    @MasterType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @MasterType = N'Industry'
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(IndustryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+              AND IndustryId <> ISNULL(@ID, 0)
+        ) THEN 1 ELSE 0 END AS IsExists;
+    ELSE IF @MasterType = N'Application'
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.Application_Master
+            WHERE LOWER(LTRIM(RTRIM(ApplicationName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+              AND ApplicationId <> ISNULL(@ID, 0)
+        ) THEN 1 ELSE 0 END AS IsExists;
+    ELSE IF @MasterType = N'IndustryCategory'
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.Industry_Subcategory_Master
+            WHERE LOWER(LTRIM(RTRIM(SubcategoryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+              AND SubcategoryId <> ISNULL(@ID, 0)
+        ) THEN 1 ELSE 0 END AS IsExists;
+    ELSE
+        SELECT 0 AS IsExists;
 END
 GO
 

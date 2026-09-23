@@ -62,6 +62,15 @@ namespace GBL_MVC.Controllers.Manage
             return Ok(data);
         }
 
+        [HttpGet]
+        public IActionResult CheckNameExists(string name, int? languageId, int id = 0, string type = "")
+        {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(type))
+                return Ok(new { exists = false });
+
+            return Ok(new { exists = _bal.NameExists(name.Trim(), languageId, id, type) });
+        }
+
         [HttpPost]
         public IActionResult AddAjax([FromBody] Industry_Category_Master_Entity model)
         {
@@ -72,6 +81,9 @@ namespace GBL_MVC.Controllers.Manage
                 ModelState.AddModelError(nameof(model.MasterType), "Master type is required.");
             if (string.IsNullOrWhiteSpace(model.Name))
                 ModelState.AddModelError(nameof(model.Name), "Name is required.");
+            if (string.Equals(model.MasterType, "Industry", StringComparison.OrdinalIgnoreCase)
+                && string.IsNullOrWhiteSpace(model.PageName))
+                ModelState.AddModelError(nameof(model.PageName), "Page name is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(new { message = GetValidationMessage() });
@@ -101,6 +113,9 @@ namespace GBL_MVC.Controllers.Manage
                 ModelState.AddModelError(nameof(model.MasterType), "Master type is required.");
             if (string.IsNullOrWhiteSpace(model.Name))
                 ModelState.AddModelError(nameof(model.Name), "Name is required.");
+            if (string.Equals(model.MasterType, "Industry", StringComparison.OrdinalIgnoreCase)
+                && string.IsNullOrWhiteSpace(model.PageName))
+                ModelState.AddModelError(nameof(model.PageName), "Page name is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(new { message = GetValidationMessage() });

@@ -1,14 +1,56 @@
-const PM_TEXTBOX_REGEX = /^[^~<>|/\\!@#]*$/;
+const PM_TEXTBOX_REGEX = /^[^<>@#$~^`!*]*$/;
+const PM_FORBIDDEN_CHARS = /[<>@#$~^`!*]/g;
 const PM_TEXTBOX_MESSAGE =
-    "Special characters ~ < > | / \\ ! @ # are not allowed.";
+    "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
+const PM_UNIQUE_MESSAGE = "This name already exists for the selected language.";
+
+function validateTextValue(value, required, minLen, maxLen) {
+    const text = (value || "").trim();
+    if (!text) return required ? "Name is required." : "";
+    if (minLen && text.length < minLen) return "Name must be at least " + minLen + " characters.";
+    if (maxLen && text.length > maxLen) return "Cannot exceed " + maxLen + " characters.";
+    if (!PM_TEXTBOX_REGEX.test(text)) return PM_TEXTBOX_MESSAGE;
+    return "";
+}
 
 function validateMasterName(name) {
+    return validateTextValue(name, true, 2, 500);
+}
+
+function validatePageName(name) {
     const value = (name || "").trim();
-    if (!value) return "Name is required.";
-    if (value.length < 2) return "Name must be at least 2 characters.";
-    if (value.length > 500) return "Name cannot exceed 500 characters.";
+    if (!value) return "Page name is required.";
+    if (value.length < 2) return "Page name must be at least 2 characters.";
+    if (value.length > 300) return "Page name cannot exceed 300 characters.";
     if (!PM_TEXTBOX_REGEX.test(value)) return PM_TEXTBOX_MESSAGE;
     return "";
+}
+
+function validateOptionalText(value, maxLen) {
+    return validateTextValue(value, false, 0, maxLen);
+}
+
+async function checkNameUnique(name, languageId, id) {
+    const params = new URLSearchParams({
+        name: name || "",
+        languageId: languageId || "",
+        id: String(id || 0)
+    });
+    const res = await fetch("/Product_Master/CheckNameExists?" + params.toString());
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.exists || data.Exists ? PM_UNIQUE_MESSAGE : "";
+}
+
+function bindTextBoxGuards(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll("input[type='text']:not([name='search']), textarea:not(.editor-full)").forEach((el) => {
+        if (el.dataset.specialBound === "1") return;
+        el.dataset.specialBound = "1";
+        el.addEventListener("input", function () {
+            this.value = this.value.replace(PM_FORBIDDEN_CHARS, "");
+        });
+    });
 }
 
 function validateSequence(seq) {
@@ -269,6 +311,7 @@ function resetProductForm() {
     setEditorData("productContent", "");
     setEditorData("productTechnicalOverview", "");
     setFieldError(document.getElementById("productName"), document.getElementById("productNameError"), "");
+    setFieldError(document.getElementById("productPageName"), document.getElementById("productPageNameError"), "");
     setFieldError(document.getElementById("productSeq"), document.getElementById("productSeqError"), "");
     resetListboxPair("availableIndustries", "selectedIndustries");
     resetListboxPair("availableApplications", "selectedApplications");
@@ -283,12 +326,17 @@ function validateProductForm() {
         document.getElementById("productNameError"),
         validateMasterName(document.getElementById("productName")?.value)
     );
+    const pageValid = setFieldError(
+        document.getElementById("productPageName"),
+        document.getElementById("productPageNameError"),
+        validatePageName(document.getElementById("productPageName")?.value)
+    );
     const seqValid = setFieldError(
         document.getElementById("productSeq"),
         document.getElementById("productSeqError"),
         validateSequence(document.getElementById("productSeq")?.value)
     );
-    return nameValid && seqValid;
+    return nameValid && pageValid && seqValid;
 }
 
 function buildProductPayload() {
@@ -368,14 +416,24 @@ async function openProductModal(editId) {
 document.addEventListener("DOMContentLoaded", function () {
     bindProductMediaPreviewFix();
     bindListboxes();
+    bindTextBoxGuards(document);
 
     document.querySelector(".js-open-modal")?.addEventListener("click", function () {
         openProductModal(null);
     });
 
-    document.querySelector(".js-save-product")?.addEventListener("click", function () {
+    document.querySelector(".js-save-product")?.addEventListener("click", async function () {
         if (!validateProductForm()) return;
         const payload = buildProductPayload();
+        const uniqueMessage = await checkNameUnique(payload.ProductName, payload.Language_Master_Id, payload.ProductId);
+        if (uniqueMessage) {
+            setFieldError(
+                document.getElementById("productName"),
+                document.getElementById("productNameError"),
+                uniqueMessage
+            );
+            return;
+        }
         const url = payload.ProductId > 0
             ? "/Product_Master/UpdateAjax"
             : "/Product_Master/AddAjax";

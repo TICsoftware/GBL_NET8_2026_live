@@ -52,6 +52,15 @@ namespace GBL_MVC.Controllers.Manage
             return Ok(data);
         }
 
+        [HttpGet]
+        public IActionResult CheckNameExists(string name, int? languageId, int id = 0)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return Ok(new { exists = false });
+
+            return Ok(new { exists = _bal.NameExists(name.Trim(), languageId, id) });
+        }
+
         [HttpPost]
         public IActionResult AddAjax([FromBody] Product_Packaging_Master_Entity model)
         {

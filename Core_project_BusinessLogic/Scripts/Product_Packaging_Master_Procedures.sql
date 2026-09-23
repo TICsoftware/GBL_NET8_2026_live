@@ -102,6 +102,12 @@ BEGIN
     IF @Thumbnailimage_Id IS NULL SET @Thumbnailimage_Id = N'';
     IF @Thumbnailimage_alt IS NULL SET @Thumbnailimage_alt = N'';
 
+    IF EXISTS (
+        SELECT 1 FROM dbo.product_packaging_Master
+        WHERE LOWER(LTRIM(RTRIM([Name]))) = LOWER(LTRIM(RTRIM(@Name)))
+          AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
     INSERT INTO dbo.product_packaging_Master
     (
         [Name], Language_Master_Id, Thumbnailimage_Id, Thumbnailimage_alt,
@@ -130,6 +136,13 @@ BEGIN
     IF @Thumbnailimage_Id IS NULL SET @Thumbnailimage_Id = N'';
     IF @Thumbnailimage_alt IS NULL SET @Thumbnailimage_alt = N'';
 
+    IF EXISTS (
+        SELECT 1 FROM dbo.product_packaging_Master
+        WHERE LOWER(LTRIM(RTRIM([Name]))) = LOWER(LTRIM(RTRIM(@Name)))
+          AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+          AND product_packaging_MasterId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
     UPDATE dbo.product_packaging_Master
     SET [Name] = @Name,
         Language_Master_Id = @Language_Master_Id,
@@ -139,6 +152,22 @@ BEGIN
         Update_UserId = @Update_UserId,
         ModifiedDate = SYSUTCDATETIME()
     WHERE product_packaging_MasterId = @ID;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Product_Packaging_Master_NameExists
+    @Name NVARCHAR(250),
+    @Language_Master_Id INT = NULL,
+    @ID INT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.product_packaging_Master
+        WHERE LOWER(LTRIM(RTRIM([Name]))) = LOWER(LTRIM(RTRIM(@Name)))
+          AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+          AND product_packaging_MasterId <> ISNULL(@ID, 0)
+    ) THEN 1 ELSE 0 END AS IsExists;
 END
 GO
 

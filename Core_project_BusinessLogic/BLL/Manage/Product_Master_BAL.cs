@@ -22,6 +22,9 @@ namespace Core_project_BusinessLogic.BAL
 
         public Product_Master_Entity GetById(int id) => _dal.GetById(id);
 
+        public bool NameExists(string name, int? languageId, int excludeId) =>
+            _dal.NameExists(name, languageId, excludeId);
+
         public List<LanguageMaster> GetLanguages() => _langDal.GetAllActive();
 
         public List<ProductLookupItem> GetActiveIndustries() => _dal.GetActiveIndustries();
@@ -38,8 +41,14 @@ namespace Core_project_BusinessLogic.BAL
             if (string.IsNullOrWhiteSpace(entity.ProductName))
                 throw new Exception("Name is required");
 
+            if (string.IsNullOrWhiteSpace(entity.Product_pagename))
+                throw new Exception("Page name is required");
+
             if (!entity.Sequence.HasValue || entity.Sequence < 1)
                 throw new Exception("Display order is required");
+
+            if (NameExists(entity.ProductName!, entity.Language_Master_Id, entity.ProductId))
+                throw new Exception("This name already exists for the selected language.");
 
             int productId;
             if (entity.ProductId == 0)
