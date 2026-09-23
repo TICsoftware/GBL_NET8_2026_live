@@ -1,0 +1,305 @@
+@{
+    ViewData["Title"] = "Products";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/product-filter.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/product-banner-desktop.webp">
+                  
+
+                  <!-- Mobile -->
+                  <img
+                     src="~/Assets/images/banners/product-banner-desktop.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                       Products
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>                           
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                              Products
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>Godavari Biorefineries Ltd’s diversified portfolio of biomass-derived products is enabling our customers to create green supply chains for a beautiful world. We are a leading producer of bio-based chemicals, ethanol, sugar, branded food products under the Jivana brand and the natural vegetable wax, Naturowax®. Our wide range of bio-based chemicals finds applications in diverse industries from pharmaceuticals to paints.</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+   <!--Product Filters-->
+   <section class="relative section-spacing product-filter-outer">
+      <div class="container">
+         <div class="product-filter-layout">
+            <aside class="product-filter-sidebar" id="product-filter-sidebar" aria-label="Product filters">
+               <div class="filter-mobile-sheet-head">
+                  <h2 class="filter-mobile-sheet-head__title">Set Filters</h2>
+                  <button type="button" class="filter-mobile-close" data-close-mobile-filter aria-label="Close filters">&times;</button>
+               </div>
+               <div class="product-filter-sidebar__head">
+                  <h2 class="product-filter-sidebar__title">Filter By</h2>
+                  <button type="button" class="product-filter-clear" data-clear-filters>Clear Filter</button>
+               </div>
+
+               <form class="product-filter-form" id="product-filter" action="#" method="get">
+                  <div class="pf-dropdown" data-filter-group="industry">
+                     <button type="button" class="pf-dropdown__trigger" aria-expanded="false" aria-controls="filter-industry-panel">
+                        <span>Industry</span>
+                        <span class="pf-dropdown__chevron" aria-hidden="true"></span>
+                     </button>
+                     <div class="pf-dropdown__panel" id="filter-industry-panel">
+                        <div class="pf-dropdown__panel-clip">
+                        <div class="pf-dropdown__panel-inner">
+                        <label class="pf-option"><input type="checkbox" name="industry" value="adhesives-lubricants" data-label="Adhesives &amp; Lubricants"> <span class="pf-option__label">Adhesives &amp; Lubricants</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="agrochemicals" data-label="Agrochemicals"> <span class="pf-option__label">Agrochemicals</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="biofuels" data-label="Biofuels"> <span class="pf-option__label">Biofuels</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="food-beverage" data-label="Food &amp; Beverage"> <span class="pf-option__label">Food &amp; Beverage</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="fragrance" data-label="Fragrance"> <span class="pf-option__label">Fragrance</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="packaging-printing-inks" data-label="Packaging &amp; Printing Inks"> <span class="pf-option__label">Packaging &amp; Printing Inks</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="paints-coatings" data-label="Paints &amp; Coatings"> <span class="pf-option__label">Paints &amp; Coatings</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="personal-care" data-label="Personal Care"> <span class="pf-option__label">Personal Care</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="pharmaceuticals" data-label="Pharmaceuticals"> <span class="pf-option__label">Pharmaceuticals</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="plastics-paper-resins" data-label="Plastics, Paper &amp; Resins"> <span class="pf-option__label">Plastics, Paper &amp; Resins</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="industry" value="textiles" data-label="Textiles"> <span class="pf-option__label">Textiles</span><span class="pf-option__count">00</span></label>
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="pf-dropdown" data-filter-group="application">
+                     <button type="button" class="pf-dropdown__trigger" aria-expanded="false" aria-controls="filter-application-panel">
+                        <span>Application</span>
+                        <span class="pf-dropdown__chevron" aria-hidden="true"></span>
+                     </button>
+                     <div class="pf-dropdown__panel" id="filter-application-panel">
+                        <div class="pf-dropdown__panel-clip">
+                        <div class="pf-dropdown__panel-inner">
+                        <label class="pf-option"><input type="checkbox" name="application" value="additive" data-label="Additive"> <span class="pf-option__label">Additive</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="application" value="coatings" data-label="Coatings"> <span class="pf-option__label">Coatings</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="application" value="energy" data-label="Energy"> <span class="pf-option__label">Energy</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="application" value="ingredient" data-label="Ingredient"> <span class="pf-option__label">Ingredient</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="application" value="plasticizer" data-label="Plasticizer"> <span class="pf-option__label">Plasticizer</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="application" value="solvent" data-label="Solvent"> <span class="pf-option__label">Solvent</span><span class="pf-option__count">00</span></label>
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="pf-dropdown" data-filter-group="category">
+                     <button type="button" class="pf-dropdown__trigger" aria-expanded="false" aria-controls="filter-category-panel">
+                        <span>Product Categories</span>
+                        <span class="pf-dropdown__chevron" aria-hidden="true"></span>
+                     </button>
+                     <div class="pf-dropdown__panel" id="filter-category-panel">
+                        <div class="pf-dropdown__panel-clip">
+                        <div class="pf-dropdown__panel-inner">
+                        <label class="pf-option"><input type="checkbox" name="category" value="bio-based-chemicals" data-label="Bio-based Chemicals"> <span class="pf-option__label">Bio-based Chemicals</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="category" value="biofuels-bio-energy" data-label="Biofuels &amp; Bio-energy"> <span class="pf-option__label">Biofuels &amp; Bio-energy</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="category" value="specialty-chemicals" data-label="Specialty Chemicals"> <span class="pf-option__label">Specialty Chemicals</span><span class="pf-option__count">00</span></label>
+                        <label class="pf-option"><input type="checkbox" name="category" value="sugar" data-label="Sugar"> <span class="pf-option__label">Sugar</span><span class="pf-option__count">00</span></label>
+                        </div>
+                        </div>
+                     </div>
+                  </div>                  
+               </form>
+               <div class="filter-mobile-sheet-foot">
+                  <button type="button" class="filter-mobile-clear" data-clear-filters>Clear Filters</button>
+                  <button type="button" class="filter-mobile-apply" data-apply-mobile-filter>Apply Filters</button>
+               </div>
+            </aside>
+            <div class="filter-mobile-backdrop" data-close-mobile-filter></div>
+
+            <div class="product-filter-results">
+               <div class="product-filter-results__head">
+                  <button type="button" class="filter-mobile-trigger" data-open-mobile-filter aria-controls="product-filter-sidebar" aria-expanded="false">
+                     <span class="filter-mobile-trigger__icon" aria-hidden="true"></span>
+                     Refine by Filters
+                  </button>
+                  <h2 class="text-h2 product-filter-results__title">Our product portfolio (<span data-product-count>9</span>)</h2>
+                  <div class="product-filter-chips" data-filter-chips></div>
+               </div>
+
+               <div class="product-filter-grid" id="product-grid">
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="paints-coatings,plastics-paper-resins,food-beverage,packaging-printing-inks,adhesives-lubricants,fragrance"
+                     data-application="additive,solvent"
+                     data-category="bio-based-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/homepage/products/product-img1.webp")" alt="1,3-Butylene Glycol">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">1,3-Butylene Glycol</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Paints &amp; Coatings, Plastics, Paper &amp; Resins, Food &amp; Beverage, Packaging &amp; Printing Inks, Adhesives &amp; Lubricants, Fragrance</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="plastics-paper-resins,adhesives-lubricants,packaging-printing-inks,agrochemicals,personal-care,textiles,paints-coatings"
+                     data-application="plasticizer,solvent"
+                     data-category="bio-based-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/homepage/products/product-img2.webp")" alt="2-Ethyl-1,3-Hexanediol">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">2-Ethyl-1,3-Hexanediol</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Plastics and Resins, Adhesives, Printing and Inks, Agrochemicals, Cosmetics and Personal Care, Textiles and Paints and Coatings</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="paints-coatings,plastics-paper-resins,adhesives-lubricants,pharmaceuticals,packaging-printing-inks"
+                     data-application="solvent,coatings"
+                     data-category="bio-based-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/homepage/products/product-img3.webp")" alt="2-Ethyl Butanol">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">2-Ethyl Butanol</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Paints and Coatings, Plastics and Resins, Lubricants, Pharmaceuticals and Packaging and Printing Inks</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="paints-coatings,plastics-paper-resins"
+                     data-application="solvent,coatings"
+                     data-category="bio-based-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img5.webp")" alt="3-Methoxy Butanol">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">3-Methoxy Butanol</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Paints &amp; Coatings, Plastics, Paper &amp; Resins</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="fragrance,personal-care"
+                     data-application="additive"
+                     data-category="specialty-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img6.webp")" alt="3-Methyl-3-Penten-2-One">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">3-Methyl-3-Penten-2-One</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Fragrance, Personal Care</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="fragrance,pharmaceuticals,food-beverage"
+                     data-application="additive,ingredient"
+                     data-category="specialty-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img7.webp")" alt="Acetaldehyde Diethyl Acetal">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">Acetaldehyde Diethyl Acetal</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Fragrance, Pharmaceuticals, Food &amp; Beverage</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="biofuels,pharmaceuticals"
+                     data-application="energy,solvent"
+                     data-category="biofuels-bio-energy">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/Biofuels.webp")" alt="Ethanol">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">Ethanol</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Biofuels, Pharmaceuticals</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="food-beverage"
+                     data-application="ingredient"
+                     data-category="sugar">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/homepage/designed-img1.webp")" alt="Sugar">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">Sugar</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Food &amp; Beverage</p>
+                     </div>
+                  </a>
+
+                  <a href="/ProductInside" class="product-card"
+                     data-industry="personal-care,pharmaceuticals"
+                     data-application="additive"
+                     data-category="specialty-chemicals">
+                     <div class="product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img8.webp")" alt="Naturowax">
+                     </div>
+                     <div class="product-card__body">
+                        <h3 class="text-h5">Naturowax</h3>
+                        <p class="product-card__meta-label">Industries</p>
+                        <p class="product-card__meta">Personal Care, Pharmaceuticals</p>
+                     </div>
+                  </a>
+               </div>
+
+               <p class="product-filter-empty" data-filter-empty hidden>No products match the selected filters.</p>
+            </div>
+         </div>
+      </div>
+   </section>
+    <!--Product Filters END-->
+
+@section Scripts {
+   <script src="~/Assets/js/product-filter.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/product-card-animation.js" asp-append-version="true"></script>
+}

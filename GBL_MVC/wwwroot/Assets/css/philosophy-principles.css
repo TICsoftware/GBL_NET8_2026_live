@@ -10,7 +10,7 @@
 }
 
 .philosophy-track {
-  height: 200vh;
+  height: 300vh;
 }
 
 .philosophy-sticky {
@@ -24,9 +24,12 @@
 
 .philosophy-copy {
   position: relative;
-  z-index: 3;
-  padding-top: calc(var(--header-h, 100px));
-  pointer-events: none;
+  z-index: 5;
+  padding-top: calc(var(--header-h, 100px) + 0.5rem);
+  padding-bottom: 0.75rem;
+  background: transparent;
+  pointer-events: auto;
+  user-select: text;
 }
 
 .philosophy-frame {
@@ -36,6 +39,7 @@
   z-index: 1;
   width: min(72rem, 84vw);
   height: 48%;
+  min-height: 480px;
   overflow: hidden;
   will-change: left, top, width, height, transform;
 }
@@ -65,33 +69,37 @@
 .ourPhilosophy .section-intro__title,
 .ourPhilosophy .section-intro__title .text-h2,
 .ourPhilosophy .title-section,
-.ourPhilosophy .title-section span,
-.ourPhilosophy .section-intro__content p {
+.ourPhilosophy .title-section span {
   color: var(--color-primary, #282b31);
-  transition: color 0.25s ease;
+}
+
+.ourPhilosophy .section-intro__content p,
+.ourPhilosophy .section-intro__content .intro-fill-word {
+  color: #ccc;
+  transition: none;
 }
 
 .ourPhilosophy.is-on-media .section-intro__title,
 .ourPhilosophy.is-on-media .section-intro__title .text-h2,
 .ourPhilosophy.is-on-media .title-section,
 .ourPhilosophy.is-on-media .title-section span,
-.ourPhilosophy.is-on-media .title-section .text-h2,
-.ourPhilosophy.is-on-media .section-intro__content p,
-.ourPhilosophy.is-on-media .section-intro__content .intro-fill-word {
-  color: #fff !important;
+.ourPhilosophy.is-on-media .title-section .text-h2 {
+  color: #fff;
 }
 
 .philosophy-infographic {
   position: absolute;
   left: 50%;
-  top: 56%;
+  top: 50%;
   z-index: 4;
-  width: min(60rem, 82vw);
-  height: min(26.5rem, 52vh);
+  width: min(78rem, 94vw);
+  height: min(34rem, 68vh);
   margin: 0;
-  transform: translate(-50%, -46%);
-  pointer-events: none;
-  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  user-select: text;
+  opacity: 1;
+  will-change: transform;
 }
 
 .philosophy-infographic__grid {
@@ -102,57 +110,65 @@
 
 .philosophy-card {
   position: absolute;
-  width: min(17.75rem, 44%);
-  padding: 1.1rem 1.25rem 1.15rem;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--color-primary, #282b31);
-  box-shadow: 0 10px 28px rgba(20, 22, 26, 0.14);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 49%;
+  min-height: 42%;
+  padding: clamp(1.5rem, 3.2vh, 2.75rem) clamp(1.5rem, 3.2vw, 3rem);
+  background: rgba(255, 255, 255, 0.38);
+  color: #fff;
+  text-align: center;
+  box-shadow: none;
 }
 
 .philosophy-card[data-principle="tl"] {
-  top: 0;
+  top: 2%;
   left: 0;
 }
 
 .philosophy-card[data-principle="tr"] {
-  top: 0;
+  top: 2%;
   right: 0;
 }
 
 .philosophy-card[data-principle="bl"] {
-  bottom: 0;
+  bottom: 2%;
   left: 0;
 }
 
 .philosophy-card[data-principle="br"] {
-  bottom: 0;
+  bottom: 2%;
   right: 0;
 }
 
 .philosophy-card h3 {
-  margin: 0 0 0.4rem;
-  font-size: clamp(1.02rem, 1.35vw, 1.28rem);
-  font-weight: 700;
-  line-height: 1.25;
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff;
 }
 
 .philosophy-card p {
   margin: 0;
-  font-size: clamp(0.8rem, 0.95vw, 0.92rem);
-  line-height: 1.45;
-  color: rgba(40, 43, 49, 0.8);
+  font-size: clamp(0.82rem, 1.05vw, 1.02rem);
+  line-height: 1.5;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .philosophy-hub {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 2;
-  width: clamp(8.75rem, 12vw, 11.25rem);
-  height: clamp(8.75rem, 12vw, 11.25rem);
+  z-index: 3;
+  width: clamp(11.5rem, 16.5vw, 15.5rem);
+  height: clamp(11.5rem, 16.5vw, 15.5rem);
   margin: 0;
   transform: translate(-50%, -50%);
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .philosophy-hub__inner {
@@ -167,9 +183,9 @@
   color: var(--color-secondary, #67815a);
   text-align: center;
   font-weight: 700;
-  font-size: clamp(0.95rem, 1.15vw, 1.15rem);
-  line-height: 1.2;
-  box-shadow: 0 12px 32px rgba(20, 22, 26, 0.16);
+  font-size: clamp(1.05rem, 1.4vw, 1.4rem);
+  line-height: 1.25;
+  box-shadow: none;
 }
 
 .philosophy-hub__inner span {
@@ -187,6 +203,21 @@
     height: auto;
     min-height: 0;
     overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .philosophy-copy {
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    padding-bottom: 1.25rem;
+  }
+
+  .ourPhilosophy .section-intro__title,
+  .ourPhilosophy .section-intro__content p,
+  .ourPhilosophy .section-intro__content .intro-fill-word,
+  .ourPhilosophy.is-on-media .section-intro__title,
+  .ourPhilosophy.is-on-media .section-intro__content p {
+    color: var(--color-primary, #282b31);
   }
 
   .philosophy-frame {
@@ -194,23 +225,13 @@
     left: auto !important;
     top: auto !important;
     width: 100% !important;
-    height: min(78vh, 42rem) !important;
-    margin-top: 1.5rem;
+    height: min(42vh, 22rem) !important;
+    min-height: 200px !important;
+    margin-top: 0;
   }
 
   .philosophy-frame__veil {
-    opacity: 0.42;
-  }
-
-  .philosophy-copy {
-    padding-top: clamp(2.5rem, 6vw, 4rem);
-  }
-
-  .ourPhilosophy .section-intro__title,
-  .ourPhilosophy .section-intro__content p,
-  .ourPhilosophy.is-on-media .section-intro__title,
-  .ourPhilosophy.is-on-media .section-intro__content p {
-    color: var(--color-primary, #282b31);
+    display: none;
   }
 
   .philosophy-infographic {
@@ -219,18 +240,19 @@
     top: auto;
     width: 100%;
     height: auto;
-    max-width: 26rem;
-    margin: -5rem auto 0;
-    padding: 0 1.25rem 3rem;
+    max-width: none;
+    margin: 0;
+    padding: 1.5rem 1rem 2.5rem;
     transform: none;
     opacity: 1;
   }
 
   .philosophy-infographic__grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 0.85rem;
     height: auto;
+    overflow: visible;
   }
 
   .philosophy-card,
@@ -241,14 +263,51 @@
     top: auto;
     bottom: auto;
     width: 100%;
+    min-height: 0;
     transform: none;
   }
 
   .philosophy-hub {
-    width: 7.5rem;
-    height: 7.5rem;
-    margin: 0.15rem auto;
-    order: -1;
+    display: none;
+  }
+
+  .philosophy-card {
+    padding: 1.25rem 1.1rem;
+    background: var(--color-gray, #f3f3f3);
+    color: var(--color-primary, #282b31);
+    text-align: left;
+    box-shadow: none;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .philosophy-card h3 {
+    color: var(--color-primary, #282b31);
+    font-size: clamp(1rem, 2.4vw, 1.2rem);
+    margin-bottom: 0.4rem;
+  }
+
+  .philosophy-card p {
+    color: var(--color-primary, #282b31);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    opacity: 0.88;
+  }
+}
+
+@media (max-width: 767px) {
+  .philosophy-infographic {
+    padding: 1.25rem 1rem 2.25rem;
+  }
+
+  .philosophy-infographic__grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .philosophy-frame {
+    height: min(38vh, 16.5rem) !important;
+    min-height: 180px !important;
   }
 }
 

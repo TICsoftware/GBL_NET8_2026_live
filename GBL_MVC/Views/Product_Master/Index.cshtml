@@ -1,0 +1,329 @@
+@model Core_project_BusinessLogic.Entity.Product_Master_Entity
+@using Core_project_BusinessLogic.Entity
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    var list = ViewBag.List as List<Product_Master_Entity>;
+    var languages = ViewBag.Languages as SelectList;
+    var industries = ViewBag.Industries as List<ProductLookupItem> ?? new List<ProductLookupItem>();
+    var applications = ViewBag.Applications as List<ProductLookupItem> ?? new List<ProductLookupItem>();
+    var packaging = ViewBag.Packaging as List<ProductLookupItem> ?? new List<ProductLookupItem>();
+    int totalPages = Model.PageSize > 0
+        ? (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)
+        : 0;
+    var cspNonce = Context.Items["CspNonce"]?.ToString() ?? "";
+}
+
+<div class="page-heading">
+    <h4>Product Master</h4>
+
+    <form method="get">
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text" name="search" value="@Model.SearchText" class="form-control" placeholder="Search name..." />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-3 mt-3">
+        <a href="@Url.Action("Index", "Product_Master")" class="btn btn-primary me-1 mb-1">Product</a>
+        <a href="@Url.Action("Index", "Product_Packaging_Master")" class="btn btn-outline-primary me-1 mb-1">Packaging</a>
+    </div>
+
+    <button type="button" class="btn btn-success mb-3 js-open-modal">+ Add New</button>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="icm-col-drag"></th>
+                <th>Name</th>
+                <th>Page Name</th>
+                <th>Language</th>
+                <th>Display Order</th>
+                <th>Status</th>
+                <th class="icm-col-action">Action</th>
+            </tr>
+        </thead>
+        <tbody id="sortable">
+            @if (list != null && list.Count > 0)
+            {
+                foreach (var item in list)
+                {
+                    <tr data-id="@item.ProductId" class="@((item.Status ?? 1) == 0 ? "inactive-row" : "")">
+                        <td class="drag-handle">☰</td>
+                        <td>@item.ProductName</td>
+                        <td>@item.Product_pagename</td>
+                        <td>@item.LanguageName</td>
+                        <td>
+                            <span id="lblseq_@item.ProductId">@item.Sequence</span>
+                        </td>
+                        <td>
+                            @if ((item.Status ?? 1) == 1)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary product-edit-btn" data-id="@item.ProductId">Edit</button>
+                            @if ((item.Status ?? 1) == 1)
+                            {
+                                <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ProductId">Deactivate</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-sm btn-success activate-btn" data-id="@item.ProductId">Activate</button>
+                            }
+                            <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="@item.ProductId">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="7">No records found</td></tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-3">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { search = Model.SearchText, page = i })"
+               class="btn btn-sm @(i == Model.PageNumber ? "btn-primary" : "btn-outline-primary")">@i</a>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable industry-modal-dialog">
+        <div class="modal-content industry-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalTitle">Add Product</h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-bs-dismiss="modal" aria-label="Close">
+                    Close
+                </button>
+            </div>
+            <div class="modal-body industry-modal-body">
+                <form id="productMasterForm" novalidate>
+                    <input type="hidden" id="productId" value="0" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="productName">Name <span class="text-danger">*</span></label>
+                            <input type="text" id="productName" maxlength="500" class="form-control" />
+                            <span id="productNameError" class="text-danger d-none"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="productPageName">Page Name</label>
+                            <input type="text" id="productPageName" maxlength="300" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="productLanguageId">Language</label>
+                            <select id="productLanguageId" class="form-select">
+                                <option value="">Select Language</option>
+                                @if (languages != null)
+                                {
+                                    foreach (var opt in languages)
+                                    {
+                                        <option value="@opt.Value">@opt.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="productSeq">Display Order <span class="text-danger">*</span></label>
+                            <input type="number" id="productSeq" min="1" max="9999" class="form-control" />
+                            <span id="productSeqError" class="text-danger d-none"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Banner Image</label>
+                            <button type="button"
+                                    class="btn btn-outline-primary select-media"
+                                    data-media-hidden="#productBannerMediaId"
+                                    data-media-preview="#productBannerPreview">
+                                Select Banner
+                            </button>
+                            <input type="hidden" id="productBannerMediaId" value="" />
+                            <img id="productBannerPreview" src="" alt="Banner preview"
+                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Thumbnail Image</label>
+                            <button type="button"
+                                    class="btn btn-outline-primary select-media"
+                                    data-media-hidden="#productThumbMediaId"
+                                    data-media-preview="#productThumbPreview">
+                                Select Thumbnail
+                            </button>
+                            <input type="hidden" id="productThumbMediaId" value="" />
+                            <img id="productThumbPreview" src="" alt="Thumbnail preview"
+                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label" for="productIntro">Intro</label>
+                            <textarea id="productIntro" class="form-control editor-full" rows="6"></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label" for="productContent">Content</label>
+                            <textarea id="productContent" class="form-control editor-full" rows="8"></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label" for="productTechnicalOverview">Technical Overview</label>
+                            <textarea id="productTechnicalOverview" class="form-control editor-full" rows="8"></textarea>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Safety Data Sheet (SDS)</label>
+                            <button type="button"
+                                    class="btn btn-outline-primary select-media"
+                                    data-media-hidden="#productSdsMediaId"
+                                    data-media-preview="#productSdsPreview">
+                                Select SDS File
+                            </button>
+                            <input type="hidden" id="productSdsMediaId" value="" />
+                            <img id="productSdsPreview" src="" alt="SDS preview"
+                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                            <div class="filePreview mt-2" style="display:none;">
+                                <a href="#" target="_blank" class="btn btn-sm btn-dark fileLink">
+                                    <i class="bi bi-file-earmark"></i> View File
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <h6>Industries</h6>
+                    <p class="text-muted small">Select industries. Subcategories below update from industry tagging.</p>
+                    <div class="row icm-tagging-panel">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="availableIndustries">Available Industries</label>
+                            <select id="availableIndustries" class="form-select icm-listbox" multiple size="8">
+                                @foreach (var item in industries)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
+                            <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableIndustries" data-to="#selectedIndustries">&gt;&gt;</button>
+                            <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedIndustries" data-to="#availableIndustries">&lt;&lt;</button>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="selectedIndustries">Selected Industries</label>
+                            <select id="selectedIndustries" class="form-select icm-listbox" multiple size="8"></select>
+                        </div>
+                    </div>
+
+                    <h6>Subcategories</h6>
+                    <p class="text-muted small">Shown from Industry / Category tagging for the selected industries.</p>
+                    <div class="row icm-tagging-panel">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="availableSubcategories">Available Subcategories</label>
+                            <select id="availableSubcategories" class="form-select icm-listbox" multiple size="8"></select>
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
+                            <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableSubcategories" data-to="#selectedSubcategories">&gt;&gt;</button>
+                            <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedSubcategories" data-to="#availableSubcategories">&lt;&lt;</button>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="selectedSubcategories">Selected Subcategories</label>
+                            <select id="selectedSubcategories" class="form-select icm-listbox" multiple size="8"></select>
+                        </div>
+                    </div>
+
+                    <h6>Applications</h6>
+                    <div class="row icm-tagging-panel">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="availableApplications">Available Applications</label>
+                            <select id="availableApplications" class="form-select icm-listbox" multiple size="8">
+                                @foreach (var item in applications)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
+                            <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableApplications" data-to="#selectedApplications">&gt;&gt;</button>
+                            <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedApplications" data-to="#availableApplications">&lt;&lt;</button>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="selectedApplications">Selected Applications</label>
+                            <select id="selectedApplications" class="form-select icm-listbox" multiple size="8"></select>
+                        </div>
+                    </div>
+
+                    <h6>Packaging</h6>
+                    <div class="row icm-tagging-panel">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="availablePackaging">Available Packaging</label>
+                            <select id="availablePackaging" class="form-select icm-listbox" multiple size="8">
+                                @foreach (var item in packaging)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
+                            <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availablePackaging" data-to="#selectedPackaging">&gt;&gt;</button>
+                            <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedPackaging" data-to="#availablePackaging">&lt;&lt;</button>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label" for="selectedPackaging">Selected Packaging</label>
+                            <select id="selectedPackaging" class="form-select icm-listbox" multiple size="8"></select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success js-save-product">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="btnSelectFiles" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaManagerModalBody"></div>
+            <div class="modal-footer d-flex justify-content-end gap-2">
+                <button id="btnAddImage" type="button" class="btn btn-primary">Add image</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Assets/css/industry-category-master-style.css" />
+    <link rel="stylesheet" href="~/Assets/css/product-master-style.css" />
+    <link rel="stylesheet" href="/Assets/ckeditor5/ckeditor5.css" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script type="importmap" nonce="@cspNonce">
+    {
+        "imports": {
+            "ckeditor5": "@Url.Content("~/Assets/ckeditor5/ckeditor5.js")",
+            "ckeditor5/": "@Url.Content("~/Assets/ckeditor5/")"
+        }
+    }
+    </script>
+    <script src="~/Assets/scripts/add_ck_editor.js" type="module"></script>
+    <script src="~/Assets/scripts/product_master.js"></script>
+}

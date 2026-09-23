@@ -1,0 +1,31 @@
+#productModal .industry-modal-dialog,
+#packagingModal .modal-dialog {
+    max-height: 92vh;
+    margin: 1rem auto;
+}
+
+#productModal .industry-modal-content {
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#productModal .industry-modal-body {
+    overflow-y: auto !important;
+    max-height: calc(92vh - 130px);
+    flex: 1 1 auto;
+}
+
+#btnSelectFiles {
+    z-index: 1065;
+}
+
+#btnSelectFiles + .modal-backdrop,
+body.modal-open .modal-backdrop:nth-of-type(2) {
+    z-index: 1060;
+}
+
+#productModal .icm-listbox,
+#productModal .icm-listbox-actions {
+    min-height: 180px;
+}
