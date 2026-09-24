@@ -584,6 +584,29 @@ BEGIN
 END
 GO
 
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = N'UX_Industry_Subcategory_Mapping_Industry_Category'
+      AND object_id = OBJECT_ID(N'dbo.Industry_Subcategory_Mapping')
+)
+BEGIN
+    ;WITH dups AS
+    (
+        SELECT IndustrySubcategoryId,
+               ROW_NUMBER() OVER (
+                   PARTITION BY IndustryId, Category_Master_Id
+                   ORDER BY IndustrySubcategoryId
+               ) AS rn
+        FROM dbo.Industry_Subcategory_Mapping
+    )
+    DELETE FROM dups WHERE rn > 1;
+
+    CREATE UNIQUE NONCLUSTERED INDEX UX_Industry_Subcategory_Mapping_Industry_Category
+        ON dbo.Industry_Subcategory_Mapping (IndustryId, Category_Master_Id);
+END
+GO
+
 CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetIndustries
 AS
 BEGIN
@@ -655,12 +678,19 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM @Categories)
         THROW 50002, 'Select at least one category.', 1;
 
+    IF EXISTS (
+        SELECT 1
+        FROM dbo.Industry_Subcategory_Mapping m
+        INNER JOIN @Industries i ON i.IndustryId = m.IndustryId
+        INNER JOIN @Categories c ON c.Category_Master_Id = m.Category_Master_Id
+    )
+        THROW 50003, 'This industry and category mapping already exists.', 1;
+
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        DELETE m
-        FROM dbo.Industry_Subcategory_Mapping m
-        INNER JOIN @Industries i ON i.IndustryId = m.IndustryId;
+        DECLARE @MaxOrder INT =
+            ISNULL((SELECT MAX(DisplayOrder) FROM dbo.Industry_Subcategory_Mapping), 0);
 
         ;WITH pairs AS
         (
@@ -669,11 +699,17 @@ BEGIN
                 c.Category_Master_Id,
                 ROW_NUMBER() OVER (
                     ORDER BY ISNULL(im.IndustryName, N''), ISNULL(cm.SubcategoryName, N''), i.IndustryId, c.Category_Master_Id
-                ) AS DisplayOrder
+                ) AS RowNum
             FROM @Industries i
             CROSS JOIN @Categories c
             LEFT JOIN dbo.Industry_Master im ON im.IndustryId = i.IndustryId
             LEFT JOIN dbo.Industry_Subcategory_Master cm ON cm.SubcategoryId = c.Category_Master_Id
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM dbo.Industry_Subcategory_Mapping x
+                WHERE x.IndustryId = i.IndustryId
+                  AND x.Category_Master_Id = c.Category_Master_Id
+            )
         )
         INSERT INTO dbo.Industry_Subcategory_Mapping
         (
@@ -681,7 +717,7 @@ BEGIN
             Create_UserId, CreatedDate
         )
         SELECT
-            p.IndustryId, p.Category_Master_Id, p.DisplayOrder,
+            p.IndustryId, p.Category_Master_Id, @MaxOrder + p.RowNum,
             @Create_UserId, SYSUTCDATETIME()
         FROM pairs p;
 

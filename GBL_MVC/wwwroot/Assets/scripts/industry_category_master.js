@@ -162,6 +162,17 @@ function bindTaggingListboxes() {
             return;
         }
 
+        const existingPairs = getExistingMappingPairs();
+        const hasDuplicate = industryIds.some((industryId) =>
+            categoryIds.some((categoryId) =>
+                existingPairs.some((pair) => pair.industryId === industryId && pair.categoryId === categoryId)
+            )
+        );
+        if (hasDuplicate) {
+            alert("This industry and category mapping already exists.");
+            return;
+        }
+
         postMaster("/Industry_Category_master/SaveTagging", {
             IndustryIds: industryIds,
             CategoryIds: categoryIds
@@ -196,6 +207,13 @@ function bindTaggingListboxes() {
 
 function getMappingRows() {
     return Array.from(document.querySelectorAll("#mappingSortable tr[data-id]"));
+}
+
+function getExistingMappingPairs() {
+    return getMappingRows().map((row) => ({
+        industryId: parseInt(row.dataset.industryId, 10),
+        categoryId: parseInt(row.dataset.categoryId, 10)
+    })).filter((pair) => !Number.isNaN(pair.industryId) && !Number.isNaN(pair.categoryId));
 }
 
 function refreshMappingOrderLabels() {

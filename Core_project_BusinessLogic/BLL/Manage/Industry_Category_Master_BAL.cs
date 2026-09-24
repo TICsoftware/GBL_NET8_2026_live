@@ -118,7 +118,22 @@ namespace Core_project_BusinessLogic.BAL
             if (categoryIds == null || categoryIds.Count == 0)
                 throw new Exception("Select at least one category.");
 
-            _dal.SaveMappings(industryIds, categoryIds, createUserId);
+            var selectedIndustries = industryIds.Where(id => id > 0).Distinct().ToList();
+            var selectedCategories = categoryIds.Where(id => id > 0).Distinct().ToList();
+            var existingPairs = _dal.GetMappings()
+                .Select(m => (m.IndustryId, m.Category_Master_Id))
+                .ToHashSet();
+
+            foreach (var industryId in selectedIndustries)
+            {
+                foreach (var categoryId in selectedCategories)
+                {
+                    if (existingPairs.Contains((industryId, categoryId)))
+                        throw new Exception("This industry and category mapping already exists.");
+                }
+            }
+
+            _dal.SaveMappings(selectedIndustries, selectedCategories, createUserId);
         }
 
         public void DeleteMapping(int industrySubcategoryId)

@@ -142,6 +142,8 @@
                     foreach (var map in mappings)
                     {
                         <tr data-id="@map.IndustrySubcategoryId"
+                            data-industry-id="@map.IndustryId"
+                            data-category-id="@map.Category_Master_Id"
                             data-industry="@map.IndustryName"
                             data-category="@map.CategoryName">
                             <td class="drag-handle">☰</td>
