@@ -5,9 +5,9 @@ namespace Core_project_BusinessLogic.Entity
 {
     public class Industry_Category_Master_Entity
     {
-        public const string TextBoxPattern = @"^[^<>@#$~^`!*]*$";
+        public const string TextBoxPattern = @"^[^<>@#$~^`!*+=;]*$";
         public const string TextBoxPatternMessage =
-            "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
+            "Special characters < > @ # $ ~ ^ ` ! * + = ; are not allowed.";
 
         public int ID { get; set; }
 

@@ -1,7 +1,7 @@
-const PKG_TEXTBOX_REGEX = /^[^<>@#$~^`!*]*$/;
-const PKG_FORBIDDEN_CHARS = /[<>@#$~^`!*]/g;
+const PKG_TEXTBOX_REGEX = /^[^<>@#$~^`!*+=;]*$/;
+const PKG_FORBIDDEN_CHARS = /[<>@#$~^`!*+=;]/g;
 const PKG_TEXTBOX_MESSAGE =
-    "Special characters < > @ # $ ~ ^ ` ! * are not allowed.";
+    "Special characters < > @ # $ ~ ^ ` ! * + = ; are not allowed.";
 const PKG_UNIQUE_MESSAGE = "This name already exists for the selected language.";
 
 function validateTextValue(value, required, minLen, maxLen) {
