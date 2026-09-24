@@ -71,6 +71,15 @@ namespace GBL_MVC.Controllers.Manage
             return Ok(new { exists = _bal.NameExists(name.Trim(), languageId, id, type) });
         }
 
+        [HttpGet]
+        public IActionResult CheckPageNameExists(string pageName, int id = 0)
+        {
+            if (string.IsNullOrWhiteSpace(pageName))
+                return Ok(new { exists = false });
+
+            return Ok(new { exists = _bal.PageNameExists(pageName.Trim(), id) });
+        }
+
         [HttpPost]
         public IActionResult AddAjax([FromBody] Industry_Category_Master_Entity model)
         {

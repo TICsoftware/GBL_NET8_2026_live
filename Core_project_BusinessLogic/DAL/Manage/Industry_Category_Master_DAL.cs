@@ -61,6 +61,17 @@ namespace Core_project_BusinessLogic.DAL
             return dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0]["IsExists"]) == 1;
         }
 
+        public bool PageNameExists(string pageName, int excludeId)
+        {
+            SqlParameter[] p =
+            {
+                new("@PageName", pageName ?? string.Empty),
+                new("@ID", excludeId)
+            };
+            DataTable dt = GetDataSet("Industry_Category_master_PageNameExists", p).Tables[0];
+            return dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0]["IsExists"]) == 1;
+        }
+
         public int Insert(Industry_Category_Master_Entity m)
         {
             SqlParameter[] p =

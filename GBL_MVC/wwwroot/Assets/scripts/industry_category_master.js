@@ -43,6 +43,17 @@ async function checkNameUnique(name, languageId, id, type) {
     return data.exists || data.Exists ? ICM_UNIQUE_MESSAGE : "";
 }
 
+async function checkPageNameUnique(pageName, id) {
+    const params = new URLSearchParams({
+        pageName: pageName || "",
+        id: String(id || 0)
+    });
+    const res = await fetch("/Industry_Category_master/CheckPageNameExists?" + params.toString());
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.exists || data.Exists ? "This page name already exists." : "";
+}
+
 function bindTextBoxGuards(root) {
     const scope = root && root.querySelectorAll ? root : document;
     scope.querySelectorAll("input[type='text']:not([name='search']), textarea:not(.editor-full)").forEach((el) => {
@@ -650,6 +661,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("industryName"),
                 document.getElementById("industryNameError"),
                 uniqueMessage
+            );
+            return;
+        }
+        const pageUniqueMessage = await checkPageNameUnique(payload.PageName, payload.ID);
+        if (pageUniqueMessage) {
+            setFieldError(
+                document.getElementById("industryPageName"),
+                document.getElementById("industryPageNameError"),
+                pageUniqueMessage
             );
             return;
         }

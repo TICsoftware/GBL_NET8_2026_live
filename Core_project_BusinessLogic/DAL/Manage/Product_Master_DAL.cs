@@ -57,6 +57,17 @@ namespace Core_project_BusinessLogic.DAL
             return dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0]["IsExists"]) == 1;
         }
 
+        public bool PageNameExists(string pageName, int excludeId)
+        {
+            SqlParameter[] p =
+            {
+                new("@Product_pagename", pageName ?? string.Empty),
+                new("@ProductId", excludeId)
+            };
+            DataTable dt = GetDataSet("Product_Master_PageNameExists", p).Tables[0];
+            return dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0]["IsExists"]) == 1;
+        }
+
         public int Insert(Product_Master_Entity m)
         {
             SqlParameter[] p =
@@ -69,6 +80,8 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Thumbnail_Image_media_id", m.Thumbnail_Image_media_id.HasValue ? m.Thumbnail_Image_media_id.Value : DBNull.Value),
                 new("@Banner_Image_media_id", m.Banner_Image_media_id.HasValue ? m.Banner_Image_media_id.Value : DBNull.Value),
                 new("@SafetyDataSheet_media_id", m.SafetyDataSheet_media_id.HasValue ? m.SafetyDataSheet_media_id.Value : DBNull.Value),
+                new("@Banner_Image_Alt", (object?)m.Banner_Image_Alt ?? DBNull.Value),
+                new("@Thumbnail_Image_Alt", (object?)m.Thumbnail_Image_Alt ?? DBNull.Value),
                 new("@Language_Master_Id", m.Language_Master_Id.HasValue ? m.Language_Master_Id.Value : DBNull.Value),
                 new("@Sequence", m.Sequence.HasValue ? m.Sequence.Value : DBNull.Value),
                 new("@Status", m.Status ?? 1),
@@ -91,6 +104,8 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Thumbnail_Image_media_id", m.Thumbnail_Image_media_id.HasValue ? m.Thumbnail_Image_media_id.Value : DBNull.Value),
                 new("@Banner_Image_media_id", m.Banner_Image_media_id.HasValue ? m.Banner_Image_media_id.Value : DBNull.Value),
                 new("@SafetyDataSheet_media_id", m.SafetyDataSheet_media_id.HasValue ? m.SafetyDataSheet_media_id.Value : DBNull.Value),
+                new("@Banner_Image_Alt", (object?)m.Banner_Image_Alt ?? DBNull.Value),
+                new("@Thumbnail_Image_Alt", (object?)m.Thumbnail_Image_Alt ?? DBNull.Value),
                 new("@Language_Master_Id", m.Language_Master_Id.HasValue ? m.Language_Master_Id.Value : DBNull.Value),
                 new("@Sequence", m.Sequence.HasValue ? m.Sequence.Value : DBNull.Value),
                 new("@Update_UserId", m.Update_UserId.HasValue ? m.Update_UserId.Value : DBNull.Value)
@@ -195,6 +210,8 @@ namespace Core_project_BusinessLogic.DAL
                 Thumbnail_Image_Url = ColStr(r, "Thumbnail_Image_Url"),
                 Banner_Image_Url = ColStr(r, "Banner_Image_Url"),
                 SafetyDataSheet_Url = ColStr(r, "SafetyDataSheet_Url"),
+                Banner_Image_Alt = ColStr(r, "Banner_Image_Alt"),
+                Thumbnail_Image_Alt = ColStr(r, "Thumbnail_Image_Alt"),
                 Intro = ColStr(r, "Intro"),
                 Content = ColStr(r, "Content"),
                 Technical_Overview = ColStr(r, "Technical_Overview")

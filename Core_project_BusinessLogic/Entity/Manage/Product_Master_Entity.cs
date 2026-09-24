@@ -33,6 +33,14 @@ namespace Core_project_BusinessLogic.Entity
         public string? Banner_Image_Url { get; set; }
         public string? SafetyDataSheet_Url { get; set; }
 
+        [StringLength(500, ErrorMessage = "Masthead image alt cannot exceed 500 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
+        public string? Banner_Image_Alt { get; set; }
+
+        [StringLength(500, ErrorMessage = "Thumbnail image alt cannot exceed 500 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
+        public string? Thumbnail_Image_Alt { get; set; }
+
         public int? Language_Master_Id { get; set; }
         public string? LanguageName { get; set; }
 

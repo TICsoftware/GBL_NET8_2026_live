@@ -292,6 +292,13 @@ BEGIN
         THROW 50020, 'This name already exists for the selected language.', 1;
 
     IF @MasterType = N'Industry'
+       AND @PageName IS NOT NULL AND LTRIM(RTRIM(@PageName)) <> N''
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName))))
+        THROW 50021, 'This page name already exists.', 1;
+
+    IF @MasterType = N'Industry'
     BEGIN
         INSERT INTO dbo.Industry_Master
         (
@@ -386,6 +393,14 @@ BEGIN
         THROW 50020, 'This name already exists for the selected language.', 1;
 
     IF @MasterType = N'Industry'
+       AND @PageName IS NOT NULL AND LTRIM(RTRIM(@PageName)) <> N''
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+              AND IndustryId <> @ID)
+        THROW 50021, 'This page name already exists.', 1;
+
+    IF @MasterType = N'Industry'
     BEGIN
         UPDATE dbo.Industry_Master
         SET IndustryName = @Name,
@@ -460,6 +475,22 @@ BEGIN
         ) THEN 1 ELSE 0 END AS IsExists;
     ELSE
         SELECT 0 AS IsExists;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_PageNameExists
+    @PageName NVARCHAR(300),
+    @ID INT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.Industry_Master
+        WHERE @PageName IS NOT NULL
+          AND LTRIM(RTRIM(@PageName)) <> N''
+          AND LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+          AND IndustryId <> ISNULL(@ID, 0)
+    ) THEN 1 ELSE 0 END AS IsExists;
 END
 GO
 

@@ -29,9 +29,19 @@ BEGIN
         CreatedDate DATETIME2(7) NOT NULL CONSTRAINT DF_Product_Master_CreatedDate DEFAULT (SYSUTCDATETIME()),
         ModifiedDate DATETIME2(7) NULL,
         [status] INT NULL,
+        Banner_Image_Alt NVARCHAR(500) NULL,
+        Thumbnail_Image_Alt NVARCHAR(500) NULL,
         CONSTRAINT PK_Product_Master PRIMARY KEY CLUSTERED (ProductId ASC)
     );
 END
+GO
+
+IF COL_LENGTH('dbo.Product_Master', 'Banner_Image_Alt') IS NULL
+    ALTER TABLE dbo.Product_Master ADD Banner_Image_Alt NVARCHAR(500) NULL;
+GO
+
+IF COL_LENGTH('dbo.Product_Master', 'Thumbnail_Image_Alt') IS NULL
+    ALTER TABLE dbo.Product_Master ADD Thumbnail_Image_Alt NVARCHAR(500) NULL;
 GO
 
 IF OBJECT_ID(N'dbo.product_Industry_Mapping', N'U') IS NULL
@@ -127,6 +137,8 @@ BEGIN
         mt.file_path AS Thumbnail_Image_Url,
         mb.file_path AS Banner_Image_Url,
         ms.file_path AS SafetyDataSheet_Url,
+        p.Banner_Image_Alt,
+        p.Thumbnail_Image_Alt,
         p.Intro,
         p.Content,
         p.Technical_Overview
@@ -165,6 +177,8 @@ BEGIN
         mt.file_path AS Thumbnail_Image_Url,
         mb.file_path AS Banner_Image_Url,
         ms.file_path AS SafetyDataSheet_Url,
+        p.Banner_Image_Alt,
+        p.Thumbnail_Image_Alt,
         p.Intro,
         p.Content,
         p.Technical_Overview
@@ -206,6 +220,8 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Insert
     @Thumbnail_Image_media_id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @SafetyDataSheet_media_id INT = NULL,
+    @Banner_Image_Alt NVARCHAR(500) = NULL,
+    @Thumbnail_Image_Alt NVARCHAR(500) = NULL,
     @Language_Master_Id INT = NULL,
     @Sequence INT,
     @Status INT = 1,
@@ -223,16 +239,24 @@ BEGIN
           AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
         THROW 50020, 'This name already exists for the selected language.', 1;
 
+    IF @Product_pagename IS NOT NULL AND LTRIM(RTRIM(@Product_pagename)) <> N''
+       AND EXISTS (
+            SELECT 1 FROM dbo.Product_Master
+            WHERE LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@Product_pagename))))
+        THROW 50021, 'This page name already exists.', 1;
+
     INSERT INTO dbo.Product_Master
     (
         ProductName, Product_pagename, Intro, Content, Technical_Overview,
         Thumbnail_Image_media_id, Banner_Image_media_id, SafetyDataSheet_media_id,
+        Banner_Image_Alt, Thumbnail_Image_Alt,
         Language_Master_Id, DisplayOrder, [status], Create_UserId, CreatedDate
     )
     VALUES
     (
         @ProductName, @Product_pagename, @Intro, @Content, @Technical_Overview,
         @Thumbnail_Image_media_id, @Banner_Image_media_id, @SafetyDataSheet_media_id,
+        @Banner_Image_Alt, @Thumbnail_Image_Alt,
         @Language_Master_Id, @Sequence, @Status, @Create_UserId, SYSUTCDATETIME()
     );
     SET @NewID = SCOPE_IDENTITY();
@@ -249,6 +273,8 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Update
     @Thumbnail_Image_media_id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @SafetyDataSheet_media_id INT = NULL,
+    @Banner_Image_Alt NVARCHAR(500) = NULL,
+    @Thumbnail_Image_Alt NVARCHAR(500) = NULL,
     @Language_Master_Id INT = NULL,
     @Sequence INT,
     @Update_UserId INT = NULL
@@ -263,6 +289,13 @@ BEGIN
           AND ProductId <> @ProductId)
         THROW 50020, 'This name already exists for the selected language.', 1;
 
+    IF @Product_pagename IS NOT NULL AND LTRIM(RTRIM(@Product_pagename)) <> N''
+       AND EXISTS (
+            SELECT 1 FROM dbo.Product_Master
+            WHERE LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@Product_pagename)))
+              AND ProductId <> @ProductId)
+        THROW 50021, 'This page name already exists.', 1;
+
     UPDATE dbo.Product_Master
     SET ProductName = @ProductName,
         Product_pagename = @Product_pagename,
@@ -272,6 +305,8 @@ BEGIN
         Thumbnail_Image_media_id = @Thumbnail_Image_media_id,
         Banner_Image_media_id = @Banner_Image_media_id,
         SafetyDataSheet_media_id = @SafetyDataSheet_media_id,
+        Banner_Image_Alt = @Banner_Image_Alt,
+        Thumbnail_Image_Alt = @Thumbnail_Image_Alt,
         Language_Master_Id = @Language_Master_Id,
         DisplayOrder = @Sequence,
         Update_UserId = @Update_UserId,
@@ -291,6 +326,22 @@ BEGIN
         SELECT 1 FROM dbo.Product_Master
         WHERE LOWER(LTRIM(RTRIM(ProductName))) = LOWER(LTRIM(RTRIM(@ProductName)))
           AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+          AND ProductId <> ISNULL(@ProductId, 0)
+    ) THEN 1 ELSE 0 END AS IsExists;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Product_Master_PageNameExists
+    @Product_pagename NVARCHAR(300),
+    @ProductId INT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.Product_Master
+        WHERE @Product_pagename IS NOT NULL
+          AND LTRIM(RTRIM(@Product_pagename)) <> N''
+          AND LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@Product_pagename)))
           AND ProductId <> ISNULL(@ProductId, 0)
     ) THEN 1 ELSE 0 END AS IsExists;
 END

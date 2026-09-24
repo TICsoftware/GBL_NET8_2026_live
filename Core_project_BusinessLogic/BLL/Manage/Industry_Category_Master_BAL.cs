@@ -43,6 +43,9 @@ namespace Core_project_BusinessLogic.BAL
             return _dal.NameExists(name, languageId, excludeId, type);
         }
 
+        public bool PageNameExists(string pageName, int excludeId) =>
+            _dal.PageNameExists(pageName, excludeId);
+
         public List<LanguageMaster> GetLanguages() => _langDal.GetAllActive();
 
         public int Save(Industry_Category_Master_Entity entity)
@@ -71,6 +74,11 @@ namespace Core_project_BusinessLogic.BAL
 
             if (NameExists(entity.Name!, entity.Language_Master_Id, entity.ID, entity.MasterType!))
                 throw new Exception("This name already exists for the selected language.");
+
+            if (string.Equals(entity.MasterType, "Industry", StringComparison.OrdinalIgnoreCase)
+                && !string.IsNullOrWhiteSpace(entity.PageName)
+                && PageNameExists(entity.PageName.Trim(), entity.ID))
+                throw new Exception("This page name already exists.");
 
             if (entity.ID == 0)
             {

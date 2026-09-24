@@ -25,6 +25,9 @@ namespace Core_project_BusinessLogic.BAL
         public bool NameExists(string name, int? languageId, int excludeId) =>
             _dal.NameExists(name, languageId, excludeId);
 
+        public bool PageNameExists(string pageName, int excludeId) =>
+            _dal.PageNameExists(pageName, excludeId);
+
         public List<LanguageMaster> GetLanguages() => _langDal.GetAllActive();
 
         public List<ProductLookupItem> GetActiveIndustries() => _dal.GetActiveIndustries();
@@ -49,6 +52,9 @@ namespace Core_project_BusinessLogic.BAL
 
             if (NameExists(entity.ProductName!, entity.Language_Master_Id, entity.ProductId))
                 throw new Exception("This name already exists for the selected language.");
+
+            if (PageNameExists(entity.Product_pagename!.Trim(), entity.ProductId))
+                throw new Exception("This page name already exists.");
 
             int productId;
             if (entity.ProductId == 0)

@@ -42,6 +42,17 @@ async function checkNameUnique(name, languageId, id) {
     return data.exists || data.Exists ? PM_UNIQUE_MESSAGE : "";
 }
 
+async function checkPageNameUnique(pageName, id) {
+    const params = new URLSearchParams({
+        pageName: pageName || "",
+        id: String(id || 0)
+    });
+    const res = await fetch("/Product_Master/CheckPageNameExists?" + params.toString());
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.exists || data.Exists ? "This page name already exists." : "";
+}
+
 function bindTextBoxGuards(root) {
     const scope = root && root.querySelectorAll ? root : document;
     scope.querySelectorAll("input[type='text']:not([name='search']), textarea:not(.editor-full)").forEach((el) => {
@@ -303,6 +314,8 @@ function resetProductForm() {
     document.getElementById("productBannerMediaId").value = "";
     document.getElementById("productThumbMediaId").value = "";
     document.getElementById("productSdsMediaId").value = "";
+    document.getElementById("productBannerImageAlt").value = "";
+    document.getElementById("productThumbnailImageAlt").value = "";
     setImagePreview(document.getElementById("productBannerPreview"), "");
     setImagePreview(document.getElementById("productThumbPreview"), "");
     setImagePreview(document.getElementById("productSdsPreview"), "");
@@ -312,6 +325,8 @@ function resetProductForm() {
     setEditorData("productTechnicalOverview", "");
     setFieldError(document.getElementById("productName"), document.getElementById("productNameError"), "");
     setFieldError(document.getElementById("productPageName"), document.getElementById("productPageNameError"), "");
+    setFieldError(document.getElementById("productBannerImageAlt"), document.getElementById("productBannerImageAltError"), "");
+    setFieldError(document.getElementById("productThumbnailImageAlt"), document.getElementById("productThumbnailImageAltError"), "");
     setFieldError(document.getElementById("productSeq"), document.getElementById("productSeqError"), "");
     resetListboxPair("availableIndustries", "selectedIndustries");
     resetListboxPair("availableApplications", "selectedApplications");
@@ -331,12 +346,22 @@ function validateProductForm() {
         document.getElementById("productPageNameError"),
         validatePageName(document.getElementById("productPageName")?.value)
     );
+    const bannerAltValid = setFieldError(
+        document.getElementById("productBannerImageAlt"),
+        document.getElementById("productBannerImageAltError"),
+        validateOptionalText(document.getElementById("productBannerImageAlt")?.value, 500)
+    );
+    const thumbAltValid = setFieldError(
+        document.getElementById("productThumbnailImageAlt"),
+        document.getElementById("productThumbnailImageAltError"),
+        validateOptionalText(document.getElementById("productThumbnailImageAlt")?.value, 500)
+    );
     const seqValid = setFieldError(
         document.getElementById("productSeq"),
         document.getElementById("productSeqError"),
         validateSequence(document.getElementById("productSeq")?.value)
     );
-    return nameValid && pageValid && seqValid;
+    return nameValid && pageValid && bannerAltValid && thumbAltValid && seqValid;
 }
 
 function buildProductPayload() {
@@ -354,6 +379,8 @@ function buildProductPayload() {
         Banner_Image_media_id: parseOptionalInt(document.getElementById("productBannerMediaId").value),
         Thumbnail_Image_media_id: parseOptionalInt(document.getElementById("productThumbMediaId").value),
         SafetyDataSheet_media_id: parseOptionalInt(document.getElementById("productSdsMediaId").value),
+        Banner_Image_Alt: (document.getElementById("productBannerImageAlt").value || "").trim(),
+        Thumbnail_Image_Alt: (document.getElementById("productThumbnailImageAlt").value || "").trim(),
         Intro: document.getElementById("productIntro").value || "",
         Content: document.getElementById("productContent").value || "",
         Technical_Overview: document.getElementById("productTechnicalOverview").value || "",
@@ -386,6 +413,8 @@ async function openProductModal(editId) {
         document.getElementById("productBannerMediaId").value = pickValue(data, "banner_Image_media_id", "Banner_Image_media_id");
         document.getElementById("productThumbMediaId").value = pickValue(data, "thumbnail_Image_media_id", "Thumbnail_Image_media_id");
         document.getElementById("productSdsMediaId").value = pickValue(data, "safetyDataSheet_media_id", "SafetyDataSheet_media_id");
+        document.getElementById("productBannerImageAlt").value = pickValue(data, "banner_Image_Alt", "Banner_Image_Alt");
+        document.getElementById("productThumbnailImageAlt").value = pickValue(data, "thumbnail_Image_Alt", "Thumbnail_Image_Alt");
         setImagePreview(document.getElementById("productBannerPreview"), pickValue(data, "banner_Image_Url", "Banner_Image_Url"));
         setImagePreview(document.getElementById("productThumbPreview"), pickValue(data, "thumbnail_Image_Url", "Thumbnail_Image_Url"));
         setFilePreview(pickValue(data, "safetyDataSheet_Url", "SafetyDataSheet_Url"));
@@ -431,6 +460,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("productName"),
                 document.getElementById("productNameError"),
                 uniqueMessage
+            );
+            return;
+        }
+        const pageUniqueMessage = await checkPageNameUnique(payload.Product_pagename, payload.ProductId);
+        if (pageUniqueMessage) {
+            setFieldError(
+                document.getElementById("productPageName"),
+                document.getElementById("productPageNameError"),
+                pageUniqueMessage
             );
             return;
         }
