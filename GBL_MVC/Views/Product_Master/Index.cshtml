@@ -146,27 +146,33 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label d-block">Masthead Image</label>
-                            <button type="button"
-                                    class="btn btn-outline-primary select-media"
-                                    data-media-hidden="#productBannerMediaId"
-                                    data-media-preview="#productBannerPreview">
-                                Select Masthead
-                            </button>
-                            <input type="hidden" id="productBannerMediaId" value="" />
-                            <img id="productBannerPreview" src="" alt="Banner preview"
-                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                            <div class="pm-media-field">
+                                <button type="button"
+                                        class="btn btn-outline-primary select-media"
+                                        data-media-hidden="#productBannerMediaId"
+                                        data-media-preview="#productBannerPreview">
+                                    Select Masthead
+                                </button>
+                                <input type="hidden" id="productBannerMediaId" value="" />
+                                <img id="productBannerPreview" src="" alt="Banner preview"
+                                     class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                                <button type="button" class="btn btn-sm btn-outline-danger js-clear-media d-none mt-2">Delete image</button>
+                            </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label d-block">Thumbnail Image</label>
-                            <button type="button"
-                                    class="btn btn-outline-primary select-media"
-                                    data-media-hidden="#productThumbMediaId"
-                                    data-media-preview="#productThumbPreview">
-                                Select Thumbnail
-                            </button>
-                            <input type="hidden" id="productThumbMediaId" value="" />
-                            <img id="productThumbPreview" src="" alt="Thumbnail preview"
-                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                            <div class="pm-media-field">
+                                <button type="button"
+                                        class="btn btn-outline-primary select-media"
+                                        data-media-hidden="#productThumbMediaId"
+                                        data-media-preview="#productThumbPreview">
+                                    Select Thumbnail
+                                </button>
+                                <input type="hidden" id="productThumbMediaId" value="" />
+                                <img id="productThumbPreview" src="" alt="Thumbnail preview"
+                                     class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                                <button type="button" class="btn btn-sm btn-outline-danger js-clear-media d-none mt-2">Delete image</button>
+                            </div>
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -192,23 +198,38 @@
                             <label class="form-label" for="productTechnicalOverview">Technical Overview</label>
                             <textarea id="productTechnicalOverview" class="form-control editor-full" rows="8"></textarea>
                         </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label" for="productMainApplication">Main Application</label>
+                            <textarea id="productMainApplication" class="form-control editor-full" rows="8"></textarea>
+                        </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label d-block">Safety Data Sheet (SDS)</label>
-                            <button type="button"
-                                    class="btn btn-outline-primary select-media"
-                                    data-media-hidden="#productSdsMediaId"
-                                    data-media-preview="#productSdsPreview">
-                                Select SDS File
-                            </button>
-                            <input type="hidden" id="productSdsMediaId" value="" />
-                            <img id="productSdsPreview" src="" alt="SDS preview"
-                                 class="imgPreview img-thumbnail industry-media-preview mt-2" />
-                            <div class="filePreview mt-2" style="display:none;">
-                                <a href="#" target="_blank" class="btn btn-sm btn-dark fileLink">
-                                    <i class="bi bi-file-earmark"></i> View File
-                                </a>
+                            <div class="pm-media-field">
+                                <button type="button"
+                                        class="btn btn-outline-primary select-media"
+                                        data-media-hidden="#productSdsMediaId"
+                                        data-media-preview="#productSdsPreview">
+                                    Select SDS File
+                                </button>
+                                <input type="hidden" id="productSdsMediaId" value="" />
+                                <img id="productSdsPreview" src="" alt="SDS preview"
+                                     class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                                <div id="productSdsFilePreview" class="filePreview mt-2" style="display:none;">
+                                    <a href="#" target="_blank" class="btn btn-sm btn-dark fileLink">
+                                        <i class="bi bi-file-earmark"></i> View File
+                                    </a>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger js-clear-media d-none mt-2">Delete file</button>
                             </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label d-block">Certificates</label>
+                            <p class="text-muted small mb-2">Add a title and PDF for each certificate. Use Add more for extra certificates.</p>
+                            <button type="button" class="btn btn-outline-primary js-add-certificate" id="btnAddCertificate">Add Certificate</button>
+                            <div id="productCertificateList" class="pm-certificate-list mt-3"></div>
+                            <button type="button" class="btn btn-outline-secondary js-add-certificate d-none mt-2" id="btnAddMoreCertificate">Add more</button>
                         </div>
                     </div>
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.DAL;
 using Core_project_BusinessLogic.Entity;
@@ -56,6 +57,8 @@ namespace Core_project_BusinessLogic.BAL
             if (PageNameExists(entity.Product_pagename!.Trim(), entity.ProductId))
                 throw new Exception("This page name already exists.");
 
+            ValidateCertificates(entity.Certificates);
+
             int productId;
             if (entity.ProductId == 0)
             {
@@ -68,8 +71,32 @@ namespace Core_project_BusinessLogic.BAL
                 productId = entity.ProductId;
             }
 
-            _dal.SaveMappings(productId, entity, entity.Update_UserId ?? entity.Create_UserId);
+            var userId = entity.Update_UserId ?? entity.Create_UserId;
+            _dal.SaveMappings(productId, entity, userId);
+            _dal.SaveCertificates(productId, entity.Certificates, userId);
             return productId;
+        }
+
+        private static void ValidateCertificates(List<Product_Certificate_Entity>? certificates)
+        {
+            if (certificates == null || certificates.Count == 0)
+                return;
+
+            var titlePattern = new Regex(Product_Master_Entity.TextBoxPattern);
+            foreach (var cert in certificates)
+            {
+                var title = (cert.Title ?? string.Empty).Trim();
+                var hasTitle = title.Length > 0;
+                var hasMedia = cert.MediaId.HasValue && cert.MediaId.Value > 0;
+                if (!hasTitle && !hasMedia)
+                    continue;
+                if (!hasTitle || !hasMedia)
+                    throw new Exception("Each certificate needs a title and a PDF.");
+                if (title.Length > 300)
+                    throw new Exception("Certificate title cannot exceed 300 characters.");
+                if (!titlePattern.IsMatch(title))
+                    throw new Exception(Product_Master_Entity.TextBoxPatternMessage);
+            }
         }
 
         public void ChangeStatus(int id, int status, int? updateUserId) =>

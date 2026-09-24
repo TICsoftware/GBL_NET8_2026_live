@@ -42,6 +42,7 @@ namespace Core_project_BusinessLogic.DAL
             entity.ApplicationIds = ReadIdList(ds, 2);
             entity.SubcategoryIds = ReadIdList(ds, 3);
             entity.PackagingIds = ReadIdList(ds, 4);
+            entity.Certificates = ReadCertificates(ds, 5);
             return entity;
         }
 
@@ -77,6 +78,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Intro", (object?)m.Intro ?? DBNull.Value),
                 new("@Content", (object?)m.Content ?? DBNull.Value),
                 new("@Technical_Overview", (object?)m.Technical_Overview ?? DBNull.Value),
+                new("@Main_Application", (object?)m.Main_Application ?? DBNull.Value),
                 new("@Thumbnail_Image_media_id", m.Thumbnail_Image_media_id.HasValue ? m.Thumbnail_Image_media_id.Value : DBNull.Value),
                 new("@Banner_Image_media_id", m.Banner_Image_media_id.HasValue ? m.Banner_Image_media_id.Value : DBNull.Value),
                 new("@SafetyDataSheet_media_id", m.SafetyDataSheet_media_id.HasValue ? m.SafetyDataSheet_media_id.Value : DBNull.Value),
@@ -101,6 +103,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Intro", (object?)m.Intro ?? DBNull.Value),
                 new("@Content", (object?)m.Content ?? DBNull.Value),
                 new("@Technical_Overview", (object?)m.Technical_Overview ?? DBNull.Value),
+                new("@Main_Application", (object?)m.Main_Application ?? DBNull.Value),
                 new("@Thumbnail_Image_media_id", m.Thumbnail_Image_media_id.HasValue ? m.Thumbnail_Image_media_id.Value : DBNull.Value),
                 new("@Banner_Image_media_id", m.Banner_Image_media_id.HasValue ? m.Banner_Image_media_id.Value : DBNull.Value),
                 new("@SafetyDataSheet_media_id", m.SafetyDataSheet_media_id.HasValue ? m.SafetyDataSheet_media_id.Value : DBNull.Value),
@@ -126,6 +129,32 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Create_UserId", userId.HasValue ? userId.Value : DBNull.Value)
             };
             SQLInsert_Update_Delete_Data("Product_Master_SaveMappings", p);
+        }
+
+        public void SaveCertificates(int productId, List<Product_Certificate_Entity> certificates, int? userId)
+        {
+            SqlParameter[] clear =
+            {
+                new("@ProductId", productId)
+            };
+            SQLInsert_Update_Delete_Data("Product_Master_ClearCertificates", clear);
+
+            int order = 1;
+            foreach (var cert in certificates ?? new List<Product_Certificate_Entity>())
+            {
+                if (string.IsNullOrWhiteSpace(cert.Title) || !cert.MediaId.HasValue || cert.MediaId.Value <= 0)
+                    continue;
+
+                SqlParameter[] p =
+                {
+                    new("@ProductId", productId),
+                    new("@CertificateTitle", cert.Title.Trim()),
+                    new("@Certificate_media_id", cert.MediaId.Value),
+                    new("@DisplayOrder", order++),
+                    new("@Create_UserId", userId.HasValue ? userId.Value : DBNull.Value)
+                };
+                SQLInsert_Update_Delete_Data("Product_Master_InsertCertificate", p);
+            }
         }
 
         public void ChangeStatus(int id, int status, int? updateUserId)
@@ -214,8 +243,28 @@ namespace Core_project_BusinessLogic.DAL
                 Thumbnail_Image_Alt = ColStr(r, "Thumbnail_Image_Alt"),
                 Intro = ColStr(r, "Intro"),
                 Content = ColStr(r, "Content"),
-                Technical_Overview = ColStr(r, "Technical_Overview")
+                Technical_Overview = ColStr(r, "Technical_Overview"),
+                Main_Application = ColStr(r, "Main_Application")
             };
+        }
+
+        private static List<Product_Certificate_Entity> ReadCertificates(DataSet ds, int tableIndex)
+        {
+            var list = new List<Product_Certificate_Entity>();
+            if (ds.Tables.Count <= tableIndex) return list;
+            foreach (DataRow r in ds.Tables[tableIndex].Rows)
+            {
+                list.Add(new Product_Certificate_Entity
+                {
+                    product_certificate_MappingID = ColInt(r, "product_certificate_MappingID") ?? 0,
+                    ProductId = ColInt(r, "ProductId") ?? 0,
+                    Title = ColStr(r, "CertificateTitle"),
+                    MediaId = ColInt(r, "Certificate_media_id"),
+                    Url = ColStr(r, "Certificate_Url"),
+                    DisplayOrder = ColInt(r, "DisplayOrder") ?? 0
+                });
+            }
+            return list;
         }
 
         private static List<int> ReadIdList(DataSet ds, int tableIndex)

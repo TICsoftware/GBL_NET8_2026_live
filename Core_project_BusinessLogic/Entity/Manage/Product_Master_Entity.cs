@@ -24,6 +24,7 @@ namespace Core_project_BusinessLogic.Entity
         public string? Intro { get; set; }
         public string? Content { get; set; }
         public string? Technical_Overview { get; set; }
+        public string? Main_Application { get; set; }
 
         public int? Thumbnail_Image_media_id { get; set; }
         public int? Banner_Image_media_id { get; set; }
@@ -58,11 +59,26 @@ namespace Core_project_BusinessLogic.Entity
         public List<int> ApplicationIds { get; set; } = new();
         public List<int> SubcategoryIds { get; set; } = new();
         public List<int> PackagingIds { get; set; } = new();
+        public List<Product_Certificate_Entity> Certificates { get; set; } = new();
 
         public string? SearchText { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public int TotalRecords { get; set; }
+    }
+
+    public class Product_Certificate_Entity
+    {
+        public int product_certificate_MappingID { get; set; }
+        public int ProductId { get; set; }
+
+        [StringLength(300, ErrorMessage = "Certificate title cannot exceed 300 characters.")]
+        [RegularExpression(Product_Master_Entity.TextBoxPattern, ErrorMessage = Product_Master_Entity.TextBoxPatternMessage)]
+        public string? Title { get; set; }
+
+        public int? MediaId { get; set; }
+        public string? Url { get; set; }
+        public int DisplayOrder { get; set; }
     }
 
     public class ProductLookupItem

@@ -44,6 +44,10 @@ IF COL_LENGTH('dbo.Product_Master', 'Thumbnail_Image_Alt') IS NULL
     ALTER TABLE dbo.Product_Master ADD Thumbnail_Image_Alt NVARCHAR(500) NULL;
 GO
 
+IF COL_LENGTH('dbo.Product_Master', 'Main_Application') IS NULL
+    ALTER TABLE dbo.Product_Master ADD Main_Application NVARCHAR(MAX) NULL;
+GO
+
 IF OBJECT_ID(N'dbo.product_Industry_Mapping', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.product_Industry_Mapping
@@ -112,6 +116,24 @@ BEGIN
 END
 GO
 
+IF OBJECT_ID(N'dbo.product_certificate_Mapping', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.product_certificate_Mapping
+    (
+        product_certificate_MappingID INT IDENTITY(1,1) NOT NULL,
+        ProductId INT NOT NULL,
+        CertificateTitle NVARCHAR(500) NOT NULL,
+        Certificate_media_id INT NOT NULL,
+        DisplayOrder INT NOT NULL CONSTRAINT DF_product_certificate_Mapping_DisplayOrder DEFAULT (0),
+        Create_UserId INT NULL,
+        Update_UserId INT NULL,
+        CreatedDate DATETIME2(7) NOT NULL CONSTRAINT DF_product_certificate_Mapping_CreatedDate DEFAULT (SYSUTCDATETIME()),
+        ModifiedDate DATETIME2(7) NULL,
+        CONSTRAINT PK_product_certificate_Mapping PRIMARY KEY CLUSTERED (product_certificate_MappingID ASC)
+    );
+END
+GO
+
 CREATE OR ALTER PROCEDURE dbo.Product_Master_GetPaged
     @Search NVARCHAR(500) = NULL,
     @Page INT = 1,
@@ -141,7 +163,8 @@ BEGIN
         p.Thumbnail_Image_Alt,
         p.Intro,
         p.Content,
-        p.Technical_Overview
+        p.Technical_Overview,
+        p.Main_Application
     FROM dbo.Product_Master p
     LEFT JOIN dbo.Language_Master lm ON lm.ID = p.Language_Master_Id
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
@@ -181,7 +204,8 @@ BEGIN
         p.Thumbnail_Image_Alt,
         p.Intro,
         p.Content,
-        p.Technical_Overview
+        p.Technical_Overview,
+        p.Main_Application
     FROM dbo.Product_Master p
     LEFT JOIN dbo.Language_Master lm ON lm.ID = p.Language_Master_Id
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
@@ -208,6 +232,18 @@ BEGIN
     FROM dbo.product_packaging_Mapping
     WHERE ProductId = @ID
     ORDER BY DisplayOrder, product_packaging_MasterId;
+
+    SELECT
+        m.product_certificate_MappingID,
+        m.ProductId,
+        m.CertificateTitle,
+        m.Certificate_media_id,
+        md.file_path AS Certificate_Url,
+        m.DisplayOrder
+    FROM dbo.product_certificate_Mapping m
+    LEFT JOIN dbo.media md ON md.ID = m.Certificate_media_id
+    WHERE m.ProductId = @ID
+    ORDER BY m.DisplayOrder, m.product_certificate_MappingID;
 END
 GO
 
@@ -217,6 +253,7 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Insert
     @Intro NVARCHAR(MAX) = NULL,
     @Content NVARCHAR(MAX) = NULL,
     @Technical_Overview NVARCHAR(MAX) = NULL,
+    @Main_Application NVARCHAR(MAX) = NULL,
     @Thumbnail_Image_media_id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @SafetyDataSheet_media_id INT = NULL,
@@ -247,14 +284,14 @@ BEGIN
 
     INSERT INTO dbo.Product_Master
     (
-        ProductName, Product_pagename, Intro, Content, Technical_Overview,
+        ProductName, Product_pagename, Intro, Content, Technical_Overview, Main_Application,
         Thumbnail_Image_media_id, Banner_Image_media_id, SafetyDataSheet_media_id,
         Banner_Image_Alt, Thumbnail_Image_Alt,
         Language_Master_Id, DisplayOrder, [status], Create_UserId, CreatedDate
     )
     VALUES
     (
-        @ProductName, @Product_pagename, @Intro, @Content, @Technical_Overview,
+        @ProductName, @Product_pagename, @Intro, @Content, @Technical_Overview, @Main_Application,
         @Thumbnail_Image_media_id, @Banner_Image_media_id, @SafetyDataSheet_media_id,
         @Banner_Image_Alt, @Thumbnail_Image_Alt,
         @Language_Master_Id, @Sequence, @Status, @Create_UserId, SYSUTCDATETIME()
@@ -270,6 +307,7 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Update
     @Intro NVARCHAR(MAX) = NULL,
     @Content NVARCHAR(MAX) = NULL,
     @Technical_Overview NVARCHAR(MAX) = NULL,
+    @Main_Application NVARCHAR(MAX) = NULL,
     @Thumbnail_Image_media_id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @SafetyDataSheet_media_id INT = NULL,
@@ -302,6 +340,7 @@ BEGIN
         Intro = @Intro,
         Content = @Content,
         Technical_Overview = @Technical_Overview,
+        Main_Application = @Main_Application,
         Thumbnail_Image_media_id = @Thumbnail_Image_media_id,
         Banner_Image_media_id = @Banner_Image_media_id,
         SafetyDataSheet_media_id = @SafetyDataSheet_media_id,
@@ -432,6 +471,37 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE dbo.Product_Master_ClearCertificates
+    @ProductId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.product_certificate_Mapping WHERE ProductId = @ProductId;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Product_Master_InsertCertificate
+    @ProductId INT,
+    @CertificateTitle NVARCHAR(500),
+    @Certificate_media_id INT,
+    @DisplayOrder INT,
+    @Create_UserId INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO dbo.product_certificate_Mapping
+    (
+        ProductId, CertificateTitle, Certificate_media_id, DisplayOrder,
+        Create_UserId, CreatedDate
+    )
+    VALUES
+    (
+        @ProductId, @CertificateTitle, @Certificate_media_id, @DisplayOrder,
+        @Create_UserId, SYSUTCDATETIME()
+    );
+END
+GO
+
 CREATE OR ALTER PROCEDURE dbo.Product_Master_Activate
     @ID INT,
     @Update_UserId INT = NULL
@@ -480,6 +550,7 @@ BEGIN
         DELETE FROM dbo.product_application_Mapping WHERE ProductId = @ID;
         DELETE FROM dbo.product_subcategory_Mapping WHERE ProductId = @ID;
         DELETE FROM dbo.product_packaging_Mapping WHERE ProductId = @ID;
+        DELETE FROM dbo.product_certificate_Mapping WHERE ProductId = @ID;
         DELETE FROM dbo.Product_Master WHERE ProductId = @ID;
         COMMIT TRANSACTION;
     END TRY

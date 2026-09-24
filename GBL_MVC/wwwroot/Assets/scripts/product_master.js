@@ -195,17 +195,59 @@ function setImagePreview(imgEl, url) {
     }
 }
 
-function setFilePreview(url) {
-    const preview = document.querySelector("#productMasterForm .filePreview");
+function setFilePreview(preview, url) {
     const link = preview ? preview.querySelector(".fileLink") : null;
     const clean = (url || "").toString().trim();
     if (preview && link && clean) {
+        const ext = clean.split(".").pop().toLowerCase().split("?")[0];
         link.setAttribute("href", clean);
+        link.innerHTML = '<i class="bi bi-file-earmark-pdf"></i> Open ' + (ext ? ext.toUpperCase() : "FILE");
         preview.style.display = "block";
     } else if (preview) {
         preview.style.display = "none";
-        if (link) link.setAttribute("href", "#");
+        if (link) {
+            link.setAttribute("href", "#");
+            link.innerHTML = '<i class="bi bi-file-earmark"></i> View File';
+        }
     }
+}
+
+function isPdfUrl(url) {
+    return /\.pdf($|\?)/i.test((url || "").toString());
+}
+
+function hasMediaValue(field) {
+    if (!field) return false;
+    const hidden = field.querySelector("input[type='hidden']");
+    const img = field.querySelector("img.imgPreview");
+    const filePreview = field.querySelector(".filePreview");
+    const link = filePreview ? filePreview.querySelector(".fileLink") : null;
+    const hiddenVal = hidden && hidden.value && hidden.value !== "0";
+    const hasImg = img && (img.getAttribute("src") || "").trim();
+    const hasFile = filePreview && filePreview.style.display !== "none"
+        && link && (link.getAttribute("href") || "") !== "#";
+    return !!(hiddenVal || hasImg || hasFile);
+}
+
+function refreshMediaDeleteButton(field) {
+    if (!field) return;
+    const del = field.querySelector(".js-clear-media");
+    if (del) del.classList.toggle("d-none", !hasMediaValue(field));
+}
+
+function refreshAllMediaDeleteButtons() {
+    document.querySelectorAll("#productMasterForm .pm-media-field").forEach(refreshMediaDeleteButton);
+}
+
+function clearMediaField(field) {
+    if (!field) return;
+    const hidden = field.querySelector("input[type='hidden']");
+    const img = field.querySelector("img.imgPreview");
+    const filePreview = field.querySelector(".filePreview");
+    if (hidden) hidden.value = "";
+    setImagePreview(img, "");
+    setFilePreview(filePreview, "");
+    refreshMediaDeleteButton(field);
 }
 
 function applyMediaToSourceControl(source, mediaId, fileUrl) {
@@ -221,7 +263,19 @@ function applyMediaToSourceControl(source, mediaId, fileUrl) {
 
     let $img = previewSel ? $(previewSel) : $btn.nextAll("img.imgPreview").first();
     if (!$img.length) $img = $btn.parent().find("img.imgPreview").first();
-    if ($img.length && fileUrl) setImagePreview($img.get(0), fileUrl);
+    const $file = $btn.nextAll(".filePreview").first().length
+        ? $btn.nextAll(".filePreview").first()
+        : $btn.parent().find(".filePreview").first();
+
+    if (fileUrl && isPdfUrl(fileUrl)) {
+        if ($img.length) setImagePreview($img.get(0), "");
+        if ($file.length) setFilePreview($file.get(0), fileUrl);
+    } else if ($img.length && fileUrl) {
+        setImagePreview($img.get(0), fileUrl);
+        if ($file.length) setFilePreview($file.get(0), "");
+    }
+
+    refreshMediaDeleteButton($btn.closest(".pm-media-field").get(0));
 }
 
 function bindProductMediaPreviewFix() {
@@ -237,6 +291,7 @@ function bindProductMediaPreviewFix() {
             applyMediaToSourceControl(source, mediaId, fileUrl);
             setTimeout(function () {
                 applyMediaToSourceControl(source, mediaId, fileUrl);
+                refreshAllMediaDeleteButtons();
             }, 100);
         },
         true
@@ -305,6 +360,120 @@ function bindListboxes() {
     });
 }
 
+let certRowCounter = 0;
+
+function getCertificateList() {
+    return document.getElementById("productCertificateList");
+}
+
+function refreshCertificateButtons() {
+    const count = document.querySelectorAll("#productCertificateList .pm-certificate-row").length;
+    const addBtn = document.getElementById("btnAddCertificate");
+    const moreBtn = document.getElementById("btnAddMoreCertificate");
+    if (addBtn) addBtn.classList.toggle("d-none", count > 0);
+    if (moreBtn) moreBtn.classList.toggle("d-none", count === 0);
+}
+
+function resetCertificateRows() {
+    const list = getCertificateList();
+    if (list) list.innerHTML = "";
+    certRowCounter = 0;
+    refreshCertificateButtons();
+}
+
+function addCertificateRow(item) {
+    const list = getCertificateList();
+    if (!list) return;
+
+    certRowCounter += 1;
+    const id = certRowCounter;
+    const title = (item && (item.Title || item.title)) || "";
+    const mediaId = (item && (item.MediaId || item.mediaId)) || "";
+    const url = (item && (item.Url || item.url || item.Certificate_Url || item.certificate_Url)) || "";
+
+    const row = document.createElement("div");
+    row.className = "pm-certificate-row border rounded p-3 mb-3";
+    row.innerHTML =
+        '<div class="row">' +
+            '<div class="col-md-6 mb-2">' +
+                '<label class="form-label" for="productCertTitle_' + id + '">Certificate Title</label>' +
+                '<input type="text" id="productCertTitle_' + id + '" maxlength="300" class="form-control js-cert-title" />' +
+                '<span class="text-danger d-none js-cert-title-error"></span>' +
+            '</div>' +
+            '<div class="col-md-6 mb-2">' +
+                '<label class="form-label d-block">Certificate PDF</label>' +
+                '<div class="pm-media-field">' +
+                    '<button type="button" class="btn btn-outline-primary select-media" ' +
+                        'data-media-hidden="#productCertMediaId_' + id + '" ' +
+                        'data-media-preview="#productCertPreview_' + id + '">Select PDF</button>' +
+                    '<input type="hidden" id="productCertMediaId_' + id + '" class="js-cert-media-id" value="" />' +
+                    '<img id="productCertPreview_' + id + '" src="" alt="Certificate preview" ' +
+                        'class="imgPreview img-thumbnail industry-media-preview mt-2" />' +
+                    '<div class="filePreview mt-2" style="display:none;">' +
+                        '<a href="#" target="_blank" class="btn btn-sm btn-dark fileLink">' +
+                            '<i class="bi bi-file-earmark"></i> View File</a>' +
+                    '</div>' +
+                    '<button type="button" class="btn btn-sm btn-outline-danger js-clear-media d-none mt-2">Delete file</button>' +
+                '</div>' +
+                '<span class="text-danger d-none js-cert-pdf-error"></span>' +
+            '</div>' +
+        '</div>' +
+        '<button type="button" class="btn btn-sm btn-danger js-remove-certificate">Remove certificate</button>';
+
+    list.appendChild(row);
+    row.querySelector(".js-cert-title").value = title;
+    row.querySelector(".js-cert-media-id").value = mediaId || "";
+    if (url) {
+        if (isPdfUrl(url)) setFilePreview(row.querySelector(".filePreview"), url);
+        else setImagePreview(row.querySelector("img.imgPreview"), url);
+    }
+    bindTextBoxGuards(row);
+    refreshMediaDeleteButton(row.querySelector(".pm-media-field"));
+    refreshCertificateButtons();
+}
+
+function collectCertificates() {
+    return Array.from(document.querySelectorAll("#productCertificateList .pm-certificate-row")).map((row) => ({
+        Title: (row.querySelector(".js-cert-title")?.value || "").trim(),
+        MediaId: parseOptionalInt(row.querySelector(".js-cert-media-id")?.value),
+        Url: row.querySelector(".filePreview .fileLink")?.getAttribute("href") || ""
+    }));
+}
+
+function validateCertificates() {
+    let valid = true;
+    document.querySelectorAll("#productCertificateList .pm-certificate-row").forEach((row) => {
+        const titleInput = row.querySelector(".js-cert-title");
+        const titleError = row.querySelector(".js-cert-title-error");
+        const pdfError = row.querySelector(".js-cert-pdf-error");
+        const title = (titleInput?.value || "").trim();
+        const mediaId = parseOptionalInt(row.querySelector(".js-cert-media-id")?.value);
+        const hasTitle = title.length > 0;
+        const hasMedia = !!mediaId;
+
+        let titleMessage = "";
+        if (hasTitle || hasMedia) {
+            if (!hasTitle) titleMessage = "Certificate title is required.";
+            else titleMessage = validateOptionalText(title, 300);
+        }
+        if (!setFieldError(titleInput, titleError, titleMessage)) valid = false;
+
+        let pdfMessage = "";
+        if ((hasTitle || hasMedia) && !hasMedia) pdfMessage = "Select a certificate PDF.";
+        if (pdfError) {
+            if (pdfMessage) {
+                pdfError.textContent = pdfMessage;
+                pdfError.classList.remove("d-none");
+                valid = false;
+            } else {
+                pdfError.textContent = "";
+                pdfError.classList.add("d-none");
+            }
+        }
+    });
+    return valid;
+}
+
 function resetProductForm() {
     document.getElementById("productId").value = "0";
     document.getElementById("productName").value = "";
@@ -319,10 +488,13 @@ function resetProductForm() {
     setImagePreview(document.getElementById("productBannerPreview"), "");
     setImagePreview(document.getElementById("productThumbPreview"), "");
     setImagePreview(document.getElementById("productSdsPreview"), "");
-    setFilePreview("");
+    setFilePreview(document.getElementById("productSdsFilePreview"), "");
     setEditorData("productIntro", "");
     setEditorData("productContent", "");
     setEditorData("productTechnicalOverview", "");
+    setEditorData("productMainApplication", "");
+    resetCertificateRows();
+    refreshAllMediaDeleteButtons();
     setFieldError(document.getElementById("productName"), document.getElementById("productNameError"), "");
     setFieldError(document.getElementById("productPageName"), document.getElementById("productPageNameError"), "");
     setFieldError(document.getElementById("productBannerImageAlt"), document.getElementById("productBannerImageAltError"), "");
@@ -361,7 +533,7 @@ function validateProductForm() {
         document.getElementById("productSeqError"),
         validateSequence(document.getElementById("productSeq")?.value)
     );
-    return nameValid && pageValid && bannerAltValid && thumbAltValid && seqValid;
+    return nameValid && pageValid && bannerAltValid && thumbAltValid && seqValid && validateCertificates();
 }
 
 function buildProductPayload() {
@@ -384,6 +556,8 @@ function buildProductPayload() {
         Intro: document.getElementById("productIntro").value || "",
         Content: document.getElementById("productContent").value || "",
         Technical_Overview: document.getElementById("productTechnicalOverview").value || "",
+        Main_Application: document.getElementById("productMainApplication").value || "",
+        Certificates: collectCertificates(),
         Status: 1,
         IndustryIds: getSelectValues(document.getElementById("selectedIndustries")),
         ApplicationIds: getSelectValues(document.getElementById("selectedApplications")),
@@ -417,7 +591,15 @@ async function openProductModal(editId) {
         document.getElementById("productThumbnailImageAlt").value = pickValue(data, "thumbnail_Image_Alt", "Thumbnail_Image_Alt");
         setImagePreview(document.getElementById("productBannerPreview"), pickValue(data, "banner_Image_Url", "Banner_Image_Url"));
         setImagePreview(document.getElementById("productThumbPreview"), pickValue(data, "thumbnail_Image_Url", "Thumbnail_Image_Url"));
-        setFilePreview(pickValue(data, "safetyDataSheet_Url", "SafetyDataSheet_Url"));
+        const sdsUrl = pickValue(data, "safetyDataSheet_Url", "SafetyDataSheet_Url");
+        if (isPdfUrl(sdsUrl)) setFilePreview(document.getElementById("productSdsFilePreview"), sdsUrl);
+        else setImagePreview(document.getElementById("productSdsPreview"), sdsUrl);
+        refreshAllMediaDeleteButtons();
+
+        const certificates = pickValue(data, "certificates", "Certificates");
+        if (Array.isArray(certificates) && certificates.length) {
+            certificates.forEach((cert) => addCertificateRow(cert));
+        }
 
         moveIdsToSelected("availableIndustries", "selectedIndustries", pickArray(data, "industryIds", "IndustryIds"));
         moveIdsToSelected("availableApplications", "selectedApplications", pickArray(data, "applicationIds", "ApplicationIds"));
@@ -431,6 +613,7 @@ async function openProductModal(editId) {
             setEditorData("productIntro", pickValue(data, "intro", "Intro"));
             setEditorData("productContent", pickValue(data, "content", "Content"));
             setEditorData("productTechnicalOverview", pickValue(data, "technical_Overview", "Technical_Overview"));
+            setEditorData("productMainApplication", pickValue(data, "main_Application", "Main_Application"));
         }, 300);
     } else {
         titleEl.textContent = "Add Product";
@@ -449,6 +632,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelector(".js-open-modal")?.addEventListener("click", function () {
         openProductModal(null);
+    });
+
+    document.querySelectorAll(".js-add-certificate").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            addCertificateRow();
+        });
     });
 
     document.querySelector(".js-save-product")?.addEventListener("click", async function () {
@@ -479,6 +668,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.addEventListener("click", function (e) {
+        const clearBtn = e.target.closest ? e.target.closest(".js-clear-media") : null;
+        if (clearBtn) {
+            e.preventDefault();
+            clearMediaField(clearBtn.closest(".pm-media-field"));
+            return;
+        }
+
+        const removeCert = e.target.closest ? e.target.closest(".js-remove-certificate") : null;
+        if (removeCert) {
+            e.preventDefault();
+            const row = removeCert.closest(".pm-certificate-row");
+            if (row) row.remove();
+            refreshCertificateButtons();
+            return;
+        }
+
         if (e.target.classList.contains("product-edit-btn")) {
             openProductModal(e.target.dataset.id);
         }

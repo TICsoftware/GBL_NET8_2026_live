@@ -29,3 +29,11 @@ body.modal-open .modal-backdrop:nth-of-type(2) {
 #productModal .icm-listbox-actions {
     min-height: 180px;
 }
+
+.pm-certificate-row {
+    background: #f8f9fa;
+}
+
+.pm-media-field .js-clear-media {
+    display: inline-block;
+}
