@@ -32,9 +32,14 @@ public class HomeController : Controller
         //ViewBag.encryptstr = Core_project_BusinessLogic.CryptoEngine.Encrypt(connstr);
         //  string connstr = "user id=sa;data source=49.50.111.21;persist security info=True;initial catalog=Oncopath_2026;password=D#$%%6QWe@@#4;Encrypt=True;TrustServerCertificate=True";
         string encryptstr = Core_project_BusinessLogic.CryptoEngine.Encrypt(connstr1);
+ 
+ 
 
+        byte[] key = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
+        byte[] iv = System.Security.Cryptography.RandomNumberGenerator.GetBytes(16);
 
-
+        string keyVALUE= Convert.ToHexString(key);
+        string ivVALUE= Convert.ToHexString(iv);
 
         var data = _bal.GetHomepage_BAL(1, 1);
         //  ViewBag.TestFinder = _Testbal.Fetch_Tests_Details_BAL();

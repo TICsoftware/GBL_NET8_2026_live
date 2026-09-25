@@ -59,27 +59,6 @@
                                                       
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <!-- Title -->
-                            <div class="form-group mb-3">
-                                <label for="searchquery" class="form-label">Enter keywords </label> 
-                                @Html.TextBoxFor(model => model.searchquery, new { @class = "form-control", placeholder = "Enter title" })
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label for="ddSection" class="form-label">Sections </label> 
-                                @Html.DropDownListFor(model => model.section_id,
-                                Model.Sections , new { id = "ddSections", @class = "form-select" })
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="ddSection" class="form-label">&nbsp; </label> 
-                                @Html.DropDownListFor(model => model.subSection_id,
-                                Model.subSections , new { id = "ddSubSections", @class = "form-select" })
-                            </div>
-                        </div>
                         <div class="col-md-3">
                             <div class="form-group mb-3">
                                 <label for="ddSection" class="form-label">Content type </label> 
@@ -92,6 +71,47 @@
                                 } , new { id = "ddContent_Type_ID", @class = "form-select" })
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <!-- Title -->
+                            <div class="form-group mb-3">
+                                <label for="searchquery" class="form-label">Enter keywords </label> 
+                                @Html.TextBoxFor(model => model.searchquery, new { @class = "form-control", placeholder = "Enter title" })
+                            </div>
+                        </div>
+                        <div class="row" id="Divmainenglishsections" style="display:@(Model.language_id == 1 ? "show" : "none")">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="ddSection" class="form-label">Sections </label> 
+                                    @Html.DropDownListFor(model => model.section_id,
+                                    Model.Sections , new { id = "ddSections", @class = "form-select" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="ddSection" class="form-label">&nbsp; </label> 
+                                    @Html.DropDownListFor(model => model.subSection_id,
+                                    Model.subSections , new { id = "ddSubSections", @class = "form-select" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="div_language_sections" style="display:@(Model.language_id == 1 ? "none" : "show")">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="ddLanguage_Sections" class="form-label">Language Sections </label> 
+                                    @Html.DropDownListFor(model => model.language_section_id,
+                                    Model.Language_sections , new { id = "ddLanguage_Sections", @class = "form-select" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="ddLanguage_SubSections" class="form-label">&nbsp; </label> 
+                                    @Html.DropDownListFor(model => model.language_subSection_id,
+                                    Model.Language_subSections , new { id = "ddLanguage_SubSections", @class = "form-select" })
+                                </div>
+                            </div> 
+                            
+                        </div>
+                        
                          <div class="col-12 col-md-12 text-center">
                             <input type="button" class="btn btn-primary mb-3" value="Search" id="btnsearchpublishedlist" /> 
                             
