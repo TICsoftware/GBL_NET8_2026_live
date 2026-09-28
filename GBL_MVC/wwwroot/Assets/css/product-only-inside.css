@@ -248,20 +248,31 @@ PACKAGING / APPLICATIONS
 
 /**=====================================
 TECHNICAL OVERVIEW / SDS
+SDS sits beside the table only. Certificates stay under the table
+and do not stretch the SDS panel.
 =====================================**/
-.technical-Safety-outer .packaging-application {
+.technical-Safety-outer .technical-safety-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: clamp(2rem, 4vw, 4.5rem);
+  row-gap: 0;
   align-items: stretch;
 }
 
-.technical-Safety-outer .packaging-block,
-.technical-Safety-outer .application-block {
+.technical-Safety-outer .tech-overview-col {
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.technical-Safety-outer .tech-overview,
-.technical-Safety-outer .sds-panel {
-  flex: 1 1 auto;
+.technical-Safety-outer .sds-col {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .technical-Safety-outer .tech-overview {
@@ -291,9 +302,12 @@ TECHNICAL OVERVIEW / SDS
 }
 
 .technical-Safety-outer .sds-panel {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: var(--color-gray, #f4f4f4);
-  padding: clamp(1.5rem, 3vw, 2.5rem); 
-  align-content: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 .technical-Safety-outer .sds-panel__name {
@@ -377,6 +391,8 @@ olive PDF icon, wrapped title, grey bar, vertical dividers.
   display: flex;
   flex-wrap: nowrap;
   align-items: stretch;
+  grid-column: 1;
+  grid-row: 2;
   background: var(--color-gray, #f4f4f4);
   margin-top: 1.25rem;
 }
@@ -432,6 +448,28 @@ a.product-cert-item:hover {
   line-height: 1.35;
   font-weight: 500;
   color: inherit;
+}
+
+@media (max-width: 1179px) {
+  .technical-Safety-outer .technical-safety-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .technical-Safety-outer .tech-overview-col {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .technical-Safety-outer .product-cert-bar {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .technical-Safety-outer .sds-col {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 1.5rem;
+  }
 }
 
 @media (max-width: 699px) {

@@ -99,13 +99,15 @@
       var industries = item.industries || item.Industries || [];
       var href = pageName ? "/Products/" + encodeURIComponent(pageName) : "/Products/Inside_html";
       var img = thumb ? '<img src="' + escapeHtml(thumb) + '" alt="' + escapeHtml(alt) + '">' : "";
+      var industriesHtml = industries.length
+        ? '<p class="product-card__meta-label">' + escapeHtml(industries.join(", ")) + "</p>"
+        : "";
       return (
         '<a href="' + escapeHtml(href) + '" class="product-card">' +
           '<div class="product-card__media">' + img + "</div>" +
           '<div class="product-card__body">' +
             '<h3 class="text-h5">' + escapeHtml(name) + "</h3>" +
-            '<p class="product-card__meta-label">Industries</p>' +
-            '<p class="product-card__meta">' + escapeHtml(industries.join(", ")) + "</p>" +
+            industriesHtml +
           "</div>" +
         "</a>"
       );

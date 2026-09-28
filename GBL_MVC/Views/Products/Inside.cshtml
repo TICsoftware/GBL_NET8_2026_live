@@ -130,10 +130,10 @@
    {
    <section class="technical-Safety-outer section-spacing">
      <div class="container">
-        <div class="packaging-application">
+        <div class="technical-safety-grid">
            @if (hasOverview || hasCertificates)
            {
-           <div class="packaging-block">
+           <div class="tech-overview-col">
                   <div class="title-section">
                      <h2 class="text-h2 title-animation">Technical Overview</h2>
                   </div>
@@ -144,20 +144,10 @@
                  @Html.Raw(product.Technical_Overview)
               </div>
               }
-
-              @if (hasCertificates)
-              {
-              <div class="product-cert-bar">
-                 @foreach (var cert in certificates)
-                 {
-                     @await Html.PartialAsync("_ProductCertificateItem", cert)
-                 }
-              </div>
-              }
            </div>
            }
 
-           <div class="application-block">
+           <div class="sds-col">
                <div class="title-section">
                      <h2 class="text-h2 title-animation">Safety Data Sheet (SDS)</h2>
                </div>
@@ -185,6 +175,16 @@
                   </div>
                </div>
            </div>
+
+           @if (hasCertificates)
+           {
+           <div class="product-cert-bar">
+              @foreach (var cert in certificates)
+              {
+                  @await Html.PartialAsync("_ProductCertificateItem", cert)
+              }
+           </div>
+           }
         </div>
      </div>
    </section>
