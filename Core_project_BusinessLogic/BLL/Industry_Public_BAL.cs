@@ -31,6 +31,22 @@ namespace Core_project_BusinessLogic.BAL
             return result;
         }
 
+        public Industry_Inside_Page GetInside(string pageName, int languageId, int categoryId, int page, int pageSize)
+        {
+            var model = _dal.GetInside(pageName, languageId, categoryId, page, pageSize);
+            foreach (var item in model.Products)
+                item.Intro = ToPlainText(item.Intro);
+            return model;
+        }
+
+        public (List<Industry_Inside_Product> Data, int Total) GetInsideProducts(Industry_Inside_Filter filter)
+        {
+            var result = _dal.GetInsideProducts(filter ?? new Industry_Inside_Filter());
+            foreach (var item in result.Data)
+                item.Intro = ToPlainText(item.Intro);
+            return result;
+        }
+
         private static string NormalizePageName(string? pageName)
         {
             var value = (pageName ?? string.Empty).Trim().Trim('/');

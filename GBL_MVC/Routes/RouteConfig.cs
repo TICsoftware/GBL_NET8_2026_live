@@ -60,6 +60,24 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                name: "industries-inside-load-products",
+                pattern: "IndustriesInside/LoadProducts",
+                defaults: new { controller = "IndustriesInside", action = "LoadProducts" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-inside-load-more",
+                pattern: "IndustriesInside/LoadMore",
+                defaults: new { controller = "IndustriesInside", action = "LoadMore" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-inside",
+                pattern: "IndustriesInside/{title?}",
+                defaults: new { controller = "IndustriesInside", action = "Index" }
+            );
+
+            app.MapControllerRoute(
                 name: "contactus",
                 pattern: "contact-us",
                 defaults: new { controller = "Contactus", action = "Index", title = "contact-us" }

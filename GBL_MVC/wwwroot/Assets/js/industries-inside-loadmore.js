@@ -1,0 +1,139 @@
+(function () {
+  const root = document.getElementById("industryInsideRoot");
+  if (!root) return;
+
+  const industryId = root.getAttribute("data-industry-id");
+  const pageSize = parseInt(root.getAttribute("data-page-size") || "6", 10);
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, function (ch) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch];
+    });
+  }
+
+  function pick(item, camel, pascal) {
+    return item[camel] != null && item[camel] !== "" ? item[camel] : (item[pascal] || "");
+  }
+
+  function buildCard(item) {
+    const name = pick(item, "productName", "ProductName");
+    const pageName = pick(item, "product_pagename", "Product_pagename");
+    const intro = pick(item, "intro", "Intro");
+    const thumb = pick(item, "thumbnailUrl", "ThumbnailUrl");
+    const alt = pick(item, "thumbnailAlt", "ThumbnailAlt") || name;
+    const apps = item.applications || item.Applications || [];
+    const href = pageName ? "/Products/" + encodeURIComponent(pageName) : "/Products/Inside_html";
+    const img = thumb ? '<img src="' + escapeHtml(thumb) + '" alt="' + escapeHtml(alt) + '">' : "";
+    const introHtml = intro ? "<p>" + escapeHtml(intro) + "</p>" : "";
+    let appsHtml = "";
+    if (apps.length) {
+      appsHtml =
+        '<div class="industry-product-card__apps">' +
+          '<h6 class="industry-product-card__apps-label">Other Applications</h6>' +
+          "<ul>" + apps.map(function (app) { return "<li>" + escapeHtml(app) + "</li>"; }).join("") + "</ul>" +
+        "</div>";
+    }
+
+    return (
+      '<article class="industry-product-card">' +
+        '<div class="industry-product-card__media">' + img + "</div>" +
+        '<div class="industry-product-card__body">' +
+          '<h3 class="text-h5">' + escapeHtml(name) + "</h3>" +
+          introHtml +
+          appsHtml +
+          '<div class="industry-product-card__actions">' +
+            '<a href="' + escapeHtml(href) + '" class="site-btn site-btn--fill">' +
+              '<span class="site-btn__label">Learn More</span>' +
+              '<span class="site-btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+            "</a>" +
+            '<a href="/contact-us" class="site-btn site-btn--outline">' +
+              '<span class="site-btn__label">Enquire Now</span>' +
+              '<span class="site-btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+            "</a>" +
+          "</div>" +
+        "</div>" +
+      "</article>"
+    );
+  }
+
+  function post(url, payload) {
+    const body = new URLSearchParams();
+    Object.keys(payload).forEach(function (key) {
+      if (payload[key] !== null && payload[key] !== undefined && payload[key] !== "") {
+        body.append(key, payload[key]);
+      }
+    });
+    return fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+      body: body.toString()
+    }).then(function (res) { return res.json(); });
+  }
+
+  function toggleLoadMore(panel, total, page) {
+    const btn = panel.querySelector(".js-load-more-products");
+    if (!btn) return;
+    btn.style.display = (page * pageSize) < total ? "" : "none";
+  }
+
+  function renderGrid(panel, items, total, append) {
+    const grid = panel.querySelector("[data-product-grid]");
+    if (!grid) return;
+    if (!append) grid.innerHTML = "";
+    const empty = grid.querySelector(".js-industry-empty");
+    if (empty) empty.remove();
+
+    if (!items || !items.length) {
+      if (!append) grid.innerHTML = '<p class="js-industry-empty">No products found</p>';
+      toggleLoadMore(panel, total || 0, parseInt(panel.getAttribute("data-page") || "1", 10));
+      return;
+    }
+
+    grid.insertAdjacentHTML("beforeend", items.map(buildCard).join(""));
+    toggleLoadMore(panel, total || 0, parseInt(panel.getAttribute("data-page") || "1", 10));
+  }
+
+  function loadProducts(panel, page, append) {
+    if (panel.getAttribute("data-loading") === "1") return Promise.resolve();
+    panel.setAttribute("data-loading", "1");
+    const categoryId = panel.getAttribute("data-category-id") || "0";
+    return post(append ? "/IndustriesInside/LoadMore" : "/IndustriesInside/LoadProducts", {
+      IndustryId: industryId,
+      CategoryId: categoryId,
+      PageNumber: page,
+      PageSize: pageSize
+    }).then(function (res) {
+      panel.setAttribute("data-loading", "0");
+      if (!res || !res.success) {
+        if (!append) renderGrid(panel, [], 0, false);
+        return;
+      }
+      panel.setAttribute("data-loaded", "1");
+      panel.setAttribute("data-page", String(page));
+      panel.setAttribute("data-total", String(res.total || 0));
+      renderGrid(panel, res.items || [], res.total || 0, append);
+    }).catch(function () {
+      panel.setAttribute("data-loading", "0");
+      if (!append) renderGrid(panel, [], 0, false);
+    });
+  }
+
+  document.querySelectorAll("[role='tab']").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      const id = tab.getAttribute("data-tab");
+      const panel = document.querySelector('[data-tab-panel="' + id + '"]');
+      if (!panel) return;
+      if (panel.getAttribute("data-loaded") === "1") return;
+      loadProducts(panel, 1, false);
+    });
+  });
+
+  root.addEventListener("click", function (e) {
+    const btn = e.target.closest ? e.target.closest(".js-load-more-products") : null;
+    if (!btn) return;
+    const panel = btn.closest(".industry-tab-panel");
+    if (!panel) return;
+    const page = parseInt(panel.getAttribute("data-page") || "1", 10) + 1;
+    loadProducts(panel, page, true);
+  });
+})();
