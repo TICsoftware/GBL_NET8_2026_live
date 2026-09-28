@@ -80,7 +80,19 @@ namespace GBL_MVC.Routes
             app.MapControllerRoute(
                 name: "products-listing",
                 pattern: "products",
-                defaults: new { controller = "Products", action = "Index_html" }
+                defaults: new { controller = "Products", action = "Index" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-load-products",
+                pattern: "Products/LoadProducts",
+                defaults: new { controller = "Products", action = "LoadProducts" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-load-more",
+                pattern: "Products/LoadMore",
+                defaults: new { controller = "Products", action = "LoadMore" }
             );
 
             app.MapControllerRoute(
