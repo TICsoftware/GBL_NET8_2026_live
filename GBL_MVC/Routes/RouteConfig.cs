@@ -48,6 +48,18 @@ namespace GBL_MVC.Routes
 
 
             app.MapControllerRoute(
+                name: "industries",
+                pattern: "industries",
+                defaults: new { controller = "Industries", action = "Index", title = "industries" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-we-serve",
+                pattern: "industries-we-serve",
+                defaults: new { controller = "Industries", action = "Index", title = "industries-we-serve" }
+            );
+
+            app.MapControllerRoute(
                 name: "contactus",
                 pattern: "contact-us",
                 defaults: new { controller = "Contactus", action = "Index", title = "contact-us" }

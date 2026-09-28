@@ -1,0 +1,214 @@
+@model Core_project_BusinessLogic.Entity.Industry_Public_Page
+@{
+    var content = Model.Content ?? new Core_project_BusinessLogic.Entity.Industry_Public_Content();
+    var title = string.IsNullOrWhiteSpace(content.Title) ? "Industries we serve" : content.Title;
+    var breadcrumb = string.IsNullOrWhiteSpace(content.BreadcrumbTitle) ? title : content.BreadcrumbTitle;
+    var windowTitle = string.IsNullOrWhiteSpace(content.WindowTitle) ? title : content.WindowTitle;
+    var masthead = content.MastheadImage ?? "";
+    var mobileMasthead = string.IsNullOrWhiteSpace(content.MobileMastheadImage) ? masthead : content.MobileMastheadImage;
+    var mastheadAlt = content.MastheadAlt ?? title;
+    ViewData["Title"] = windowTitle;
+}
+
+@section head {
+    <title>@windowTitle</title>
+    <meta content="@content.MetaTag" name="keywords" />
+    <meta content="@content.MetaDescription" name="description" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/industries-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/industries-list.css" asp-append-version="true" />
+}
+
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <picture>
+                  @if (!string.IsNullOrWhiteSpace(masthead))
+                  {
+                      <source media="(min-width:1024px)" srcset="@masthead">
+                  }
+                  @if (!string.IsNullOrWhiteSpace(mobileMasthead))
+                  {
+                      <source media="(min-width:992px)" srcset="@mobileMasthead">
+                      <img src="@mobileMasthead"
+                           alt="@mastheadAlt"
+                           class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                           loading="eager"
+                           fetchpriority="high">
+                  }
+               </picture>
+               <div class="innerbanner-overlay"></div>
+            </div>
+
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                        @title
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+                           <li class="text-white/60">/</li>
+                           <li class="text-white">
+                              @breadcrumb
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>
+         </div>
+   </section>
+
+   @if (!string.IsNullOrWhiteSpace(content.Intro))
+   {
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            @Html.Raw(content.Intro)
+         </div>
+      </div>
+   </section>
+   }
+
+   <section class="relative section-spacing industries-list-outer">
+      <div class="container">
+         <div class="section-intro">
+            <div class="section-intro__title title-section">
+              <h2 class="text-h2">Industry Portfolios</h2>
+            </div>
+
+            <div class="filter-outer section-spacing-sm">
+                  <button type="button"
+                          class="filter-mobile-trigger"
+                          data-open-industry-filter
+                          aria-controls="industry-filter"
+                          aria-expanded="false">
+                     <span class="filter-mobile-trigger__icon" aria-hidden="true"></span>
+                     Refine by Filters
+                  </button>
+                  <div class="filter-mobile-backdrop" data-close-industry-filter></div>
+                  <form class="filter-inner" id="industry-filter" action="#" method="get">
+                     <div class="filter-mobile-sheet-head">
+                        <h2 class="filter-mobile-sheet-head__title">Set Filters</h2>
+                        <button type="button" class="filter-mobile-close" data-close-industry-filter aria-label="Close filters">&times;</button>
+                     </div>
+                     <div class="industry-filters-desktop">
+                     <div class="cselect">
+                        <label class="cselect-sr" for="filter-industry">Industry</label>
+                        <select id="filter-industry" name="industry" class="cselect-native">
+                           <option value="">Industry</option>
+                           @foreach (var item in Model.IndustryFilters)
+                           {
+                               <option value="@item.Id" selected="@(Model.IndustryId == item.Id)">@item.Name</option>
+                           }
+                        </select>
+                     </div>
+
+                     <div class="cselect">
+                        <label class="cselect-sr" for="filter-application">Application</label>
+                        <select id="filter-application" name="application" class="cselect-native">
+                           <option value="">Application</option>
+                           @foreach (var item in Model.ApplicationFilters)
+                           {
+                               <option value="@item.Id" selected="@(Model.ApplicationId == item.Id)">@item.Name</option>
+                           }
+                        </select>
+                     </div>
+
+                     <div class="cselect">
+                        <label class="cselect-sr" for="filter-product-categories">Product Categories</label>
+                        <select id="filter-product-categories" name="productCategories" class="cselect-native">
+                           <option value="">Product Categories</option>
+                           @foreach (var item in Model.CategoryFilters)
+                           {
+                               <option value="@item.Id" selected="@(Model.CategoryId == item.Id)">@item.Name</option>
+                           }
+                        </select>
+                     </div>
+
+                     <button type="submit" class="filter-submit">
+                        <span class="filter-submit-arrow" aria-hidden="true">&rarr;</span>
+                        Filter
+                     </button>
+                     </div>
+                     <div class="filter-mobile-sheet-foot">
+                        <button type="button" class="filter-mobile-clear" data-clear-industry-filter>Clear Filters</button>
+                        <button type="button" class="filter-mobile-apply" data-apply-industry-filter>Apply Filters</button>
+                     </div>
+                  </form>
+            </div>
+         </div>
+      </div>
+
+      <div class="container">
+         <div class="industries-list" id="industryList"
+              data-page="1"
+              data-page-size="@Model.PageSize"
+              data-total="@Model.TotalRecords">
+            @if (Model.Industries != null && Model.Industries.Count > 0)
+            {
+                foreach (var item in Model.Industries)
+                {
+                    var href = string.IsNullOrWhiteSpace(item.Industry_pagename)
+                        ? "/IndustriesInside"
+                        : "/IndustriesInside/" + item.Industry_pagename;
+                    <a href="@href" class="industry-card" data-industry="@item.Industry_pagename">
+                       <div class="industry-card__media">
+                          @if (!string.IsNullOrWhiteSpace(item.ThumbnailUrl))
+                          {
+                              <img src="@item.ThumbnailUrl" alt="@(item.ThumbnailAlt ?? item.IndustryName)">
+                          }
+                       </div>
+                       <div class="industry-card__caption">
+                          <h3 class="text-h5">@item.IndustryName</h3>
+                          <div class="industry-card__details">
+                             <div class="industry-card__details-inner">
+                                @if (!string.IsNullOrWhiteSpace(item.Intro))
+                                {
+                                    <p>@item.Intro</p>
+                                }
+                                <div class="site-btn site-btn--line">
+                                   <span class="site-btn__label">Explore Portfolio</span>
+                                   <span class="site-btn__arrow" aria-hidden="true">
+                                      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                   </span>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <p class="js-industry-empty">No industries found</p>
+            }
+         </div>
+
+         <div class="flex justify-center mt-8">
+            <button type="button"
+                    class="site-btn site-btn--fill"
+                    id="btnLoadMoreIndustries"
+                    style="@(Model.TotalRecords > Model.PageSize ? "" : "display:none;")">
+               <span class="site-btn__label">Load more</span>
+            </button>
+         </div>
+      </div>
+   </section>
+
+@section Scripts {
+   <script src="~/Assets/js/industries-script.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/industries-filter.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/industries-loadmore.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,538 @@
+@{
+    ViewData["Title"] = "Industries";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/industries-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/industries-tab.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/AdhesivesLubricants-desktop.webp">
+                  
+
+                  <!-- Mobile -->
+                  <img
+                     src="~/Assets/images/banners/AdhesivesLubricants-desktop.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                       Adhesives & Lubricants
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li>
+                              <a href="/industries" class="text-white/70 hover:text-white transition">
+                                 Industries
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                              Adhesives & Lubricants
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>We provide key ingredients for adhesives, sealants and structural binders and specialised raw materials derived from renewable resources for the lubricants industry. Our advanced chemicals enable manufacturers to develop adhesive products that deliver exceptional flexibility and superior bond strength. Our experience in high-friction applications means that our lubricant chemicals ensure peak mechanical efficiency and smooth component operations.</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+   <!--INDUSTRIES TABS-->
+   <section class="relative section-spacing industries-inside-outer">
+      <div class="container">
+         <div class="tab-outer mb-3">
+            <div class="industry-tabs" role="tablist" aria-label="Product categories">
+               <span class="industry-tabs__thumb" aria-hidden="true"></span>
+               <button type="button"
+                       class="industry-tab is-active"
+                       id="tab-btn-additives"
+                       role="tab"
+                       aria-selected="true"
+                       aria-controls="tab-additives"
+                       data-tab="additives">
+                  Additives
+               </button>
+               <button type="button"
+                       class="industry-tab"
+                       id="tab-btn-solvents"
+                       role="tab"
+                       aria-selected="false"
+                       aria-controls="tab-solvents"
+                       data-tab="solvents">
+                  Solvents
+               </button>
+            </div>
+         </div>
+      </div>
+
+      <div class="container">
+         <div class="industries-tab-content">
+            <div class="industry-tab-panel is-active"
+                 id="tab-additives"
+                 role="tabpanel"
+                 aria-labelledby="tab-btn-additives"
+                 data-tab-panel="additives">
+
+               <div class="section-intro">
+                  <div class="section-intro__title title-section">
+                  <h2 class="text-h2 title-animation">Additives</h2>
+                  </div>                 
+               </div>
+               
+               <div class="industry-product-grid">
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/banners/inside-banner1.webp")" alt="2-Ethyl-1,3-Hexanediol">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">2-Ethyl-1,3-Hexanediol</h3>
+                        <p>A high-purity specialty diol that improves flow, flexibility and durability in demanding adhesive, coating and personal-care systems.</p>
+                        <div class="industry-product-card__apps">
+                           <h6 class="industry-product-card__apps-label">Other Applications</h6>
+                           <ul>
+                              <li>Agrochemicals</li>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Personal Care</li>
+                              <li>Pharmaceuticals</li>
+                              <li>Plastics</li>
+                              <li>Packaging & Printing Inks</li>
+                              <li>Personal Care & Cosmetics</li>
+                              <li>Textiles</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content(contentPath: "~/Assets/images/banners/inside-banner2.webp")" alt="Alpha Cellulose and Derivatives">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Alpha Cellulose and Derivatives</h3>
+                        <p>A high-purity, plant-derived cellulose range that delivers consistent viscosity, film strength and formulation stability.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Personal Care</li>
+                              <li>Pharmaceuticals</li>
+                              <li>Textiles</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/banners/inside-banner3.webp")" alt="NATUROWAX">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">NATUROWAX<sup>®</sup></h3>
+                        <p>A high-performance, vegetable-based wax that enhances texture, water resistance and processing in specialty formulations.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Food &amp; Beverages</li>
+                              <li>Personal Care</li>
+                              <li>Pharmaceuticals</li>
+                              <li>Plastics</li>
+                              <li>Textiles</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img8.webp")" alt="Bio-based solvents">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Bio-based Solvents</h3>
+                        <p>Renewable solvents engineered for high solvency, low odour and cleaner processing in coatings, adhesives and industrial blends.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Agrochemicals</li>
+                              <li>Pharmaceuticals</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img9.webp")" alt="Ethyl acetate">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Ethyl Acetate</h3>
+                        <p>A fast-evaporating ester solvent that supports consistent film formation and clean application in inks, coatings and adhesives.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Plastics</li>
+                              <li>Textiles</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img10.webp")" alt="Specialty glycol ethers">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Specialty Glycol Ethers</h3>
+                        <p>Coupling solvents that balance water miscibility and solvency for high-performance coatings, cleaners and industrial formulations.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Personal Care</li>
+                              <li>Agrochemicals</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+               </div>
+            </div>
+
+            <div class="industry-tab-panel" id="tab-solvents" role="tabpanel" aria-labelledby="tab-btn-solvents" data-tab-panel="solvents"
+                 hidden>
+
+               <div class="section-intro">
+                  <div class="section-intro__title title-section">
+                  <h2 class="text-h2 title-animation">Solvents</h2>
+                  </div>                 
+               </div>
+               <div class="industry-product-grid">
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img8.webp")" alt="Bio-based solvents">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Bio-based Solvents</h3>
+                        <p>Renewable solvents engineered for high solvency, low odour and cleaner processing in coatings, adhesives and industrial blends.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Agrochemicals</li>
+                              <li>Pharmaceuticals</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img9.webp")" alt="Ethyl acetate">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Ethyl Acetate</h3>
+                        <p>A fast-evaporating ester solvent that supports consistent film formation and clean application in inks, coatings and adhesives.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Plastics</li>
+                              <li>Textiles</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img10.webp")" alt="Specialty glycol ethers">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Specialty Glycol Ethers</h3>
+                        <p>Coupling solvents that balance water miscibility and solvency for high-performance coatings, cleaners and industrial formulations.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Personal Care</li>
+                              <li>Agrochemicals</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img8.webp")" alt="Bio-based solvents">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Bio-based Solvents</h3>
+                        <p>Renewable solvents engineered for high solvency, low odour and cleaner processing in coatings, adhesives and industrial blends.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Agrochemicals</li>
+                              <li>Pharmaceuticals</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img9.webp")" alt="Ethyl acetate">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Ethyl Acetate</h3>
+                        <p>A fast-evaporating ester solvent that supports consistent film formation and clean application in inks, coatings and adhesives.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Plastics</li>
+                              <li>Textiles</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+
+                  <article class="industry-product-card">
+                     <div class="industry-product-card__media">
+                        <img src="@Url.Content("~/Assets/images/industry-page/img10.webp")" alt="Specialty glycol ethers">
+                     </div>
+                     <div class="industry-product-card__body">
+                        <h3 class="text-h5">Specialty Glycol Ethers</h3>
+                        <p>Coupling solvents that balance water miscibility and solvency for high-performance coatings, cleaners and industrial formulations.</p>
+                        <div class="industry-product-card__apps">
+                           <p class="industry-product-card__apps-label">Other Applications</p>
+                           <ul>
+                              <li>Paints &amp; Coatings</li>
+                              <li>Personal Care</li>
+                              <li>Agrochemicals</li>
+                           </ul>
+                        </div>
+                        <div class="industry-product-card__actions">
+                           <a href="#" class="site-btn site-btn--fill">
+                              <span class="site-btn__label">Learn More</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                           <a href="#" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">Enquire Now</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </span>
+                           </a>
+                        </div>
+                     </div>
+                  </article>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+    <!--INDUSTRIES TABS END-->
+
+@section Scripts {
+   <script src="~/Assets/js/industries-tab-script.js" asp-append-version="true"></script>
+}

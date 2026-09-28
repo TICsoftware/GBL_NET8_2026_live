@@ -119,5 +119,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       })
     );
+    closeFilterSheet();
+  });
+
+  var filterOuter = form.closest(".filter-outer");
+
+  function closeFilterSheet() {
+    if (!filterOuter) return;
+    filterOuter.classList.remove("is-filter-open");
+    var trigger = filterOuter.querySelector("[data-open-industry-filter]");
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openFilterSheet() {
+    if (!filterOuter) return;
+    filterOuter.classList.add("is-filter-open");
+    var trigger = filterOuter.querySelector("[data-open-industry-filter]");
+    if (trigger) trigger.setAttribute("aria-expanded", "true");
+  }
+
+  document.querySelector("[data-open-industry-filter]")?.addEventListener("click", openFilterSheet);
+  document.querySelectorAll("[data-close-industry-filter]").forEach(function (btn) {
+    btn.addEventListener("click", closeFilterSheet);
   });
 });
