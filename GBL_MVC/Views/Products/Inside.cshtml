@@ -1,0 +1,196 @@
+@model Core_project_BusinessLogic.Entity.Product_Inside_Page
+@{
+    var product = Model.Product ?? new Core_project_BusinessLogic.Entity.Product_Inside_Detail();
+    var title = product.ProductName ?? "Product";
+    var banner = product.BannerUrl ?? "";
+    var bannerAlt = product.BannerAlt ?? title;
+    var packaging = Model.Packaging ?? new List<Core_project_BusinessLogic.Entity.Product_Inside_Packaging>();
+    var certificates = Model.Certificates ?? new List<Core_project_BusinessLogic.Entity.Product_Inside_Certificate>();
+    var subcategories = Model.Subcategories ?? new List<Core_project_BusinessLogic.Entity.Product_Public_Lookup>();
+    var crumb = subcategories.Count > 0 && !string.IsNullOrWhiteSpace(subcategories[0].Name)
+        ? subcategories[0].Name
+        : title;
+    var hasPackaging = packaging.Count > 0;
+    var hasApplications = !string.IsNullOrWhiteSpace(product.Main_Application);
+    var hasOverview = !string.IsNullOrWhiteSpace(product.Technical_Overview);
+    var hasSds = !string.IsNullOrWhiteSpace(product.SafetyDataSheetUrl);
+    var hasCertificates = certificates.Count > 0;
+    var sdsName = title + "-SDS.pdf";
+    ViewData["Title"] = title;
+}
+
+@section head {
+    <title>@title</title>
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/product-only-inside.css" asp-append-version="true" />
+}
+
+   <section class="product-inside-banner-outer section-spacing">
+      <div class="container">
+         <div class="product-inside-banner">
+            <div class="product-inside-banner__copy">
+               <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                  <ol class="flex items-center gap-2 text-sm">
+                     <li><a href="/" class="transition">Home</a></li>
+                     <li>/</li>
+                     <li><a href="/products" class="transition">Product</a></li>
+                     <li>/</li>
+                     <li class="active">@crumb</li>
+                  </ol>
+               </nav>
+
+               <div class="title-section">
+                  <h1 class="text-h1 title-animation">@title</h1>
+               </div>
+
+               @if (!string.IsNullOrWhiteSpace(product.Intro))
+               {
+               <div class="page-intro-inner product-inside-banner__intro">
+                  @Html.Raw(product.Intro)
+               </div>
+               }
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(banner))
+            {
+            <div class="product-inside-banner__media">
+               <img src="@banner" alt="@bannerAlt">
+            </div>
+            }
+         </div>
+      </div>
+   </section>
+
+   @if (hasPackaging || hasApplications)
+   {
+   <section class="packaging-application-outer section-spacing">
+     <div class="container">
+        <div class="packaging-application">
+           @if (hasPackaging)
+           {
+           <div class="packaging-block">
+              <div class="packaging-block__head">
+                  <div class="title-section">
+                     <h2 class="text-h2 title-animation">Packaging</h2>
+                  </div>
+
+                 <div class="packaging-block__nav" hidden>
+                    <button type="button" class="packaging-nav packaging-nav--prev" aria-label="Previous packaging">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5L8 12l7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <div class="packaging-pagination"></div>
+                    <button type="button" class="packaging-nav packaging-nav--next" aria-label="Next packaging">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                 </div>
+              </div>
+
+              <div class="swiper packaging-swiper">
+                 <div class="swiper-wrapper">
+                    @foreach (var pack in packaging)
+                    {
+                    <div class="swiper-slide">
+                       <figure class="packaging-card image-card">
+                          <div class="image-box">
+                             @if (!string.IsNullOrWhiteSpace(pack.ThumbnailUrl))
+                             {
+                                 <img src="@pack.ThumbnailUrl" alt="@(pack.ThumbnailAlt ?? pack.Name)">
+                             }
+                          </div>
+                          <figcaption>@pack.Name</figcaption>
+                       </figure>
+                    </div>
+                    }
+                 </div>
+              </div>
+           </div>
+           }
+
+           @if (hasApplications)
+           {
+           <div class="application-block">
+               <div class="title-section">
+                     <h2 class="text-h2 title-animation">Applications</h2>
+               </div>
+              <div class="application-list">
+                 @Html.Raw(product.Main_Application)
+              </div>
+           </div>
+           }
+        </div>
+     </div>
+   </section>
+   }
+
+   @if (hasOverview || hasSds || hasCertificates)
+   {
+   <section class="technical-Safety-outer section-spacing">
+     <div class="container">
+        <div class="packaging-application">
+           @if (hasOverview || hasCertificates)
+           {
+           <div class="packaging-block">
+                  <div class="title-section">
+                     <h2 class="text-h2 title-animation">Technical Overview</h2>
+                  </div>
+
+              @if (hasOverview)
+              {
+              <div class="tech-overview">
+                 @Html.Raw(product.Technical_Overview)
+              </div>
+              }
+
+              @if (hasCertificates)
+              {
+              <div class="product-cert-bar">
+                 @foreach (var cert in certificates)
+                 {
+                     @await Html.PartialAsync("_ProductCertificateItem", cert)
+                 }
+              </div>
+              }
+           </div>
+           }
+
+           <div class="application-block">
+               <div class="title-section">
+                     <h2 class="text-h2 title-animation">Safety Data Sheet (SDS)</h2>
+               </div>
+               <div class="sds-panel">
+                  <p class="sds-panel__name">@title</p>
+                  <div class="sds-panel__actions">
+                     @if (hasSds)
+                     {
+                     <a href="@product.SafetyDataSheetUrl"
+                        class="site-btn site-btn--fill"
+                        data-sds-download
+                        download="@sdsName">
+                        <span class="site-btn__label">Download (Pdf)</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                     }
+                     <a href="/contact-us" class="site-btn site-btn--outline">
+                        <span class="site-btn__label">Order Sample / Enquire Now</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </div>
+               </div>
+           </div>
+        </div>
+     </div>
+   </section>
+   }
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/product-only-inside.js" asp-append-version="true"></script>
+}

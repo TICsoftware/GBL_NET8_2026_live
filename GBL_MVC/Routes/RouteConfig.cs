@@ -78,6 +78,36 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                name: "products-listing",
+                pattern: "products",
+                defaults: new { controller = "Products", action = "Index_html" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-index-html",
+                pattern: "Products/Index_html",
+                defaults: new { controller = "Products", action = "Index_html" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-inside-html",
+                pattern: "Products/Inside_html",
+                defaults: new { controller = "Products", action = "Inside_html" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-index",
+                pattern: "Products/Index",
+                defaults: new { controller = "Products", action = "Index" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-inside",
+                pattern: "Products/{title}",
+                defaults: new { controller = "Products", action = "Inside" }
+            );
+
+            app.MapControllerRoute(
                 name: "contactus",
                 pattern: "contact-us",
                 defaults: new { controller = "Contactus", action = "Index", title = "contact-us" }
