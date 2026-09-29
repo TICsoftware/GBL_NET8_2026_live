@@ -85,6 +85,10 @@ namespace Core_project_BusinessLogic.Entity
         public string? ThumbnailUrl { get; set; }
         public string? ThumbnailAlt { get; set; }
         public List<string> Industries { get; set; } = new();
+        public string IndustryNames =>
+            Industries == null || Industries.Count == 0
+                ? string.Empty
+                : string.Join(", ", Industries);
     }
 
     public class Product_Public_Filter

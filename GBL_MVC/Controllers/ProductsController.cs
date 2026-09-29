@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -129,7 +130,16 @@ public class ProductsController : Controller
         return new
         {
             success = true,
-            items = data.Products,
+            items = (data.Products ?? new List<Product_Public_Item>()).Select(p => new
+            {
+                productId = p.ProductId,
+                productName = p.ProductName,
+                product_pagename = p.Product_pagename,
+                thumbnailUrl = p.ThumbnailUrl,
+                thumbnailAlt = p.ThumbnailAlt,
+                industries = p.Industries ?? new List<string>(),
+                industryNames = p.IndustryNames
+            }),
             total = data.TotalRecords,
             page,
             pageSize,

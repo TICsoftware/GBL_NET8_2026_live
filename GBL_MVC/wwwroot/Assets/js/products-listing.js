@@ -91,17 +91,31 @@
       });
     }
 
+    function getIndustryNames(item) {
+      var text = item.industryNames || item.IndustryNames || "";
+      if (text) return String(text).trim();
+
+      var list = item.industries || item.Industries || [];
+      if (typeof list === "string") return list.trim();
+      if (!Array.isArray(list)) return "";
+      return list
+        .map(function (name) { return String(name || "").trim(); })
+        .filter(Boolean)
+        .join(", ");
+    }
+
     function buildCard(item) {
       var name = item.productName || item.ProductName || "";
       var pageName = item.product_pagename || item.Product_pagename || "";
       var thumb = item.thumbnailUrl || item.ThumbnailUrl || "";
       var alt = item.thumbnailAlt || item.ThumbnailAlt || name;
-      var industries = item.industries || item.Industries || [];
+      var industryNames = getIndustryNames(item);
       var href = pageName ? "/Products/" + encodeURIComponent(pageName) : "/Products/Inside_html";
       var img = thumb ? '<img src="' + escapeHtml(thumb) + '" alt="' + escapeHtml(alt) + '">' : "";
-      var industriesHtml = industries.length
+      // Match page-load _ProductCard markup exactly
+      var industriesHtml = industryNames
         ? '<p class="product-card__meta-label">Industries</p>' +
-          '<p class="product-card__meta">' + escapeHtml(industries.join(", ")) + "</p>"
+          '<p class="product-card__meta">' + escapeHtml(industryNames) + "</p>"
         : "";
       return (
         '<a href="' + escapeHtml(href) + '" class="product-card">' +
