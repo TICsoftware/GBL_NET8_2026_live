@@ -100,7 +100,8 @@
       var href = pageName ? "/Products/" + encodeURIComponent(pageName) : "/Products/Inside_html";
       var img = thumb ? '<img src="' + escapeHtml(thumb) + '" alt="' + escapeHtml(alt) + '">' : "";
       var industriesHtml = industries.length
-        ? '<p class="product-card__meta-label">' + escapeHtml(industries.join(", ")) + "</p>"
+        ? '<p class="product-card__meta-label">Industries</p>' +
+          '<p class="product-card__meta">' + escapeHtml(industries.join(", ")) + "</p>"
         : "";
       return (
         '<a href="' + escapeHtml(href) + '" class="product-card">' +
