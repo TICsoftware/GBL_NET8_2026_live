@@ -15,9 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
   gsap.utils.toArray('.parallax-wrap').forEach(function (wrap) {
     // Enlarge section owns motion on desktop — skip y-parallax there
     if (wrap.classList.contains('enlarge-wrapper')) return;
+    if (wrap.closest('.ourPhilosophy')) return;
+    if (wrap.closest('.storiesofChange')) return;
 
     const img = wrap.querySelector('.parallax-img');
     if (!img) return;
+
+    var isMobileView = window.matchMedia('(max-width: 992px)').matches;
+    var stScroller = isMobileView ? window : document.documentElement;
 
     // Balanced travel (covers overflow:hidden + height:130% CSS)
     gsap.fromTo(
@@ -29,9 +34,10 @@ document.addEventListener('DOMContentLoaded', function () {
         force3D: true,
         scrollTrigger: {
           trigger: wrap,
+          scroller: stScroller,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 0.8, // smoother with Lenis than scrub:true
+          scrub: 0.8,
           invalidateOnRefresh: true,
         },
       }

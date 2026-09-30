@@ -27,6 +27,47 @@ public class MediaController : Controller
         return View();
     }
 
+
+
+    public IActionResult PressReleases(string title)
+    {
+        try
+        {
+            var data = _bal.GetPressRelease_Inside_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/PressReleases :", ex);
+            return View(new AboutModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
+
+    public IActionResult MediaCoverage(string title)
+    {
+        try
+        {
+            var data = _bal.GetPressRelease_Inside_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/MediaCoverage :", ex);
+            return View(new AboutModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
+
+
     public IActionResult PressReleasesInside(string title)
     {
         try
@@ -46,23 +87,7 @@ public class MediaController : Controller
     }
 
 
-    // public IActionResult PressReleases(string title)
-    // {
-    //     try
-    //     {
-    //         var data = _bal.GetPressReleases_BAL(title, 1, 1);
-    //         return View(data);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         FileLogger.LogError("/PressReleases :", ex);
-    //         return View(new AboutModel());
-    //     }
-    //     finally
-    //     {
-    //         _bal.Dispose();
-    //     }
-    // }
+
 
 
 

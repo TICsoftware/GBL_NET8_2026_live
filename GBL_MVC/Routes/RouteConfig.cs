@@ -21,6 +21,12 @@ namespace GBL_MVC.Routes
 
 
             app.MapControllerRoute(
+                 name: "press-release",
+                 pattern: "media/press-release",
+                 defaults: new { controller = "Media", action = "PressReleases", title = "press-release"  }
+            );
+
+            app.MapControllerRoute(
                  name: "press-release-inside",
                  pattern: "media/press-release/{title?}",
                  defaults: new { controller = "Media", action = "PressReleasesInside" }

@@ -1,12 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
   /* ---------------------------------------
-     STORIES CARD ANIMATION
-     Odd cards drop from above; even cards
-     rise from below. Plays on enter and
-     re-enter; reverses smoothly on leave.
+     STORIES IMAGE PARALLAX
+     Image is taller than the frame. Scroll
+     moves it up only — never down — so the
+     top of the box stays covered and the
+     extra height cannot sit on the text.
   --------------------------------------- */
-  const cards = Array.from(document.querySelectorAll('.stories-grid .story-card'));
-  if (!cards.length) return;
+  const wraps = Array.from(
+    document.querySelectorAll('.storiesofChange .story-card__media.parallax-wrap')
+  );
+  if (!wraps.length) return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -16,75 +19,84 @@ document.addEventListener('DOMContentLoaded', function () {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Match Lenis / common-script ScrollTrigger scroller
   const isMobile = window.matchMedia('(max-width: 992px)').matches;
   const stScroller = isMobile ? window : document.documentElement;
 
-  const cardApis = cards.map(function (card, i) {
-    // Odd cards drop from above; even cards rise from below
-    const fromY = i % 2 === 0 ? -56 : 56;
+  const cards = Array.from(document.querySelectorAll('.storiesofChange .stories-grid .story-card'));
+  const mm = typeof gsap.matchMedia === 'function' ? gsap.matchMedia() : null;
 
-    const tl = gsap.timeline({
-      paused: true,
-      defaults: { force3D: true },
+  if (mm) {
+    mm.add('(min-width: 1024px)', function () {
+      var enters = [];
+      cards.forEach(function (card) {
+        var reverse = card.classList.contains('story-card--reverse');
+        var tween = gsap.fromTo(
+          card,
+          { autoAlpha: 0, y: reverse ? -72 : 72 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: 'none',
+            force3D: true,
+            immediateRender: true,
+            scrollTrigger: {
+              trigger: card,
+              scroller: stScroller,
+              start: 'top 92%',
+              end: 'top 58%',
+              scrub: 1.1,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+        enters.push(tween);
+      });
+      return function () {
+        enters.forEach(function (tween) {
+          if (tween.scrollTrigger) tween.scrollTrigger.kill();
+          tween.kill();
+        });
+        gsap.set(cards, { clearProps: 'transform,opacity,visibility' });
+      };
     });
+  }
 
-    tl.fromTo(
-      card,
-      { autoAlpha: 0, y: fromY },
+  function extraHeight(wrap, img) {
+    var box = wrap.offsetHeight || 0;
+    var photo = img.offsetHeight || 0;
+    return Math.max(0, photo - box);
+  }
+
+  wraps.forEach(function (wrap) {
+    const img = wrap.querySelector('.parallax-img') || wrap.querySelector('img');
+    if (!img) return;
+
+    gsap.fromTo(
+      img,
+      { y: 0 },
       {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        overwrite: 'auto',
+        y: function () {
+          return -extraHeight(wrap, img);
+        },
+        ease: 'none',
+        force3D: true,
+        immediateRender: true,
+        scrollTrigger: {
+          trigger: wrap,
+          scroller: stScroller,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        },
       }
     );
-
-    function playEnter() {
-      tl.timeScale(1);
-      tl.play();
-    }
-
-    function playExit() {
-      tl.timeScale(0.75);
-      tl.reverse();
-    }
-
-    ScrollTrigger.create({
-      trigger: card,
-      scroller: stScroller,
-      start: 'top 88%',
-      end: 'bottom 12%',
-      invalidateOnRefresh: true,
-      onEnter: playEnter,
-      onEnterBack: playEnter,
-      onLeave: playExit,
-      onLeaveBack: playExit,
-    });
-
-    return { card: card, playEnter: playEnter };
   });
 
-  function isInViewport(el) {
-    const rect = el.getBoundingClientRect();
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    return rect.top < vh * 0.88 && rect.bottom > 40;
+  function refreshStories() {
+    ScrollTrigger.refresh();
   }
 
-  function syncVisible() {
-    cardApis.forEach(function (api) {
-      if (isInViewport(api.card)) api.playEnter();
-    });
-  }
-
-  requestAnimationFrame(function () {
-    ScrollTrigger.refresh();
-    syncVisible();
-  });
-
-  window.addEventListener('load', function () {
-    ScrollTrigger.refresh();
-    syncVisible();
-  });
+  requestAnimationFrame(refreshStories);
+  window.addEventListener('load', refreshStories);
 });

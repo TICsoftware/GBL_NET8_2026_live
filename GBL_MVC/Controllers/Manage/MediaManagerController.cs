@@ -73,8 +73,10 @@ namespace GBL_MVC.Controllers.Manage
                     "pdf" => "pdf",
                     "video" => "video",
                     "doc" => "documents",
-                    "investor" => "investor",
-                    "press" => "pressrelease",
+                    "investors" => "investors",
+                    "pressrelease" => "pressrelease",
+                    "mediacoverage" => "mediacoverage",
+                    "media" => "media",
                     _ => "others"
                 };
 

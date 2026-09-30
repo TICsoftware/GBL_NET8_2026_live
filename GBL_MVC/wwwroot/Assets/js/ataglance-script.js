@@ -1,18 +1,24 @@
-(() => {
+document.addEventListener("DOMContentLoaded", () => {
   const section = document.querySelector(".ataglance");
-  if (!section || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
-    return;
-  }
-
-  gsap.registerPlugin(ScrollTrigger);
+  if (!section) return;
 
   const items = Array.from(section.querySelectorAll(".ataglance-item"));
   const wrappers = Array.from(section.querySelectorAll(".ataglance-card-wrapper"));
-  if (!items.length || !wrappers.length) return;
+  const cards = wrappers.map((wrapper) => wrapper.querySelector("[data-glance-card]"));
+  if (!items.length || !wrappers.length || cards.some((card) => !card)) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const mm = gsap.matchMedia();
+  const hasGsap = typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined";
+  if (hasGsap) gsap.registerPlugin(ScrollTrigger);
+
+  const mm = typeof gsap !== "undefined" && gsap.matchMedia ? gsap.matchMedia() : null;
+  const PIN_GAP = 20;
   let activeIndex = 0;
+  let desktopTrack = null;
+  let glanceSwiper = null;
+
+  const getScroller = () =>
+    window.matchMedia("(max-width: 992px)").matches ? window : document.documentElement;
 
   const setItemState = (index) => {
     if (index === activeIndex) return;
@@ -24,8 +30,8 @@
       item.setAttribute("aria-pressed", on ? "true" : "false");
     });
 
-    wrappers.forEach((wrapper, i) => {
-      wrapper.querySelector("[data-glance-card]")?.classList.toggle("is-active", i === index);
+    cards.forEach((card, i) => {
+      card.classList.toggle("is-active", i === index);
     });
   };
 
@@ -41,172 +47,306 @@
     return headerPx;
   }
 
-  function getPinTopPx() {
+  function getTitleTopPx() {
+    const headerPx = getHeaderPx();
+    const minTop = Math.round(headerPx + PIN_GAP);
+
     const title = section.querySelector(".title-section");
     let titleBlock = 0;
-    if (title) {
+    if (title && window.matchMedia("(min-width: 1081px)").matches) {
       const cs = getComputedStyle(title);
       titleBlock =
         title.getBoundingClientRect().height + (parseFloat(cs.marginBottom) || 0);
     }
+    section.style.setProperty("--ataglance-title-h", `${Math.round(titleBlock)}px`);
 
-    /* Pin image + list directly under the title */
-    const pinTop = Math.round(getHeaderPx() + titleBlock);
-    section.style.setProperty("--ataglance-pin-top", `${pinTop}px`);
-    return pinTop;
+    const slotH =
+      Math.round(parseFloat(getComputedStyle(section).getPropertyValue("--ataglance-slot-h"))) ||
+      480;
+    const centered = Math.round((window.innerHeight - titleBlock - slotH) / 2);
+    const titleTop = Math.max(minTop, centered);
+
+    section.style.setProperty("--ataglance-title-top", `${titleTop}px`);
+    section.style.setProperty("--ataglance-pin-top", `${Math.round(titleTop + titleBlock)}px`);
+    return titleTop;
   }
 
-  const scrollToCard = (index) => {
-    const target = wrappers[index];
-    if (!target) return;
+  function syncSlotToPanel() {
+    const panel = section.querySelector(".ataglance-panel");
+    if (!panel) return;
+    const h = Math.max(280, Math.round(panel.getBoundingClientRect().height));
+    section.style.setProperty("--ataglance-slot-h", `${h}px`);
+  }
 
-    const pinTop = getPinTopPx();
+  function slotHeight() {
+    return (
+      Math.round(parseFloat(getComputedStyle(section).getPropertyValue("--ataglance-slot-h"))) ||
+      480
+    );
+  }
 
-    if (window.lenis && typeof window.lenis.scrollTo === "function") {
-      window.lenis.scrollTo(target, { offset: -pinTop, duration: 1.05 });
+  const goToSlide = (index) => {
+    const safeIndex = Math.max(0, Math.min(cards.length - 1, Number(index) || 0));
+
+    if (glanceSwiper) {
+      glanceSwiper.slideTo(safeIndex);
       return;
     }
 
-    const top = target.getBoundingClientRect().top + window.pageYOffset - pinTop;
-    window.scrollTo({ top, behavior: "smooth" });
+    const steps = Math.max(cards.length - 1, 1);
+    if (desktopTrack) {
+      const start = desktopTrack.start;
+      const end = desktopTrack.end;
+      const y = start + (safeIndex / steps) * (end - start);
+      if (window.lenis && typeof window.lenis.scrollTo === "function") {
+        window.lenis.scrollTo(y, { duration: 1.05 });
+        return;
+      }
+      window.scrollTo({ top: y, behavior: "smooth" });
+      return;
+    }
+
+    setItemState(safeIndex);
   };
 
   items.forEach((item) => {
     item.addEventListener("click", (event) => {
       event.preventDefault();
-      scrollToCard(Number(item.dataset.glanceIndex));
+      goToSlide(Number(item.dataset.glanceIndex));
     });
   });
 
-  /**
-   * Desktop: CodePen sticky cards
-   * pin + pinSpacing:false → cards overlap
-   * scrub fade/scale → outgoing card goes opacity 0 / scale 0.6
-   * Panel stays CSS-sticky beside the stack
-   */
-  mm.add("(min-width: 1024px)", () => {
+  function initDesktop() {
+    if (!hasGsap) return function () {};
+
     const triggers = [];
+    const stack = section.querySelector("[data-glance-stack]");
+    const container = section.querySelector(".container");
     const title = section.querySelector(".title-section");
-    const lastWrapper = wrappers[wrappers.length - 1];
-    const pinStart = () => `top top+=${getPinTopPx()}px`;
-    const pinEnd = () => `bottom top+=${getPinTopPx()}px`;
+    const layout = section.querySelector(".ataglance-layout");
+    const stScroller = getScroller();
 
-    /* Title pins under the header, then leaves with the last card */
-    if (title && lastWrapper) {
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: title,
-          start: () => `top top+=${getHeaderPx()}px`,
-          endTrigger: lastWrapper,
-          end: pinEnd,
-          pin: true,
-          pinSpacing: false,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        })
-      );
-    }
+    if (!stack || !container || !title || !layout) return function () {};
 
-    wrappers.forEach((wrapper, index) => {
-      const card = wrapper.querySelector("[data-glance-card]");
-      if (!card) return;
+    syncSlotToPanel();
+    getTitleTopPx();
+    section.style.setProperty("--ataglance-slides", String(Math.max(cards.length - 1, 1)));
 
-      gsap.set(card, { zIndex: index + 1, force3D: true });
+    const hold = document.createElement("div");
+    hold.className = "ataglance-hold";
+    container.insertBefore(hold, title);
+    hold.appendChild(title);
+    hold.appendChild(layout);
 
-      const isLast = index === wrappers.length - 1;
+    const track = document.createElement("div");
+    track.className = "ataglance-track";
+    track.setAttribute("aria-hidden", "true");
+    container.appendChild(track);
 
-      // Sync right-hand list while this card is the focused stack layer.
-      // Last item stays active until the stack (and panel) leave together.
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: wrapper,
-          start: "top 55%",
-          end: isLast ? "bottom top" : "bottom 45%",
-          onEnter: () => setItemState(index),
-          onEnterBack: () => setItemState(index),
-        })
-      );
+    section.classList.add("is-pinning-desktop");
 
-      if (reduceMotion) {
-        gsap.set(card, { opacity: 1, scale: 1 });
-        return;
-      }
+    const stage = document.createElement("div");
+    stage.className = "ataglance-stage";
+    stack.parentNode.insertBefore(stage, stack);
+    cards.forEach((card) => stage.appendChild(card));
 
-      const pinConfig = {
-        trigger: wrapper,
-        start: pinStart,
-        end: pinEnd,
-        pin: true,
-        pinSpacing: false,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      };
+    cards.forEach((card, index) => {
+      gsap.set(card, {
+        zIndex: index + 1,
+        scale: 1,
+        yPercent: index === 0 ? 0 : 100,
+        opacity: 1,
+        force3D: true,
+        transformOrigin: "50% 50%",
+      });
+    });
 
-      // Last card stays full size beside the list. pinSpacing keeps the next
-      // section from covering it until the panel is ready to leave with it.
-      if (isLast) {
-        gsap.set(card, { opacity: 1, scale: 1 });
-        triggers.push(
-          ScrollTrigger.create({
-            ...pinConfig,
-            pinSpacing: true,
-          })
-        );
-        return;
-      }
+    const stStart = () => `top ${getTitleTopPx()}px`;
+    const stEnd = () => "+=" + Math.max(slotHeight(), 1) * Math.max(cards.length - 1, 1);
 
-      // Sticky Cards: Fade & Scale Overlap
+    desktopTrack = ScrollTrigger.create({
+      trigger: hold,
+      scroller: stScroller,
+      start: stStart,
+      end: stEnd,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const steps = Math.max(cards.length - 1, 1);
+        const index = Math.min(cards.length - 1, Math.round(self.progress * steps));
+        setItemState(index);
+      },
+    });
+    triggers.push(desktopTrack);
+
+    if (!reduceMotion) {
       const tl = gsap.timeline({
+        defaults: { ease: "none", force3D: true },
         scrollTrigger: {
-          ...pinConfig,
-          scrub: true,
+          trigger: hold,
+          scroller: stScroller,
+          start: stStart,
+          end: stEnd,
+          scrub: 0.55,
+          invalidateOnRefresh: true,
         },
       });
 
-      tl.set(card, { opacity: 1, scale: 1 }).to(
-        card,
-        { opacity: 0, scale: 0.6, ease: "none" },
-        0.01
-      );
+      cards.forEach((card, index) => {
+        if (index === 0) return;
+        tl.fromTo(card, { yPercent: 100 }, { yPercent: 0, immediateRender: true }, index - 1);
+        tl.fromTo(
+          cards[index - 1],
+          { scale: 1 },
+          { scale: 0.72, immediateRender: false },
+          index - 1
+        );
+      });
 
       if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
-    });
+    }
 
     const onRefreshInit = () => {
-      getPinTopPx();
+      syncSlotToPanel();
+      getTitleTopPx();
+      section.style.setProperty("--ataglance-slides", String(Math.max(cards.length - 1, 1)));
     };
     ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
     const onRefresh = () => ScrollTrigger.refresh();
     window.addEventListener("load", onRefresh);
-    requestAnimationFrame(onRefresh);
+    window.addEventListener("resize", onRefreshInit);
+    requestAnimationFrame(() => {
+      onRefreshInit();
+      ScrollTrigger.refresh();
+    });
 
     return () => {
       ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
       window.removeEventListener("load", onRefresh);
+      window.removeEventListener("resize", onRefreshInit);
+      desktopTrack = null;
+      section.classList.remove("is-pinning-desktop");
       section.style.removeProperty("--ataglance-pin-top");
+      section.style.removeProperty("--ataglance-slot-h");
+      section.style.removeProperty("--ataglance-title-top");
+      section.style.removeProperty("--ataglance-slides");
       triggers.forEach((t) => t && t.kill());
-      wrappers.forEach((wrapper) => {
-        const card = wrapper.querySelector("[data-glance-card]");
-        if (card) gsap.set(card, { clearProps: "all" });
+      cards.forEach((card, index) => {
+        gsap.set(card, { clearProps: "all" });
+        wrappers[index].appendChild(card);
       });
+      if (stage.parentNode) stage.remove();
+      container.insertBefore(title, hold);
+      container.insertBefore(layout, hold);
+      if (hold.parentNode) hold.remove();
+      if (track.parentNode) track.remove();
     };
-  });
+  }
 
-  // Tablet / mobile: no pin stack — keep list sync only
-  mm.add("(max-width: 1023px)", () => {
-    const triggers = wrappers.map((wrapper, index) =>
-      ScrollTrigger.create({
-        trigger: wrapper,
-        start: "top 65%",
-        end: "bottom 40%",
-        onEnter: () => setItemState(index),
-        onEnterBack: () => setItemState(index),
-      })
-    );
+  function initSlider() {
+    const stack = section.querySelector("[data-glance-stack]");
+    const media = section.querySelector(".ataglance-media");
+    if (!stack || !media || typeof Swiper === "undefined") return function () {};
 
-    ScrollTrigger.refresh();
-    return () => triggers.forEach((t) => t.kill());
-  });
+    section.classList.add("is-glance-slider");
+    desktopTrack = null;
+
+    cards.forEach((card, i) => {
+      if (hasGsap) gsap.set(card, { clearProps: "all" });
+      card.classList.toggle("is-active", i === 0);
+    });
+
+    const copies = [];
+    wrappers.forEach((wrapper, i) => {
+      const label = items[i] ? items[i].textContent.replace(/\s+/g, " ").trim() : "";
+      const copy = document.createElement("p");
+      copy.className = "ataglance-slide-copy";
+      copy.textContent = label;
+      wrapper.appendChild(copy);
+      copies.push(copy);
+    });
+
+    const wrap = document.createElement("div");
+    wrap.className = "swiper-wrapper";
+    wrappers.forEach((wrapper) => {
+      wrapper.classList.add("swiper-slide");
+      wrap.appendChild(wrapper);
+    });
+    stack.classList.add("swiper", "ataglance-swiper");
+    stack.appendChild(wrap);
+
+    const controls = document.createElement("div");
+    controls.className = "ataglance-controls";
+    controls.innerHTML =
+      '<button type="button" class="ataglance-nav ataglance-nav--prev" aria-label="Previous slide">' +
+      '<span aria-hidden="true">&larr;</span></button>' +
+      '<div class="swiper-pagination ataglance-pagination"></div>' +
+      '<button type="button" class="ataglance-nav ataglance-nav--next" aria-label="Next slide">' +
+      '<span aria-hidden="true">&rarr;</span></button>';
+    media.appendChild(controls);
+
+    const panel = section.querySelector(".ataglance-panel");
+    const cta = panel ? panel.querySelector(".site-link") : null;
+    if (cta) media.appendChild(cta);
+
+    const prevEl = controls.querySelector(".ataglance-nav--prev");
+    const nextEl = controls.querySelector(".ataglance-nav--next");
+    const pager = controls.querySelector(".ataglance-pagination");
+
+    glanceSwiper = new Swiper(stack, {
+      slidesPerView: 1.08,
+      spaceBetween: 16,
+      speed: reduceMotion ? 0 : 620,
+      watchOverflow: true,
+      navigation: {
+        prevEl: prevEl,
+        nextEl: nextEl,
+      },
+      pagination: {
+        el: pager,
+        clickable: true,
+      },
+      breakpoints: {
+        640: { slidesPerView: 1.2, spaceBetween: 18 },
+        768: { slidesPerView: 1.35, spaceBetween: 20 },
+        900: { slidesPerView: 1.5, spaceBetween: 22 },
+      },
+      on: {
+        slideChange: function () {
+          setItemState(this.activeIndex);
+        },
+      },
+    });
+
+    activeIndex = -1;
+    setItemState(glanceSwiper.activeIndex || 0);
+    controls.appendChild(prevEl);
+    controls.appendChild(pager);
+    controls.appendChild(nextEl);
+
+    return () => {
+      if (glanceSwiper && typeof glanceSwiper.destroy === "function") {
+        glanceSwiper.destroy(true, true);
+      }
+      glanceSwiper = null;
+      section.classList.remove("is-glance-slider");
+      copies.forEach((copy) => copy.remove());
+      wrappers.forEach((wrapper) => {
+        wrapper.classList.remove("swiper-slide");
+        stack.appendChild(wrapper);
+      });
+      if (wrap.parentNode) wrap.remove();
+      stack.classList.remove("swiper", "ataglance-swiper");
+      if (controls.parentNode) controls.remove();
+      if (cta && panel) panel.appendChild(cta);
+    };
+  }
+
+  if (mm) {
+    mm.add("(min-width: 1081px)", initDesktop);
+    mm.add("(max-width: 1080px)", initSlider);
+  } else if (window.matchMedia("(max-width: 1080px)").matches) {
+    initSlider();
+  }
 
   setItemState(0);
-})();
+});

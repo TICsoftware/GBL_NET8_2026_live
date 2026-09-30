@@ -118,84 +118,66 @@ function buildOdometer(counterEl) {
    RESET DIGITS BACK TO START (no transition)
 --------------------------------------------- */
 function resetOdometerSlots(slots) {
-  slots.forEach(slot => {
+  slots.forEach(function (slot) {
     const column = slot.querySelector(".odometer-column");
     column.style.transition = "none";
-    column.style.transform = "translateY(0px)";
+    column.style.transform = "translateY(0)";
   });
-}
-
-/* ---------------------------------------------
-   ANIMATE DIGITS TO TARGET
---------------------------------------------- */
-function getDigitHeight(slots) {
-  const firstLine = slots[0] && slots[0].querySelector(".odometer-digit-line");
-  if (!firstLine) return 0;
-  // Stats cards scale while pinned — use layout height, not scaled rect
-  if (slots[0].closest("[data-stats-scope]")) return firstLine.offsetHeight;
-  return firstLine.getBoundingClientRect().height;
 }
 
 function animateOdometerSlots(slots) {
   if (!slots.length) return;
 
-  const digitHeight = getDigitHeight(slots);
-
-  slots.forEach((slot, idx) => {
+  slots.forEach(function (slot, idx) {
     const column = slot.querySelector(".odometer-column");
-    const finalIndex = slot._finalIndex;
-
-    const duration =
-      BASE_DURATION + slot._rolls * DURATION_PER_ROLL;
-
-    const totalSlots = slots.length;
-    const staggerFactor = 0.08;
-    const delay = Math.round(
-      duration * staggerFactor * (totalSlots - idx - 1)
-    );
-
-    column.style.transition = `transform ${duration}ms cubic-bezier(.22,.9,.35,1) ${delay}ms`;
-
-    const offset = finalIndex * digitHeight;
-
-    setTimeout(() => {
-      column.style.transform = `translateY(-${offset}px)`;
-    }, 20);
+    const duration = BASE_DURATION + slot._rolls * DURATION_PER_ROLL;
+    const delay = Math.round(duration * 0.08 * (slots.length - idx - 1));
+    column.style.transition =
+      "transform " + duration + "ms cubic-bezier(.22,.9,.35,1) " + delay + "ms";
+    column.style.transform = "translateY(-" + slot._finalIndex + "em)";
   });
 }
 
-/* ---------------------------------------------
-   SNAP DIGITS DIRECTLY TO FINAL VALUE (no roll)
---------------------------------------------- */
 function snapOdometerSlotsToFinal(slots) {
   if (!slots.length) return;
 
-  const digitHeight = getDigitHeight(slots);
-
-  slots.forEach(slot => {
+  slots.forEach(function (slot) {
     const column = slot.querySelector(".odometer-column");
-    const offset = slot._finalIndex * digitHeight;
     column.style.transition = "none";
-    column.style.transform = `translateY(-${offset}px)`;
+    column.style.transform = "translateY(-" + slot._finalIndex + "em)";
   });
 }
 
-/* ---------------------------------------------
-   TRACK SCROLL DIRECTION (top-to-bottom vs
-   bottom-to-top)
---------------------------------------------- */
-let lastScrollY = window.scrollY || window.pageYOffset;
-let scrollDirection = "down"; // assume down for the initial load
+function getScrollY() {
+  if (window.lenis && typeof window.lenis.scroll === "number") return window.lenis.scroll;
+  return window.scrollY || document.documentElement.scrollTop || 0;
+}
 
-window.addEventListener("scroll", function() {
-  const currentScrollY = window.scrollY || window.pageYOffset;
-  if (currentScrollY > lastScrollY) {
-    scrollDirection = "down";
-  } else if (currentScrollY < lastScrollY) {
-    scrollDirection = "up";
-  }
+let lastScrollY = getScrollY();
+let scrollDirection = "down";
+
+function onScrollDir() {
+  const currentScrollY = getScrollY();
+  if (currentScrollY > lastScrollY + 0.5) scrollDirection = "down";
+  else if (currentScrollY < lastScrollY - 0.5) scrollDirection = "up";
   lastScrollY = currentScrollY;
-}, { passive: true });
+}
+
+window.addEventListener("scroll", onScrollDir, { passive: true });
+document.documentElement.addEventListener("scroll", onScrollDir, { passive: true });
+if (window.lenis && typeof window.lenis.on === "function") {
+  window.lenis.on("scroll", onScrollDir);
+} else {
+  window.addEventListener(
+    "load",
+    function () {
+      if (window.lenis && typeof window.lenis.on === "function") {
+        window.lenis.on("scroll", onScrollDir);
+      }
+    },
+    { once: true }
+  );
+}
 
 /* ---------------------------------------------
    INIT WITH INTERSECTION OBSERVER
@@ -225,6 +207,7 @@ function ensureSlots(el) {
 }
 
 function playCounter(el, { animate = true } = {}) {
+  if (playedMap.get(el)) return;
   const slots = ensureSlots(el);
   if (animate) {
     resetOdometerSlots(slots);
@@ -262,45 +245,61 @@ window.PriyaOdometer = {
     },
 };
 
-if (counters.length) {
+function bindCounter(el) {
+  if (window.PriyaOdometer.isDeferred(el)) {
+    ensureSlots(el);
+    return;
+  }
+
+  ensureSlots(el);
+
+  const isMobile = window.matchMedia("(max-width: 992px)").matches;
+  const stScroller = isMobile ? window : document.documentElement;
+  const triggerEl = el.closest(".giveback-cell") || el;
+
+  if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.create({
+      trigger: triggerEl,
+      scroller: stScroller,
+      start: "top 72%",
+      end: "bottom 12%",
+      invalidateOnRefresh: true,
+      onEnter: function () {
+        playCounter(el, { animate: !reduceMotion && scrollDirection === "down" });
+      },
+      onEnterBack: function () {
+        playCounter(el, { animate: false });
+      },
+      onLeaveBack: function () {
+        if (!reduceMotion) resetCounter(el);
+      },
+    });
+    return;
+  }
+
   const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const el = entry.target;
-
-        // Sustainability counters: driven by homepage scroll timeline
+    function (entries) {
+      entries.forEach(function (entry) {
         if (window.PriyaOdometer.isDeferred(el)) return;
-
         if (entry.isIntersecting) {
-          if (reduceMotion || scrollDirection !== "down") {
-            playCounter(el, { animate: false });
-          } else {
-            playCounter(el, { animate: true });
-          }
+          playCounter(el, {
+            animate: !reduceMotion && scrollDirection === "down",
+          });
         } else if (!reduceMotion) {
-          const statsSection = el.closest("[data-stats-scope]");
-          if (statsSection) {
-            const rect = statsSection.getBoundingClientRect();
-            const stillInView = rect.bottom > 0 && rect.top < window.innerHeight;
-            if (stillInView) {
-              playCounter(el, { animate: false });
-              return;
-            }
-          }
           resetCounter(el);
         }
       });
     },
-    { threshold: 0.3 }
+    { threshold: 0.35 }
   );
+  io.observe(triggerEl);
+}
 
-  counters.forEach((c) => {
-    if (window.PriyaOdometer.isDeferred(c)) {
-      // Pre-build DOM so first play is instant when content appears
-      ensureSlots(c);
-      return;
-    }
-    io.observe(c);
+if (counters.length) {
+  counters.forEach(bindCounter);
+  window.addEventListener("load", function () {
+    if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
   });
 }
 

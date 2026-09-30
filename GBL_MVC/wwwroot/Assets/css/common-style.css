@@ -88,10 +88,6 @@ Title left | copy + CTA right
   color: #ccc;
 }
 
-.ourPhilosophy.is-on-media .section-intro__content .intro-fill-word {
-  color: #fff !important;
-}
-
 @media (max-width: 767px) {
   .section-intro {
     grid-template-columns: 1fr;
@@ -146,7 +142,7 @@ INNER BANNER CSS
 /* ==========================================================
    Common Link/Button Style
    ========================================================== */
-/* .site-link{
+.site-link{
   --link-color: var(--color-primary);
   --link-hover: var(--color-secondary);
   --link-ease: cubic-bezier(.22,1,.36,1);
@@ -235,7 +231,7 @@ INNER BANNER CSS
 .fill-site-link-arrow{
     width:34px;
     height:34px;
-    /* border-radius:50%;
+   border-radius:50%;
     background:rgba(255,255,255,.12); 
     display:flex;
     align-items:center;
@@ -260,7 +256,7 @@ INNER BANNER CSS
 
 .fill-site-link:hover .fill-site-link-arrow{
     transform:translateX(2px);
-} */
+} 
 
 /* ==========================================================
    Site buttons (3 types) — use anywhere
@@ -294,7 +290,10 @@ INNER BANNER CSS
   min-height: 2.75rem;
   padding: 0.6rem var(--btn-pad-x);
   overflow: hidden;
-  border: 1px solid transparent;
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
   border-radius: 999px;
   background: transparent;
   color: var(--btn-black);
@@ -441,40 +440,54 @@ a:active > .site-btn::before {
 }
 
 /* 1 — outline: white pill + black border/text → green fill, white text */
-.site-btn--outline {
+.site-btn.site-btn--outline {
   background: #fff;
-  border-color: var(--btn-black);
-  color: var(--btn-black);
-  --btn-fill: var(--btn-green);
-  /* Avoid subpixel white fringe between border and fill */
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-primary, #282b31);
+  color: var(--color-primary, #282b31);
+  --btn-black: var(--color-primary, #282b31);
+  --btn-green: var(--color-secondary, #67815a);
+  --btn-white: #fff;
+  --btn-fill: var(--color-secondary, #67815a);
   background-clip: padding-box;
 }
 
-.site-btn--outline:hover,
-.site-btn--outline:focus-visible,
-.site-btn--outline:active,
-a:hover > .site-btn--outline,
-a:focus-visible > .site-btn--outline,
-a:active > .site-btn--outline {
-  color: var(--btn-white);
-  border-color: var(--btn-fill);
-  background-color: var(--btn-fill);
+.site-btn.site-btn--outline:hover,
+.site-btn.site-btn--outline:focus-visible,
+.site-btn.site-btn--outline:active,
+a:hover > .site-btn.site-btn--outline,
+a:focus-visible > .site-btn.site-btn--outline,
+a:active > .site-btn.site-btn--outline {
+  color: #fff;
+  border-color: var(--color-secondary, #67815a);
+  background-color: var(--color-secondary, #67815a);
 }
 
-/* 2 — fill: green → black fill overlay */
-.site-btn--fill {
-  background: var(--btn-green);
-  border-color: var(--btn-green);
-  color: var(--btn-white);
-  --btn-fill: var(--btn-black);
+/* 2 — fill: green pill → black fill overlay */
+.site-btn.site-btn--fill {
+  background: var(--color-secondary, #67815a);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-secondary, #67815a);
+  color: #fff;
+  --btn-black: var(--color-primary, #282b31);
+  --btn-green: var(--color-secondary, #67815a);
+  --btn-white: #fff;
+  --btn-fill: var(--color-primary, #282b31);
 }
 
-.site-btn--fill:hover,
-.site-btn--fill:focus-visible,
-.site-btn--fill:active,
-a:hover > .site-btn--fill,
-a:focus-visible > .site-btn--fill {
-  border-color: var(--btn-black);
+.site-btn.site-btn--fill:hover,
+.site-btn.site-btn--fill:focus-visible,
+.site-btn.site-btn--fill:active,
+a:hover > .site-btn.site-btn--fill,
+a:focus-visible > .site-btn.site-btn--fill {
+  color: #fff;
+  border-color: var(--color-primary, #282b31);
+}
+
+.site-btn.site-btn--fill::before {
+  background: var(--color-primary, #282b31);
 }
 
 /* 3 — line: underline only. Green line draws L→R; arrow + text swap sides */
@@ -634,9 +647,9 @@ a:active > .site-btn--line::after {
 ODOMETER CSS
 =====================================**/
 .counter-odometer {display: inline-flex;align-items: baseline;gap: 0ch;font-variant-numeric: tabular-nums;line-height: 1;overflow: hidden;}
-.odometer-digit {overflow: hidden;display: inline-block;vertical-align: bottom;height: 1em;width: 1ch;text-align: center;font-family: inherit;font-weight: inherit;font-size: inherit;}
+.odometer-digit {overflow: hidden;display: inline-block;vertical-align: bottom;height: 1em;width: 1ch;text-align: center;font-family: inherit;font-weight: inherit;font-size: inherit;white-space: normal;}
 .odometer-column {display: block;transform: translateY(0);will-change: transform; overflow: hidden;}
-.odometer-digit-line {display: block;height: 1em;line-height: 1em;box-sizing: border-box;}
+.odometer-digit-line {display: block;height: 1em;line-height: 1em;box-sizing: border-box;white-space: normal;}
 .counter-suffix {display: inline-block;margin-left: 0.35ch;font-family: inherit;font-size: var(--text-58);line-height: 1; color: var(--color-primary);font-weight: 500;}
 .odometer-comma {display: inline-block; width: 0.4em; text-align: center;font-weight: inherit;vertical-align: bottom;}
 .counter-wrap .counter, .counter-wrap .counter-no {font-size: var(--text-58);font-weight: 500;line-height: 1;}
