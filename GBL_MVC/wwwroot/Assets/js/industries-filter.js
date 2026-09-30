@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setFilterOpen(false);
   });
 
+<<<<<<< HEAD
   var filterOuter = (form && form.closest(".filter-outer")) || document.querySelector(".filter-outer");
   var openBtn = filterOuter && filterOuter.querySelector("[data-open-industry-filter]");
 
@@ -188,4 +189,41 @@ document.addEventListener("DOMContentLoaded", function () {
       setFilterOpen(false);
     });
   }
+=======
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    form.dispatchEvent(
+      new CustomEvent("industryfilter:apply", {
+        bubbles: true,
+        detail: {
+          industry: form.industry.value,
+          application: form.application.value,
+          productCategories: form.productCategories.value
+        }
+      })
+    );
+    closeFilterSheet();
+  });
+
+  var filterOuter = form.closest(".filter-outer");
+
+  function closeFilterSheet() {
+    if (!filterOuter) return;
+    filterOuter.classList.remove("is-filter-open");
+    var trigger = filterOuter.querySelector("[data-open-industry-filter]");
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openFilterSheet() {
+    if (!filterOuter) return;
+    filterOuter.classList.add("is-filter-open");
+    var trigger = filterOuter.querySelector("[data-open-industry-filter]");
+    if (trigger) trigger.setAttribute("aria-expanded", "true");
+  }
+
+  document.querySelector("[data-open-industry-filter]")?.addEventListener("click", openFilterSheet);
+  document.querySelectorAll("[data-close-industry-filter]").forEach(function (btn) {
+    btn.addEventListener("click", closeFilterSheet);
+  });
+>>>>>>> 6abade370c1087fffe907c23684b263354f378c9
 });

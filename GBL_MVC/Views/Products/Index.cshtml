@@ -1,0 +1,206 @@
+@model Core_project_BusinessLogic.Entity.Product_Public_Page
+@{
+    var content = Model.Content ?? new Core_project_BusinessLogic.Entity.Product_Public_Content();
+    var title = string.IsNullOrWhiteSpace(content.Title) ? "Products" : content.Title;
+    var breadcrumb = string.IsNullOrWhiteSpace(content.BreadcrumbTitle) ? title : content.BreadcrumbTitle;
+    var windowTitle = string.IsNullOrWhiteSpace(content.WindowTitle) ? title : content.WindowTitle;
+    var masthead = content.MastheadImage ?? "";
+    var mobileMasthead = string.IsNullOrWhiteSpace(content.MobileMastheadImage) ? masthead : content.MobileMastheadImage;
+    var mastheadAlt = content.MastheadAlt ?? title;
+    var selectedIndustries = Model.SelectedIndustryIds ?? new List<int>();
+    var selectedApplications = Model.SelectedApplicationIds ?? new List<int>();
+    var selectedCategories = Model.SelectedCategoryIds ?? new List<int>();
+    ViewData["Title"] = windowTitle;
+}
+
+@section head {
+    <title>@windowTitle</title>
+    <meta content="@content.MetaTag" name="keywords" />
+    <meta content="@content.MetaDescription" name="description" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/product-filter.css" asp-append-version="true" />
+}
+
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <picture>
+                  @if (!string.IsNullOrWhiteSpace(masthead))
+                  {
+                      <source media="(min-width:1024px)" srcset="@masthead">
+                  }
+                  @if (!string.IsNullOrWhiteSpace(mobileMasthead))
+                  {
+                      <img src="@mobileMasthead"
+                           alt="@mastheadAlt"
+                           class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                           loading="eager"
+                           fetchpriority="high">
+                  }
+               </picture>
+               <div class="innerbanner-overlay"></div>
+            </div>
+
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                       @title
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">Home</a>
+                           </li>
+                           <li class="text-white/60">/</li>
+                           <li class="text-white">@breadcrumb</li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>
+         </div>
+   </section>
+
+   @if (!string.IsNullOrWhiteSpace(content.Intro))
+   {
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            @Html.Raw(content.Intro)
+         </div>
+      </div>
+   </section>
+   }
+
+   <section class="relative section-spacing product-filter-outer"
+            data-page-size="@Model.PageSize"
+            data-total="@Model.TotalRecords">
+      <div class="container">
+         <div class="product-filter-layout">
+            <aside class="product-filter-sidebar" id="product-filter-sidebar" aria-label="Product filters">
+               <div class="filter-mobile-sheet-head">
+                  <h2 class="filter-mobile-sheet-head__title">Set Filters</h2>
+                  <button type="button" class="filter-mobile-close" data-close-mobile-filter aria-label="Close filters">&times;</button>
+               </div>
+               <div class="product-filter-sidebar__head">
+                  <h2 class="product-filter-sidebar__title">Filter By</h2>
+                  <button type="button" class="product-filter-clear" data-clear-filters>Clear Filter</button>
+               </div>
+
+               <form class="product-filter-form" id="product-filter" action="/products" method="get">
+                  <div class="pf-dropdown" data-filter-group="industry">
+                     <button type="button" class="pf-dropdown__trigger" aria-expanded="false" aria-controls="filter-industry-panel">
+                        <span>Industry</span>
+                        <span class="pf-dropdown__chevron" aria-hidden="true"></span>
+                     </button>
+                     <div class="pf-dropdown__panel" id="filter-industry-panel">
+                        <div class="pf-dropdown__panel-clip">
+                        <div class="pf-dropdown__panel-inner">
+                        @foreach (var item in Model.IndustryFilters)
+                        {
+                            var selected = selectedIndustries.Contains(item.Id);
+                            <label class="pf-option">
+                               <input type="checkbox" name="industry" value="@item.Id" data-label="@item.Name" @(selected ? "checked" : null)>
+                               <span class="pf-option__label">@item.Name</span>
+                               <span class="pf-option__count">@item.Count.ToString("D2")</span>
+                            </label>
+                        }
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="pf-dropdown" data-filter-group="application">
+                     <button type="button" class="pf-dropdown__trigger" aria-expanded="false" aria-controls="filter-application-panel">
+                        <span>Application</span>
+                        <span class="pf-dropdown__chevron" aria-hidden="true"></span>
+                     </button>
+                     <div class="pf-dropdown__panel" id="filter-application-panel">
+                        <div class="pf-dropdown__panel-clip">
+                        <div class="pf-dropdown__panel-inner">
+                        @foreach (var item in Model.ApplicationFilters)
+                        {
+                            var selected = selectedApplications.Contains(item.Id);
+                            <label class="pf-option">
+                               <input type="checkbox" name="application" value="@item.Id" data-label="@item.Name" @(selected ? "checked" : null)>
+                               <span class="pf-option__label">@item.Name</span>
+                               <span class="pf-option__count">@item.Count.ToString("D2")</span>
+                            </label>
+                        }
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="pf-dropdown" data-filter-group="category">
+                     <button type="button" class="pf-dropdown__trigger" aria-expanded="false" aria-controls="filter-category-panel">
+                        <span>Product Categories</span>
+                        <span class="pf-dropdown__chevron" aria-hidden="true"></span>
+                     </button>
+                     <div class="pf-dropdown__panel" id="filter-category-panel">
+                        <div class="pf-dropdown__panel-clip">
+                        <div class="pf-dropdown__panel-inner">
+                        @foreach (var item in Model.CategoryFilters)
+                        {
+                            var selected = selectedCategories.Contains(item.Id);
+                            <label class="pf-option">
+                               <input type="checkbox" name="category" value="@item.Id" data-label="@item.Name" @(selected ? "checked" : null)>
+                               <span class="pf-option__label">@item.Name</span>
+                               <span class="pf-option__count">@item.Count.ToString("D2")</span>
+                            </label>
+                        }
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+               </form>
+               <div class="filter-mobile-sheet-foot">
+                  <button type="button" class="filter-mobile-clear" data-clear-filters>Clear Filters</button>
+                  <button type="button" class="filter-mobile-apply" data-apply-mobile-filter>Apply Filters</button>
+               </div>
+            </aside>
+            <div class="filter-mobile-backdrop" data-close-mobile-filter></div>
+
+            <div class="product-filter-results">
+               <div class="product-filter-results__head">
+                  <button type="button" class="filter-mobile-trigger" data-open-mobile-filter aria-controls="product-filter-sidebar" aria-expanded="false">
+                     <span class="filter-mobile-trigger__icon" aria-hidden="true"></span>
+                     Refine by Filters
+                  </button>
+                  <h2 class="text-h2 product-filter-results__title">Our product portfolio (<span data-product-count>@Model.TotalRecords</span>)</h2>
+                  <div class="product-filter-chips" data-filter-chips></div>
+               </div>
+
+               <div class="product-filter-grid" id="product-grid">
+                  @if (Model.Products != null && Model.Products.Count > 0)
+                  {
+                      foreach (var item in Model.Products)
+                      {
+                          @await Html.PartialAsync("_ProductCard", item)
+                      }
+                  }
+               </div>
+
+               <p class="product-filter-empty" data-filter-empty @(Model.Products != null && Model.Products.Count > 0 ? "hidden" : null)>No products match the selected filters.</p>
+
+               <div class="flex justify-center mt-8">
+                  <button type="button"
+                          class="site-btn site-btn--fill"
+                          id="btnLoadMoreProducts"
+                          style="@(Model.TotalRecords > Model.PageSize ? "" : "display:none;")">
+                     <span class="site-btn__label">Load more</span>
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+
+@section Scripts {
+   <script src="~/Assets/js/products-listing.js" asp-append-version="true"></script>
+}

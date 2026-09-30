@@ -80,9 +80,10 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@Background_image_Media_id", content.Background_image_id ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@Background_alt_text", content.Background_image_Alttext ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@Attach_file_Media_id", content.Attach_file_id ?? (object)DBNull.Value));
-            // Sqlparam.Add(new SqlParameter("@Spot_temp_id", content.Spot_temp_id ?? (object)DBNull.Value));            
+            // Sqlparam.Add(new SqlParameter("@Spot_temp_id", content.Spot_temp_id ?? (object)DBNull.Value));    
             Sqlparam.Add(new SqlParameter("@userid", userid));
-
+            Sqlparam.Add(new SqlParameter("@cont_section_tagid", content.Mapped_sections ?? (object)DBNull.Value));
+            Sqlparam.Add(new SqlParameter("@tag_master_selected_id", content.Tags ?? (object)DBNull.Value));
 
             dt = GetDataSet("Content_Insert", Sqlparam.ToArray()).Tables[0];
             return dt;
@@ -124,6 +125,20 @@ public class Content_DAL : DBHelper
         }
     }
 
+     protected DataSet Articles_Get_DAL(int cont_id)
+    {
+        DataSet ds = new();
+        try
+        {
+            ds = GetDataSet("Articles_CMS_Get", "@cont_id", cont_id.ToString());
+            return ds;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
     protected DataSet Language_Sections_Get_DAL(int language_id)
     {
         DataSet ds = new();
@@ -144,6 +159,20 @@ public class Content_DAL : DBHelper
         try
         {
             ds = GetDataSet("Subsections_Language_CMS_Get", "@cont_id", cont_id.ToString(), "@language_id", language_id.ToString());
+            return ds;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    protected DataSet Tag_master_Get_DAL(int language_id)
+    {
+        DataSet ds = new();
+        try
+        {
+            ds = GetDataSet("Tag_master_CMS_Get",  "@language_id", language_id.ToString());
             return ds;
         }
         catch
@@ -246,6 +275,8 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@Background_alt_text", content.Background_image_Alttext ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@Attach_file_Media_id", content.Attach_file_id ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@userid", userid));
+            Sqlparam.Add(new SqlParameter("@cont_section_tagid", content.Mapped_sections ?? (object)DBNull.Value));
+            Sqlparam.Add(new SqlParameter("@tag_master_selected_id", content.Tags ?? (object)DBNull.Value));
 
 
             dt = GetDataSet("Content_Update", Sqlparam.ToArray()).Tables[0];
@@ -261,13 +292,13 @@ public class Content_DAL : DBHelper
     {
         try
         {
-        SQLInsert_Update_Delete_Data("Update_content_status", "@cont_id", cont_id.ToString(),"@status", status.ToString(), "@userid", userid.ToString());
+            SQLInsert_Update_Delete_Data("Update_content_status", "@cont_id", cont_id.ToString(), "@status", status.ToString(), "@userid", userid.ToString());
         }
         catch
-         {throw;}
+        { throw; }
     }
 
- 
+
 
     protected DataSet List_Published_DAL(int cont_id, string search, int language_id, int current_page, int Content_Type_ID = 1, int pagesize = 25)
     {
@@ -357,6 +388,8 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@Background_alt_text", content.Background_image_Alttext ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@Attach_file_Media_id", content.Attach_file_id ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@userid", userid));
+            Sqlparam.Add(new SqlParameter("@cont_section_tagid", content.Mapped_sections ?? (object)DBNull.Value));
+            Sqlparam.Add(new SqlParameter("@tag_master_selected_id", content.Tags ?? (object)DBNull.Value));
 
 
             dt = GetDataSet("Content_Reprocess_Insert", Sqlparam.ToArray()).Tables[0];
@@ -368,7 +401,7 @@ public class Content_DAL : DBHelper
         }
     }
 
-     protected DataSet List_Sections_Articles_Republished_DAL(int cont_id, string search, int language_id, int current_page, int pagesize = 500)
+    protected DataSet List_Sections_Articles_Republished_DAL(int cont_id, string search, int language_id, int current_page, int pagesize = 500)
     {
         DataSet ds = new();
         try
@@ -397,7 +430,7 @@ public class Content_DAL : DBHelper
         }
     }
 
-     protected DataTable Publish_Reprocessed_Content(Content_Master content, int userid)
+    protected DataTable Publish_Reprocessed_Content(Content_Master content, int userid)
     {
         DataTable dt = new();
         var Sqlparam = new List<SqlParameter>();
@@ -463,14 +496,16 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@Background_alt_text", content.Background_image_Alttext ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@Attach_file_Media_id", content.Attach_file_id ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@userid", userid));
+            Sqlparam.Add(new SqlParameter("@cont_section_tagid", content.Mapped_sections ?? (object)DBNull.Value));
+            Sqlparam.Add(new SqlParameter("@tag_master_selected_id", content.Tags ?? (object)DBNull.Value));
 
-            if(content.status ==1)
+            if (content.status == 1)
             {
-            dt = GetDataSet("Content_Reprocess_Save", Sqlparam.ToArray()).Tables[0];
+                dt = GetDataSet("Content_Reprocess_Save", Sqlparam.ToArray()).Tables[0];
             }
             else
             {
-            dt = GetDataSet("Content_Reprocess_Republished", Sqlparam.ToArray()).Tables[0];
+                dt = GetDataSet("Content_Reprocess_Republished", Sqlparam.ToArray()).Tables[0];
             }
             return dt;
         }
@@ -485,7 +520,7 @@ public class Content_DAL : DBHelper
         DataTable dt = new();
         try
         {
-            dt = GetDataSet("Content_Republished", "@id", reprocess_Id.ToString(),"@userid", userid.ToString()).Tables[0];
+            dt = GetDataSet("Content_Republished", "@id", reprocess_Id.ToString(), "@userid", userid.ToString()).Tables[0];
             return dt;
         }
         catch
@@ -496,10 +531,37 @@ public class Content_DAL : DBHelper
 
     protected void Delete_Reprocessed_Content(int reprocess_Id)
     {
-        
+
         try
         {
-             SQLInsert_Update_Delete_Data("Delete_Reprocessed_Content", "@id", reprocess_Id.ToString());            
+            SQLInsert_Update_Delete_Data("Delete_Reprocessed_Content", "@id", reprocess_Id.ToString());
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    protected DataSet Sections_Mapping_Get_DAL(int language_id)
+    {
+        DataSet ds = new();
+        try
+        {
+            ds = GetDataSet("Sections_Mapping_CMS_Get", "@language_id", language_id.ToString());
+            return ds;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+    protected DataSet Geographies_Get_DAL(int language_id)
+    {
+        DataSet ds = new();
+        try
+        {
+            ds = GetDataSet("Geographies_CMS_Get", "@language_id", language_id.ToString());
+            return ds;
         }
         catch
         {

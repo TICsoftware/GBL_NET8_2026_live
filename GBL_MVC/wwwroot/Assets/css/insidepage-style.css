@@ -39,17 +39,31 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
   color: #b2b2b2;
 }
 
+.page-intro-inner.white-copy .page-intro-fill-word,
+.page-intro-inner.text-white .page-intro-fill-word,
+.white-copy .page-intro-fill-word,
+.text-white .page-intro-fill-word{
+  color: #f4f4f4;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-intro-inner p,
   .page-intro-inner .page-intro-fill-word{
     color: #282B31;
+  }
+
+  .page-intro-inner.white-copy .page-intro-fill-word,
+  .page-intro-inner.text-white .page-intro-fill-word,
+  .white-copy .page-intro-fill-word,
+  .text-white .page-intro-fill-word{
+    color: #ffffff;
   }
 }
 
 @media all and (max-width: 1179px) {
   .innerbanner-image-wrapper{ height:auto !important;}
   .inside-banner-outer .innerbanner-image{ position: relative;}
-  .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:10px 0; text-align: center;}
+  .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:10px 0; text-align: center; background:#fff}
   .innerbanner-caption *{ color: var(--text-black);}
 
 

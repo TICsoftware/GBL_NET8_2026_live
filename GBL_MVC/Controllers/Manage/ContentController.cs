@@ -40,7 +40,7 @@ public class ContentController : Controller
             Model.Section_id = 0;
             Model.Subsection_id = 0;
             Model.Spot_temp_id = Guid.NewGuid().ToString("N")[..12] + DateTime.Now.ToString("ddMMyyHHss");
-           //Model.Spot_temp_id = "e39c524be0022406261214";
+            //Model.Spot_temp_id = "e39c524be0022406261214";
             pageload(Model, 1);
         }
         catch (Exception ex)
@@ -56,6 +56,7 @@ public class ContentController : Controller
         using ContentManager objBal = new(objconfig);
         int cont_parent_id = 0, add_status = 0, cont_id = 0;
         Content_Master ContentObj = new();
+        string SelectedMapping = "", Selected_tagging = "";
         try
         {
             if (ModelState.IsValid)
@@ -87,7 +88,7 @@ public class ContentController : Controller
                         ContentObj.parent_id = cont_parent_id;
                     }
 
-                    ContentObj.lang_groupid = cont_parent_id;
+                    ContentObj.lang_groupid = Modelobj.Lang_groupid;
                     ContentObj.root_parent_id = Modelobj.Section_id;
                     ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-"); ;
                     ContentObj.title = Modelobj.Title.Trim();
@@ -119,6 +120,17 @@ public class ContentController : Controller
                     ContentObj.Background_image_Alttext = Modelobj.Background_image_Alttext;
                     ContentObj.Attach_file_id = Modelobj.Attach_file_id ?? null;
                     ContentObj.Spot_temp_id = Modelobj.Spot_temp_id;
+
+                    if (Modelobj.SelectedMapping_sections != null && Modelobj.SelectedMapping_sections.Length > 0)
+                    {
+                        ContentObj.Mapped_sections = string.Join(",", Modelobj.SelectedMapping_sections);
+                    }
+
+                    if (Modelobj.SelectedTagging_sections != null && Modelobj.SelectedTagging_sections.Length > 0)
+                    {
+                        ContentObj.Tags = string.Join(",", Modelobj.SelectedTagging_sections);
+                    }
+
                     if (Modelobj.Displaydate != null)
                     {
                         ContentObj.displaydate = Modelobj.Displaydate;
@@ -285,7 +297,36 @@ public class ContentController : Controller
 
                 if (cmsbal.Language_subSections != null && cmsbal.Language_subSections.Count > 0)
                 {
-                    Model.Language_sections = Helper.BuildHierarchy(cmsbal.Language_subSections, Model.Language_section_id);
+                    Model.Language_subSections = Helper.BuildHierarchy(cmsbal.Language_subSections, Model.Language_section_id);
+                }
+            }
+
+            Model.Mapping_sections = [];
+            if (cmsbal.Mapping_Sections != null && cmsbal.Mapping_Sections.Count > 0)
+            {
+                foreach (var item in cmsbal.Mapping_Sections)
+                {
+                    Model.Mapping_sections.Add(new SelectListItem
+                    {
+                        Text = item.title,
+                        Value = item.id.ToString(),
+                        Selected = Model.SelectedMapping_sections != null && Model.SelectedMapping_sections.Contains(item.id ?? 0)
+                    });
+                }
+            }
+
+
+            Model.Tagging_sections = [];
+            if (cmsbal.Tagging_Sections != null && cmsbal.Tagging_Sections.Count > 0)
+            {
+                foreach (var item in cmsbal.Tagging_Sections)
+                {
+                    Model.Tagging_sections.Add(new SelectListItem
+                    {
+                        Text = item.title,
+                        Value = item.id.ToString(),
+                        Selected = Model.SelectedTagging_sections != null && Model.SelectedTagging_sections.Contains(item.id ?? 0)
+                    });
                 }
             }
         }
@@ -322,7 +363,35 @@ public class ContentController : Controller
                 articles = obj.sect_Articles.Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
             }
 
-            return Json(new { subSections = subSections, Articles = articles });
+            return Json(new { listSections = subSections, listArticles = articles });
+
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError(" ", ex);
+            return Json(new { msg = ex.Message });
+        }
+        finally
+        {
+            objBal.Dispose();
+        }
+    }
+
+     [HttpGet]
+    public IActionResult Load_Articles(int cont_id)
+    {
+        using ContentManager objBal = new(objconfig);
+        List<Options_List> obj = new();
+        List<SelectListItem> articles = new();
+
+        try
+        {
+            obj = objBal.Articles_Get_BAL(cont_id);
+            if (obj != null && obj.Count > 0)
+            {
+                articles = obj.Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
+            }
+            return Json(new { listArticles = articles });
 
         }
         catch (Exception ex)
@@ -340,11 +409,17 @@ public class ContentController : Controller
     public IActionResult Load_Language_sections(int language_id)
     {
         using ContentManager objBal = new(objconfig);
-        List<SelectListItem> sections = new();
+        List<SelectListItem> sectionsObj = new();
+        List<SelectListItem> tagsObj = new();
+        List<SelectListItem> mapping_sectionsObj = new();
+        List<SelectListItem> geographiesObj = new();
         try
         {
-            sections = objBal.Language_Sections_Get_BAL(language_id).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
-            return Json(new { Sections = sections });
+            sectionsObj = objBal.Language_Sections_Get_BAL(language_id).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
+            tagsObj = objBal.Tag_master_Get_BAL(language_id).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
+            mapping_sectionsObj = objBal.Sections_Mapping_Get_BAL(language_id).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
+            geographiesObj =  objBal.Geographies_Get_BAL(language_id).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
+            return Json(new { listsections = sectionsObj, taglist = tagsObj, mapped_sections= mapping_sectionsObj , geographies = geographiesObj});
 
         }
         catch (Exception ex)
@@ -367,7 +442,7 @@ public class ContentController : Controller
         {
             subSections = Helper.BuildHierarchy(objBal.Language_Subsections_Get_BAL(cont_id, language_id), cont_id);
 
-            return Json(new { subSections = subSections });
+            return Json(new { listsubsections = subSections });
         }
         catch (Exception ex)
         {
@@ -381,6 +456,27 @@ public class ContentController : Controller
 
     }
 
+    public IActionResult Load_tags(int language_id)
+    {
+        using ContentManager objBal = new(objconfig);
+        List<SelectListItem> sections = new();
+        try
+        {
+            sections = objBal.Tag_master_Get_BAL(language_id).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.title }).ToList();
+            return Json(new { listsections = sections });
+
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError(" ", ex);
+            return Json(new { msg = ex.Message });
+        }
+        finally
+        {
+            objBal.Dispose();
+        }
+
+    }
     //Context details to display while adding content
     public IActionResult Add_Context_List(int template_Id, int language_id, string Spot_temp_id)
     {
@@ -617,6 +713,9 @@ public class ContentController : Controller
         using ContentManager objBal = new(objconfig);
         try
         {
+            Model.language_id = 1;
+            Model.section_id = 0;
+            Model.subSection_id = 0;
             Drafts_load(Model, objBal);
         }
         catch (Exception ex)
@@ -669,7 +768,15 @@ public class ContentController : Controller
         try
         {
 
-            cmsbal = objBal.CMS_Pageload_Get_BAL(1, 0);
+            if (Model.language_id == 1)
+            {
+                cont_id = Model.subSection_id > 0 ? Model.subSection_id : Model.section_id;
+            }
+            else
+            {
+                cont_id = Model.language_subSection_id > 0 ? Model.language_subSection_id : Model.language_section_id;
+            }
+            cmsbal = objBal.CMS_Pageload_Get_BAL(Model.language_id, cont_id, 1);
             Model.Languages = [];
             if (cmsbal.Languages != null && cmsbal.Languages.Count > 0)
             {
@@ -699,8 +806,25 @@ public class ContentController : Controller
                     Model.Geographies.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
                 }
             }
-            cont_id = Model.subSection_id == 0 ? Model.section_id ?? 0 : Model.subSection_id ?? 0;
-            cmsObj = objBal.CMS_Section_articles_List(cont_id, Model.searchquery ?? "", Model.language_id ?? 0, Model.current_page ?? 1);
+            Model.Language_sections = [];
+            if (cmsbal.Language_sections != null && cmsbal.Language_sections.Count > 0)
+            {
+                foreach (var item in cmsbal.Language_sections)
+                {
+                    Model.Language_sections.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+
+            Model.Language_subSections = [];
+            if (cmsbal.Language_subSections != null && cmsbal.Language_subSections.Count > 0)
+            {
+                foreach (var item in cmsbal.Language_subSections)
+                {
+                    Model.Language_subSections.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+
+            cmsObj = objBal.CMS_Section_articles_List(cont_id, Model.searchquery ?? "", Model.language_id, Model.current_page ?? 1);
 
             if (cmsObj.sections != null && cmsObj.sections.Count > 0)
             {
@@ -872,7 +996,7 @@ public class ContentController : Controller
                         ContentObj.parent_id = cont_parent_id;
                     }
 
-                    ContentObj.lang_groupid = cont_parent_id;
+                    ContentObj.lang_groupid = Modelobj.Lang_groupid;
                     ContentObj.root_parent_id = Modelobj.Section_id;
                     ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-"); ;
                     ContentObj.title = Modelobj.Title.Trim();
@@ -903,6 +1027,15 @@ public class ContentController : Controller
                     ContentObj.Background_image_id = Modelobj.Background_image_id ?? null;
                     ContentObj.Background_image_Alttext = Modelobj.Background_image_Alttext;
                     ContentObj.Attach_file_id = Modelobj.Attach_file_id ?? null;
+                    if (Modelobj.SelectedMapping_sections != null && Modelobj.SelectedMapping_sections.Length > 0)
+                    {
+                        ContentObj.Mapped_sections = string.Join(",", Modelobj.SelectedMapping_sections);
+                    }
+
+                    if (Modelobj.SelectedTagging_sections != null && Modelobj.SelectedTagging_sections.Length > 0)
+                    {
+                        ContentObj.Tags = string.Join(",", Modelobj.SelectedTagging_sections);
+                    }
                     if (Modelobj.Displaydate != null)
                     {
                         ContentObj.displaydate = Modelobj.Displaydate;
@@ -1015,15 +1148,20 @@ public class ContentController : Controller
                 }
                 else
                 {
-
-                    objModel.Language_section_id = objcontent.Language_root_parent_id;
-                    if (objcontent.Language_root_parent_id == objcontent.parent_id)
+                    if (objcontent.Language_root_parent_id == objcontent.id)
                     {
+                        objModel.Language_section_id = 0;
+                        objModel.Language_subsection_id = 0;
+                    }
+                    else if (objcontent.Language_root_parent_id == objcontent.parent_id)
+                    {
+                        objModel.Language_section_id = objcontent.Language_root_parent_id;
                         objModel.Language_subsection_id = 0;
                     }
                     else
                     {
-                        objModel.Language_subsection_id = objcontent.parent_id;
+                        objModel.Language_section_id = objcontent.Language_root_parent_id;
+                        objModel.Language_subsection_id = objcontent.Language_subsection_id;
                     }
                     if (objcontent.Content_Type_ID == 1)
                     {
@@ -1080,6 +1218,22 @@ public class ContentController : Controller
                 objModel.Mobile_Masthead_image = objcontent.Mobile_Masthead_image;
                 objModel.Background_image = objcontent.Background_image;
                 objModel.Attach_file = objcontent.Attach_file;
+                if (!string.IsNullOrWhiteSpace(objcontent.Mapped_sections))
+                {
+                    objModel.SelectedMapping_sections = objcontent.Mapped_sections
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Select(int.Parse)
+                        .ToArray();
+                }
+
+                if (!string.IsNullOrWhiteSpace(objcontent.Tags))
+                {
+                    objModel.SelectedTagging_sections = objcontent.Tags
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Select(int.Parse)
+                        .ToArray();
+                }
+
             }
         }
         catch (Exception)

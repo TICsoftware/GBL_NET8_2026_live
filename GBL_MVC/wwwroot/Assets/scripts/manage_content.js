@@ -105,8 +105,7 @@ window.Load_Edit_context_Temp_details = function (isrefresh, _templateid, _langu
             type: 'GET',
             data: { template_Id: _templateid, language_id: _language_id, Id_encrypt_val: _Id_encrypt_val },
             success: function (data) {
-                if (data != null)
-                {
+                if (data != null) {
                     $("#div_contentspotmapping").html(data);
                     $('.list_context').each(function () {
                         var id = $(this).data('paging-id');
@@ -155,8 +154,7 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
             type: 'GET',
             data: { template_Id: _templateid, language_id: _language_id, Id_encrypt_val: _Id_encrypt_val },
             success: function (data) {
-                if (data != null)
-                {
+                if (data != null) {
                     $("#div_contentspotmapping").html(data);
                     $('.list_context').each(function () {
                         var id = $(this).data('paging-id');
@@ -276,11 +274,11 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
                     // --------------------                   
                     let ddsubsections = $("#ddSubSections");
                     ddsubsections.empty();
-                    if (data.subSections == null) {
+                    if (data.listSections == null) {
                         ddsubsections.append(`<option value="0">Select</option>`);
                     }
                     else {
-                        $.each(data.subSections, function (i, item) {
+                        $.each(data.listSections, function (i, item) {
                             ddsubsections.append(`<option value="${item.value}">${item.text}</option>`);
                         });
                     }
@@ -290,12 +288,12 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
                     // --------------------
                     let ddarticles = $("#ddArticle");
                     ddarticles.empty();
-                    if (data.Articles == null) {
+                    if (data.listArticles == null) {
                         ddarticles.append(`<option value="0">Select</option>`);
                     }
                     else {
-                        $.each(data.Articles, function (i, item) {
-                            ddarticles.append(`<option value="${item.Value}">${item.Text}</option>`);
+                        $.each(data.listArticles, function (i, item) {
+                            ddarticles.append(`<option value="${item.value}">${item.text}</option>`);
                         });
                     }
                 },
@@ -309,6 +307,41 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
 
     });
 
+    $("#ddSubSections").on("change", function () {
+
+        if ($("#ddArticle").length > 0) {
+            let cont_Id = $(this).val();
+
+            if (cont_Id > 0) {
+                $.ajax({
+                    url: '/Content/Load_Articles',
+                    type: 'GET',
+                    data: { cont_id: cont_Id },
+                    success: function (data) {
+                        // --------------------
+                        // Bind articles
+                        // --------------------
+                        let ddarticles = $("#ddArticle");
+                        ddarticles.empty();
+                        if (data.listArticles == null) {
+                            ddarticles.append(`<option value="0">Select</option>`);
+                        }
+                        else {
+                            $.each(data.listArticles, function (i, item) {
+                                ddarticles.append(`<option value="${item.value}">${item.text}</option>`);
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        alert(xhr.status + " : " + xhr.responseText);
+                    },
+                    complete: function (jqXHR) {
+                    }
+                });
+            }
+        }
+    });
+
     $("#ddLanguage").on("change", function () {
 
         let language_id = $(this).val();
@@ -318,23 +351,62 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
                 type: 'GET',
                 data: { language_id: language_id },
                 success: function (data) {
-                    $("#div_language_sections").show();
+                    if (language_id == 1) {
+                        $("#lblddSections").text("Select Section");
+                        $("#lblddArticle").text("Select Article");
+                        $("#div_language_sections").hide();
+                        $("#Divmainenglishsections").show();
+                    }
+                    else {
+                        $("#lblddSections").text("Tag English Section");
+                        $("#lblddArticle").text("Tag English Article");
+                        $("#div_language_sections").show();
+                        $("#Divmainenglishsections").hide();
+                    }
                     // --------------------
                     // Bind subsections
                     // --------------------
                     let ddsections = $("#ddLanguage_Sections");
                     ddsections.empty();
-                    if (data.Sections == null) {
+                    if (data.listsections == null) {
                         ddsections.append(`<option value="0">Select</option>`);
                     }
                     else {
-                        $.each(data.Sections, function (i, item) {
+                        $.each(data.listsections, function (i, item) {
                             ddsections.append(`<option value="${item.value}">${item.text}</option>`);
                         });
                     }
 
                     let ddsubsections = $("#ddLanguage_SubSections");
                     ddsubsections.empty().append('<option value="0">Select</option>');
+                    if ($("#lstTagging_Sections").length > 0) {
+                        let ddtags = $("#lstTagging_Sections");
+                        ddtags.empty();
+                        if (data.taglist != null) {
+                            $.each(data.taglist, function (i, item) {
+                                ddtags.append(`<option value="${item.value}">${item.text}</option>`);
+                            });
+                        }
+                    }
+                    if ($("#ddGeography").length > 0) {
+                        let ddGeography = $("#ddGeography");
+                        ddGeography.empty();
+                        if (data.geographies != null) {
+                            $.each(data.geographies, function (i, item) {
+                                ddGeography.append(`<option value="${item.value}">${item.text}</option>`);
+                            });
+                        }
+                    }
+
+                    if ($("#lstMapping_Sections").length > 0) {
+                        let ddmappedsections = $("#lstMapping_Sections");
+                        ddmappedsections.empty();
+                        if (data.mapped_sections != null) {
+                            $.each(data.mapped_sections, function (i, item) {
+                                ddmappedsections.append(`<option value="${item.value}">${item.text}</option>`);
+                            });
+                        }
+                    }
 
                 },
                 error: function (xhr) {
@@ -356,17 +428,24 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
                 type: 'GET',
                 data: { language_id: language_id, cont_id: cont_Id },
                 success: function (data) {
-
+                    if (language_id == 1) {
+                        $("#div_language_sections").hide();
+                        $("#Divmainenglishsections").show();
+                    }
+                    else {
+                        $("#div_language_sections").show();
+                        $("#Divmainenglishsections").hide();
+                    }
                     // --------------------
                     // Bind subsections
                     // --------------------
                     let ddsubsections = $("#ddLanguage_SubSections");
                     ddsubsections.empty();
-                    if (data.subsections == null) {
+                    if (data.listsubsections == null) {
                         ddsubsections.append(`<option value="0">Select</option>`);
                     }
                     else {
-                        $.each(data.subsections, function (i, item) {
+                        $.each(data.listsubsections, function (i, item) {
                             ddsubsections.append(`<option value="${item.value}">${item.text}</option>`);
                         });
                     }
@@ -509,8 +588,7 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
 
         e.preventDefault();
         e.stopPropagation();
-        if(!confirm("Are you sure you want to delete data?"))
-        {
+        if (!confirm("Are you sure you want to delete data?")) {
             return false;
         }
 
@@ -620,8 +698,7 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
     });
 
     $(document).on("click", ".delete-content", function (e) {
-        if(!confirm("Are you sure you want to delete page?"))
-        {
+        if (!confirm("Are you sure you want to delete page?")) {
             return false;
         }
         var trcontent = $(this);
@@ -768,8 +845,7 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
     });
 
     $(document).on("click", ".publish-delete-spottemplate", function (e) {
-        if(!confirm("Are you sure you want to delete data?"))
-        {
+        if (!confirm("Are you sure you want to delete data?")) {
             return false;
         }
 
@@ -795,7 +871,7 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
         });
     });
 
-   
+
 
 
 })();

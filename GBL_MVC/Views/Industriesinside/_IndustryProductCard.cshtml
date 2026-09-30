@@ -1,0 +1,47 @@
+@model Core_project_BusinessLogic.Entity.Industry_Inside_Product
+@{
+    var href = string.IsNullOrWhiteSpace(Model.Product_pagename)
+        ? "/Products/Inside_html"
+        : "/Products/" + Model.Product_pagename;
+}
+<article class="industry-product-card">
+   <div class="industry-product-card__media">
+      @if (!string.IsNullOrWhiteSpace(Model.ThumbnailUrl))
+      {
+          <img src="@Model.ThumbnailUrl" alt="@(Model.ThumbnailAlt ?? Model.ProductName)">
+      }
+   </div>
+   <div class="industry-product-card__body">
+      <h3 class="text-h5">@Model.ProductName</h3>
+      @if (!string.IsNullOrWhiteSpace(Model.Intro))
+      {
+          <p>@Model.Intro</p>
+      }
+      @if (Model.Applications != null && Model.Applications.Count > 0)
+      {
+          <div class="industry-product-card__apps">
+             <h6 class="industry-product-card__apps-label">Other Applications</h6>
+             <ul>
+                @foreach (var app in Model.Applications)
+                {
+                    <li>@app</li>
+                }
+             </ul>
+          </div>
+      }
+      <div class="industry-product-card__actions">
+         <a href="@href" class="site-btn site-btn--fill">
+            <span class="site-btn__label">Learn More</span>
+            <span class="site-btn__arrow" aria-hidden="true">
+               <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+         </a>
+         <a href="/contact-us" class="site-btn site-btn--outline">
+            <span class="site-btn__label">Enquire Now</span>
+            <span class="site-btn__arrow" aria-hidden="true">
+               <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+         </a>
+      </div>
+   </div>
+</article>

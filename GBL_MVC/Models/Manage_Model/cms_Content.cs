@@ -75,7 +75,7 @@ public class cms_Content
     [StringLength(500, ErrorMessage = "Please ensure the meta description does not exceed 500 characters.")]
     [RegularExpression(@"^[^`\^~#<>{}]+", ErrorMessage = @"Please enter valid characters. The following characters are not accepted `^~#<> in the meta description")]
     public string? Metadesc { get; set; }
-    
+
     [ValidateNever]
     public string? PageSchema { get; set; }
 
@@ -117,6 +117,10 @@ public class cms_Content
     public List<SelectListItem>? Language_subSections { get; set; }
     public List<SelectListItem>? Articles { get; set; }
 
+    public List<SelectListItem>? Mapping_sections { get; set; }
+    public int[]? SelectedMapping_sections { get; set; }
+    public List<SelectListItem>? Tagging_sections { get; set; }
+    public int[]? SelectedTagging_sections { get; set; }
 
     public string? Thumb_image { get; set; }
     public int? Thumb_image_id { get; set; }
@@ -158,6 +162,8 @@ public class cms_Content
 
     public int? Reprocess_Id { get; set; }
 
+    public List<SelectListItem>? List_Tagging_sections { get; set; }
+
 }
 
 public class Page_detail
@@ -177,9 +183,11 @@ public class CMS_pages
 {
     public int? current_page { get; set; }
     public string? searchquery { get; set; }
-    public int? section_id { get; set; }
-    public int? subSection_id { get; set; }
-    public int? language_id { get; set; }
+    public int section_id { get; set; }
+    public int subSection_id { get; set; }
+    public int language_id { get; set; }
+    public int language_section_id { get; set; }
+    public int language_subSection_id { get; set; }
     public List<SelectListItem>? Languages { get; set; }
     public int? Geography_ID { get; set; }
     public List<SelectListItem>? Geographies { get; set; }
@@ -190,6 +198,8 @@ public class CMS_pages
     public List<Page_detail>? articles_list { get; set; }
     public int? article_no_of_pages { get; set; }
     public int Content_Type_ID { get; set; }
+    public List<SelectListItem>? Language_sections { get; set; }
+    public List<SelectListItem>? Language_subSections { get; set; }
 }
 
 

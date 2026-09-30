@@ -54,6 +54,78 @@ namespace GBL_MVC.Routes
 
 
             app.MapControllerRoute(
+                name: "industries",
+                pattern: "industries",
+                defaults: new { controller = "Industries", action = "Index", title = "industries" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-we-serve",
+                pattern: "industries-we-serve",
+                defaults: new { controller = "Industries", action = "Index", title = "industries-we-serve" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-inside-load-products",
+                pattern: "IndustriesInside/LoadProducts",
+                defaults: new { controller = "IndustriesInside", action = "LoadProducts" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-inside-load-more",
+                pattern: "IndustriesInside/LoadMore",
+                defaults: new { controller = "IndustriesInside", action = "LoadMore" }
+            );
+
+            app.MapControllerRoute(
+                name: "industries-inside",
+                pattern: "IndustriesInside/{title?}",
+                defaults: new { controller = "IndustriesInside", action = "Index" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-listing",
+                pattern: "products",
+                defaults: new { controller = "Products", action = "Index" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-load-products",
+                pattern: "Products/LoadProducts",
+                defaults: new { controller = "Products", action = "LoadProducts" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-load-more",
+                pattern: "Products/LoadMore",
+                defaults: new { controller = "Products", action = "LoadMore" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-index-html",
+                pattern: "Products/Index_html",
+                defaults: new { controller = "Products", action = "Index_html" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-inside-html",
+                pattern: "Products/Inside_html",
+                defaults: new { controller = "Products", action = "Inside_html" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-index",
+                pattern: "Products/Index",
+                defaults: new { controller = "Products", action = "Index" }
+            );
+
+            app.MapControllerRoute(
+                name: "products-inside",
+                pattern: "Products/{title}",
+                defaults: new { controller = "Products", action = "Inside" }
+            );
+
+            app.MapControllerRoute(
                 name: "contactus",
                 pattern: "contact-us",
                 defaults: new { controller = "Contactus", action = "Index", title = "contact-us" }

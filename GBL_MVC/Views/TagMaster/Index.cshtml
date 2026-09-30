@@ -1,0 +1,204 @@
+@using GBL_BusinessLogic 
+@model List_Model_Tags
+
+@{
+    Layout = "~/Views/Shared/Manage/_Layout_RHS.cshtml";
+    ViewData["Title"] = "List Tags";
+    string returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["AlertMessage"]
+    </div>
+}
+
+<div class="mb-3">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddTag">
+        Add New
+    </button>
+</div>
+
+@using (Html.BeginForm("Index", "TagMaster", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row align-items-end mb-3">
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label for="ddLanguage" class="form-label">Language</label>
+                @Html.DropDownListFor(model => model.language_id, Model.Languages ?? new List<SelectListItem>(), new { id = "ddLanguage", @class = "form-select" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label for="ddStatus" class="form-label">Status</label>
+                @Html.DropDownListFor(model => model.Status,
+                    new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Active", Value = "1" },
+                        new SelectListItem { Text = "Inactive", Value = "0" }
+                    },
+                    new { id = "ddStatus", @class = "form-select" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <button type="submit" class="btn btn-primary" name="Command" value="Search">Search</button>
+            </div>
+        </div>
+    </div>
+}
+
+<table class="table table-bordered table-striped table-hover template-master-table">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tag Name</th>
+            <th>Language Master</th>            
+            <th>Status</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th class="template-master-col-actions">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model.List_tags != null && Model.List_tags.Count > 0)
+        {
+            foreach (var item in Model.List_tags)
+            {
+                <tr>
+                    <td>@item.ID</td>
+                    <td>@item.Language_Master_ID</td>
+                    <td>@item.Tag_Name</td>
+                    <td>
+                        @if (item.Status == 1)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </td>
+                    <td>@item.Created_Date</td>
+                    <td>@item.Updated_Date</td>
+
+                    <td>
+                        <div class="template-master-actions">
+                            <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary js-edit-tag"
+                               data-id="@CryptoEngine.Encrypt(item.ID.ToString())">Edit</a>
+
+                            @if (item.Status == 1)
+                            {
+                                <a href="javascript:void(0)"
+                                   class="btn btn-sm btn-outline-danger js-update-status"
+                                   data-id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                                   data-status="0"
+                                   data-confirm-message="Are you sure you want to deactivate this tag?">
+                                    Deactivate
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0)"
+                                   class="btn btn-sm btn-outline-success js-update-status"
+                                   data-id="@CryptoEngine.Encrypt(item.ID.ToString())"
+                                   data-status="1"
+                                   data-confirm-message="Are you sure you want to activate this tag?">
+                                    Activate
+                                </a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    No tag found.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="modalAddTag" tabindex="-1" role="dialog" aria-labelledby="modalAddTagTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("Add", "TagMaster", FormMethod.Post, new { id = "frmAddTag" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddTagTitle">Add Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="Tag_Name" class="form-label">Tag Name <sup>*</sup></label>
+                        @Html.TextBox("Tag_Name", "", new { id = "Tag_Name", @class = "form-control", maxlength = "120", required = "required" })
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="ddAddTagLanguage" class="form-label">Language <sup>*</sup></label>
+                        @Html.DropDownList("Language_Master_ID", Model.Languages ?? new List<SelectListItem>(), new { id = "ddAddTagLanguage", @class = "form-select", required = "required" })
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditTag" tabindex="-1" role="dialog" aria-labelledby="modalEditTagTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="frmEditTag" data-edit-url="@Url.Action("Edit", "TagMaster")" data-status-url="@Url.Action("Update_status", "TagMaster")">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditTagTitle">Edit Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID" id="Edit_ID" value="0" />
+                    <input type="hidden" name="Status" id="Edit_Status" value="1" />
+                    <div class="form-group mb-3">
+                        <label for="Edit_Tag_Name" class="form-label">Tag Name <sup>*</sup></label>
+                        <input type="text" name="Tag_Name" id="Edit_Tag_Name" class="form-control" maxlength="120" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="ddEditTagLanguage" class="form-label">Language <sup>*</sup></label>
+                        <select name="Language_Master_ID" id="ddEditTagLanguage" class="form-select" required>
+                            @if (Model.Languages != null)
+                            {
+                                foreach (var lang in Model.Languages)
+                                {
+                                    <option value="@lang.Value">@lang.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section head {
+    <link rel="stylesheet" href="~/Assets/css/template-master-style.css" />
+}
+
+@section Scripts {
+    <script src="~/Assets/scripts/tag_master_index.js"></script> 
+}

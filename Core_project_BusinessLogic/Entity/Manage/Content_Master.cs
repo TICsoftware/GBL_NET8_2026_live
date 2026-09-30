@@ -67,6 +67,8 @@ public class Content_Master
     public string? Attach_file { get; set; }
     public string? Spot_temp_id { get; set; }
     public int? reprocess_id { get; set; }
+    public string? Mapped_sections { get; set; }
+    public string? Tags { get; set; }
 
 }
 
@@ -88,6 +90,8 @@ public class CMS_pageload
     public List<Options_List>? Subsections { get; set; }
     public List<Options_List>? sect_Articles { get; set; }
     public List<Options_List>? Language_subSections { get; set; }
+    public List<Options_List>? Mapping_Sections { get; set; }
+    public List<Options_List>? Tagging_Sections { get; set; }
 }
 
 
@@ -109,9 +113,9 @@ public class CMS_Page_detail
     public DateTime Created_date { get; set; }
     public DateTime? Updated_date { get; set; }
     public int Status { get; set; }
-    public int IsReprocessed {get;set;}
-    public int Reprocess_Id{get;set;}
-    
+    public int IsReprocessed { get; set; }
+    public int Reprocess_Id { get; set; }
+
 
 }
 

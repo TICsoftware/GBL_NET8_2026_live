@@ -30,8 +30,10 @@ Mobile: below 1180px
 .industry-tab {
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
   min-height: 2.5rem;
-  padding:0.75rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -39,6 +41,7 @@ Mobile: below 1180px
   font-size: var(--text-24);
   line-height: 1;
   cursor: pointer;
+  text-decoration: none;
   transition: color 0.35s ease;
   font-weight: 400;
 }
@@ -46,7 +49,6 @@ Mobile: below 1180px
 .industry-tab.is-active {
   background: transparent;
   color: var(--color-white, #fff);
-
 }
 
 .industry-tab-heading {
@@ -90,13 +92,14 @@ Mobile: below 1180px
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  padding:2rem 2rem 5rem;
+  padding: 2rem 2rem 5rem;
   position: relative;
 }
 
-
-
-.industry-product-card__apps-label{ margin-bottom:10px; font-weight: 700;}
+.industry-product-card__apps-label {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
 
 .industry-product-card__apps ul {
   display: flex;
@@ -111,7 +114,6 @@ Mobile: below 1180px
   padding: 0.28rem 0.7rem;
   border: 1px solid rgba(40, 43, 49, 0.18);
   border-radius: 999px;
-  /* background: var(--color-white, #fff); */
   color: var(--color-primary, #282b31);
   font-size: var(--text-small);
 }
@@ -120,7 +122,7 @@ Mobile: below 1180px
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 0.65rem; 
+  gap: 0.65rem;
   position: absolute;
   bottom: 1.25rem;
   left: 1.15rem;
@@ -165,15 +167,11 @@ Mobile: below 1180px
 
 @media (prefers-reduced-motion: reduce) {
   .industry-product-card__media img {
-    height: 105%;   
+    height: 105%;
   }
 }
 
 @media (max-width: 1179px) {
-  /* .industry-tabs {
-    width: 100%;
-  } */
-
   .industry-tab {
     flex: 1 1 0;
     text-align: center;
@@ -183,12 +181,13 @@ Mobile: below 1180px
     grid-template-columns: 1fr 1fr;
   }
 
-  .industry-product-card__body{ padding:1.25rem 1.25rem 5rem;}
+  .industry-product-card__body {
+    padding: 1.25rem 1.25rem 5rem;
+  }
 }
 
 @media (max-width: 767px) {
-
-.industry-product-grid {
+  .industry-product-grid {
     grid-template-columns: 1fr;
   }
 }

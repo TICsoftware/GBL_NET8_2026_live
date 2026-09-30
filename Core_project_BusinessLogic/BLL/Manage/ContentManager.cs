@@ -112,12 +112,34 @@ public class ContentManager : Content_DAL
                     obj.Templates.Add(new Options_List { id = Convert.ToInt32(row1["Id"].ToString()), title = row1["template_name"].ToString() });
                 }
             }
+
+            //bind section mapping 
+            obj.Mapping_Sections = [];
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                foreach (DataRow row1 in ds.Tables[4].Rows)
+                {
+                    obj.Mapping_Sections.Add(new Options_List { id = Convert.ToInt32(row1["cont_id"].ToString()), title = row1["cont_title"].ToString() });
+                }
+            }
+
+            //bind taggings 
+            obj.Tagging_Sections = [];
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                foreach (DataRow row1 in ds.Tables[5].Rows)
+                {
+                    obj.Tagging_Sections.Add(new Options_List { id = Convert.ToInt32(row1["Id"].ToString()), title = row1["Tag_name"].ToString() });
+                }
+            }
+
+            //bind language sections here 
+            obj.Language_sections = [new Options_List { id = 0, title = "Select" }];
             if (language_id != 1)
             {
-                obj.Language_sections = [new Options_List { id = 0, title = "Select" }];
-                if (ds.Tables[4].Rows.Count > 0)
+                if (ds.Tables[6].Rows.Count > 0)
                 {
-                    foreach (DataRow row in ds.Tables[4].Rows)
+                    foreach (DataRow row in ds.Tables[6].Rows)
                     {
                         obj.Language_sections.Add(new Options_List { id = Convert.ToInt32(row["cont_id"].ToString()), title = row["cont_title"].ToString() });
                     }
@@ -160,7 +182,7 @@ public class ContentManager : Content_DAL
             }
             // }
             //bind language subsections
-            /*
+
             if (language_id != 1)
             {
                 ds = Language_Subsections_Get_DAL(cont_id, language_id);
@@ -176,7 +198,7 @@ public class ContentManager : Content_DAL
                        })
                    );
                 }
-            }*/
+            }
 
             return obj;
         }
@@ -219,6 +241,29 @@ public class ContentManager : Content_DAL
         }
     }
 
+    public List<Options_List> Articles_Get_BAL(int cont_id)
+    {
+        List<Options_List> objarticles = [new Options_List { id = 0, title = "Select", parent_id = 0 }];
+        DataSet ds = new();
+        try
+        {
+            ds = Articles_Get_DAL(cont_id);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    objarticles.Add(new Options_List { id = Convert.ToInt32(dr["cont_id"].ToString()), parent_id = Convert.ToInt32(dr["cont_parent_id"].ToString()), title = dr["cont_title"].ToString() });
+                }
+            }
+
+            return objarticles;
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+    }
+
     public List<Options_List> Language_Sections_Get_BAL(int language_id)
     {
         List<Options_List> objsections = [new Options_List { id = 0, title = "Select", parent_id = 0 }];
@@ -243,7 +288,7 @@ public class ContentManager : Content_DAL
     }
     public List<Options_List> Language_Subsections_Get_BAL(int cont_id, int language_id)
     {
-        List<Options_List> objsections = [new Options_List { id = 0, title = "Select", parent_id = 0 }]; ;
+        List<Options_List> objsections = [new Options_List { id = 0, title = "Select", parent_id = 0 }];
         DataSet ds = new();
         try
         {
@@ -257,6 +302,29 @@ public class ContentManager : Content_DAL
             }
 
             return objsections;
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+    }
+
+    public List<Options_List> Tag_master_Get_BAL(int language_id)
+    {
+        List<Options_List> objtags = [];
+        DataSet ds = new();
+        try
+        {
+            ds = Tag_master_Get_DAL(language_id);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    objtags.Add(new Options_List { id = Convert.ToInt32(dr["Id"].ToString()), title = dr["Tag_Name"].ToString() });
+                }
+            }
+
+            return objtags;
         }
         catch (System.Exception)
         {
@@ -347,6 +415,8 @@ public class ContentManager : Content_DAL
                 objcontent.Background_image_id = ds.Tables[0].Rows[0]["Background_image_Media_id"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[0]["Background_image_Media_id"].ToString());
                 objcontent.Background_image_Alttext = ds.Tables[0].Rows[0]["Background_alt_text"].ToString() ?? "";
                 objcontent.Attach_file_id = ds.Tables[0].Rows[0]["Attach_file_Media_id"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[0]["Attach_file_Media_id"].ToString());
+                objcontent.Mapped_sections = ds.Tables[0].Rows[0]["cont_section_tagid"].ToString() ?? "";
+                objcontent.Tags = ds.Tables[0].Rows[0]["tag_master_selected_id"].ToString() ?? "";
 
             }
             if (ds.Tables[1].Rows.Count > 0)
@@ -655,6 +725,8 @@ public class ContentManager : Content_DAL
                 objcontent.Background_image_id = ds.Tables[0].Rows[0]["Background_image_Media_id"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[0]["Background_image_Media_id"].ToString());
                 objcontent.Background_image_Alttext = ds.Tables[0].Rows[0]["Background_alt_text"].ToString() ?? "";
                 objcontent.Attach_file_id = ds.Tables[0].Rows[0]["Attach_file_Media_id"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[0]["Attach_file_Media_id"].ToString());
+                objcontent.Mapped_sections = ds.Tables[0].Rows[0]["cont_section_tagid"].ToString() ?? "";
+                objcontent.Tags = ds.Tables[0].Rows[0]["tag_master_selected_id"].ToString() ?? "";
 
             }
             if (ds.Tables[1].Rows.Count > 0)
@@ -740,6 +812,56 @@ public class ContentManager : Content_DAL
             throw;
         }
     }
+
+    public List<Options_List> Sections_Mapping_Get_BAL(int language_id)
+    {
+        List<Options_List> objsections = [];
+        DataSet ds = new();
+        try
+        {
+            ds = Sections_Mapping_Get_DAL(language_id);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    objsections.Add(new Options_List { id = Convert.ToInt32(dr["cont_id"].ToString()), parent_id = Convert.ToInt32(dr["cont_parent_id"].ToString()), title = dr["cont_title"].ToString() });
+                }
+            }
+            return objsections;
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+    }
+
+    public List<Options_List> Geographies_Get_BAL(int language_id)
+    {
+        List<Options_List> objsections = [];
+        DataSet ds = new();
+        try
+        {
+            ds = Geographies_Get_DAL(language_id);
+            if (language_id > 1)
+            {
+                objsections = [new Options_List { id = 0, title = "Select", parent_id = 0 }];
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    objsections.Add(new Options_List { id = Convert.ToInt32(dr["ID"].ToString()), title = dr["country_Name"].ToString() });
+                }
+            }
+            return objsections;
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+    }
+
+
 }
 
 

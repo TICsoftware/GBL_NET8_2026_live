@@ -1,0 +1,754 @@
+/*
+  Industry Category Master
+  Industry / Application / IndustryCategory / Tagging
+
+  Industry also persists:
+    Banner_Image_media_id, Landing_Thumbnail_Image_media_id,
+    Banner_Image_Alt, Landing_Thumbnail_Image_Alt,
+    Window_Title, Meta_Title, Meta_Description,
+    Intro, Content, Language_Master_Id
+
+  Tagging persists Industry ↔ Category in Industry_Subcategory_Mapping
+    (IndustryId × Category_Master_Id → Industry_Subcategory_Master.SubcategoryId)
+
+  Status: 1 = Active, 0 = Inactive
+  Media preview joins dbo.media (ID, file_path).
+  Language name joins Language_Master (ID, Language_Name).
+*/
+
+SET ANSI_NULLS ON;
+GO
+SET QUOTED_IDENTIFIER ON;
+GO
+
+/* ========== Ensure Status column ========== */
+
+IF COL_LENGTH('dbo.Industry_Master', 'Status') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD [Status] INT NOT NULL CONSTRAINT DF_Industry_Master_Status DEFAULT (1);
+GO
+
+IF COL_LENGTH('dbo.Application_Master', 'Status') IS NULL
+    ALTER TABLE dbo.Application_Master ADD [Status] INT NOT NULL CONSTRAINT DF_Application_Master_Status DEFAULT (1);
+GO
+
+IF COL_LENGTH('dbo.Industry_Subcategory_Master', 'Status') IS NULL
+    ALTER TABLE dbo.Industry_Subcategory_Master ADD [Status] INT NOT NULL CONSTRAINT DF_Industry_Subcategory_Master_Status DEFAULT (1);
+GO
+
+/* ========== Ensure Industry SEO / image alt columns ========== */
+
+IF COL_LENGTH('dbo.Industry_Master', 'Banner_Image_Alt') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Banner_Image_Alt NVARCHAR(500) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Landing_Thumbnail_Image_Alt') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Landing_Thumbnail_Image_Alt NVARCHAR(500) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Window_Title') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Window_Title NVARCHAR(2000) NULL;
+ELSE
+    ALTER TABLE dbo.Industry_Master ALTER COLUMN Window_Title NVARCHAR(2000) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Meta_Title') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Meta_Title NVARCHAR(2000) NULL;
+ELSE
+    ALTER TABLE dbo.Industry_Master ALTER COLUMN Meta_Title NVARCHAR(2000) NULL;
+GO
+
+IF COL_LENGTH('dbo.Industry_Master', 'Meta_Description') IS NULL
+    ALTER TABLE dbo.Industry_Master ADD Meta_Description NVARCHAR(2000) NULL;
+GO
+
+/* ========== GetPaged ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_GetPaged
+    @MasterType NVARCHAR(50),
+    @Search NVARCHAR(500) = NULL,
+    @Page INT = 1,
+    @PageSize INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @Page < 1 SET @Page = 1;
+    IF @PageSize < 1 SET @PageSize = 10;
+    DECLARE @Offset INT = (@Page - 1) * @PageSize;
+
+    IF @MasterType = N'Industry'
+    BEGIN
+        SELECT
+            i.IndustryId AS ID,
+            i.IndustryName AS Name,
+            i.Industry_pagename AS PageName,
+            i.DisplayOrder AS [Sequence],
+            i.[Status],
+            i.Language_Master_Id,
+            lm.Language_Name AS LanguageName,
+            i.Banner_Image_media_id,
+            i.Landing_Thumbnail_Image_media_id,
+            mb.file_path AS Banner_Image_Url,
+            mt.file_path AS Landing_Thumbnail_Image_Url,
+            i.Banner_Image_Alt,
+            i.Landing_Thumbnail_Image_Alt,
+            i.Window_Title,
+            i.Meta_Title,
+            i.Meta_Description,
+            i.Intro,
+            i.Content
+        FROM dbo.Industry_Master i
+        LEFT JOIN dbo.Language_Master lm ON lm.ID = i.Language_Master_Id
+        LEFT JOIN dbo.media mb ON mb.ID = i.Banner_Image_media_id
+        LEFT JOIN dbo.media mt ON mt.ID = i.Landing_Thumbnail_Image_media_id
+        WHERE (@Search IS NULL OR i.IndustryName LIKE N'%' + @Search + N'%')
+        ORDER BY i.DisplayOrder, i.IndustryId
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+        SELECT COUNT(1) AS TotalCount
+        FROM dbo.Industry_Master i
+        WHERE (@Search IS NULL OR i.IndustryName LIKE N'%' + @Search + N'%');
+    END
+    ELSE IF @MasterType = N'Application'
+    BEGIN
+        SELECT
+            ApplicationId AS ID,
+            ApplicationName AS Name,
+            CAST(NULL AS NVARCHAR(300)) AS PageName,
+            DisplayOrder AS [Sequence],
+            [Status],
+            Language_Master_Id,
+            CAST(NULL AS NVARCHAR(100)) AS LanguageName,
+            CAST(NULL AS INT) AS Banner_Image_media_id,
+            CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
+            CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
+            CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+            CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+            CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+            CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
+            CAST(NULL AS NVARCHAR(MAX)) AS Intro,
+            CAST(NULL AS NVARCHAR(MAX)) AS Content
+        FROM dbo.Application_Master
+        WHERE (@Search IS NULL OR ApplicationName LIKE N'%' + @Search + N'%')
+        ORDER BY DisplayOrder, ApplicationId
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+        SELECT COUNT(1) AS TotalCount
+        FROM dbo.Application_Master
+        WHERE (@Search IS NULL OR ApplicationName LIKE N'%' + @Search + N'%');
+    END
+    ELSE IF @MasterType = N'IndustryCategory'
+    BEGIN
+        SELECT
+            SubcategoryId AS ID,
+            SubcategoryName AS Name,
+            CAST(NULL AS NVARCHAR(300)) AS PageName,
+            DisplayOrder AS [Sequence],
+            [Status],
+            Language_Master_Id,
+            CAST(NULL AS NVARCHAR(100)) AS LanguageName,
+            CAST(NULL AS INT) AS Banner_Image_media_id,
+            CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
+            CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
+            CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+            CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+            CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+            CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+            CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
+            CAST(NULL AS NVARCHAR(MAX)) AS Intro,
+            CAST(NULL AS NVARCHAR(MAX)) AS Content
+        FROM dbo.Industry_Subcategory_Master
+        WHERE (@Search IS NULL OR SubcategoryName LIKE N'%' + @Search + N'%')
+        ORDER BY DisplayOrder, SubcategoryId
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+        SELECT COUNT(1) AS TotalCount
+        FROM dbo.Industry_Subcategory_Master
+        WHERE (@Search IS NULL OR SubcategoryName LIKE N'%' + @Search + N'%');
+    END
+END
+GO
+
+/* ========== GetById ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_GetById
+    @ID INT,
+    @MasterType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @MasterType = N'Industry'
+    BEGIN
+        SELECT
+            i.IndustryId AS ID,
+            i.IndustryName AS Name,
+            i.Industry_pagename AS PageName,
+            i.DisplayOrder AS [Sequence],
+            i.[Status],
+            i.Language_Master_Id,
+            lm.Language_Name AS LanguageName,
+            i.Banner_Image_media_id,
+            i.Landing_Thumbnail_Image_media_id,
+            mb.file_path AS Banner_Image_Url,
+            mt.file_path AS Landing_Thumbnail_Image_Url,
+            i.Banner_Image_Alt,
+            i.Landing_Thumbnail_Image_Alt,
+            i.Window_Title,
+            i.Meta_Title,
+            i.Meta_Description,
+            i.Intro,
+            i.Content
+        FROM dbo.Industry_Master i
+        LEFT JOIN dbo.Language_Master lm ON lm.ID = i.Language_Master_Id
+        LEFT JOIN dbo.media mb ON mb.ID = i.Banner_Image_media_id
+        LEFT JOIN dbo.media mt ON mt.ID = i.Landing_Thumbnail_Image_media_id
+        WHERE i.IndustryId = @ID;
+    END
+    ELSE IF @MasterType = N'Application'
+    BEGIN
+        SELECT ApplicationId AS ID, ApplicationName AS Name, CAST(NULL AS NVARCHAR(300)) AS PageName,
+               DisplayOrder AS [Sequence], [Status], Language_Master_Id,
+               CAST(NULL AS NVARCHAR(100)) AS LanguageName,
+               CAST(NULL AS INT) AS Banner_Image_media_id,
+               CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
+               CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
+               CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+               CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+               CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+               CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
+               CAST(NULL AS NVARCHAR(MAX)) AS Intro,
+               CAST(NULL AS NVARCHAR(MAX)) AS Content
+        FROM dbo.Application_Master WHERE ApplicationId = @ID;
+    END
+    ELSE IF @MasterType = N'IndustryCategory'
+    BEGIN
+        SELECT SubcategoryId AS ID, SubcategoryName AS Name, CAST(NULL AS NVARCHAR(300)) AS PageName,
+               DisplayOrder AS [Sequence], [Status], Language_Master_Id,
+               CAST(NULL AS NVARCHAR(100)) AS LanguageName,
+               CAST(NULL AS INT) AS Banner_Image_media_id,
+               CAST(NULL AS INT) AS Landing_Thumbnail_Image_media_id,
+               CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Url,
+               CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Url,
+               CAST(NULL AS NVARCHAR(500)) AS Banner_Image_Alt,
+               CAST(NULL AS NVARCHAR(500)) AS Landing_Thumbnail_Image_Alt,
+               CAST(NULL AS NVARCHAR(2000)) AS Window_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Title,
+               CAST(NULL AS NVARCHAR(2000)) AS Meta_Description,
+               CAST(NULL AS NVARCHAR(MAX)) AS Intro,
+               CAST(NULL AS NVARCHAR(MAX)) AS Content
+        FROM dbo.Industry_Subcategory_Master WHERE SubcategoryId = @ID;
+    END
+END
+GO
+
+/* ========== Insert ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Insert
+    @Name NVARCHAR(500),
+    @PageName NVARCHAR(300) = NULL,
+    @Sequence INT,
+    @Status INT = 1,
+    @Language_Master_Id INT = NULL,
+    @Banner_Image_media_id INT = NULL,
+    @Landing_Thumbnail_Image_media_id INT = NULL,
+    @Banner_Image_Alt NVARCHAR(500) = NULL,
+    @Landing_Thumbnail_Image_Alt NVARCHAR(500) = NULL,
+    @Window_Title NVARCHAR(2000) = NULL,
+    @Meta_Title NVARCHAR(2000) = NULL,
+    @Meta_Description NVARCHAR(2000) = NULL,
+    @Intro NVARCHAR(MAX) = NULL,
+    @Content NVARCHAR(MAX) = NULL,
+    @Create_UserId INT = NULL,
+    @MasterType NVARCHAR(50),
+    @NewID INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @NewID = 0;
+    IF @Status IS NULL SET @Status = 1;
+
+    IF @MasterType = N'Industry'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(IndustryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'Application'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Application_Master
+            WHERE LOWER(LTRIM(RTRIM(ApplicationName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'IndustryCategory'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Subcategory_Master
+            WHERE LOWER(LTRIM(RTRIM(SubcategoryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0))
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
+    IF @MasterType = N'Industry'
+       AND @PageName IS NOT NULL AND LTRIM(RTRIM(@PageName)) <> N''
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName))))
+        THROW 50021, 'This page name already exists.', 1;
+
+    IF @MasterType = N'Industry'
+    BEGIN
+        INSERT INTO dbo.Industry_Master
+        (
+            IndustryName, Industry_pagename,
+            Banner_Image_media_id, Landing_Thumbnail_Image_media_id,
+            Banner_Image_Alt, Landing_Thumbnail_Image_Alt,
+            Window_Title, Meta_Title, Meta_Description,
+            Intro, Content,
+            Language_Master_Id, DisplayOrder, [Status],
+            Create_UserId, CreatedDate
+        )
+        VALUES
+        (
+            @Name, @PageName,
+            @Banner_Image_media_id, @Landing_Thumbnail_Image_media_id,
+            @Banner_Image_Alt, @Landing_Thumbnail_Image_Alt,
+            @Window_Title, @Meta_Title, @Meta_Description,
+            @Intro, @Content,
+            @Language_Master_Id, @Sequence, @Status,
+            @Create_UserId, SYSUTCDATETIME()
+        );
+        SET @NewID = SCOPE_IDENTITY();
+    END
+    ELSE IF @MasterType = N'Application'
+    BEGIN
+        INSERT INTO dbo.Application_Master
+            (ApplicationName, Language_Master_Id, DisplayOrder, [Status], Create_UserId, CreatedDate)
+        VALUES
+            (@Name, @Language_Master_Id, @Sequence, @Status, @Create_UserId, SYSUTCDATETIME());
+        SET @NewID = SCOPE_IDENTITY();
+    END
+    ELSE IF @MasterType = N'IndustryCategory'
+    BEGIN
+        INSERT INTO dbo.Industry_Subcategory_Master
+            (SubcategoryName, Language_Master_Id, DisplayOrder, [Status], Create_UserId, CreatedDate)
+        VALUES
+            (@Name, @Language_Master_Id, @Sequence, @Status, @Create_UserId, SYSUTCDATETIME());
+        SET @NewID = SCOPE_IDENTITY();
+    END
+END
+GO
+
+/* ========== Update ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Update
+    @ID INT,
+    @Name NVARCHAR(500),
+    @PageName NVARCHAR(300) = NULL,
+    @Sequence INT,
+    @Language_Master_Id INT = NULL,
+    @Banner_Image_media_id INT = NULL,
+    @Landing_Thumbnail_Image_media_id INT = NULL,
+    @Banner_Image_Alt NVARCHAR(500) = NULL,
+    @Landing_Thumbnail_Image_Alt NVARCHAR(500) = NULL,
+    @Window_Title NVARCHAR(2000) = NULL,
+    @Meta_Title NVARCHAR(2000) = NULL,
+    @Meta_Description NVARCHAR(2000) = NULL,
+    @Intro NVARCHAR(MAX) = NULL,
+    @Content NVARCHAR(MAX) = NULL,
+    @Update_UserId INT = NULL,
+    @MasterType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Lang INT = @Language_Master_Id;
+    IF @Lang IS NULL AND @MasterType = N'Application'
+        SELECT @Lang = Language_Master_Id FROM dbo.Application_Master WHERE ApplicationId = @ID;
+    ELSE IF @Lang IS NULL AND @MasterType = N'IndustryCategory'
+        SELECT @Lang = Language_Master_Id FROM dbo.Industry_Subcategory_Master WHERE SubcategoryId = @ID;
+
+    IF @MasterType = N'Industry'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(IndustryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Lang, 0)
+              AND IndustryId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'Application'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Application_Master
+            WHERE LOWER(LTRIM(RTRIM(ApplicationName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Lang, 0)
+              AND ApplicationId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+    ELSE IF @MasterType = N'IndustryCategory'
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Subcategory_Master
+            WHERE LOWER(LTRIM(RTRIM(SubcategoryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Lang, 0)
+              AND SubcategoryId <> @ID)
+        THROW 50020, 'This name already exists for the selected language.', 1;
+
+    IF @MasterType = N'Industry'
+       AND @PageName IS NOT NULL AND LTRIM(RTRIM(@PageName)) <> N''
+       AND EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+              AND IndustryId <> @ID)
+        THROW 50021, 'This page name already exists.', 1;
+
+    IF @MasterType = N'Industry'
+    BEGIN
+        UPDATE dbo.Industry_Master
+        SET IndustryName = @Name,
+            Industry_pagename = @PageName,
+            Banner_Image_media_id = @Banner_Image_media_id,
+            Landing_Thumbnail_Image_media_id = @Landing_Thumbnail_Image_media_id,
+            Banner_Image_Alt = @Banner_Image_Alt,
+            Landing_Thumbnail_Image_Alt = @Landing_Thumbnail_Image_Alt,
+            Window_Title = @Window_Title,
+            Meta_Title = @Meta_Title,
+            Meta_Description = @Meta_Description,
+            Intro = @Intro,
+            Content = @Content,
+            Language_Master_Id = @Language_Master_Id,
+            DisplayOrder = @Sequence,
+            Update_UserId = @Update_UserId,
+            ModifiedDate = SYSUTCDATETIME()
+        WHERE IndustryId = @ID;
+    END
+    ELSE IF @MasterType = N'Application'
+    BEGIN
+        UPDATE dbo.Application_Master
+        SET ApplicationName = @Name,
+            Language_Master_Id = ISNULL(@Language_Master_Id, Language_Master_Id),
+            DisplayOrder = @Sequence,
+            Update_UserId = @Update_UserId,
+            ModifiedDate = SYSUTCDATETIME()
+        WHERE ApplicationId = @ID;
+    END
+    ELSE IF @MasterType = N'IndustryCategory'
+    BEGIN
+        UPDATE dbo.Industry_Subcategory_Master
+        SET SubcategoryName = @Name,
+            Language_Master_Id = ISNULL(@Language_Master_Id, Language_Master_Id),
+            DisplayOrder = @Sequence,
+            Update_UserId = @Update_UserId,
+            ModifiedDate = SYSUTCDATETIME()
+        WHERE SubcategoryId = @ID;
+    END
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_NameExists
+    @Name NVARCHAR(500),
+    @Language_Master_Id INT = NULL,
+    @ID INT = 0,
+    @MasterType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @MasterType = N'Industry'
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.Industry_Master
+            WHERE LOWER(LTRIM(RTRIM(IndustryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+              AND IndustryId <> ISNULL(@ID, 0)
+        ) THEN 1 ELSE 0 END AS IsExists;
+    ELSE IF @MasterType = N'Application'
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.Application_Master
+            WHERE LOWER(LTRIM(RTRIM(ApplicationName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+              AND ApplicationId <> ISNULL(@ID, 0)
+        ) THEN 1 ELSE 0 END AS IsExists;
+    ELSE IF @MasterType = N'IndustryCategory'
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.Industry_Subcategory_Master
+            WHERE LOWER(LTRIM(RTRIM(SubcategoryName))) = LOWER(LTRIM(RTRIM(@Name)))
+              AND ISNULL(Language_Master_Id, 0) = ISNULL(@Language_Master_Id, 0)
+              AND SubcategoryId <> ISNULL(@ID, 0)
+        ) THEN 1 ELSE 0 END AS IsExists;
+    ELSE
+        SELECT 0 AS IsExists;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_PageNameExists
+    @PageName NVARCHAR(300),
+    @ID INT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.Industry_Master
+        WHERE @PageName IS NOT NULL
+          AND LTRIM(RTRIM(@PageName)) <> N''
+          AND LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+          AND IndustryId <> ISNULL(@ID, 0)
+    ) THEN 1 ELSE 0 END AS IsExists;
+END
+GO
+
+/* ========== Activate ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Activate
+    @ID INT,
+    @MasterType NVARCHAR(50),
+    @Update_UserId INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @MasterType = N'Industry'
+        UPDATE dbo.Industry_Master SET [Status] = 1, Update_UserId = @Update_UserId, ModifiedDate = SYSUTCDATETIME() WHERE IndustryId = @ID;
+    ELSE IF @MasterType = N'Application'
+        UPDATE dbo.Application_Master SET [Status] = 1, Update_UserId = @Update_UserId, ModifiedDate = SYSUTCDATETIME() WHERE ApplicationId = @ID;
+    ELSE IF @MasterType = N'IndustryCategory'
+        UPDATE dbo.Industry_Subcategory_Master SET [Status] = 1, Update_UserId = @Update_UserId, ModifiedDate = SYSUTCDATETIME() WHERE SubcategoryId = @ID;
+END
+GO
+
+/* ========== Deactivate ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Deactivate
+    @ID INT,
+    @MasterType NVARCHAR(50),
+    @Update_UserId INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @MasterType = N'Industry'
+        UPDATE dbo.Industry_Master SET [Status] = 0, Update_UserId = @Update_UserId, ModifiedDate = SYSUTCDATETIME() WHERE IndustryId = @ID;
+    ELSE IF @MasterType = N'Application'
+        UPDATE dbo.Application_Master SET [Status] = 0, Update_UserId = @Update_UserId, ModifiedDate = SYSUTCDATETIME() WHERE ApplicationId = @ID;
+    ELSE IF @MasterType = N'IndustryCategory'
+        UPDATE dbo.Industry_Subcategory_Master SET [Status] = 0, Update_UserId = @Update_UserId, ModifiedDate = SYSUTCDATETIME() WHERE SubcategoryId = @ID;
+END
+GO
+
+/* ========== UpdateSequence ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_UpdateSequence
+    @ID INT,
+    @Sequence INT,
+    @MasterType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @MasterType = N'Industry'
+        UPDATE dbo.Industry_Master SET DisplayOrder = @Sequence, ModifiedDate = SYSUTCDATETIME() WHERE IndustryId = @ID;
+    ELSE IF @MasterType = N'Application'
+        UPDATE dbo.Application_Master SET DisplayOrder = @Sequence, ModifiedDate = SYSUTCDATETIME() WHERE ApplicationId = @ID;
+    ELSE IF @MasterType = N'IndustryCategory'
+        UPDATE dbo.Industry_Subcategory_Master SET DisplayOrder = @Sequence, ModifiedDate = SYSUTCDATETIME() WHERE SubcategoryId = @ID;
+END
+GO
+
+/* ========== Delete ========== */
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_master_Delete
+    @ID INT,
+    @MasterType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @MasterType = N'Industry'
+        DELETE FROM dbo.Industry_Master WHERE IndustryId = @ID;
+    ELSE IF @MasterType = N'Application'
+        DELETE FROM dbo.Application_Master WHERE ApplicationId = @ID;
+    ELSE IF @MasterType = N'IndustryCategory'
+        DELETE FROM dbo.Industry_Subcategory_Master WHERE SubcategoryId = @ID;
+END
+GO
+
+/* ========== Industry / Category Tagging Mapping ========== */
+
+IF OBJECT_ID(N'dbo.Industry_Subcategory_Mapping', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Industry_Subcategory_Mapping
+    (
+        IndustrySubcategoryId INT IDENTITY(1,1) NOT NULL,
+        IndustryId INT NOT NULL,
+        Category_Master_Id INT NOT NULL,
+        DisplayOrder INT NOT NULL,
+        Create_UserId INT NULL,
+        Update_UserId INT NULL,
+        CreatedDate DATETIME2(7) NOT NULL CONSTRAINT DF_Industry_Subcategory_Mapping_CreatedDate DEFAULT (SYSUTCDATETIME()),
+        ModifiedDate DATETIME2(7) NULL,
+        CONSTRAINT PK_Industry_Subcategory_Mapping PRIMARY KEY CLUSTERED (IndustrySubcategoryId ASC)
+    );
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = N'UX_Industry_Subcategory_Mapping_Industry_Category'
+      AND object_id = OBJECT_ID(N'dbo.Industry_Subcategory_Mapping')
+)
+BEGIN
+    ;WITH dups AS
+    (
+        SELECT IndustrySubcategoryId,
+               ROW_NUMBER() OVER (
+                   PARTITION BY IndustryId, Category_Master_Id
+                   ORDER BY IndustrySubcategoryId
+               ) AS rn
+        FROM dbo.Industry_Subcategory_Mapping
+    )
+    DELETE FROM dups WHERE rn > 1;
+
+    CREATE UNIQUE NONCLUSTERED INDEX UX_Industry_Subcategory_Mapping_Industry_Category
+        ON dbo.Industry_Subcategory_Mapping (IndustryId, Category_Master_Id);
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetIndustries
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT IndustryId AS Id, IndustryName AS Name
+    FROM dbo.Industry_Master
+    WHERE ISNULL([Status], 1) = 1
+    ORDER BY DisplayOrder, IndustryName;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetCategories
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT SubcategoryId AS Id, SubcategoryName AS Name
+    FROM dbo.Industry_Subcategory_Master
+    WHERE ISNULL([Status], 1) = 1
+    ORDER BY DisplayOrder, SubcategoryName;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_GetAll
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        m.IndustrySubcategoryId,
+        m.IndustryId,
+        m.Category_Master_Id,
+        m.DisplayOrder,
+        i.IndustryName,
+        c.SubcategoryName AS CategoryName
+    FROM dbo.Industry_Subcategory_Mapping m
+    INNER JOIN dbo.Industry_Master i ON i.IndustryId = m.IndustryId
+    INNER JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = m.Category_Master_Id
+    ORDER BY i.IndustryName, m.DisplayOrder, c.SubcategoryName;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_Save
+    @IndustryIds NVARCHAR(MAX),
+    @CategoryIds NVARCHAR(MAX),
+    @Create_UserId INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @IndustryIds IS NULL OR LTRIM(RTRIM(@IndustryIds)) = N''
+        THROW 50001, 'Select at least one industry.', 1;
+    IF @CategoryIds IS NULL OR LTRIM(RTRIM(@CategoryIds)) = N''
+        THROW 50002, 'Select at least one category.', 1;
+
+    DECLARE @Industries TABLE (IndustryId INT NOT NULL PRIMARY KEY);
+    DECLARE @Categories TABLE (Category_Master_Id INT NOT NULL PRIMARY KEY);
+
+    INSERT INTO @Industries (IndustryId)
+    SELECT DISTINCT TRY_CAST(value AS INT)
+    FROM STRING_SPLIT(@IndustryIds, ',')
+    WHERE TRY_CAST(value AS INT) IS NOT NULL;
+
+    INSERT INTO @Categories (Category_Master_Id)
+    SELECT DISTINCT TRY_CAST(value AS INT)
+    FROM STRING_SPLIT(@CategoryIds, ',')
+    WHERE TRY_CAST(value AS INT) IS NOT NULL;
+
+    IF NOT EXISTS (SELECT 1 FROM @Industries)
+        THROW 50001, 'Select at least one industry.', 1;
+    IF NOT EXISTS (SELECT 1 FROM @Categories)
+        THROW 50002, 'Select at least one category.', 1;
+
+    IF EXISTS (
+        SELECT 1
+        FROM dbo.Industry_Subcategory_Mapping m
+        INNER JOIN @Industries i ON i.IndustryId = m.IndustryId
+        INNER JOIN @Categories c ON c.Category_Master_Id = m.Category_Master_Id
+    )
+        THROW 50003, 'This industry and category mapping already exists.', 1;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @MaxOrder INT =
+            ISNULL((SELECT MAX(DisplayOrder) FROM dbo.Industry_Subcategory_Mapping), 0);
+
+        ;WITH pairs AS
+        (
+            SELECT
+                i.IndustryId,
+                c.Category_Master_Id,
+                ROW_NUMBER() OVER (
+                    ORDER BY ISNULL(im.IndustryName, N''), ISNULL(cm.SubcategoryName, N''), i.IndustryId, c.Category_Master_Id
+                ) AS RowNum
+            FROM @Industries i
+            CROSS JOIN @Categories c
+            LEFT JOIN dbo.Industry_Master im ON im.IndustryId = i.IndustryId
+            LEFT JOIN dbo.Industry_Subcategory_Master cm ON cm.SubcategoryId = c.Category_Master_Id
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM dbo.Industry_Subcategory_Mapping x
+                WHERE x.IndustryId = i.IndustryId
+                  AND x.Category_Master_Id = c.Category_Master_Id
+            )
+        )
+        INSERT INTO dbo.Industry_Subcategory_Mapping
+        (
+            IndustryId, Category_Master_Id, DisplayOrder,
+            Create_UserId, CreatedDate
+        )
+        SELECT
+            p.IndustryId, p.Category_Master_Id, @MaxOrder + p.RowNum,
+            @Create_UserId, SYSUTCDATETIME()
+        FROM pairs p;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_Delete
+    @IndustrySubcategoryId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.Industry_Subcategory_Mapping
+    WHERE IndustrySubcategoryId = @IndustrySubcategoryId;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Industry_Category_Mapping_UpdateSequence
+    @IndustrySubcategoryId INT,
+    @DisplayOrder INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE dbo.Industry_Subcategory_Mapping
+    SET DisplayOrder = @DisplayOrder,
+        ModifiedDate = SYSUTCDATETIME()
+    WHERE IndustrySubcategoryId = @IndustrySubcategoryId;
+END
+GO

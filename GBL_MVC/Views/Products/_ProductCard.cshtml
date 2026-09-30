@@ -1,0 +1,25 @@
+@model Core_project_BusinessLogic.Entity.Product_Public_Item
+@{
+    var href = string.IsNullOrWhiteSpace(Model.Product_pagename)
+        ? "/Products/Inside_html"
+        : "/Products/" + Model.Product_pagename;
+    var industries = Model.Industries != null && Model.Industries.Count > 0
+        ? string.Join(", ", Model.Industries)
+        : "";
+}
+<a href="@href" class="product-card">
+   <div class="product-card__media">
+      @if (!string.IsNullOrWhiteSpace(Model.ThumbnailUrl))
+      {
+          <img src="@Model.ThumbnailUrl" alt="@(Model.ThumbnailAlt ?? Model.ProductName)">
+      }
+   </div>
+   <div class="product-card__body">
+      <h3 class="text-h5">@Model.ProductName</h3>
+      @if (!string.IsNullOrWhiteSpace(industries))
+      {
+          <p class="product-card__meta-label">Industries</p>
+          <p class="product-card__meta">@industries</p>
+      }
+   </div>
+</a>

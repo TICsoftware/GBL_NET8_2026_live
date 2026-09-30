@@ -58,6 +58,17 @@
                                                         @Html.ValidationMessageFor(model => model.Language_master_id, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
+                                               <div class="col-md-6 col-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="Geography_ID" class="form-label">Geography <sup>*</sup></label>
+                                                        <div class="d-flex flex-wrap">
+                                                        @Html.DropDownListFor(model => model.Geography_ID,
+                                                            Model.Geographies , new { id = "ddGeography", @class = "form-select" })
+                                                            @Html.ValidationMessageFor(model => model.Geography_ID, "", new { @class = "text-danger" })
+                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6 col-12">
                                                     <div class="form-group mb-3">
                                                         <label for="Content_Type_ID" class="form-label">Content type <sup>*</sup></label>
@@ -74,9 +85,8 @@
                                                             </div>
                                                              @Html.ValidationMessageFor(model => model.Content_Type_ID, "", new { @class = "text-danger" })
                                                     </div>
-                                                </div> 
-                                                
-                                                <div class="col-md-6 col-12">
+                                                </div>  
+                                                 <div class="col-md-6 col-6" style="display: none;">
                                                     <div class="form-group mb-3">                                                                                                                 
                                                         <label for="template_type" class="form-label">Template type </label>
                                                         @Html.DropDownListFor(model => model.template_type,
@@ -101,21 +111,27 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 col-12">
+                                                <div class="col-md-12 col-12" id="div_language_sections"  style="display:@(Model.Language_master_id > 1 ? "block": "none");">
                                                     <div class="form-group mb-3">
-                                                        <label for="Geography_ID" class="form-label">Geography <sup>*</sup></label>
-                                                        <div class="d-flex flex-wrap">
-                                                        @Html.DropDownListFor(model => model.Geography_ID,
-                                                            Model.Geographies , new { id = "ddGeography", @class = "form-select" })
-                                                            @Html.ValidationMessageFor(model => model.Geography_ID, "", new { @class = "text-danger" })
-                                                           
+                                                        <label for="ddLanguage_Sections" class="form-label">Select Section</label>
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-12 mb-2">
+                                                                @Html.DropDownListFor(model => model.Language_section_id ,
+                                                                Model.Language_sections , new { id = "ddLanguage_Sections", @class = "form-select" }) 
+                                                            </div>
+                                                            <div class="col-md-6 col-12">
+                                                                @Html.DropDownListFor(model => model.Language_subsection_id,
+                                                                Model.Language_subSections , new { id = "ddLanguage_SubSections", @class = "form-select" }) 
+                                                            </div>
                                                         </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 col-12">  <div class="form-group mb-3"> </div></div>
-                                                <div class="col-md-6 col-12">
+                                                 
+                                                <div class="col-md-12 col-12">
                                                     <div class="form-group mb-3">
-                                                        <label for="ddSections" class="form-label">Select Section</label>
+                                                        <label for="ddSections" class="form-label" id="lblddSections">
+                                                            @(Model.Language_master_id > 1 ? "Tag English Section" : "Select Section")</label>
                                                         <div class="row">
                                                             <div class="col-md-6 col-12 mb-2">
                                                                 @Html.DropDownListFor(model => model.Section_id,
@@ -129,30 +145,38 @@
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 col-12">
+                                                <div class="col-md-12 col-12">
                                                   <div class="form-group mb-3">
-                                                    <label for="ddArticle" class="form-label">Select Article</label>
-                                                     <div class="d-flex flex-wrap">
+                                                    <label for="ddArticle" class="form-label" id="lblddArticle">
+                                                        @(Model.Language_master_id > 1 ? "Tag English Article" : "Select Article")
+                                                    </label>
+                                                    <div class="d-flex flex-wrap">
                                                         @Html.DropDownListFor(model => model.article_id,
                                                             Model.Articles , new { id = "ddArticle", @class = "form-select" })                                                             
                                                            
                                                     </div>
                                                   </div>
                                                 </div>
-                                                <div class="col-md-6 col-12@(Model.Language_master_id > 1 ? "" : " d-none")" id="div_language_sections">
-                                                    <div class="form-group mb-3">
-                                                        <label for="ddLanguage_Sections" class="form-label">Select Language Section</label>
-                                                        <div class="row">
-                                                            <div class="col-md-6 col-12 mb-2">
-                                                                @Html.DropDownListFor(model => model.Language_section_id ,
-                                                                Model.Language_sections , new { id = "ddLanguage_Sections", @class = "form-select" }) 
-                                                            </div>
-                                                            <div class="col-md-6 col-12">
-                                                                @Html.DropDownListFor(model => model.Language_subsection_id,
-                                                                Model.Language_subSections , new { id = "ddLanguage_SubSections", @class = "form-select" }) 
-                                                            </div>
+                                                
+                                                <div class="col-md-12 col-12" >
+                                                    <div class="row"> 
+                                                        <div class="col-md-6 col-12 mb-2">
+                                                            <div class="form-group mb-3">    
+                                                                <label for="lstMapping_Sections" class="form-label">Map to other section(s)</label>
+                                                                @Html.ListBoxFor(model => model.SelectedMapping_sections,
+                                                                Model.Mapping_sections, new { id = "lstMapping_Sections", @class = "form-select", size = "8" })
+                                                                <small class="text-muted"><b>Hold Ctrl to select multiple sections</b></small>
+                                                            </div>  
                                                         </div>
-                                                        
+                                                        <div class="col-md-6 col-12">
+                                                            <div class="form-group mb-3">    
+                                                                <label for="lstTagging_Sections" class="form-label">Select Tag(s)</label>
+                                                                @Html.ListBoxFor(model => model.SelectedTagging_sections,
+                                                                Model.Tagging_sections, new { id = "lstTagging_Sections", @class = "form-select", size = "8" })
+                                                                <small class="text-muted"><b>Hold Ctrl to select multiple tags</b></small>
+                                                                                                          
+                                                            </div>
+                                                        </div> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -522,7 +546,7 @@
                                                         <label for="Masthead_image" class="form-label">Masthead image <span class="mute small"> (Max. size 1MB)</span> </label>
                                                         <button type="button" id="btnFile_Masthead_image" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>
                                                         @Html.HiddenFor(model => model.Masthead_image_id) 
-<img src="@Model.Masthead_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height@(string.IsNullOrWhiteSpace(Model.Masthead_image) ? "" : " is-visible")" title="@Model.Masthead_image_alttext" />
+                                                        <img src="@Model.Masthead_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height@(string.IsNullOrWhiteSpace(Model.Masthead_image) ? "" : " is-visible")" title="@Model.Masthead_image_alttext" />
                                                         <a href="#" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link@(string.IsNullOrWhiteSpace(Model.Masthead_image) ? "" : " is-visible")" id="masthead_image_Remove"></a>
                                                         @Html.HiddenFor(model => model.Masthead_image_IsDelete)
                                                         @Html.HiddenFor(model => model.Masthead_image)
@@ -532,7 +556,7 @@
                                                         <label for="Mobile_Masthead_image" class="form-label">Masthead Mobile image<span class="mute small"> (Max. size 1MB)</span> </label>
                                                         <button type="button" id="btnFile_Mobile_Masthead_image" class="btn btn-outline-primary d-block select-media" data-bs-toggle="modal" data-bs-target="#btnSelectFiles"> Select image</button>                                                   
                                                         @Html.HiddenFor(model => model.Mobile_Masthead_image_id) 
-<img src="@Model.Mobile_Masthead_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height@(string.IsNullOrWhiteSpace(Model.Mobile_Masthead_image) ? "" : " is-visible")" title="@Model.Masthead_image_alttext" />
+                                                        <img src="@Model.Mobile_Masthead_image" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height@(string.IsNullOrWhiteSpace(Model.Mobile_Masthead_image) ? "" : " is-visible")" title="@Model.Masthead_image_alttext" />
                                                         <a href="#" title="Click here to remove file" class="glyphicon glyphicon-trash content-thumb-link@(string.IsNullOrWhiteSpace(Model.Mobile_Masthead_image) ? "" : " is-visible")" id="Mobile_Masthead_image_Remove"></a>
                                                         @Html.HiddenFor(model => model.Mobile_Masthead_image_IsDelete) 
                                                         @Html.HiddenFor(model => model.Mobile_Masthead_image)
