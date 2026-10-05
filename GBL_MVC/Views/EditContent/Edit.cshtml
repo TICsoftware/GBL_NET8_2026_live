@@ -595,11 +595,13 @@
                                                             var attachIsFile = !string.IsNullOrWhiteSpace(attachUrl) &&
                                                                 System.Text.RegularExpressions.Regex.IsMatch(attachUrl, @"\.(pdf|mp3|mp4|zip)(\?|$)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                                                             var attachHasFile = !string.IsNullOrWhiteSpace(attachUrl);
+                                                            var attachFileName = attachHasFile ? System.IO.Path.GetFileName(attachUrl.Split('?')[0]) : "View File";
                                                         }
                                                         <img src="@(attachIsFile ? "" : attachUrl)" class="imgPreview img-responsive img-thumbnail content-img-thumbnail-height@(!attachHasFile || attachIsFile ? "" : " is-visible")" />
                                                         <div class="filePreview@(attachIsFile ? " is-visible" : "")">
                                                             <a href="@(attachHasFile ? attachUrl : "#")" target="_blank" class="btn btn-sm btn-dark fileLink">
-                                                                <i class="bi bi-file-earmark"></i> View File
+                                                                <i class="bi bi-file-earmark@(attachIsFile && attachUrl.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ? "-pdf" : "")"></i>
+                                                                <span class="fileName">@attachFileName</span>
                                                             </a>
                                                         </div>
                                                         <a href="javascript:void(0)" title="Click here to remove file" class="btn btn-sm btn-outline-danger content-thumb-link@(attachHasFile ? " is-visible" : "")" id="Attach_file_Remove"><i class="bi bi-trash"></i></a>

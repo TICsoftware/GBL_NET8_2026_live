@@ -19,6 +19,11 @@
     <PackageReference Include="QRCoder" Version="1.8.0" />
     <PackageReference Include="SimpleBase" Version="5.6.0" />
   </ItemGroup>
+
+  <!-- Program.cs serves /Assets from ContentRoot/Assets (outside wwwroot). Include it in publish. -->
+  <ItemGroup>
+    <Content Include="Assets\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DebugType>portable</DebugType>

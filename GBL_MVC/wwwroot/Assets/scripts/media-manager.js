@@ -445,8 +445,9 @@
                     break;
             }
     
-            // update icon + link
-            fileLink.html(`<i class="${iconClass}" style="font-size:18px;"></i> Open ${ext.toUpperCase()}`);
+            // update icon + link with filename
+            const fileName = (fileurl.split("?")[0].split("/").pop()) || ("Open " + ext.toUpperCase());
+            fileLink.html(`<i class="${iconClass}"></i> <span class="fileName">${fileName}</span>`);
             fileLink.attr("href", fileurl);
     
             filePreview.addClass("is-visible").removeClass("d-none").show();

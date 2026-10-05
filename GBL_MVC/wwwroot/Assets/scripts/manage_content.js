@@ -926,27 +926,61 @@ function initContentMediaPreviews() {
         var $img = $group.find(".imgPreview").first();
         var $file = $group.find(".filePreview").first();
         var $del = $group.find(".content-thumb-link, .js-clear-content-media").first();
-        if (!$img.length && !$file.length) return;
+        if (!$img.length && !$file.length && !$del.length) return;
+
+        var pathFromHidden = "";
+        $group.find("input[type='hidden']").each(function () {
+            var name = (this.name || "").toLowerCase();
+            if (
+                name === "thumb_image" ||
+                name === "small_icon_thumb_image" ||
+                name === "masthead_image" ||
+                name === "mobile_masthead_image" ||
+                name === "background_image" ||
+                name === "attach_file"
+            ) {
+                var v = ($(this).val() || "").trim();
+                if (v) pathFromHidden = v;
+            }
+        });
 
         var src = ($img.attr("src") || "").trim();
         var fileHref = ($file.find(".fileLink").attr("href") || "").trim();
-        var hasImage = !!src && src !== "#" && !/\.(pdf|mp3|mp4|zip)(\?|$)/i.test(src);
-        var hasFile = !!fileHref && fileHref !== "#";
-
-        if (!hasFile && src && /\.(pdf|mp3|mp4|zip)(\?|$)/i.test(src) && $file.length) {
-            $file.find(".fileLink").attr("href", src);
-            hasFile = true;
-            hasImage = false;
+        if ((!fileHref || fileHref === "#") && pathFromHidden) {
+            fileHref = pathFromHidden;
         }
 
+        var candidate = src || fileHref || pathFromHidden;
+        var isNonImage = !!candidate && /\.(pdf|mp3|mp4|zip)(\?|$)/i.test(candidate);
+        var hasFile = isNonImage && !!(fileHref && fileHref !== "#" ? fileHref : pathFromHidden);
+        var hasImage = !isNonImage && !!((src && src !== "#") || (pathFromHidden && !isNonImage));
+
         if (hasImage) {
-            $img.addClass("is-visible").removeClass("d-none").show();
+            var imgUrl = (src && src !== "#") ? src : pathFromHidden;
+            $img.attr("src", imgUrl).addClass("is-visible").removeClass("d-none").show();
             $file.removeClass("is-visible").addClass("d-none").hide();
             $del.addClass("is-visible").removeClass("d-none").show();
         } else if (hasFile) {
+            var url = (fileHref && fileHref !== "#") ? fileHref : pathFromHidden;
+            var fileName = url.split("?")[0].split("/").pop() || "View File";
+            var ext = (fileName.split(".").pop() || "").toLowerCase();
+            var iconClass = "bi bi-file-earmark";
+            if (ext === "pdf") iconClass = "bi bi-file-earmark-pdf";
+            else if (ext === "mp3") iconClass = "bi bi-music-note-beamed";
+            else if (ext === "mp4") iconClass = "bi bi-film";
+            else if (ext === "zip") iconClass = "bi bi-file-zip";
+
+            $file.find(".fileLink")
+                .attr("href", url)
+                .html('<i class="' + iconClass + '"></i> <span class="fileName">' + fileName + "</span>");
             $file.addClass("is-visible").removeClass("d-none").show();
-            $img.removeClass("is-visible").addClass("d-none").hide();
+            $img.attr("src", "").removeClass("is-visible").addClass("d-none").hide();
             $del.addClass("is-visible").removeClass("d-none").show();
+        } else {
+            $img.attr("src", "").removeClass("is-visible").addClass("d-none").hide();
+            $file.removeClass("is-visible").addClass("d-none").hide();
+            $file.find(".fileLink").attr("href", "#");
+            $del.removeClass("is-visible").addClass("d-none").hide();
         }
     });
 }
