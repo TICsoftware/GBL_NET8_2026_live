@@ -481,8 +481,9 @@ namespace Core_project_BusinessLogic.DAL
             if (string.IsNullOrWhiteSpace(contextGroupId)) return;
             if (!Guid.TryParse(contextGroupId, out var gid)) return;
 
-            var normalized = (mode || "main").Trim().ToLowerInvariant();
-            if (normalized != "temp" && normalized != "reprocess") normalized = "main";
+            var normalized = string.IsNullOrWhiteSpace(mode) ? "main" : mode.Trim().ToLowerInvariant();
+            if (normalized != "temp" && normalized != "reprocess")
+                normalized = "main";
 
             SqlParameter[] p =
             {
