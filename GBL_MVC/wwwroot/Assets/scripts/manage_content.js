@@ -888,9 +888,74 @@ window.validate_form = validate_form;
 
 $(document)
     .off("click.contentThumbPrevent", ".content-thumb-link")
-    .on("click.contentThumbPrevent", ".content-thumb-link", function (e) {
+    .on("click.contentThumbPrevent", ".content-thumb-link, .js-clear-content-media", function (e) {
         e.preventDefault();
+        e.stopPropagation();
+
+        var $group = $(this).closest(".form-group");
+        if (!$group.length) return;
+
+        $group.find(".imgPreview").attr("src", "").removeClass("is-visible").addClass("d-none").hide();
+        $group.find(".filePreview").removeClass("is-visible").addClass("d-none").hide();
+        $group.find(".fileLink").attr("href", "#");
+        $group.find(".content-thumb-link, .js-clear-content-media").removeClass("is-visible").addClass("d-none").hide();
+
+        $group.find("input[type='hidden']").each(function () {
+            var name = (this.name || "").toLowerCase();
+            if (!name) return;
+            if (name.endsWith("_id") || name.indexOf("media_id") >= 0) {
+                $(this).val("0");
+            } else if (name.endsWith("_isdelete") || name.indexOf("isdelete") >= 0) {
+                $(this).val("true");
+            } else if (
+                name === "thumb_image" ||
+                name === "small_icon_thumb_image" ||
+                name === "masthead_image" ||
+                name === "mobile_masthead_image" ||
+                name === "background_image" ||
+                name === "attach_file"
+            ) {
+                $(this).val("");
+            }
+        });
     });
+
+function initContentMediaPreviews() {
+    $(".form-group").each(function () {
+        var $group = $(this);
+        var $img = $group.find(".imgPreview").first();
+        var $file = $group.find(".filePreview").first();
+        var $del = $group.find(".content-thumb-link, .js-clear-content-media").first();
+        if (!$img.length && !$file.length) return;
+
+        var src = ($img.attr("src") || "").trim();
+        var fileHref = ($file.find(".fileLink").attr("href") || "").trim();
+        var hasImage = !!src && src !== "#" && !/\.(pdf|mp3|mp4|zip)(\?|$)/i.test(src);
+        var hasFile = !!fileHref && fileHref !== "#";
+
+        if (!hasFile && src && /\.(pdf|mp3|mp4|zip)(\?|$)/i.test(src) && $file.length) {
+            $file.find(".fileLink").attr("href", src);
+            hasFile = true;
+            hasImage = false;
+        }
+
+        if (hasImage) {
+            $img.addClass("is-visible").removeClass("d-none").show();
+            $file.removeClass("is-visible").addClass("d-none").hide();
+            $del.addClass("is-visible").removeClass("d-none").show();
+        } else if (hasFile) {
+            $file.addClass("is-visible").removeClass("d-none").show();
+            $img.removeClass("is-visible").addClass("d-none").hide();
+            $del.addClass("is-visible").removeClass("d-none").show();
+        }
+    });
+}
+
+$(function () {
+    initContentMediaPreviews();
+});
+
+window.initContentMediaPreviews = initContentMediaPreviews;
 
 $(document)
     .off("click.contentValidate", ".js-validate-content-form")

@@ -401,13 +401,30 @@
     
         // hidden fields
         $(window.sourceControl).next("input[type='hidden']").val(select_mediaId);
-        //$(window.sourceControl).nextAll(".img-value:first").val(fileurl);
     
-        const imgPreview = $(window.sourceControl).nextAll(".imgPreview:first");
-
-       
-        const filePreview = $(window.sourceControl).nextAll(".filePreview:first");
+        const $group = $(window.sourceControl).closest(".form-group");
+        const imgPreview = $group.find(".imgPreview").first().length
+            ? $group.find(".imgPreview").first()
+            : $(window.sourceControl).nextAll(".imgPreview:first");
+        const filePreview = $group.find(".filePreview").first().length
+            ? $group.find(".filePreview").first()
+            : $(window.sourceControl).nextAll(".filePreview:first");
         const fileLink = filePreview.find(".fileLink");
+        const deleteLink = $group.find(".content-thumb-link, .js-clear-content-media").first();
+
+        // keep path string hidden in sync (exact path fields only — never alttext)
+        $group.find("input[type='hidden']").each(function () {
+            var name = (this.name || "").toLowerCase();
+            if (!name) return;
+            if (name === "thumb_image" ||
+                name === "small_icon_thumb_image" ||
+                name === "masthead_image" ||
+                name === "mobile_masthead_image" ||
+                name === "background_image" ||
+                name === "attach_file") {
+                $(this).val(fileurl);
+            }
+        });
        
         if (isNonImage) {
             // icon based on file type
@@ -432,22 +449,27 @@
             fileLink.html(`<i class="${iconClass}" style="font-size:18px;"></i> Open ${ext.toUpperCase()}`);
             fileLink.attr("href", fileurl);
     
-            filePreview.show();
-            imgPreview.hide();
+            filePreview.addClass("is-visible").removeClass("d-none").show();
+            imgPreview.removeClass("is-visible").addClass("d-none").attr("src", "").hide();
     
         } else {
             // if it's an image
-            filePreview.hide();
-            imgPreview.attr("src", fileurl).show();
+            filePreview.removeClass("is-visible").addClass("d-none").hide();
+            imgPreview.attr("src", fileurl).addClass("is-visible").removeClass("d-none").show();
         }
 
+        if (deleteLink.length) {
+            deleteLink.addClass("is-visible").removeClass("d-none").show();
+        }
 
-          // ✅ ADD REMOVE ICON dynamically
-            // imgPreview.after(`
-            //     <span class="remove-icon">
-            //         <i class="bi bi-x-circle-fill text-danger"></i>
-            //     </span>
-            // `);
+        // reset delete flags
+        $group.find("input[type='hidden']").each(function () {
+            var name = (this.name || "").toLowerCase();
+            if (name.endsWith("_isdelete") || name.indexOf("isdelete") >= 0) {
+                $(this).val("false");
+            }
+        });
+
     
         // close modal (getOrCreateInstance: hide works even if getInstance is null)
         let modalEl = document.getElementById("btnSelectFiles");
