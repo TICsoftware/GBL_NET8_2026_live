@@ -1,1 +1,18 @@
 /* Content context accordion (CMS) */
+.content-accordion-header { cursor: pointer; }
+.content-accordion-header .arrow { display: inline-block; transition: transform 0.2s ease; }
+
+.js-block-sortable .js-block-sort-item {
+    background: #fff;
+}
+.js-block-sortable .js-block-sort-item.sortable-ghost {
+    opacity: 0.55;
+    background: #f3f7ff;
+}
+.js-block-sortable .drag-handle {
+    user-select: none;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: grab;
+}

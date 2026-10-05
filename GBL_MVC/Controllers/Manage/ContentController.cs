@@ -548,6 +548,36 @@ public class ContentController : Controller
         }
     }
 
+    [HttpPost]
+    public IActionResult UpdateBlockSequence([FromBody] ContextBlockSequenceRequest request)
+    {
+        ContextDetail_BAL? objBal = new(objconfig);
+        try
+        {
+            if (request?.items == null || request.items.Count == 0)
+                return BadRequest(new { message = "Invalid sequence data." });
+
+            var mode = string.IsNullOrWhiteSpace(request.mode) ? "main" : request.mode.Trim().ToLowerInvariant();
+            if (mode != "temp" && mode != "reprocess") mode = "main";
+
+            var payload = request.items
+                .Where(x => !string.IsNullOrWhiteSpace(x.context_group_id) && x.sequence > 0)
+                .Select(x => (x.context_group_id!.Trim(), x.sequence));
+
+            objBal.UpdateBlockSequence(payload, mode);
+            return Ok(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("UpdateBlockSequence", ex);
+            return BadRequest(new { message = ex.Message });
+        }
+        finally
+        {
+            objBal = null;
+        }
+    }
+
     //Temp Context details to display while editing content
     public IActionResult Edit_Context_Temp(int template_Id, int language_id, string Id_encrypt_val)
     {

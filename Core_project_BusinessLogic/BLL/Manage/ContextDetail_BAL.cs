@@ -366,6 +366,16 @@ namespace Core_project_BusinessLogic.BAL
         {
             dal.UpdateDetail_Reprocess(v, userid);
         }
+
+        public void UpdateBlockSequence(IEnumerable<(string GroupId, int Sequence)> items, string mode, int updatedUserId = 1)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                if (string.IsNullOrWhiteSpace(item.GroupId) || item.Sequence < 1) continue;
+                dal.UpdateBlockSequence(item.GroupId, item.Sequence, mode, updatedUserId);
+            }
+        }
     }
 
 }

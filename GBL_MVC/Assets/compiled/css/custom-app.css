@@ -152,6 +152,20 @@ body.sidebar-collapsed  #sidebar~#main {margin-left: 115px;}
     word-break: break-all;
 }
 
+.js-block-sortable .js-block-sort-item {
+    background: #fff;
+}
+.js-block-sortable .js-block-sort-item.sortable-ghost {
+    opacity: 0.55;
+    background: #f3f7ff;
+}
+.js-block-sortable .drag-handle {
+    user-select: none;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 4px;
+}
+
 /* Icon below image */
 .remove-icon {
     display: none;
