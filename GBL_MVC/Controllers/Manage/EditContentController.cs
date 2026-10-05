@@ -587,7 +587,7 @@ public class EditContentController : Controller
 
                     ContentObj.lang_groupid = Modelobj.Lang_groupid;
                     ContentObj.root_parent_id = Modelobj.Section_id;
-                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-"); ;
+                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-").ToLowerInvariant();
                     ContentObj.title = Modelobj.Title.Trim();
                     ContentObj.hmpg_title = string.IsNullOrWhiteSpace(Modelobj.Hmpg_title) ? "" : Modelobj.Hmpg_title.Trim();
                     ContentObj.breadcrumb_title = string.IsNullOrWhiteSpace(Modelobj.Breadcrumb_title) ? "" : Modelobj.Breadcrumb_title.Trim();
@@ -1116,7 +1116,7 @@ public class EditContentController : Controller
 
                     ContentObj.lang_groupid = Modelobj.Lang_groupid;
                     ContentObj.root_parent_id = Modelobj.Section_id;
-                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-"); ;
+                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-").ToLowerInvariant();
                     ContentObj.title = Modelobj.Title.Trim();
                     ContentObj.hmpg_title = string.IsNullOrWhiteSpace(Modelobj.Hmpg_title) ? "" : Modelobj.Hmpg_title.Trim();
                     ContentObj.breadcrumb_title = string.IsNullOrWhiteSpace(Modelobj.Breadcrumb_title) ? "" : Modelobj.Breadcrumb_title.Trim();

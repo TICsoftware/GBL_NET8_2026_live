@@ -15,6 +15,18 @@ public class Content_DAL : DBHelper
     {
     }
 
+    /// <summary>
+    /// cont_pagename: lowercase, trim, spaces replaced with '-'.
+    /// </summary>
+    private static string NormalizePageName(string? pageName)
+    {
+        if (string.IsNullOrWhiteSpace(pageName))
+            return string.Empty;
+
+        return pageName.Trim()
+            .Replace(" ", "-")
+            .ToLowerInvariant();
+    }
 
     protected DataTable AddContent_DAL(Content_Master content, int userid)
     {
@@ -32,7 +44,7 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@intro", content.intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@hmpg_intro", content.hmpg_intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@content", content.content ?? (object)DBNull.Value));
-            Sqlparam.Add(new SqlParameter("@pagename", content.pagename.Trim()));
+            Sqlparam.Add(new SqlParameter("@pagename", NormalizePageName(content.pagename)));
             if (content.displaydate.HasValue)
             {
                 Sqlparam.Add(new SqlParameter("@displaydate", content.displaydate.Value));
@@ -226,7 +238,7 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@intro", content.intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@hmpg_intro", content.hmpg_intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@content", content.content ?? (object)DBNull.Value));
-            Sqlparam.Add(new SqlParameter("@pagename", content.pagename.Trim()));
+            Sqlparam.Add(new SqlParameter("@pagename", NormalizePageName(content.pagename)));
             if (content.displaydate.HasValue)
             {
                 Sqlparam.Add(new SqlParameter("@displaydate", content.displaydate.Value));
@@ -339,7 +351,7 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@intro", content.intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@hmpg_intro", content.hmpg_intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@content", content.content ?? (object)DBNull.Value));
-            Sqlparam.Add(new SqlParameter("@pagename", content.pagename.Trim()));
+            Sqlparam.Add(new SqlParameter("@pagename", NormalizePageName(content.pagename)));
             if (content.displaydate.HasValue)
             {
                 Sqlparam.Add(new SqlParameter("@displaydate", content.displaydate.Value));
@@ -447,7 +459,7 @@ public class Content_DAL : DBHelper
             Sqlparam.Add(new SqlParameter("@intro", content.intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@hmpg_intro", content.hmpg_intro ?? (object)DBNull.Value));
             Sqlparam.Add(new SqlParameter("@content", content.content ?? (object)DBNull.Value));
-            Sqlparam.Add(new SqlParameter("@pagename", content.pagename.Trim()));
+            Sqlparam.Add(new SqlParameter("@pagename", NormalizePageName(content.pagename)));
             if (content.displaydate.HasValue)
             {
                 Sqlparam.Add(new SqlParameter("@displaydate", content.displaydate.Value));
