@@ -61,7 +61,11 @@
                 success: function (response) {
                     if (response.success) {
                         alert("Data updated successfully");
-                        window.parent.Refresh_context_details(true);
+                        if (typeof window.refreshContextBlockList === "function") {
+                            window.refreshContextBlockList();
+                        } else if (typeof window.Refresh_context_details === "function") {
+                            window.Refresh_context_details(true);
+                        }
                     } else {
                         alert(response.message);
                     }

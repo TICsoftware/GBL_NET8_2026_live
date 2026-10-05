@@ -512,7 +512,7 @@ public class ContentController : Controller
                     ModelObj.Field_details = new List<Component_data>();
                     if (lst_components._context_Details != null && lst_components._context_Details.Count > 0)
                     {
-                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item4))
+                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item5))
                         {
                             ModelObj.Field_details.Add(new Component_data()
                             {
@@ -613,7 +613,7 @@ public class ContentController : Controller
                     ModelObj.Field_details = new List<Component_data>();
                     if (lst_components._context_Details != null && lst_components._context_Details.Count > 0)
                     {
-                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item4))
+                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item5))
                         {
                             ModelObj.Field_details.Add(new Component_data()
                             {
@@ -684,7 +684,7 @@ public class ContentController : Controller
                     ModelObj.Field_details = new List<Component_data>();
                     if (lst_components._context_Details != null && lst_components._context_Details.Count > 0)
                     {
-                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item4))
+                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item5))
                         {
                             ModelObj.Field_details.Add(new Component_data()
                             {

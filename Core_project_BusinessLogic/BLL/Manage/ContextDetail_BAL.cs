@@ -97,7 +97,7 @@ namespace Core_project_BusinessLogic.BAL
             DataSet ds = new();
             try
             {
-                ds = dal.Context_Detail_List_For_content_GetAll(templateId, language_id, status);
+                ds = dal.Context_Detail_List_For_content_GetAll(cont_id, templateId, language_id, status);
                 obj._context = [];
 
                 if (ds.Tables[0].Rows.Count > 0)
