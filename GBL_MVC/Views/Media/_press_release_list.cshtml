@@ -3,20 +3,24 @@
 
 @foreach (var item in Model)
 {
-    var linkUrl = !string.IsNullOrWhiteSpace(item.Content)
-        ? item.Url
-        : (!string.IsNullOrWhiteSpace(item.Url) &&
-           item.Url.Contains(".pdf", StringComparison.OrdinalIgnoreCase))
-            ? item.Url
-            : !string.IsNullOrWhiteSpace(item.ExternalUrl)
-                ? item.ExternalUrl
-                : item.Url;
+   var hasContent = !string.IsNullOrWhiteSpace(item.Content);
+
+    var hasPdfUrl = !string.IsNullOrWhiteSpace(item.Url) &&
+                    item.Url.Contains(".pdf", StringComparison.OrdinalIgnoreCase);
+
+    var linkUrl = (!hasContent && !hasPdfUrl)
+    ? item.ExternalUrl
+    : item.Url;
 
     var isExternal = !string.IsNullOrWhiteSpace(item.ExternalUrl)
-        && linkUrl == item.ExternalUrl;
+                     && linkUrl == item.ExternalUrl;
 
-    <article class="industry-product-card">
-        <div class="industry-product-card__media">
+ 
+
+
+                  
+    <article class="industry-product-card media-coverage-card">
+        @* <div class="industry-product-card__media">
             @if (!string.IsNullOrWhiteSpace(item.Tag_list))
             {
                 foreach (var industry in item.Tag_list.Split(
@@ -28,38 +32,38 @@
                     </span>
                 }
             }
-        </div>
+        </div> *@
 
-        <div class="industry-product-card__body">
-            <div class="date-channel">
-                @if (item.DisplayDate.HasValue)
-                {
-                    <time datetime="@item.DisplayDate.Value.ToString("yyyy-MM-dd")">
-                        @item.DisplayDate.Value.ToString("MMM dd, yyyy")
-                    </time>
-                }
+       
+       
+        @if (item.DisplayDate.HasValue)
+        {
+            <time datetime="@item.DisplayDate.Value.ToString("yyyy-MM-dd")">
+                @item.DisplayDate.Value.ToString("MMM dd, yyyy")
+            </time>
+        }
 
-                @if (!string.IsNullOrWhiteSpace(item.Publication))
-                {
-                    <span class="date-channel__sep" aria-hidden="true">|</span>
-                    <span class="date-channel__source">
-                        @item.Publication
-                    </span>
-                }
-            </div>
+        @if (!string.IsNullOrWhiteSpace(item.Publication))
+        {
+            <span class="date-channel__sep" aria-hidden="true">|</span>
+            <span class="date-channel__source">
+                @item.Publication
+            </span>
+        }
+       
 
-            <h3 class="text-h5">@item.Title</h3>
+        <h3 class="text-h5">@item.Title</h3>
 
-            <a href="@linkUrl" target="@(isExternal ? "_blank" : "_self")"
-               rel="@(isExternal ? "noopener noreferrer" : null)" class="site-btn site-btn--line">
-                <span class="site-btn__label">Learn More</span>
-                <span class="site-btn__arrow" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                              stroke-linejoin="round" />
-                    </svg>
-                </span>
-            </a>
-        </div>
+        <a href="@linkUrl" target="@(isExternal ? "_blank" : "_self")" rel="@(isExternal ? "noopener noreferrer" : null)"
+           class="site-btn site-btn--line">
+            <span class="site-btn__label">Learn More</span>
+            <span class="site-btn__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                </svg>
+            </span>
+        </a>
+        
     </article>
 }

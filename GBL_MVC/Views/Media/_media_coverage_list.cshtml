@@ -3,17 +3,17 @@
 
 @foreach (var item in Model)
 {
-    var linkUrl = !string.IsNullOrWhiteSpace(item.Content)
-        ? item.Url
-        : (!string.IsNullOrWhiteSpace(item.Url) &&
-           item.Url.Contains(".pdf", StringComparison.OrdinalIgnoreCase))
-            ? item.Url
-            : !string.IsNullOrWhiteSpace(item.ExternalUrl)
-                ? item.ExternalUrl
-                : item.Url;
+    var hasContent = !string.IsNullOrWhiteSpace(item.Content);
+
+    var hasPdfUrl = !string.IsNullOrWhiteSpace(item.Url) &&
+                    item.Url.Contains(".pdf", StringComparison.OrdinalIgnoreCase);
+
+    var linkUrl = (!hasContent && !hasPdfUrl)
+    ? item.ExternalUrl
+    : item.Url;
 
     var isExternal = !string.IsNullOrWhiteSpace(item.ExternalUrl)
-        && linkUrl == item.ExternalUrl;
+                     && linkUrl == item.ExternalUrl;
 
     <article class="industry-product-card">
         <div class="industry-product-card__media">

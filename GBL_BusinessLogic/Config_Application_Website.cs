@@ -178,6 +178,18 @@ namespace GBL_BusinessLogic
             return pageUrl?.Replace("/global", "");
         }
 
+        public static string GetMediaArticleUrl(DataRow row)
+        {
+
+            var mediaFile = row["MediafilePath"]?.ToString();
+            var pageUrl = row["pageurl"]?.ToString();
+
+            if (!string.IsNullOrWhiteSpace(mediaFile))
+                return mediaFile;
+
+            return pageUrl?.Replace("/global", "");
+        }
+
         public static string GetArticleTarget(DataRow row)
         {
             var externalUrl = row["cont_external_url"]?.ToString();
@@ -194,6 +206,7 @@ namespace GBL_BusinessLogic
                 ? "_self"
                 : "_blank";
         }
+
 
 
         public static List<ArticleModel> MapArticleList(DataTable table)
@@ -262,7 +275,7 @@ namespace GBL_BusinessLogic
                     ExternalUrl = row["cont_external_url"]?.ToString(),
                     MediafilePath = row["MediafilePath"]?.ToString(),
 
-                    Url = GetArticleUrl(row),
+                    Url = GetMediaArticleUrl(row),
                     UrlTarget = GetArticleTarget(row),
 
                     DisplayDate = table.Columns.Contains("cont_displaydate")

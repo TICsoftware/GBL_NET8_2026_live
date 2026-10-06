@@ -31,7 +31,13 @@ $(function () {
     // }
 
     function updateButton() {
-        $loadMoreWrap.prop("hidden", totalCount <= pageSize);
+        const loadedCount = $grid.find("article").length;
+
+        if (loadedCount >= totalCount || totalCount <= pageSize) {
+            $loadMoreWrap.prop("hidden", true).hide();
+        } else {
+            $loadMoreWrap.prop("hidden", false).show();
+        }
     }
 
     function loadArticles(reset) {
