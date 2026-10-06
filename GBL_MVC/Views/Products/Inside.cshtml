@@ -141,7 +141,14 @@
               @if (hasOverview)
               {
               <div class="tech-overview">
-                 @Html.Raw(product.Technical_Overview)
+                 @{
+                     var technicalOverviewHtml = product.Technical_Overview ?? "";
+                     technicalOverviewHtml = technicalOverviewHtml
+                         .Replace("<td><p><strong>", "<th><strong>")
+                         .Replace("<td><p>", "<th><p>")
+                         .Replace("</p></td>", "</th>");
+                 }
+                 @Html.Raw(technicalOverviewHtml)
               </div>
               }
            </div>
