@@ -64,16 +64,18 @@
          {
             <div class="press-release-card__date">
                @(Model.Content.cont_displaydate?.ToString("MMM dd, yyyy") ?? "")
+
+               @if (!string.IsNullOrWhiteSpace(Model.Content.Publication))
+               {
+                  <span class="date-channel__sep" aria-hidden="true"> | </span>
+                  <span class="date-channel__source">
+                     @Model.Content.Publication
+                  </span>
+               }
             </div>
          }
          
-         @if (!string.IsNullOrWhiteSpace(Model.Content.Publication))
-         {
-            <span class="date-channel__sep" aria-hidden="true">|</span>
-            <span class="date-channel__source">
-               @Model.Content.Publication
-            </span>
-         }
+       
 
          <div class="press-release-card__content">
             @if (!string.IsNullOrWhiteSpace(Model.Content?.Content))
