@@ -50,6 +50,46 @@ public class MediaController : Controller
         }
     }
 
+    public IActionResult MediaCoverage(string title)
+    {
+        try
+        {
+            var data = _bal.GetMediaCoverage_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/PressReleases :", ex);
+            return View(new MediaModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
+
+
+    public IActionResult PressReleasesInside(string title)
+    {
+        try
+        {
+            var data = _bal.GetPressRelease_Inside_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/PressReleases :", ex);
+            return View(new AboutModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
+
+
     [HttpGet]
     public async Task<IActionResult> LoadPressReleases(int contentId, int pageNumber = 1, int pageSize = 12, string? topic = null, string? month = null, int? year = null)
     {
@@ -81,51 +121,35 @@ public class MediaController : Controller
     }
 
 
-
-
-
-
-    public IActionResult MediaCoverage(string title)
+     [HttpGet]
+    public async Task<IActionResult> LoadMediaCoverage(int contentId, int pageNumber = 1, int pageSize = 12, string? topic = null, string? month = null, int? year = null)
     {
-        try
+        int? tagId = int.TryParse(topic, out int parsedTagId)
+            ? parsedTagId
+            : null;
+
+        int? selectedMonth = int.TryParse(month, out int parsedMonth)
+            ? parsedMonth
+            : null;
+
+        // Fetch paginated articles with filters
+        var result = _bal.GetPressReleases_page_wise_BAL(contentId, pageNumber, pageSize, year, selectedMonth, tagId);
+
+        // Render the partial view as HTML
+        var html = await _partialViewRenderer.RenderPartialToStringAsync(
+            this,
+            "_media_coverage_list",
+            result.SectionArticles_List
+        );
+
+        return Json(new
         {
-            var data = _bal.GetPressRelease_Inside_BAL(title, 1, 1);
-            return View(data);
-        }
-        catch (Exception ex)
-        {
-            FileLogger.LogError("/MediaCoverage :", ex);
-            return View(new AboutModel());
-        }
-        finally
-        {
-            _bal.Dispose();
-        }
+            html,
+            totalCount = result.TotalCount,
+            pageNumber,
+            pageSize
+        });
     }
-
-
-
-    public IActionResult PressReleasesInside(string title)
-    {
-        try
-        {
-            var data = _bal.GetPressRelease_Inside_BAL(title, 1, 1);
-            return View(data);
-        }
-        catch (Exception ex)
-        {
-            FileLogger.LogError("/PressReleases :", ex);
-            return View(new AboutModel());
-        }
-        finally
-        {
-            _bal.Dispose();
-        }
-    }
-
-
-
-
 
 
 

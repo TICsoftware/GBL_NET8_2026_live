@@ -26,6 +26,12 @@ namespace GBL_MVC.Routes
                  defaults: new { controller = "Media", action = "PressReleases", title = "press-release"  }
             );
 
+              app.MapControllerRoute(
+                 name: "media-coverage",
+                 pattern: "news/media-coverage",
+                 defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage"  }
+            );
+
             
 
             app.MapControllerRoute(

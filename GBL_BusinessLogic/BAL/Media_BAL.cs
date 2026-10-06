@@ -54,6 +54,44 @@ namespace GBL_BusinessLogic.BAL
         }
 
 
+        public MediaModel GetMediaCoverage_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new MediaModel();
+            var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
+
+            // Content
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
+
+
+            if (ds.Tables.Count > 2 && ds.Tables[2].Rows.Count > 0)
+            {
+                model.SectionArticles_List = Config_Application_Website.MapMediaArticleList(ds.Tables[2]);
+            }
+
+            if (ds.Tables.Count > 3 && ds.Tables[3].Rows.Count > 0)
+            {
+                model.TotalCount = Convert.ToInt32(ds.Tables[3].Rows[0]["TotalCount"]);
+            }
+
+            if (ds.Tables.Count > 4 && ds.Tables[4].Rows.Count > 0)
+            {
+                model.Year_List = MapYearList(ds.Tables[4]);
+            }
+
+            if (ds.Tables.Count > 5 && ds.Tables[5].Rows.Count > 0)
+            {
+                model.Tag_List = MapTagList(ds.Tables[5]);
+            }
+
+
+
+            return model;
+        }
+
+
         public MediaModel GetPressRelease_Inside_BAL(string pagename, int languageId, int geographyId)
         {
             var model = new MediaModel();
