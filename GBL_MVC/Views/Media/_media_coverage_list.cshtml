@@ -17,8 +17,10 @@
 
     <article class="industry-product-card">
         <div class="industry-product-card__media">
-
-            <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText">
+            @if (!string.IsNullOrWhiteSpace(item.ThumbnailImage))
+            {
+                <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText">
+            }
 
             @if (!string.IsNullOrWhiteSpace(item.Tag_list))
             {

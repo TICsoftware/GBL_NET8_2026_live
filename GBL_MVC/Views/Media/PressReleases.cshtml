@@ -143,9 +143,8 @@
          <div class="industry-tab-panel is-active" id="tab-PressRelease" role="tabpanel"
               aria-labelledby="tab-btn-PressRelease" data-tab-panel="PressRelease">
            
-            @* <div id="DivContent" class="industry-product-grid media-coverage-grid" data-news-grid data-page-size="12"> *@
             <div id="DivContent" class="industry-product-grid media-coverage-grid" data-news-grid data-page-size="12"
-                 data-content-id="@(Model.Content?.ContId ?? 0)"
+                 data-total-count="@Model.TotalCount" data-content-id="@(Model.Content?.ContId ?? 0)"
                  data-load-url="@Url.Action("LoadPressReleases", "Media")">
 
                @await Html.PartialAsync("_press_release_list", Model.SectionArticles_List)
@@ -153,20 +152,17 @@
 
             </div>
 
-            @if (Model.TotalCount > 12)
-            {
-               <div class="news-load-more" data-news-load-more-wrap>
-                  <button type="button" class="site-btn site-btn--fill" data-news-load-more>
-                     <span class="site-btn__label">Load More</span>
-                     <span class="site-btn__arrow" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                           <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                 stroke-linejoin="round" />
-                        </svg>
-                     </span>
-                  </button>
-               </div>
-            }
+            <div class="news-load-more" data-news-load-more-wrap hidden>
+               <button type="button" class="site-btn site-btn--fill" data-news-load-more>
+                  <span class="site-btn__label">Load More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                     </svg>
+                  </span>
+               </button>
+            </div>
 
          </div>
       </div>

@@ -22,13 +22,13 @@ namespace GBL_MVC.Routes
 
             app.MapControllerRoute(
                  name: "press-release",
-                 pattern: "news/press-release",
+                 pattern: "media/press-release",
                  defaults: new { controller = "Media", action = "PressReleases", title = "press-release"  }
             );
 
               app.MapControllerRoute(
                  name: "media-coverage",
-                 pattern: "news/media-coverage",
+                 pattern: "media/media-coverage",
                  defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage"  }
             );
 
@@ -36,13 +36,13 @@ namespace GBL_MVC.Routes
 
             app.MapControllerRoute(
                  name: "press-release-inside",
-                 pattern: "news/press-release/{title?}",
+                 pattern: "media/press-release/{title?}",
                  defaults: new { controller = "Media", action = "PressReleasesInside" }
             );
 
               app.MapControllerRoute(
                  name: "media-coverage-inside",
-                 pattern: "news/media-coverage/{title?}",
+                 pattern: "media/media-coverage/{title?}",
                  defaults: new { controller = "Media", action = "PressReleasesInside" }
             );
 

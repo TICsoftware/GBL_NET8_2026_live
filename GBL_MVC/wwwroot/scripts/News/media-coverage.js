@@ -22,12 +22,16 @@ $(function () {
         };
     }
 
-    function updateButton() {
-        const loadedCount = $grid.children("article").length;
+    // function updateButton() {
+    //     const loadedCount = $grid.children("article").length;
 
-        $loadMoreWrap.toggle(
-            loadedCount < totalCount && loadedCount > 0
-        );
+    //     $loadMoreWrap.toggle(
+    //         loadedCount < totalCount && loadedCount > 0
+    //     );
+    // }
+
+    function updateButton() {
+        $loadMoreWrap.prop("hidden", totalCount <= pageSize);
     }
 
     function loadArticles(reset) {
