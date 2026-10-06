@@ -88,6 +88,9 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
     options.MultipartBodyLengthLimit = 52428800; // 50 MB
 });
 
+
+builder.Services.AddScoped<PartialViewRenderer>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

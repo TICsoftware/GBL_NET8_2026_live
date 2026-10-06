@@ -16,8 +16,17 @@ namespace GBL_BusinessLogic.Entity
         public List<ArticleModel> SectionArticles_List { get; set; } = new();
         public List<ArticleModel> Related_Articles_List { get; set; } = new();
 
+        public List<DropdownModel> Tag_List { get; set; } = new();
+        public List<DropdownModel> Year_List { get; set; } = new();
+
 
         public int TotalCount { get; set; }
 
+    }
+
+    public class DropdownModel
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
     }
 }

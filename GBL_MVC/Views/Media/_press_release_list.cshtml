@@ -1,0 +1,56 @@
+@using GBL_MVC.Helpers
+@model List<GBL_BusinessLogic.Entity.ArticleModel>
+
+@foreach (var item in Model)
+{
+    <article class="industry-product-card">
+        <div class="industry-product-card__media">
+            @if (!string.IsNullOrWhiteSpace(item.Tag_list))
+            {
+                foreach (var industry in item.Tag_list.Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries))
+                {
+                    <span class="industry-label">
+                        @industry.Trim()
+                    </span>
+                }
+            }
+        </div>
+
+        <div class="industry-product-card__body">
+            <div class="date-channel">
+                @if (item.DisplayDate.HasValue)
+                {
+                    <time datetime="@item.DisplayDate.Value.ToString("yyyy-MM-dd")">
+                        @item.DisplayDate.Value.ToString("MMM dd, yyyy")
+                    </time>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(item.Publication))
+                {
+                    <span class="date-channel__sep" aria-hidden="true">|</span>
+                    <span class="date-channel__source">
+                        @item.Publication
+                    </span>
+                }
+            </div>
+
+            <h3 class="text-h5">@item.Title</h3>
+
+            <a href="@(!string.IsNullOrWhiteSpace(item.Search_url)
+                         ? item.Search_url : item.Url)" target="@(!string.IsNullOrWhiteSpace(item.Search_url)
+                            ? "_blank" : "_self")" rel="@(!string.IsNullOrWhiteSpace(item.Search_url)
+                         ? "noopener noreferrer" : null)" class="site-btn site-btn--line">
+
+                <span class="site-btn__label">Learn More</span>
+                <span class="site-btn__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </article>
+}

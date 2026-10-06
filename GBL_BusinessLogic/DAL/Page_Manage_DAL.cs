@@ -91,7 +91,20 @@ namespace GBL_BusinessLogic.DAL
         }
 
 
+        public DataSet Get_PressRelease_page_wise_DAL(int contentId, int page, int pageSize, int? year = null, int? month = null, int? tagId = null)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@ContentId", contentId),
+                new SqlParameter("@PageNumber", page),
+                new SqlParameter("@PageSize", pageSize),
+                new SqlParameter("@Year", (object?)year ?? DBNull.Value),
+                new SqlParameter("@Month", (object?)month ?? DBNull.Value),
+                new SqlParameter("@TagId", (object?)tagId ?? DBNull.Value)
+            };
 
+            return GetDataSet("Get_PressReleases_Articles_List", sqlParams);
+        }
 
 
     }

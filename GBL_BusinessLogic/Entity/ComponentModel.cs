@@ -13,7 +13,7 @@ namespace GBL_BusinessLogic.Entity
         public string Intro { get; set; }
         public string HmpgIntro { get; set; }
         public string DisplayTitle { get; set; }
-         public string BlockDisplayTitle { get; set; }
+        public string BlockDisplayTitle { get; set; }
         public string Content { get; set; }
 
         public string ComponentThumbnail { get; set; }
@@ -46,7 +46,7 @@ namespace GBL_BusinessLogic.Entity
         public string Video_path { get; set; }
         public string Video_poster { get; set; }
 
-         public string Component_Video_path { get; set; }
+        public string Component_Video_path { get; set; }
 
 
         public string Icon_Image { get; set; }
@@ -99,6 +99,9 @@ namespace GBL_BusinessLogic.Entity
 
         public DateTime? DisplayDate { get; set; }
         public int Sequence { get; set; }
+        public string Tag_list { get; set; }
+        public string Publication { get; set; }
+        public string Search_url { get; set; }
     }
 
 }

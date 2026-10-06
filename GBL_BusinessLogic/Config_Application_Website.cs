@@ -228,10 +228,56 @@ namespace GBL_BusinessLogic
                         ? row.Field<DateTime?>("cont_displaydate")
                         : null,
 
-                    Sequence = row.Field<int?>("cont_sequence") ?? 0
+                    Sequence = row.Field<int?>("cont_sequence") ?? 0,
+
+
                 })
                 .ToList();
         }
+
+
+        public static List<ArticleModel> MapMediaArticleList(DataTable table)
+        {
+            if (table == null || table.Rows.Count == 0)
+                return new List<ArticleModel>();
+
+            return table.AsEnumerable()
+                .Select(row => new ArticleModel
+                {
+                    ContId = row.Field<int>("cont_id"),
+                    ContParentId = row.Field<int>("cont_parent_id"),
+
+                    Title = string.IsNullOrWhiteSpace(row["cont_hmpg_title"]?.ToString())
+                        ? row["cont_title"]?.ToString()
+                        : row["cont_hmpg_title"]?.ToString(),
+
+                    Intro = row["cont_intro"]?.ToString(),
+                    HmpgIntro = row["cont_hmpg_intro"]?.ToString(),
+                    PageName = row["cont_pagename"]?.ToString(),
+
+                    ThumbnailImage = row["Hmpg_thumbnail"]?.ToString(),
+                    ThumbnailAltText = row["Hmpg_thumbnail_alt_text"]?.ToString(),
+
+                    ExternalUrl = row["cont_external_url"]?.ToString(),
+                    MediafilePath = row["MediafilePath"]?.ToString(),
+
+                    Url = GetArticleUrl(row),
+                    UrlTarget = GetArticleTarget(row),
+
+                    DisplayDate = table.Columns.Contains("cont_displaydate")
+                        ? row.Field<DateTime?>("cont_displaydate")
+                        : null,
+
+                    Sequence = row.Field<int?>("cont_sequence") ?? 0,
+                    Tag_list = row["TagNames"]?.ToString(),
+                    Publication = row["Cont_Publication"]?.ToString(),
+                    Search_url = row["cont_search_url"]?.ToString(),
+
+                })
+                .ToList();
+        }
+
+
 
 
 
