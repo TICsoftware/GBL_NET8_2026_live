@@ -476,5 +476,24 @@ namespace Core_project_BusinessLogic.DAL
             SQLInsert_Update_Delete_Data("UpdateContextDetail_reprocess", p);
         }
 
+        public void UpdateBlockSequence(string contextGroupId, int sequence, string mode, int updatedUserId = 1)
+        {
+            if (string.IsNullOrWhiteSpace(contextGroupId)) return;
+            if (!Guid.TryParse(contextGroupId, out var gid)) return;
+
+            var normalized = string.IsNullOrWhiteSpace(mode) ? "main" : mode.Trim().ToLowerInvariant();
+            if (normalized != "temp" && normalized != "reprocess")
+                normalized = "main";
+
+            SqlParameter[] p =
+            {
+                new("@context_group_id", gid),
+                new("@sequence", sequence),
+                new("@mode", normalized),
+                new("@Updated_UserID", updatedUserId)
+            };
+            SQLInsert_Update_Delete_Data("Context_Detail_Update_Block_Sequence", p);
+        }
+
     }
 }

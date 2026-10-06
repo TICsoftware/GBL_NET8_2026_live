@@ -38,6 +38,9 @@ window.Refresh_context_details = function (isrefresh) {
                     $("#div_contentspotmapping").html(data);
                 else
                     $("#div_contentspotmapping").html("");
+                if (typeof window.initBlockSortable === "function") {
+                    setTimeout(function () { window.initBlockSortable(); }, 100);
+                }
             },
             error: function (xhr) {
                 alert(xhr.status + " : " + xhr.responseText);
@@ -107,16 +110,19 @@ window.Load_Edit_context_Temp_details = function (isrefresh, _templateid, _langu
             success: function (data) {
                 if (data != null) {
                     $("#div_contentspotmapping").html(data);
-                    $('.list_context').each(function () {
+                    $('#div_contentspotmapping > .list_context').each(function () {
                         var id = $(this).data('paging-id');
                         generatePagination(
                             '.js-pagination-div' + id,
-                            '.js-pagination-div-item' + id,
+                            '#div_contentspotmapping .js-pagination-div-item' + id,
                             10,
                             '<<',
                             '>>'
                         );
                     });
+                    if (typeof window.initBlockSortable === "function") {
+                        setTimeout(function () { window.initBlockSortable(); }, 100);
+                    }
                 }
                 else
                     $("#div_contentspotmapping").html("");
@@ -156,16 +162,19 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
             success: function (data) {
                 if (data != null) {
                     $("#div_contentspotmapping").html(data);
-                    $('.list_context').each(function () {
+                    $('#div_contentspotmapping > .list_context').each(function () {
                         var id = $(this).data('paging-id');
                         generatePagination(
                             '.js-pagination-div' + id,
-                            '.js-pagination-div-item' + id,
+                            '#div_contentspotmapping .js-pagination-div-item' + id,
                             10,
                             '<<',
                             '>>'
                         );
                     });
+                    if (typeof window.initBlockSortable === "function") {
+                        setTimeout(function () { window.initBlockSortable(); }, 100);
+                    }
                 }
                 else
                     $("#div_contentspotmapping").html("");
@@ -888,9 +897,108 @@ window.validate_form = validate_form;
 
 $(document)
     .off("click.contentThumbPrevent", ".content-thumb-link")
-    .on("click.contentThumbPrevent", ".content-thumb-link", function (e) {
+    .on("click.contentThumbPrevent", ".content-thumb-link, .js-clear-content-media", function (e) {
         e.preventDefault();
+        e.stopPropagation();
+
+        var $group = $(this).closest(".form-group");
+        if (!$group.length) return;
+
+        $group.find(".imgPreview").attr("src", "").removeClass("is-visible").addClass("d-none").hide();
+        $group.find(".filePreview").removeClass("is-visible").addClass("d-none").hide();
+        $group.find(".fileLink").attr("href", "#");
+        $group.find(".content-thumb-link, .js-clear-content-media").removeClass("is-visible").addClass("d-none").hide();
+
+        $group.find("input[type='hidden']").each(function () {
+            var name = (this.name || "").toLowerCase();
+            if (!name) return;
+            if (name.endsWith("_id") || name.indexOf("media_id") >= 0) {
+                $(this).val("0");
+            } else if (name.endsWith("_isdelete") || name.indexOf("isdelete") >= 0) {
+                $(this).val("true");
+            } else if (
+                name === "thumb_image" ||
+                name === "small_icon_thumb_image" ||
+                name === "masthead_image" ||
+                name === "mobile_masthead_image" ||
+                name === "background_image" ||
+                name === "attach_file"
+            ) {
+                $(this).val("");
+            }
+        });
     });
+
+function initContentMediaPreviews() {
+    $(".form-group").each(function () {
+        var $group = $(this);
+        var $img = $group.find(".imgPreview").first();
+        var $file = $group.find(".filePreview").first();
+        var $del = $group.find(".content-thumb-link, .js-clear-content-media").first();
+        if (!$img.length && !$file.length && !$del.length) return;
+
+        var pathFromHidden = "";
+        $group.find("input[type='hidden']").each(function () {
+            var name = (this.name || "").toLowerCase();
+            if (
+                name === "thumb_image" ||
+                name === "small_icon_thumb_image" ||
+                name === "masthead_image" ||
+                name === "mobile_masthead_image" ||
+                name === "background_image" ||
+                name === "attach_file"
+            ) {
+                var v = ($(this).val() || "").trim();
+                if (v) pathFromHidden = v;
+            }
+        });
+
+        var src = ($img.attr("src") || "").trim();
+        var fileHref = ($file.find(".fileLink").attr("href") || "").trim();
+        if ((!fileHref || fileHref === "#") && pathFromHidden) {
+            fileHref = pathFromHidden;
+        }
+
+        var candidate = src || fileHref || pathFromHidden;
+        var isNonImage = !!candidate && /\.(pdf|mp3|mp4|zip)(\?|$)/i.test(candidate);
+        var hasFile = isNonImage && !!(fileHref && fileHref !== "#" ? fileHref : pathFromHidden);
+        var hasImage = !isNonImage && !!((src && src !== "#") || (pathFromHidden && !isNonImage));
+
+        if (hasImage) {
+            var imgUrl = (src && src !== "#") ? src : pathFromHidden;
+            $img.attr("src", imgUrl).addClass("is-visible").removeClass("d-none").show();
+            $file.removeClass("is-visible").addClass("d-none").hide();
+            $del.addClass("is-visible").removeClass("d-none").show();
+        } else if (hasFile) {
+            var url = (fileHref && fileHref !== "#") ? fileHref : pathFromHidden;
+            var fileName = url.split("?")[0].split("/").pop() || "View File";
+            var ext = (fileName.split(".").pop() || "").toLowerCase();
+            var iconClass = "bi bi-file-earmark";
+            if (ext === "pdf") iconClass = "bi bi-file-earmark-pdf";
+            else if (ext === "mp3") iconClass = "bi bi-music-note-beamed";
+            else if (ext === "mp4") iconClass = "bi bi-film";
+            else if (ext === "zip") iconClass = "bi bi-file-zip";
+
+            $file.find(".fileLink")
+                .attr("href", url)
+                .html('<i class="' + iconClass + '"></i> <span class="fileName">' + fileName + "</span>");
+            $file.addClass("is-visible").removeClass("d-none").show();
+            $img.attr("src", "").removeClass("is-visible").addClass("d-none").hide();
+            $del.addClass("is-visible").removeClass("d-none").show();
+        } else {
+            $img.attr("src", "").removeClass("is-visible").addClass("d-none").hide();
+            $file.removeClass("is-visible").addClass("d-none").hide();
+            $file.find(".fileLink").attr("href", "#");
+            $del.removeClass("is-visible").addClass("d-none").hide();
+        }
+    });
+}
+
+$(function () {
+    initContentMediaPreviews();
+});
+
+window.initContentMediaPreviews = initContentMediaPreviews;
 
 $(document)
     .off("click.contentValidate", ".js-validate-content-form")
@@ -939,16 +1047,19 @@ window.Load_Edit_context_Published_details = function (isrefresh, _templateid, _
             success: function (data) {
                 if (data != null) {
                     $("#div_contentspotmapping").html(data);
-                    $('.list_context').each(function () {
+                    $('#div_contentspotmapping > .list_context').each(function () {
                         var id = $(this).data('paging-id');
                         generatePagination(
                             '.js-pagination-div' + id,
-                            '.js-pagination-div-item' + id,
+                            '#div_contentspotmapping .js-pagination-div-item' + id,
                             10,
                             '<<',
                             '>>'
                         );
                     });
+                    if (typeof window.initBlockSortable === "function") {
+                        setTimeout(function () { window.initBlockSortable(); }, 100);
+                    }
                 }
                 else
                     $("#div_contentspotmapping").html("");

@@ -25,6 +25,18 @@ public class Component_data
 
 }
 
+public class ContextBlockSequenceItem
+{
+    public string? context_group_id { get; set; }
+    public int sequence { get; set; }
+}
+
+public class ContextBlockSequenceRequest
+{
+    public string mode { get; set; } = "main";
+    public List<ContextBlockSequenceItem>? items { get; set; }
+}
+
 public class List_Components
 {
     public List<Component>? Components { get; set; }

@@ -958,6 +958,12 @@
   .mb-6 {
     margin-bottom: calc(var(--spacing) * 6);
   }
+  .mb-10 {
+    margin-bottom: calc(var(--spacing) * 10);
+  }
+  .mb-20 {
+    margin-bottom: calc(var(--spacing) * 20);
+  }
   .mb-auto {
     margin-bottom: auto;
   }
@@ -1571,6 +1577,9 @@
   }
   .pb-0 {
     padding-bottom: calc(var(--spacing) * 0);
+  }
+  .pb-0\! {
+    padding-bottom: calc(var(--spacing) * 0) !important;
   }
   .pb-1 {
     padding-bottom: calc(var(--spacing) * 1);

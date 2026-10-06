@@ -90,7 +90,7 @@ public class ContentController : Controller
 
                     ContentObj.lang_groupid = Modelobj.Lang_groupid;
                     ContentObj.root_parent_id = Modelobj.Section_id;
-                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-"); ;
+                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-").ToLowerInvariant();
                     ContentObj.title = Modelobj.Title.Trim();
                     ContentObj.hmpg_title = string.IsNullOrWhiteSpace(Modelobj.Hmpg_title) ? "" : Modelobj.Hmpg_title.Trim();
                     ContentObj.breadcrumb_title = string.IsNullOrWhiteSpace(Modelobj.Breadcrumb_title) ? "" : Modelobj.Breadcrumb_title.Trim();
@@ -512,7 +512,7 @@ public class ContentController : Controller
                     ModelObj.Field_details = new List<Component_data>();
                     if (lst_components._context_Details != null && lst_components._context_Details.Count > 0)
                     {
-                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item4))
+                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item5))
                         {
                             ModelObj.Field_details.Add(new Component_data()
                             {
@@ -541,6 +541,36 @@ public class ContentController : Controller
         {
             FileLogger.LogError("_Add_Context_List", ex);
             return Json(new { msg = ex.Message });
+        }
+        finally
+        {
+            objBal = null;
+        }
+    }
+
+    [HttpPost]
+    public IActionResult UpdateBlockSequence([FromBody] ContextBlockSequenceRequest request)
+    {
+        ContextDetail_BAL? objBal = new(objconfig);
+        try
+        {
+            if (request?.items == null || request.items.Count == 0)
+                return BadRequest(new { message = "Invalid sequence data." });
+
+            var mode = string.IsNullOrWhiteSpace(request.mode) ? "main" : request.mode.Trim().ToLowerInvariant();
+            if (mode != "temp" && mode != "reprocess") mode = "main";
+
+            var payload = request.items
+                .Where(x => !string.IsNullOrWhiteSpace(x.context_group_id) && x.sequence > 0)
+                .Select(x => (x.context_group_id!.Trim(), x.sequence));
+
+            objBal.UpdateBlockSequence(payload, mode);
+            return Ok(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("UpdateBlockSequence", ex);
+            return BadRequest(new { message = ex.Message });
         }
         finally
         {
@@ -583,7 +613,7 @@ public class ContentController : Controller
                     ModelObj.Field_details = new List<Component_data>();
                     if (lst_components._context_Details != null && lst_components._context_Details.Count > 0)
                     {
-                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item4))
+                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item5))
                         {
                             ModelObj.Field_details.Add(new Component_data()
                             {
@@ -654,7 +684,7 @@ public class ContentController : Controller
                     ModelObj.Field_details = new List<Component_data>();
                     if (lst_components._context_Details != null && lst_components._context_Details.Count > 0)
                     {
-                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item4))
+                        foreach (var item in lst_components._context_Details.OrderBy(m => m.Item5))
                         {
                             ModelObj.Field_details.Add(new Component_data()
                             {
@@ -998,7 +1028,7 @@ public class ContentController : Controller
 
                     ContentObj.lang_groupid = Modelobj.Lang_groupid;
                     ContentObj.root_parent_id = Modelobj.Section_id;
-                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-"); ;
+                    ContentObj.pagename = Modelobj.Pagename.Trim().Replace(" ", "-").ToLowerInvariant();
                     ContentObj.title = Modelobj.Title.Trim();
                     ContentObj.hmpg_title = string.IsNullOrWhiteSpace(Modelobj.Hmpg_title) ? "" : Modelobj.Hmpg_title.Trim();
                     ContentObj.breadcrumb_title = string.IsNullOrWhiteSpace(Modelobj.Breadcrumb_title) ? "" : Modelobj.Breadcrumb_title.Trim();

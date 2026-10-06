@@ -97,7 +97,7 @@ namespace Core_project_BusinessLogic.BAL
             DataSet ds = new();
             try
             {
-                ds = dal.Context_Detail_List_For_content_GetAll(templateId, language_id, status);
+                ds = dal.Context_Detail_List_For_content_GetAll(cont_id, templateId, language_id, status);
                 obj._context = [];
 
                 if (ds.Tables[0].Rows.Count > 0)
@@ -365,6 +365,16 @@ namespace Core_project_BusinessLogic.BAL
         public void UpdateDetail_Reprocess_DAL(ContextFieldWithValue v, int userid)
         {
             dal.UpdateDetail_Reprocess(v, userid);
+        }
+
+        public void UpdateBlockSequence(IEnumerable<(string GroupId, int Sequence)> items, string mode, int updatedUserId = 1)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                if (string.IsNullOrWhiteSpace(item.GroupId) || item.Sequence < 1) continue;
+                dal.UpdateBlockSequence(item.GroupId, item.Sequence, mode, updatedUserId);
+            }
         }
     }
 
