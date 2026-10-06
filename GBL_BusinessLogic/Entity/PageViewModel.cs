@@ -68,6 +68,7 @@ namespace GBL_BusinessLogic.Entity
         public string ByLine { get; set; }
         public string Publication { get; set; }
         public string ParentLink { get; set; }
+        public string External_url { get; set; }
 
     }
 

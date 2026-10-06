@@ -48,7 +48,7 @@ namespace GBL_BusinessLogic.BAL
                 Masthead_image_Alt_text = row.Field<string>("Masthead_alt_text") ?? "",
                 CanonicalUrl = Config_Application_Website.GetMetaUrl(baseurl, canUrl),
                 ParentLink = row.Field<string>("parentLink") ?? "",
-                
+
                 cont_meta_image = Config_Application_Website.GetMetaUrl(baseurl, image),
                 cont_displaydate = row.Table.Columns.Contains("cont_displaydate")
                     ? row.Field<DateTime?>("cont_displaydate")
@@ -58,7 +58,8 @@ namespace GBL_BusinessLogic.BAL
                     : (row.Table.Columns.Contains("ByLine") ? row.Field<string>("ByLine") ?? "" : ""),
                 Publication = row.Table.Columns.Contains("Cont_Publication")
                     ? row.Field<string>("Cont_Publication") ?? ""
-                    : (row.Table.Columns.Contains("Publication") ? row.Field<string>("Publication") ?? "" : "")
+                    : (row.Table.Columns.Contains("Publication") ? row.Field<string>("Publication") ?? "" : ""),
+                External_url = row.Field<string>("cont_external_url") ?? "",
             };
         }
 

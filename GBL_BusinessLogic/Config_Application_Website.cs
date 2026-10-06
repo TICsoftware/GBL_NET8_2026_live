@@ -229,6 +229,7 @@ namespace GBL_BusinessLogic
                         : null,
 
                     Sequence = row.Field<int?>("cont_sequence") ?? 0,
+                    Content = row["content"]?.ToString(),
 
 
                 })
@@ -272,6 +273,7 @@ namespace GBL_BusinessLogic
                     Tag_list = row["TagNames"]?.ToString(),
                     Publication = row["Cont_Publication"]?.ToString(),
                     Search_url = row["cont_search_url"]?.ToString(),
+                    Content = row["content"]?.ToString(),
 
                 })
                 .ToList();

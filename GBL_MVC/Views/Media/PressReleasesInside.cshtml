@@ -66,6 +66,14 @@
                @(Model.Content.cont_displaydate?.ToString("MMM dd, yyyy") ?? "")
             </div>
          }
+         
+         @if (!string.IsNullOrWhiteSpace(Model.Content.Publication))
+         {
+            <span class="date-channel__sep" aria-hidden="true">|</span>
+            <span class="date-channel__source">
+               @Model.Content.Publication
+            </span>
+         }
 
          <div class="press-release-card__content">
             @if (!string.IsNullOrWhiteSpace(Model.Content?.Content))
@@ -74,12 +82,12 @@
             }
          </div>
 
-         @if (!string.IsNullOrWhiteSpace(Model.Content?.ParentLink))
+         @if (!string.IsNullOrWhiteSpace(Model.Content?.External_url))
          {
             <div class="press-release-card__footer">
                <span class="press-release-card__footer-label">Link:</span>
-               <a href="@Model.Content.ParentLink" target="_self" rel="noopener" class="fill-site-link">
-                  Press release
+               <a href="@Model.Content.External_url" target="_self" rel="noopener" class="fill-site-link">
+                  @Model.Content.Publication
                </a>
             </div>
          }

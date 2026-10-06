@@ -86,6 +86,8 @@ namespace GBL_BusinessLogic.Entity
         public string Intro { get; set; }
         public string HmpgIntro { get; set; }
 
+        public string Content { get; set; }
+
         public string PageName { get; set; }
 
         public string ThumbnailImage { get; set; }

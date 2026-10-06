@@ -110,7 +110,7 @@ namespace GBL_BusinessLogic.BAL
 
             if (ds.Tables.Count > 2 && ds.Tables[2].Rows.Count > 0)
             {
-                model.Related_Articles_List = Config_Application_Website.MapArticleList(ds.Tables[2]);
+                model.Related_Articles_List = Config_Application_Website.MapMediaArticleList(ds.Tables[2]);
             }
 
 
