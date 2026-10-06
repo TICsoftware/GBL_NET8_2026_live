@@ -19,6 +19,12 @@ namespace GBL_MVC.Routes
                     defaults: new { controller = "About", action = "AboutUs", title = "about-us" }
                 );
 
+            app.MapControllerRoute(
+                 name: "sustainability-reports",
+                 pattern: "sustainability/sustainability-reports",
+                 defaults: new { controller = "Sustainability", action = "SustainabilityReports", title = "sustainability-reports"  }
+            );
+
 
             app.MapControllerRoute(
                  name: "press-release",

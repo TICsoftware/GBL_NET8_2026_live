@@ -1,0 +1,116 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.SustainabilityModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability Reports";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Priya Cement" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+<!--Sustainability Reports list-->
+<section class="sustainabilityReportsList section-spacing bg-gray" data-content-id="@Model.Content?.ContId">
+   <div class="container">
+      <ul class="sustainabilityReportsList__grid card-list-items" id="sustainabilityReportsList">
+         @if (Model?.SectionArticles_List != null && Model.SectionArticles_List.Any())
+         {
+            foreach (var item in Model.SectionArticles_List)
+            {
+               <li class="sustainabilityReportsList__card card-rise">
+                  @if (!string.IsNullOrWhiteSpace(item.ThumbnailImage))
+                  {
+                     <div class="sustainabilityReportsList__media parallax-wrap">
+                        <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+                     </div>
+                  }
+
+                  <div class="sustainabilityReportsList__meta">
+                     <p class="sustainabilityReportsList__title">
+                        @item.Title
+                     </p>
+
+                     <a href="@item.Url" class="sustainabilityReportsList__download" target="_blank" rel="noopener noreferrer"
+                        aria-label="Download Sustainability Report">
+
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                           <path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                     </a>
+                          
+                  </div>
+               </li>
+            }
+         }
+      </ul>
+
+      @if (Model.TotalCount > 10)
+      {
+         <div class="news-load-more" id="loadMoreWrap">
+            <button type="button" class="site-btn site-btn--fill" id="btnLoadMore">
+               <span class="site-btn__label">Load More</span>
+               <span class="site-btn__arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                     <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                           stroke-linejoin="round" />
+                  </svg>
+               </span>
+            </button>
+         </div>
+      }
+
+   </div>
+</section>
+<!--Sustainability Reports End-->
+
+
+
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/sustainability-intro.js" asp-append-version="true"></script>
+}

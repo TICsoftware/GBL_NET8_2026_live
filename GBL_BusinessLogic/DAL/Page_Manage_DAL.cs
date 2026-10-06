@@ -106,6 +106,19 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_PressReleases_Articles_List", sqlParams);
         }
 
+        public DataSet Get_SustainabilityReports_page_wise_DAL(int contentId, int page, int pageSize, int? year = null, int? month = null, int? tagId = null)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@ContentId", contentId),
+                new SqlParameter("@PageSize", pageSize),
+                new SqlParameter("@PageNumber", page)
+            };
+
+            return GetDataSet("Get_Sustainability_Reports_Articles_List", sqlParams);
+        }
+
+
 
     }
 }
