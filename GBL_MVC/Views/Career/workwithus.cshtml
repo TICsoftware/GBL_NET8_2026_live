@@ -7,7 +7,7 @@
 }
 
 @section head {
-   <title>@(content?.cont_window_title ?? ViewData["Title"])</title>
+   <title>@(content?.cont_window_title)</title>
 
    <meta content="@(content?.cont_metatag)" name="keywords" />
    <meta content="@(content?.cont_metadesc)" name="description" />
@@ -23,6 +23,17 @@
    <meta property="og:description" content="@(content?.cont_metadesc)" />
    <meta property="og:url" content="@(content?.CanonicalUrl)" />
    <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Godavari Biorefineries" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
 
    <link rel="canonical" href="@(content?.CanonicalUrl)" />
 }
@@ -74,12 +85,12 @@ else
 <!-- HERO BANNER END -->
 
 <!--PAGE INTRO OUTER-->
-@if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
 {
    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
       <div class="container">
          <div class="page-intro-inner intro-lg text-center">
-            @Html.Raw(Model.Content.Content)
+            @Html.Raw(Model.Content.Cont_intro)
          </div>
       </div>
    </section>
@@ -153,7 +164,7 @@ else
          </div>
          <div class="enquiry-field enquiry-field--area">
             <label class="enquiry-field__label" for="Message">Message</label>
-            <textarea id="Message" name="Message" rows="4" placeholder="Message"></textarea>
+            <textarea id="Message" name="Message" rows="4" placeholder="Message" maxlength="2000"></textarea>
             <span class="text-red-500 text-sm" data-valmsg-for="Message"></span>
          </div>
          <div class="enquiry-recaptcha">

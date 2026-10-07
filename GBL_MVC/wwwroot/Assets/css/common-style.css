@@ -78,6 +78,31 @@ Title left | copy + CTA right
   color: #ccc;
 }
 
+
+.breadcrumb-nav,
+.breadcrumb-nav ol,
+.breadcrumb-nav li,
+.breadcrumb-nav a {
+  font-size: 14px;
+}
+
+
+@media (min-width: 1081px) {
+  .section-intro {
+    flex-wrap: nowrap;
+  }
+
+  .section-intro__title {
+    flex: 0 1 38%;
+    min-width: 0;
+  }
+
+  .section-intro__content {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
 .section-intro__content .intro-fill-word {
   display: inline;
   color: #ccc;
@@ -119,14 +144,15 @@ BACK TO TOP
   transform: translate3d(0, 0, 0);
 }
 .back-to-top:hover{
-  background-color: rgba(35, 31, 32, 0.88);
+  background-color: rgba(35, 31, 32, 0.45);
 }
 .back-to-top:focus-visible{
-  outline: 2px solid #ED1C24;
+  outline: 2px solid var(--color-secondary);
   outline-offset: 3px;
 }
 .progress-ring-circle{
   transition: stroke-dashoffset 0.12s linear;
+  stroke: var(--header-accent) !important;
 }
 
 /**=====================================
@@ -439,14 +465,27 @@ a:active > .site-btn::before {
   outline-offset: 3px;
 }
 
-/* 1 — outline: white pill + black border/text → green fill, white text */
+/* 1 — outline: transparent pill + border → green fill, white text */
 .site-btn.site-btn--outline {
-  background: #fff;
+  background: transparent;
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-primary, #282b31);
   color: var(--color-primary, #282b31);
   --btn-black: var(--color-primary, #282b31);
+  --btn-green: var(--color-secondary, #67815a);
+  --btn-white: #fff;
+  --btn-fill: var(--color-secondary, #67815a);
+  background-clip: padding-box;
+}
+
+.site-btn.site-btn--outline-white {
+  background: transparent;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #fff;
+  color: #fff;
+  --btn-black: #fff;
   --btn-green: var(--color-secondary, #67815a);
   --btn-white: #fff;
   --btn-fill: var(--color-secondary, #67815a);
@@ -571,6 +610,27 @@ a:active > .site-btn--line::after {
   opacity: 0;
 }
 
+/* Line button on a dark photo or panel: white text and underline */
+.site-btn.site-btn--line.site-btn--on-dark {
+  color: #fff;
+  --btn-black: #fff;
+}
+
+.site-btn.site-btn--line.site-btn--on-dark::after {
+  background: #fff;
+}
+
+.site-btn.site-btn--line.site-btn--on-dark::before {
+  background: var(--color-secondary, #67815a);
+}
+
+.site-btn.site-btn--line.site-btn--on-dark:hover,
+.site-btn.site-btn--line.site-btn--on-dark:focus-visible,
+.site-btn.site-btn--line.site-btn--on-dark:active {
+  color: #fff;
+  background: transparent;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-btn,
   .site-btn::before,
@@ -677,6 +737,32 @@ IMAGE card COMMON CSS
 
 
 
+@media all and (max-width: 1179px) {
+  
+  .breadcrumb-nav ol {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    row-gap: 0.2rem;
+    max-width: 100%;
+  }
+
+  .breadcrumb-nav li {
+    white-space: nowrap;
+  }
+
+  .breadcrumb-nav li:not(:has(a)):not(:last-child) {
+    display: none;
+  }
+
+  .breadcrumb-nav li:not(:last-child)::after {
+    content: "/";
+    margin-left: 0.35rem;
+  }
+
+  
+
+}
+
 
 /* Image on the right, content on the left â€” no HTML reorder */
 @media (min-width: 1024px) {
@@ -721,11 +807,30 @@ IMAGE card COMMON CSS
 
 /* 150% zoom */
 @media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio:1.5),screen and (min-width:1025px) and (min-resolution:144dpi) {
+  :root {
+    --text-h1: 55px;
+  }
 
-   
+  h1,
+  .text-h1,
+  h1 .hero-slide__line,
+  h1 .hero-slide__line--sans,
+  h1 .hero-slide__line--script {
+    font-size: 55px;
+  }
 }
 
 /* 125% zoom */
 @media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio:1.25),screen and (min-width:1025px) and (min-resolution:120dpi) {
+  :root {
+    --text-h1: 55px;
+  }
 
+  h1,
+  .text-h1,
+  h1 .hero-slide__line,
+  h1 .hero-slide__line--sans,
+  h1 .hero-slide__line--script {
+    font-size: 55px;
+  }
 }
