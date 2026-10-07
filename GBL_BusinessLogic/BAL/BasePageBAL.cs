@@ -29,6 +29,7 @@ namespace GBL_BusinessLogic.BAL
             {
                 ContId = row.Field<int?>("cont_id") ?? 0,
                 ContTitle = row.Field<string>("cont_title") ?? "",
+                ContHmpgTitle = row.Field<string>("cont_hmpg_title") ?? "",
                 Cont_intro = row.Field<string>("cont_intro") ?? "",
                 Cont_hmpg_intro = row.Field<string>("cont_hmpg_intro") ?? "",
                 Content = row.Table.Columns.Contains("content")

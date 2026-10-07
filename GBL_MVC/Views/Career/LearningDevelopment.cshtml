@@ -55,17 +55,27 @@
 
 
 <!--PAGE INTRO OUTER-->
-@if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
 {
    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
       <div class="container">
          <div class="page-intro-inner intro-lg text-center">
-            @Html.Raw(Model.Content.Content)
+            @Html.Raw(Model.Content.Cont_intro)
          </div>
       </div>
    </section>
 }
 <!--PAGE INTRO OUTER END-->
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
+{
+   <section class="middle-container learningBody section-spacing">
+      <div class="container middle-container-inner">
+         <div class="learningCopy">
+            @Html.Raw(Model.Content.Content)
+         </div>
+      </div>
+   </section>
+}
 
 @if (Model?.Learning_Development_List != null && Model.Learning_Development_List.Any())
 {
