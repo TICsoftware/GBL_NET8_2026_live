@@ -22,8 +22,14 @@ namespace GBL_MVC.Routes
 
             app.MapControllerRoute(
                     name: "learning-and-development",
-                    pattern: "career/learning-and-development",
+                    pattern: "careers/learning-and-development",
                     defaults: new { controller = "Career", action = "LearningDevelopment", title = "learning-and-development" }
+            );
+
+             app.MapControllerRoute(
+                    name: "careers",
+                    pattern: "careers",
+                    defaults: new { controller = "Career", action = "Index", title = "careers" }
             );
 
             app.MapControllerRoute(

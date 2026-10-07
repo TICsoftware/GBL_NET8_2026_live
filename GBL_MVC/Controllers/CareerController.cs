@@ -22,13 +22,8 @@ public class CareerController : Controller
         _bal = new Careers_BAL(configuration);
     }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
 
-
-    public IActionResult Careers(string title)
+    public IActionResult Index(string title)
     {
         try
         {
