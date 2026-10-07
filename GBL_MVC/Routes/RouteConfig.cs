@@ -27,6 +27,12 @@ namespace GBL_MVC.Routes
             );
 
              app.MapControllerRoute(
+                    name: "social",
+                    pattern: "sustainability/social",
+                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "social" }
+            );
+
+             app.MapControllerRoute(
                     name: "careers",
                     pattern: "careers",
                     defaults: new { controller = "Career", action = "Index", title = "careers" }
