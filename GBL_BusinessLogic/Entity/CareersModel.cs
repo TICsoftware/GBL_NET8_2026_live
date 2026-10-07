@@ -7,19 +7,14 @@ namespace GBL_BusinessLogic.Entity
         public ContentViewModel? Content { get; set; }
         public List<ComponentGroup> Components { get; set; } = new();
 
-        /// <summary>Seq 1 — page intro</summary>
-        public List<ComponentModel> Intro_List { get; set; } = new();
+        
+        public List<ComponentModel> Learning_Development_List { get; set; } = new();
+        
+        public List<ComponentModel> Why_Join_Godavari_Biorefineries_List { get; set; } = new();
+        public List<ComponentModel> Life_at_Godavari_List { get; set; } = new();
+        public List<ComponentModel> Career_CTA_List { get; set; } = new();
 
-        /// <summary>Seq 2 — Life Inside (header + petal icons/labels)</summary>
-        public List<ComponentModel> LifeInside_List { get; set; } = new();
+        
 
-        /// <summary>Seq 3 — Workplace culture (intro + photos)</summary>
-        public List<ComponentModel> WorkplaceCulture_List { get; set; } = new();
-
-        /// <summary>Seq 4 — Testimonials</summary>
-        public List<ComponentModel> Testimonials_List { get; set; } = new();
-
-        /// <summary>Seq 5 — Join CTA</summary>
-        public List<ComponentModel> Careers_CTA_List { get; set; } = new();
     }
 }

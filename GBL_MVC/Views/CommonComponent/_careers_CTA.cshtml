@@ -1,0 +1,39 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var component = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+}
+
+
+<section class="shapeFuture section-pb bg-gray">
+    <div class="container">
+        <div class="shapeFuture-banner">
+            <div class="parallax-wrap" aria-hidden="true">
+                <img src="@component.Componentbackground" alt="@component.Title" class="parallax-img">
+            </div>
+            <div class="shapeFuture-inner">
+                <h2 class="text-h2">@component.Title</h2>
+                @if (!string.IsNullOrWhiteSpace(component.Intro))
+                {
+                    <p>@Html.Raw(component.Intro.CleanParagraphTags())</p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(component.Url))
+                {
+                    <a href="@component.Url" class="site-btn site-btn--outline-white">
+                        <span class="site-btn__label">@component.Url_Text</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </a>
+                }
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,101 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.CareersModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Careers";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Priya Cement" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/careers-style.css" asp-append-version="true" />
+}
+
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+
+
+<!--PAGE INTRO OUTER-->
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
+{
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+      <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            @Html.Raw(Model.Content.Content)
+         </div>
+      </div>
+   </section>
+}
+<!--PAGE INTRO OUTER END-->
+
+  
+   
+<!--Why Join-->
+@if (Model?.Why_Join_Godavari_Biorefineries_List != null && Model.Why_Join_Godavari_Biorefineries_List.Any())
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_why_join_godavari.cshtml", Model.Why_Join_Godavari_Biorefineries_List)
+}
+<!--Why Join END-->
+
+
+<!--Life at Godavari-->
+@if (Model?.Life_at_Godavari_List != null && Model.Life_at_Godavari_List.Any())
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_careers_left_right_image_intro.cshtml", Model.Life_at_Godavari_List)
+}
+<!--Life at Godavari END-->
+
+<!--Ready to Shape the Future-->
+@if (Model?.Career_CTA_List != null && Model.Career_CTA_List.Any())
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_careers_CTA.cshtml", Model.Career_CTA_List)
+}
+<!--Ready to Shape the Future END-->
+   
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/careers-script.js" asp-append-version="true"></script>
+}

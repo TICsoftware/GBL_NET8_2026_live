@@ -1,0 +1,103 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.CareersModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Learning Development";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Priya Cement" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Priya Cement" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+}
+
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+
+<!--PAGE INTRO OUTER-->
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
+{
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+      <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            @Html.Raw(Model.Content.Content)
+         </div>
+      </div>
+   </section>
+}
+<!--PAGE INTRO OUTER END-->
+
+@if (Model?.Learning_Development_List != null && Model.Learning_Development_List.Any())
+{
+   <section class="middle-container learningBody section-spacing">
+      <div class="container middle-container-inner">
+         @foreach (var item in Model.Learning_Development_List.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+         {
+            <article class="@(item.Sequence == 1 ? "learningBand common-media-section" : "common-media-section")">
+               <div class="parallax-wrap" aria-hidden="true">
+                  <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+               </div>
+               <div class="@(item.Sequence == 1 ? "learningBand-caption common-media-caption" : "common-media-caption")">
+                  <h2 class="text-h2">@item.Title</h2>
+                  @if (!string.IsNullOrWhiteSpace(item.Intro))
+                  {
+                     <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                  }
+               </div>
+            </article>
+
+            <div class="learningCopy">
+               @if (!string.IsNullOrWhiteSpace(item.Content))
+               {
+                  @Html.Raw(item.Content)
+               }
+            </div>
+         }
+      </div>
+   </section>
+}
+
+
+@section Scripts {
+  
+}

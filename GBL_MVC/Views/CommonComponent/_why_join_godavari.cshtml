@@ -1,0 +1,71 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var component = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+}
+
+<section class="whyJoin section-spacing">
+    <div class="container">
+        <div class="section-intro">
+            <div class="section-intro__title title-section">
+                <h2 class="text-h2">
+                    @Html.Raw(!string.IsNullOrWhiteSpace(component?.DisplayTitle)
+                               ? component.DisplayTitle.CleanParagraphTags()
+                               : component?.Title)
+                </h2>
+            </div>
+        </div>
+
+        <div class="swiper whyJoin-cards-outer">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+                {
+                    <article class="swiper-slide whyJoin-card">
+                        <div class="whyJoin-card__media parallax-wrap">
+                            <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+                        </div>
+                        <div class="whyJoin-card__body bg-gray">
+                            <h3 class="text-h5">@item.Title</h3>
+
+                            @if (!string.IsNullOrWhiteSpace(item.Intro))
+                            {
+                                <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                            }
+                         
+                            @if (!string.IsNullOrWhiteSpace(item.Url))
+                            {
+                                <a href="@item.Url" class="site-btn site-btn--outline">
+                                    <span class="site-btn__label">@item.Url_Text</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none">
+                                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                                  stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+
+        <div class="whyJoin-controls">
+            <button type="button" class="whyJoin-nav whyJoin-nav--prev" aria-label="Previous card">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M15 5L8 12l7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                </svg>
+            </button>
+            <div class="swiper-pagination whyJoin-pagination"></div>
+            <button type="button" class="whyJoin-nav whyJoin-nav--next" aria-label="Next card">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</section>

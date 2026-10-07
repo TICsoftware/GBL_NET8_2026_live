@@ -19,26 +19,33 @@ namespace GBL_MVC.Routes
                     defaults: new { controller = "About", action = "AboutUs", title = "about-us" }
                 );
 
+
+            app.MapControllerRoute(
+                    name: "learning-and-development",
+                    pattern: "career/learning-and-development",
+                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "learning-and-development" }
+            );
+
             app.MapControllerRoute(
                  name: "sustainability-reports",
                  pattern: "sustainability/sustainability-reports",
-                 defaults: new { controller = "Sustainability", action = "SustainabilityReports", title = "sustainability-reports"  }
+                 defaults: new { controller = "Sustainability", action = "SustainabilityReports", title = "sustainability-reports" }
             );
 
 
             app.MapControllerRoute(
                  name: "press-release",
                  pattern: "media/press-release",
-                 defaults: new { controller = "Media", action = "PressReleases", title = "press-release"  }
+                 defaults: new { controller = "Media", action = "PressReleases", title = "press-release" }
             );
 
-              app.MapControllerRoute(
-                 name: "media-coverage",
-                 pattern: "media/media-coverage",
-                 defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage"  }
-            );
+            app.MapControllerRoute(
+               name: "media-coverage",
+               pattern: "media/media-coverage",
+               defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage" }
+          );
 
-            
+
 
             app.MapControllerRoute(
                  name: "press-release-inside",
@@ -46,11 +53,11 @@ namespace GBL_MVC.Routes
                  defaults: new { controller = "Media", action = "PressReleasesInside" }
             );
 
-              app.MapControllerRoute(
-                 name: "media-coverage-inside",
-                 pattern: "media/media-coverage/{title?}",
-                 defaults: new { controller = "Media", action = "PressReleasesInside" }
-            );
+            app.MapControllerRoute(
+               name: "media-coverage-inside",
+               pattern: "media/media-coverage/{title?}",
+               defaults: new { controller = "Media", action = "PressReleasesInside" }
+          );
 
 
             app.MapControllerRoute(
