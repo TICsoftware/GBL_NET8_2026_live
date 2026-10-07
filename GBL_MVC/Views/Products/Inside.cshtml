@@ -145,7 +145,7 @@
                      var technicalOverviewHtml = product.Technical_Overview ?? "";
                      technicalOverviewHtml = technicalOverviewHtml
                          .Replace("<td><p><strong>", "<th><strong>")
-                         .Replace("<td><p>", "<th><p>")
+                         .Replace("<td><p>Moisture", "<th><p>Moisture")
                          .Replace("</p></td>", "</th>");
                  }
                  @Html.Raw(technicalOverviewHtml)
