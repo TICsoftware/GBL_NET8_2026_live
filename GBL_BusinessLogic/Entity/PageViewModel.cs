@@ -37,6 +37,7 @@ namespace GBL_BusinessLogic.Entity
     {
         public int ContId { get; set; }
         public string ContTitle { get; set; }
+        public string ContHmpgTitle { get; set; }
         public string Cont_intro { get; set; }
         public string Cont_hmpg_intro { get; set; }
         public string PageName { get; set; }
