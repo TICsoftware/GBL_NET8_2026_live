@@ -12,8 +12,12 @@
     ? item.ExternalUrl
     : item.Url;
 
-    var isExternal = !string.IsNullOrWhiteSpace(item.ExternalUrl)
-                     && linkUrl == item.ExternalUrl;
+     var isExternal = hasPdfUrl ||
+                     (!string.IsNullOrWhiteSpace(item.ExternalUrl) &&
+                      linkUrl == item.ExternalUrl);
+
+    @* var isExternal = !string.IsNullOrWhiteSpace(item.ExternalUrl)
+                     && linkUrl == item.ExternalUrl; *@
 
     <article class="industry-product-card">
         <div class="industry-product-card__media">
