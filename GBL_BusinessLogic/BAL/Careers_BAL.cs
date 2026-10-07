@@ -63,8 +63,22 @@ namespace GBL_BusinessLogic.BAL
             return model;
         }
 
+        public CareersModel GetWorkWithUs_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new CareersModel();
+            var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
 
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
 
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                model.Components = GetGroupedComponents(ds.Tables[1]);
+            }
 
+            return model;
+        }
     }
 }

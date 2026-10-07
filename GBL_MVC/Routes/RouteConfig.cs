@@ -39,6 +39,18 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                    name: "work-with-us",
+                    pattern: "careers/work-with-us",
+                    defaults: new { controller = "Career", action = "WorkWithUs", title = "work-with-us" }
+            );
+
+            app.MapControllerRoute(
+                    name: "work-with-us-submit",
+                    pattern: "Career/SubmitWorkWithUs",
+                    defaults: new { controller = "Career", action = "SubmitWorkWithUs" }
+            );
+
+            app.MapControllerRoute(
                  name: "sustainability-reports",
                  pattern: "sustainability/sustainability-reports",
                  defaults: new { controller = "Sustainability", action = "SustainabilityReports", title = "sustainability-reports" }
