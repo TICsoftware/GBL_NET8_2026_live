@@ -1,0 +1,226 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.SustainabilityModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Godavari Biorefineries" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+<!--PAGE INTRO OUTER-->
+@if (Model?.Sustainability_intro_List != null && Model.Sustainability_intro_List.Any())
+{
+   foreach (var item in Model.Sustainability_intro_List.Where(x => x.IsBlock == 0))
+   {
+      <section class="page-intro-outer page-intro-outer--mantra section-spacing" aria-label="Our operating principle">
+         <div class="container">
+            <div class="page-intro-mantra">
+               <blockquote class="page-intro-mantra__quote">
+                  @if (!string.IsNullOrWhiteSpace(item.Intro))
+                  {
+                     <p>@Html.Raw(item.Intro)</p>
+                  }
+               </blockquote>
+               <div class="page-intro-mantra__copy">
+                  @if (!string.IsNullOrWhiteSpace(item.Content))
+                  {
+                     <p>@Html.Raw(item.Content)</p>
+                  }
+               </div>
+            </div>
+         </div>
+      </section>
+   }
+}
+<!--PAGE INTRO OUTER END-->
+
+<!--Creating Towards a beautiful world-->
+@if (Model?.Creating_Towards_beautiful_world_List != null && Model.Creating_Towards_beautiful_world_List.Any())
+{
+   foreach (var item in Model.Creating_Towards_beautiful_world_List.Where(x => x.IsBlock == 0))
+   {
+      <section class="CreatingTowards-outer section-spacing">
+         <div class="container">
+            <div class="CreatingTowards-inner">
+               <div class="section-intro">
+                  <div class="section-intro__title title-section">
+                     <h2 class="text-h2 text-white">
+                        @Html.Raw(!string.IsNullOrWhiteSpace(item.DisplayTitle)
+                                         ? item.DisplayTitle.CleanParagraphTags()
+                                         : item.Title)
+                     </h2>
+                  </div>
+               </div>
+
+               <div class="CreatingTowards-copy">
+                  @if (!string.IsNullOrWhiteSpace(item.Intro))
+                  {
+                     <p>@Html.Raw(item.Intro)</p>
+                  }
+               </div>
+
+               <div class="CreatingTowards-media" aria-hidden="false">
+                  @if (!string.IsNullOrWhiteSpace(item.Component_LHS_thumbnail))
+                  {
+                     <figure class="CreatingTowards-media__item parallax-wrap">
+                        <img src="item.Component_LHS_thumbnail" alt="@item.Component_LHS_thumbnail_image_alt"
+                             class="parallax-img img-full">
+                     </figure>
+                  }
+                  @if (!string.IsNullOrWhiteSpace(item.ComponentThumbnail))
+                  {
+                     <figure class="CreatingTowards-media__item parallax-wrap">
+                        <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText">
+                     </figure>
+                  }
+                  @if (!string.IsNullOrWhiteSpace(item.Component_right_image))
+                  {
+                     <figure class="CreatingTowards-media__item parallax-wrap">
+                        <img src="item.Component_right_image" alt="item.Title" class="parallax-img img-full">
+                     </figure>
+                  }
+               </div>
+            </div>
+         </div>
+      </section>
+   }
+}
+<!--Creating Towards a beautiful world END-->
+
+<!--Turning commitment into action-->
+@if (Model?.Turning_commitment_into_action_List != null && Model.Turning_commitment_into_action_List.Any())
+{
+   <section class="turningCommitment section-spacing bg-gray">
+      <div class="container">
+         @foreach (var item in Model.Turning_commitment_into_action_List.Where(x => x.IsBlock == 0))
+         {
+            <div class="section-intro">
+               <div class="section-intro__title title-section">
+                  <h2 class="text-h2">@item.Title</h2>
+               </div>
+
+               <div class="section-intro__content">
+                  @if (!string.IsNullOrWhiteSpace(item.Intro))
+                  {
+                     <p>@Html.Raw(item.Intro)</p>
+                  }
+               </div>
+            </div>
+         }
+
+         <div class="swiper turningCommitment-cards-outer mt-8">
+            <div class="swiper-wrapper">
+
+               @foreach (var item in Model.Turning_commitment_into_action_List.Where(x => x.IsBlock == 1).OrderBy(x =>
+           x.Sequence))
+               {
+                  <article class="swiper-slide turningCommitment-card">
+                     <div class="turningCommitment-card__media parallax-wrap">
+                        <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+                     </div>
+                     <div class="turningCommitment-card__body">
+                        <h3 class="text-h5">@item.Title</h3>
+                        @if (!string.IsNullOrWhiteSpace(item.Intro))
+                        {
+                           <p>@Html.Raw(item.Intro)</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.Intro))
+                        {
+                           <a href="@item.Url" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">@item.Url_Text</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                          stroke-linejoin="round" />
+                                 </svg>
+                              </span>
+                           </a>
+                        }
+                     </div>
+                  </article>
+               }
+            </div>
+         </div>
+
+         <div class="turningCommitment-controls">
+            <button type="button" class="turningCommitment-nav turningCommitment-nav--prev" aria-label="Previous card">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 5L8 12l7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+               </svg>
+            </button>
+            <div class="swiper-pagination turningCommitment-pagination"></div>
+            <button type="button" class="turningCommitment-nav turningCommitment-nav--next" aria-label="Next card">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+               </svg>
+            </button>
+         </div>
+      </div>
+   </section>
+}
+<!--Turning commitment into action END-->
+
+<!--Awards, Certifications & Reports-->
+@if (Model?.Awards_Certifications_Reports_List != null && Model.Awards_Certifications_Reports_List.Any())
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_sustainability_awards.cshtml", Model.Awards_Certifications_Reports_List)
+}
+<!--Awards, Certifications & Reports End-->
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/sustainability-intro.js" asp-append-version="true"></script>
+}

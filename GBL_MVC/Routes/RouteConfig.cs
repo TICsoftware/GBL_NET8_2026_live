@@ -20,23 +20,24 @@ namespace GBL_MVC.Routes
                 );
 
 
+
             app.MapControllerRoute(
                     name: "learning-and-development",
                     pattern: "careers/learning-and-development",
                     defaults: new { controller = "Career", action = "LearningDevelopment", title = "learning-and-development" }
             );
 
-             app.MapControllerRoute(
-                    name: "social",
-                    pattern: "sustainability/social",
-                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "social" }
-            );
+            app.MapControllerRoute(
+                   name: "social",
+                   pattern: "sustainability/social",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "social" }
+           );
 
-             app.MapControllerRoute(
-                    name: "careers",
-                    pattern: "careers",
-                    defaults: new { controller = "Career", action = "Index", title = "careers" }
-            );
+            app.MapControllerRoute(
+                   name: "careers",
+                   pattern: "careers",
+                   defaults: new { controller = "Career", action = "Index", title = "careers" }
+           );
 
             app.MapControllerRoute(
                     name: "work-with-us",
@@ -49,6 +50,19 @@ namespace GBL_MVC.Routes
                     pattern: "Career/SubmitWorkWithUs",
                     defaults: new { controller = "Career", action = "SubmitWorkWithUs" }
             );
+
+            app.MapControllerRoute(
+                            name: "sustainability",
+                            pattern: "sustainability",
+                            defaults: new { controller = "Sustainability", action = "Index", title = "sustainability" }
+                       );
+
+            app.MapControllerRoute(
+                name: "carbon-light-circularity",
+                pattern: "sustainability/carbon-light-circularity",
+                defaults: new { controller = "Sustainability", action = "CarbonLightCircularity", title = "carbon-light-circularity" }
+            );
+
 
             app.MapControllerRoute(
                  name: "sustainability-reports",

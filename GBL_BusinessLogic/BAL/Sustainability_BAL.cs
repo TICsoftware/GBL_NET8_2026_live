@@ -16,6 +16,62 @@ namespace GBL_BusinessLogic.BAL
         {
         }
 
+
+        public SustainabilityModel GetSustainability_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new SustainabilityModel();
+            var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
+
+            // Content
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
+
+
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                var groupedData = GetGroupedComponents(ds.Tables[1]);
+                model.Components = groupedData;
+
+                model.Sustainability_intro_List = MapComponents(groupedData, 1);
+                model.Creating_Towards_beautiful_world_List = MapComponents(groupedData, 2);
+                model.Turning_commitment_into_action_List = MapComponents(groupedData, 3);
+                model.Awards_Certifications_Reports_List = MapComponents(groupedData, 4);
+            }
+
+
+            return model;
+        }
+
+
+
+        public SustainabilityModel GetCarbonLightCircularity_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new SustainabilityModel();
+            var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
+
+            // Content
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
+
+
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                var groupedData = GetGroupedComponents(ds.Tables[1]);
+                model.Components = groupedData;
+
+                model.Carbon_light_circularity_Section_List = MapComponents(groupedData, 1);
+            }
+
+
+            return model;
+        }
+
+
+
         public SustainabilityModel GetSustainabilityReports_BAL(string pagename, int languageId, int geographyId)
         {
             var model = new SustainabilityModel();

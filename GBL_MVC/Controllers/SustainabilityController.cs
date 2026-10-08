@@ -25,11 +25,42 @@ public class SustainabilityController : Controller
         _partialViewRenderer = partialViewRenderer;
     }
 
-    public IActionResult Index()
+
+    public IActionResult Index(string title)
     {
-        return View();
+        try
+        {
+            var data = _bal.GetSustainability_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/Sustainability :", ex);
+            return View(new SustainabilityModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
     }
 
+    public IActionResult CarbonLightCircularity(string title)
+    {
+        try
+        {
+            var data = _bal.GetCarbonLightCircularity_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/CarbonLightCircularity :", ex);
+            return View(new SustainabilityModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
 
 
     public IActionResult SustainabilityReports(string title)

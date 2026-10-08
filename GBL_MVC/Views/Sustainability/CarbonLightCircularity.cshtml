@@ -1,0 +1,144 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.SustainabilityModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Carbon-light circularity";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Godavari Biorefineries" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+
+
+
+<!--PAGE INTRO OUTER-->
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
+{
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+      <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            @Html.Raw(Model.Content.Cont_intro)
+         </div>
+      </div>
+   </section>
+}
+<!--PAGE INTRO OUTER END-->
+
+
+<!--Carbon-light circularity list-->
+@if (Model?.Carbon_light_circularity_Section_List != null && Model.Carbon_light_circularity_Section_List.Any())
+{
+   <section class="carbonCircularity section-spacing">
+      <div class="container">
+         <div class="swiper carbonCircularity-cards">
+            <div class="swiper-wrapper">
+
+               @foreach (var item in Model.Carbon_light_circularity_Section_List.Where(x => x.IsBlock == 1).OrderBy(x =>
+            x.Sequence))
+               {
+                  <article class="swiper-slide carbonCircularity-card">
+                     <div class="carbonCircularity-card__media parallax-wrap">
+                        @if (!string.IsNullOrWhiteSpace(item.ThumbnailImage))
+                        {
+                           <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+                        }
+                     </div>
+                     <div class="carbonCircularity-card__body">
+                        <h3 class="text-h5">@item.Title</h3>
+                        @if (!string.IsNullOrWhiteSpace(item.Intro))
+                        {
+                           <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.Url))
+                        {
+                           <a href="@item.Url" class="site-btn site-btn--outline">
+                              <span class="site-btn__label">@item.Url_Text</span>
+                              <span class="site-btn__arrow" aria-hidden="true">
+                                 <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                          stroke-linejoin="round" />
+                                 </svg>
+                              </span>
+                           </a>
+                        }
+                     </div>
+                  </article>
+               }
+            </div>
+         </div>
+
+         <div class="carbonCircularity-controls">
+            <button type="button" class="carbonCircularity-nav carbonCircularity-nav--prev" aria-label="Previous card">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 5L8 12l7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+               </svg>
+            </button>
+            <div class="swiper-pagination carbonCircularity-pagination"></div>
+            <button type="button" class="carbonCircularity-nav carbonCircularity-nav--next" aria-label="Next card">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+               </svg>
+            </button>
+         </div>
+      </div>
+   </section>
+}
+<!--Carbon-light circularity End-->
+
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/sustainability-intro.js" asp-append-version="true"></script>
+}

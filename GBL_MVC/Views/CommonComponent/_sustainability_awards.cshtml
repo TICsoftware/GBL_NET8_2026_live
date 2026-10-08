@@ -1,0 +1,86 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var component = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+}
+
+<section class="AwardsCertifications section-spacing">
+    <div class="container">
+        <div class="section-intro">
+            <div class="section-intro__title title-section">
+                <h2 class="text-h2">@component?.Title</h2>
+            </div>
+
+            <div class="section-intro__content">
+                @if (!string.IsNullOrWhiteSpace(component?.Intro))
+                {
+                    <p>@Html.Raw(component.Intro)</p>
+                }
+            </div>
+        </div>
+
+        <div class="AwardsCertifications-grid">
+
+            @foreach (var item in Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+            {
+                if (item.Sequence % 2 == 0)
+                {
+                    <article class="AwardsCertifications-tile AwardsCertifications-tile--copy">
+                        <h3 class="text-h5">@item.Title</h3>
+                        @if (!string.IsNullOrWhiteSpace(item.Intro))
+                        {
+                            <p>@Html.Raw(item.Intro)</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.Url))
+                        {
+                            <a href="@item.Url" class="site-btn site-btn--outline">
+                                <span class="site-btn__label">@item.Url_Text</span>
+                                <span class="site-btn__arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                              stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </a>
+                        }
+                    </article>
+
+                    <article class="AwardsCertifications-tile AwardsCertifications-tile--media parallax-wrap">
+                        <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img img-full">
+                    </article>
+                }
+                else
+                {
+                    <article class="AwardsCertifications-tile AwardsCertifications-tile--media parallax-wrap">
+                        <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img img-full">
+                    </article>
+
+                    <article class="AwardsCertifications-tile AwardsCertifications-tile--copy">
+                        <h3 class="text-h5">@item.Title</h3>
+
+                        @if (!string.IsNullOrWhiteSpace(item.Intro))
+                        {
+                            <p>@Html.Raw(item.Intro)</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.Url))
+                        {
+                            <a href="@item.Url" class="site-btn site-btn--outline">
+                                <span class="site-btn__label">@item.Url_Text</span>
+                                <span class="site-btn__arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                              stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </a>
+                        }
+                    </article>
+                }
+            }
+        </div>
+    </div>
+</section>

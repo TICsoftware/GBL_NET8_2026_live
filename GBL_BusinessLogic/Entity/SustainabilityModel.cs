@@ -15,9 +15,21 @@ namespace GBL_BusinessLogic.Entity
         public List<ArticleModel> Section_List { get; set; } = new();
         public List<ArticleModel> SectionArticles_List { get; set; } = new();
 
+
+
+        public List<ComponentModel> Sustainability_intro_List { get; set; } = new();
+        public List<ComponentModel> Creating_Towards_beautiful_world_List { get; set; } = new();
+        public List<ComponentModel> Turning_commitment_into_action_List { get; set; } = new();
+        public List<ComponentModel> Awards_Certifications_Reports_List { get; set; } = new();
+
+
+        public List<ComponentModel> Carbon_light_circularity_Section_List { get; set; } = new();
+
+
+
         public int TotalCount { get; set; }
 
     }
 
-  
+
 }
