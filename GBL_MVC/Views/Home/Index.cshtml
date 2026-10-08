@@ -8,14 +8,7 @@
 
 @section head {
     <title>@(content?.cont_window_title)</title>
-    <script nonce="@(Context.Items["CSPNonce"])">document.documentElement.classList.add('site-preloader-pending');</script>
-    <style nonce="@(Context.Items["CSPNonce"])">
-      html.site-preloader-pending .site-header {
-        opacity:0 !important;
-        visibility:hidden !important;
-        pointer-events:none !important;
-      }
-    </style>
+    
 
     <meta content="@(content?.cont_metatag)" name="keywords" />
     <meta content="@(content?.cont_metadesc)" name="description" />

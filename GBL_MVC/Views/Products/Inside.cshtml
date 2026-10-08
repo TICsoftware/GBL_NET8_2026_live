@@ -155,6 +155,21 @@
            }
 
            <div class="sds-col">
+
+
+              @if (hasCertificates)
+           {
+<div class="title-section">
+                  <h2 class="text-h2 title-animation">Certifications</h2>
+               </div>
+
+           <div class="product-cert-bar">
+              @foreach (var cert in certificates)
+              {
+                  @await Html.PartialAsync("_ProductCertificateItem", cert)
+              }
+           </div>
+           }
                <div class="title-section">
                      <h2 class="text-h2 title-animation">Safety Data Sheet (SDS)</h2>
                </div>
@@ -183,15 +198,7 @@
                </div>
            </div>
 
-           @if (hasCertificates)
-           {
-           <div class="product-cert-bar">
-              @foreach (var cert in certificates)
-              {
-                  @await Html.PartialAsync("_ProductCertificateItem", cert)
-              }
-           </div>
-           }
+         
         </div>
      </div>
    </section>
