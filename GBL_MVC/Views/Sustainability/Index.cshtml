@@ -113,7 +113,7 @@
                   @if (!string.IsNullOrWhiteSpace(item.Component_LHS_thumbnail))
                   {
                      <figure class="CreatingTowards-media__item parallax-wrap">
-                        <img src="item.Component_LHS_thumbnail" alt="@item.Component_LHS_thumbnail_image_alt"
+                        <img src="@item.Component_LHS_thumbnail" alt="@item.Component_LHS_thumbnail_image_alt"
                              class="parallax-img img-full">
                      </figure>
                   }
@@ -126,7 +126,7 @@
                   @if (!string.IsNullOrWhiteSpace(item.Component_right_image))
                   {
                      <figure class="CreatingTowards-media__item parallax-wrap">
-                        <img src="item.Component_right_image" alt="item.Title" class="parallax-img img-full">
+                        <img src="@item.Component_right_image" alt="@item.Component_Right_image_alt" class="parallax-img img-full">
                      </figure>
                   }
                </div>
