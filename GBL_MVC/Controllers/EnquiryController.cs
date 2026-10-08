@@ -22,6 +22,7 @@ public class EnquiryController : Controller
     /// <summary>
     /// /enquiry/{title} — title is the product page name (e.g. 1-3-butylene-glycol)
     /// </summary>
+    [HttpGet]
     public IActionResult Index(string? title)
     {
         try

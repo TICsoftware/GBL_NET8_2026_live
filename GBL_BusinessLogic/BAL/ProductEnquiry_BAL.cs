@@ -25,8 +25,16 @@ namespace GBL_BusinessLogic.BAL
                 dt = AddProductEnquiry_DAL(model);
                 if (dt.Rows.Count > 0 && string.Equals(dt.Rows[0][0]?.ToString(), "updated", StringComparison.OrdinalIgnoreCase))
                 {
-                    var productLabel = string.IsNullOrWhiteSpace(model.ProductName) ? "product" : model.ProductName;
-                    SendMail(MailEnquiryContent(model), "Enquiry for " + productLabel);
+                    // Email is best-effort — do not fail the enquiry if SMTP is misconfigured
+                    try
+                    {
+                        var productLabel = string.IsNullOrWhiteSpace(model.ProductName) ? "product" : model.ProductName;
+                        SendMail(MailEnquiryContent(model), "Enquiry for " + productLabel);
+                    }
+                    catch (Exception mailEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine("ProductEnquiry mail failed: " + mailEx.Message);
+                    }
                 }
             }
             catch (Exception ex)
@@ -68,7 +76,7 @@ namespace GBL_BusinessLogic.BAL
                 string.IsNullOrWhiteSpace(from) ||
                 string.IsNullOrWhiteSpace(to))
             {
-                throw new Exception("Mail settings are missing or invalid.");
+                throw new Exception("Mail settings are missing or invalid. Set MailSetting:mailpassword and MailSetting:Enquiry.");
             }
 
             using var message = new MailMessage();

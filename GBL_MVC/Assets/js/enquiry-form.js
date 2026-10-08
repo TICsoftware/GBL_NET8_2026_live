@@ -16,10 +16,13 @@ $(document).ready(function () {
         formData.push({ name: "AcceptTerms", value: $("#AcceptTerms").prop("checked") ? "true" : "false" });
         formData.push({ name: "NotRobot", value: $("#NotRobot").prop("checked") ? "true" : "false" });
 
+        var token = $form.find('input[name="__RequestVerificationToken"]').val();
+
         $.ajax({
-            url: $form.attr("action"),
+            url: "/enquiry/submit",
             type: "POST",
             data: $.param(formData),
+            headers: token ? { "RequestVerificationToken": token } : {},
             beforeSend: function () {
                 $("#enquiryMessage").empty();
                 $("#enquirySubmitBtn")
@@ -30,7 +33,7 @@ $(document).ready(function () {
             success: function (response) {
                 restoreSubmitButton();
 
-                if (response.status) {
+                if (response && response.status) {
                     var productName = $("#ProductName").val();
                     var productPage = $("#ProductPageName").val();
                     $form[0].reset();
@@ -51,20 +54,26 @@ $(document).ready(function () {
                         scrollTop: $("#enquiryMessage").offset().top - 100
                     }, 500);
                 } else {
-                    if (response.errors) {
+                    if (response && response.errors) {
                         $.each(response.errors, function (key, msg) {
                             $('[data-valmsg-for="' + key + '"]').text(msg || "");
                         });
                     }
                     $("#enquiryMessage").html(
-                        '<div class="cu-form-alert cu-form-alert--error">' + (response.message || "Something went wrong.") + "</div>"
+                        '<div class="cu-form-alert cu-form-alert--error">' + ((response && response.message) || "Something went wrong.") + "</div>"
                     );
                 }
             },
-            error: function () {
+            error: function (xhr) {
                 restoreSubmitButton();
+                var msg = "Something went wrong. Please try again.";
+                if (xhr && xhr.status === 400) {
+                    msg = "Security token expired. Please refresh the page and try again.";
+                } else if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
                 $("#enquiryMessage").html(
-                    '<div class="cu-form-alert cu-form-alert--error">Something went wrong. Please try again.</div>'
+                    '<div class="cu-form-alert cu-form-alert--error">' + msg + "</div>"
                 );
             }
         });

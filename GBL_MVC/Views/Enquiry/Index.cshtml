@@ -58,8 +58,7 @@
          <form id="enquiryForm"
                class="enquiry-form"
                method="post"
-               asp-controller="Enquiry"
-               asp-action="SubmitEnquiry"
+               action="/enquiry/submit"
                novalidate>
             @Html.AntiForgeryToken()
             <input type="hidden" name="ProductName" id="ProductName" value="@productName" />
