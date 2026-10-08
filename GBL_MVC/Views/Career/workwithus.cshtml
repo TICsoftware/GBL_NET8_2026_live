@@ -49,39 +49,6 @@
 {
    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
-else
-{
-   <section class="relative inside-banner-outer">
-      <div class="inside-banner-inner banner-animation relative">
-         <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
-            <picture>
-               <source media="(min-width:1024px)" srcset="~/Assets/images/banners/Workwithus-desktop.webp">
-               <source media="(min-width:992px)" srcset="~/Assets/images/banners/Workwithus-mob.webp">
-               <img src="~/Assets/images/banners/Workwithus-desktop.webp" alt="Work with us"
-                  class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
-                  loading="eager" fetchpriority="high">
-            </picture>
-            <div class="innerbanner-overlay"></div>
-         </div>
-         <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
-            <div class="container">
-               <div class="max-w-4xl text-left">
-                  <h1 class="innerbanner-title text-h1 text-white title-animation">Work with us</h1>
-                  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                     <ol class="flex items-center gap-2 text-sm">
-                        <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>
-                        <li class="text-white/60">/</li>
-                        <li><a href="/careers" class="text-white/70 hover:text-white transition">Careers</a></li>
-                        <li class="text-white/60">/</li>
-                        <li class="text-white">Work with us</li>
-                     </ol>
-                  </nav>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-}
 <!-- HERO BANNER END -->
 
 <!--PAGE INTRO OUTER-->
@@ -95,12 +62,12 @@ else
       </div>
    </section>
 }
-else
+else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
 {
    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
       <div class="container">
          <div class="page-intro-inner intro-lg text-center">
-            <p>Even if there isn’t a role for you today, we’d love to hear from you. Share your resume and be considered for future opportunities that align with your experience, expertise and career aspirations.</p>
+            @Html.Raw(Model.Content.Content)
          </div>
       </div>
    </section>

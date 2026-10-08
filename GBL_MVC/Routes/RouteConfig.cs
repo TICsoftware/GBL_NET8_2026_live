@@ -190,6 +190,19 @@ namespace GBL_MVC.Routes
                 defaults: new { controller = "Products", action = "Inside" }
             );
 
+            // Submit must be registered before enquiry/{title?} so "submit" is not treated as a product page name
+            app.MapControllerRoute(
+                name: "enquiry-submit",
+                pattern: "enquiry/submit",
+                defaults: new { controller = "Enquiry", action = "SubmitEnquiry" }
+            );
+
+            app.MapControllerRoute(
+                name: "enquiry",
+                pattern: "enquiry/{title?}",
+                defaults: new { controller = "Enquiry", action = "Index" }
+            );
+
             app.MapControllerRoute(
                 name: "contactus",
                 pattern: "contact-us",
