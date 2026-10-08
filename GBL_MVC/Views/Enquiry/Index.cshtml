@@ -1,0 +1,184 @@
+@model GBL_BusinessLogic.Entity.ProductEnquiryPageModel
+@{
+    var productName = Model?.ProductName ?? "Product";
+    var productPage = Model?.ProductPageName ?? "";
+    var productUrl = Model?.ProductUrl ?? "/products";
+    ViewData["Title"] = "Enquiry – " + productName;
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/enquiry-style.css" asp-append-version="true" />
+}
+
+   <!-- HERO BANNER -->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <picture>
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/enquirenow-banner.webp">
+                  <img
+                     src="~/Assets/images/banners/enquirenow-banner.webp"
+                     alt="Enquiry"
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <div class="innerbanner-overlay"></div>
+            </div>
+
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                       Enquiry
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>
+                           <li class="text-white/60">/</li>
+                           <li><a href="/products" class="text-white/70 hover:text-white transition">Products</a></li>
+                           <li class="text-white/60">/</li>
+                           <li><a href="@productUrl" class="text-white/70 hover:text-white transition">@productName</a></li>
+                           <li class="text-white/60">/</li>
+                           <li class="text-white">Enquiry</li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>
+         </div>
+   </section>
+   <!-- HERO BANNER END -->
+
+   <section class="enquiry-section section-spacing">
+      <div class="container">
+         <form id="enquiryForm"
+               class="enquiry-form"
+               method="post"
+               asp-controller="Enquiry"
+               asp-action="SubmitEnquiry"
+               novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductName" id="ProductName" value="@productName" />
+            <input type="hidden" name="ProductPageName" id="ProductPageName" value="@productPage" />
+
+            <div class="enquiry-form__columns">
+               <div class="enquiry-form__col">
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="FullName">Name</label>
+                     <input type="text" name="FullName" id="FullName" autocomplete="name" placeholder="Name*" maxlength="100" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="FullName"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="StreetAddress">Street Address 1</label>
+                     <input type="text" name="StreetAddress" id="StreetAddress" autocomplete="address-line1" placeholder="Street Address 1*" maxlength="500" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="StreetAddress"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="City">City</label>
+                     <input type="text" name="City" id="City" autocomplete="address-level2" placeholder="City*" maxlength="100" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="City"></span>
+                  </div>
+                  <div class="enquiry-field enquiry-country">
+                     <label class="enquiry-field__label" for="Country">Country</label>
+                     <input type="hidden" name="Country" id="Country" value="India">
+                     <button type="button" class="enquiry-country__btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="countryList" aria-label="Country, India">
+                        <span class="enquiry-country__value">India</span>
+                     </button>
+                     <ul id="countryList" class="enquiry-phone__list enquiry-country__list" role="listbox" aria-label="Country" hidden></ul>
+                     <span class="text-red-500 text-sm" data-valmsg-for="Country"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="Fax">Fax</label>
+                     <input type="tel" name="Fax" id="Fax" autocomplete="fax" inputmode="tel" placeholder="Fax*" maxlength="15" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="Fax"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="Email">Email</label>
+                     <input type="email" name="Email" id="Email" autocomplete="email" placeholder="Email*" maxlength="500" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="Email"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="BusinessType">Business Type</label>
+                     <input type="text" name="BusinessType" id="BusinessType" placeholder="Business Type*" maxlength="200" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="BusinessType"></span>
+                  </div>
+               </div>
+               <div class="enquiry-form__col">
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="CompanyName">Company Name</label>
+                     <input type="text" name="CompanyName" id="CompanyName" autocomplete="organization" placeholder="Company Name*" maxlength="200" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="CompanyName"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="State">State</label>
+                     <input type="text" name="State" id="State" autocomplete="address-level1" placeholder="State*" maxlength="100" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="State"></span>
+                  </div>
+                  <div class="enquiry-field">
+                     <label class="enquiry-field__label" for="Phone">Phone</label>
+                     <input type="tel" name="Phone" id="Phone" autocomplete="tel" inputmode="tel" placeholder="Phone" maxlength="15">
+                     <span class="text-red-500 text-sm" data-valmsg-for="Phone"></span>
+                  </div>
+                  <div class="enquiry-field enquiry-phone">
+                     <div class="enquiry-phone__code">
+                        <input type="hidden" name="CountryCode" id="CountryCode" value="+91">
+                        <button type="button" class="enquiry-phone__code-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="countryCodeList" aria-label="Country code, India +91">
+                           <span class="enquiry-phone__flag" aria-hidden="true">🇮🇳</span>
+                           <span class="enquiry-phone__code-value">+91</span>
+                        </button>
+                        <ul id="countryCodeList" class="enquiry-phone__list" role="listbox" aria-label="Country code" hidden></ul>
+                     </div>
+                     <label class="enquiry-field__label" for="Mobile">Mobile</label>
+                     <input type="tel" name="Mobile" id="Mobile" autocomplete="tel-national" inputmode="tel" placeholder="Mobile*" maxlength="15" aria-required="true">
+                     <span class="text-red-500 text-sm" data-valmsg-for="Mobile"></span>
+                     <span class="text-red-500 text-sm" data-valmsg-for="CountryCode"></span>
+                  </div>
+                  <div class="enquiry-field enquiry-field--area">
+                     <label class="enquiry-field__label" for="EnquiryDetails">Enquiry Details</label>
+                     <textarea name="EnquiryDetails" id="EnquiryDetails" rows="4" placeholder="Enquiry Details*" aria-required="true"></textarea>
+                     <span class="text-red-500 text-sm" data-valmsg-for="EnquiryDetails"></span>
+                  </div>
+               </div>
+            </div>
+            <div class="enquiry-consent">
+               <label class="enquiry-agree" for="AcceptTerms">
+                  <input type="checkbox" name="AcceptTerms" id="AcceptTerms" value="true" aria-required="true">
+                  <span>I agree and accept the <a href="/privacy-policy">Privacy policy</a> and the <a href="/terms-of-use">Terms of use</a> of this website<span aria-hidden="true">*</span></span>
+               </label>
+               <span class="text-red-500 text-sm" data-valmsg-for="AcceptTerms"></span>
+               <div class="enquiry-recaptcha">
+                  <label class="enquiry-recaptcha__box">
+                     <input type="checkbox" name="NotRobot" id="NotRobot" value="true" aria-required="true">
+                     <span class="enquiry-recaptcha__label">I'm not a robot</span>
+                     <span class="enquiry-recaptcha__brand">
+                        <svg viewBox="0 0 64 64" aria-hidden="true">
+                           <path fill="#1c3aa9" d="M32 6a26 26 0 0 1 22.2 12.5l-7.2 4.2A17.2 17.2 0 0 0 32 14.8V6z"/>
+                           <path fill="#4285f4" d="M54.2 18.5A26 26 0 0 1 32 58v-8.8a17.2 17.2 0 0 0 14.8-25.2l7.4-5.5z"/>
+                           <path fill="#ababab" d="M32 58A26 26 0 0 1 9.8 18.5l7.4 4.3A17.2 17.2 0 0 0 32 49.2V58z"/>
+                           <path fill="#1a73e8" d="M12.4 16.2 19.6 21A17.2 17.2 0 0 1 32 14.8V6a26 26 0 0 0-19.6 10.2z"/>
+                        </svg>
+                        <span>reCAPTCHA</span>
+                     </span>
+                  </label>
+                  <span class="text-red-500 text-sm" data-valmsg-for="NotRobot"></span>
+               </div>
+            </div>
+            <button type="submit" class="site-btn site-btn--fill" id="enquirySubmitBtn">
+               <span class="site-btn__label">Submit</span>
+               <span class="site-btn__arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </span>
+            </button>
+            <div id="enquiryMessage" class="mt-4 text-center"></div>
+         </form>
+      </div>
+   </section>
+
+@section Scripts {
+   <script src="~/Assets/js/enquiry-phone.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/enquiry-form.js" asp-append-version="true"></script>
+}

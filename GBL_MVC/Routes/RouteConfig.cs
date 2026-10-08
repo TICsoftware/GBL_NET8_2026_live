@@ -177,6 +177,18 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                name: "enquiry",
+                pattern: "enquiry/{title?}",
+                defaults: new { controller = "Enquiry", action = "Index" }
+            );
+
+            app.MapControllerRoute(
+                name: "enquiry-submit",
+                pattern: "Enquiry/SubmitEnquiry",
+                defaults: new { controller = "Enquiry", action = "SubmitEnquiry" }
+            );
+
+            app.MapControllerRoute(
                 name: "contactus",
                 pattern: "contact-us",
                 defaults: new { controller = "Contactus", action = "Index", title = "contact-us" }
