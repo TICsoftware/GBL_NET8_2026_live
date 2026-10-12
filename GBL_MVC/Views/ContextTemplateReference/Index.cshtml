@@ -187,13 +187,26 @@
     Save
 </button>
 
-<button type="button"
-        class="btn btn-sm btn-danger btn-delete-mapping"
-        data-id="@item.ID"
-        data-context-id="@item.Context_Master_ID"
-        title="Delete mapping and related details">
-    Delete
-</button></td>
+@if (item.Status == 0)
+{
+    <button type="button"
+            class="btn btn-sm btn-success btn-activate-mapping"
+            data-id="@item.ID"
+            title="Activate mapping">
+        Activate
+    </button>
+}
+else
+{
+    <button type="button"
+            class="btn btn-sm btn-danger btn-delete-mapping"
+            data-id="@item.ID"
+            data-context-id="@item.Context_Master_ID"
+            title="Delete mapping and related details">
+        Delete
+    </button>
+}
+</td>
 
       <td>
                                         <button type="button" class="btn btn-sm btn-outline-primary js-view-layout"

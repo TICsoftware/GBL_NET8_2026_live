@@ -81,5 +81,9 @@ namespace Core_project_BusinessLogic.BAL
             _dal.Delete(id, contextMasterId);
         }
 
+        public void Activate(int id)
+        {
+            _dal.Activate(id);
+        }
     }
 }

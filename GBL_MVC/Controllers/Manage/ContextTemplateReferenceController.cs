@@ -141,5 +141,29 @@ namespace GBL_MVC.Controllers.Manage
                 return Json(new { success = false, message = "Something went wrong while deleting. Please try again." });
             }
         }
+
+        [HttpPost]
+        public IActionResult Activate(int id)
+        {
+            if (id <= 0)
+            {
+                return Json(new { success = false, message = "Invalid mapping id." });
+            }
+
+            try
+            {
+                _bal.Activate(id);
+                return Json(new
+                {
+                    success = true,
+                    message = "Mapping activated successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Json(new { success = false, message = "Something went wrong while activating. Please try again." });
+            }
+        }
     }
 }

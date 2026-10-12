@@ -100,7 +100,6 @@ $(document).on("click", ".btn-save", function () {
 
 // CLICK DELETE
 $(document).on("click", ".btn-delete-mapping", function () {
-    alert('hi')
     var btn = $(this);
     var row = btn.closest("tr");
     var id = btn.data("id") || row.data("id");
@@ -123,15 +122,43 @@ $(document).on("click", ".btn-delete-mapping", function () {
         },
         success: function (res) {
             if (res && res.success) {
-                row.fadeOut(200, function () {
-                    $(this).remove();
-                });
+                location.reload();
             } else {
                 alert((res && res.message) || "Delete failed. Please try again.");
             }
         },
         error: function () {
             alert("Something went wrong while deleting. Please try again.");
+        }
+    });
+});
+
+// CLICK ACTIVATE (Status = 0 -> 1)
+$(document).on("click", ".btn-activate-mapping", function () {
+    var btn = $(this);
+    var id = btn.data("id") || btn.closest("tr").data("id");
+
+    if (!confirm("Activate this mapping?")) {
+        return;
+    }
+
+    btn.prop("disabled", true);
+
+    $.ajax({
+        url: '/ContextTemplateReference/Activate',
+        type: 'POST',
+        data: { id: id },
+        success: function (res) {
+            if (res && res.success) {
+                location.reload();
+            } else {
+                btn.prop("disabled", false);
+                alert((res && res.message) || "Activate failed. Please try again.");
+            }
+        },
+        error: function () {
+            btn.prop("disabled", false);
+            alert("Something went wrong while activating. Please try again.");
         }
     });
 });
