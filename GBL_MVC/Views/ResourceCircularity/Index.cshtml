@@ -1,0 +1,311 @@
+@{
+    ViewData["Title"] = "Resource Circularity";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/resource-circularity.css" asp-append-version="true" /> 
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/resource-circularity-banner.webp">
+
+                  <!-- Tablet -->
+                  <source media="(min-width:992px)"
+                     srcset="~/Assets/images/banners/resource-circularity-banner.webp">
+
+                  <!-- Mobile -->
+                  <img
+                     src="~/Assets/images/banners/resource-circularity-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                        Resource Circularity
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                               <a href="/" class="text-white/70 hover:text-white transition">  Sustainability </a>
+                           </li>
+                           
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                               <a href="/" class="text-white/70 hover:text-white transition">  Environment </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                                 Resource Circularity
+                           </li>
+
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>Resource sustainability is at the heart of Godavari’s  circular economic model. We maximise the value of every input, minimise waste, advance the use of renewable energy to decarbonise our operations, conserve and restore scarce water resources, and maintain Zero Liquid Discharge at our plants to build a circular, bio-based economy that sustains the planet and promotes social welfare.</p>
+
+            <p>Sustainable use of resources also improves our operational efficiencies and resilience to support future growth, enhancing our economic viability and reducing our environmental impact.</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+
+   <section class="middle-container learningBody section-spacing">
+      <div class="container middle-container-inner">
+         <!-- Resource pillars -->
+          @* INFOGRAPHIC SECTION *@
+         <div class="ld-flow" aria-label="Environmental performance">
+            <article class="ld-step ld-step--energy">
+               <div class="ld-step__frame">
+                  <img src="@Url.Content("~/Assets/images/g1.webp")" alt="">
+                  <ul class="ld-step__copy">
+                     <li><span>84%</span> renewable energy consumption across operations</li>
+                     <li><span>3,40,908.86 GJ</span> output electricity exported to the grid</li>
+                     <li><span>10%</span> reduction in Scope 1 emissions and <span>5%</span> reduction in Scope 2 emissions in <span>FY2025</span> over previous year</li>
+                  </ul>
+               </div>
+               <h3>Energy and emissions</h3>
+            </article>
+            <article class="ld-step ld-step--water">
+               <h3>Water management</h3>
+               <div class="ld-step__frame">
+                  <img src="@Url.Content("~/Assets/images/g2.webp")" alt="">
+                  <ul class="ld-step__copy">
+                     <li>Zero Liquid Discharge at all operational sites</li>
+                     <li><span>78%</span> increase in rainwater harvesting in <span>FY2025</span> over previous year</li>
+                     <li><span>~60%</span> of water recovered from sugarcane</li>
+                  </ul>
+               </div>
+            </article>
+            <article class="ld-step ld-step--waste">
+               <div class="ld-step__frame">
+                  <img src="@Url.Content("~/Assets/images/g3.webp")" alt="">
+                  <ul class="ld-step__copy">
+                     <li><span>99%</span> waste redirected from disposal</li>
+                     <li><span>~100%</span> of diverted waste repurposed as fuel or the value-added products</li>
+                  </ul>
+               </div>
+               <h3>Waste management</h3>
+            </article>
+         </div>
+         @* INFOGRAPHIC SECTION END *@
+         
+         <!-- Resource pillars end -->
+
+         <!-- Circular energy model -->
+         <section class="rc-energy section-spacing" aria-labelledby="rc-energy-title">
+               <h2 id="rc-energy-title" class="rc-energy__title text-h2">Circular energy model</h2>
+               <div class="rc-energy__copy">
+                  <p>Our renewable-first energy strategy is a core business advantage and ensures a lighter carbon footprint for our operations.</p>
+                  <p>We source 84% of our total energy from renewables, primarily by converting bagasse, a byproduct of sugarcane processing, into a circular energy source. Our 1MW solar power capacity at our Sakarwadi plant adds shine to this mix.</p>
+                  <p>We continue to reduce our coal consumption by converting bagasse into pellets and using biomass briquettes at our Sakarwadi and Sameerwadi plants.</p>
+                  <p>Minor fossil fuel inputs like diesel, petrol and liquefied petroleum gas account for less than 1% of our total energy use. Here again, we aim to transition up to 20% of the company's vehicle fleet to CNG and electric by 2029.</p>
+               </div>
+
+               <div class="rc-energy__charts">
+                  <figure class="rc-chart" data-rc-chart="world" data-start="56">
+                     <figcaption class="rc-chart__title">Energy consumption by source- world</figcaption>
+                     <div class="rc-chart__plot">
+                        <svg class="rc-chart__svg" viewBox="0 0 200 200" role="img" aria-labelledby="rc-chart-world-title">
+                           <title id="rc-chart-world-title">Energy consumption by source, world. Highlighted share 24 percent.</title>
+                           <g class="rc-chart__slices"></g>
+                           <text class="rc-chart__value" text-anchor="middle"></text>
+                        </svg>
+                     </div>
+                     <ul class="rc-chart__legend">
+                        <li data-key="other" data-value="3" data-draw="4" data-color="#1a3d7c"><i></i><span>Other renewables</span></li>
+                        <li data-key="wind" data-value="4" data-draw="5" data-color="#7eb6e6"><i></i><span>Wind</span></li>
+                        <li data-key="gas" data-value="24" data-draw="0" data-color="#e7dcc0"><i></i><span>Gas</span></li>
+                        <li data-key="biofuels" data-value="4" data-draw="6" data-color="#e8772a"><i></i><span>Biofuels</span></li>
+                        <li data-key="hydro" data-value="6" data-draw="7" data-color="#c6c84a"><i></i><span>Hydropower</span></li>
+                        <li data-key="solar" data-value="8" data-draw="8" data-color="#5fa03a"><i></i><span>Solar</span></li>
+                        <li data-key="nuclear" data-value="8" data-draw="3" data-color="#2d6a3e"><i></i><span>Nuclear</span></li>
+                        <li data-key="oil" data-value="11" data-draw="2" data-color="#1a6b62"><i></i><span>Oil</span></li>
+                        <li data-key="coal" data-value="32" data-draw="1" data-color="#1a2e24"><i></i><span>Coal</span></li>
+                     </ul>
+                  </figure>
+
+                  <figure class="rc-chart" data-rc-chart="india" data-start="-18">
+                     <figcaption class="rc-chart__title">Energy consumption by source- India</figcaption>
+                     <div class="rc-chart__plot">
+                        <svg class="rc-chart__svg" viewBox="0 0 200 200" role="img" aria-labelledby="rc-chart-india-title">
+                           <title id="rc-chart-india-title">Energy consumption by source, India. Highlighted share 57 percent.</title>
+                           <g class="rc-chart__slices"></g>
+                           <text class="rc-chart__value" text-anchor="middle"></text>
+                        </svg>
+                     </div>
+                     <ul class="rc-chart__legend">
+                        <li data-key="other" data-value="2" data-draw="4" data-color="#1a3d7c"><i></i><span>Other renewables</span></li>
+                        <li data-key="wind" data-value="3.5" data-draw="5" data-color="#7eb6e6"><i></i><span>Wind</span></li>
+                        <li data-key="gas" data-value="57" data-draw="0" data-color="#e7dcc0"><i></i><span>Gas</span></li>
+                        <li data-key="biofuels" data-value="3" data-draw="6" data-color="#e8772a"><i></i><span>Biofuels</span></li>
+                        <li data-key="hydro" data-value="4" data-draw="7" data-color="#c6c84a"><i></i><span>Hydropower</span></li>
+                        <li data-key="solar" data-value="7" data-draw="8" data-color="#5fa03a"><i></i><span>Solar</span></li>
+                        <li data-key="nuclear" data-value="2.5" data-draw="3" data-color="#2d6a3e"><i></i><span>Nuclear</span></li>
+                        <li data-key="oil" data-value="6" data-draw="2" data-color="#1a6b62"><i></i><span>Oil</span></li>
+                        <li data-key="coal" data-value="15" data-draw="1" data-color="#1a2e24"><i></i><span>Coal</span></li>
+                     </ul>
+                  </figure>
+
+                  <figure class="rc-chart" data-rc-chart="gbl" data-start="292">
+                     <figcaption class="rc-chart__title">Energy consumption by source- GBL</figcaption>
+                     <div class="rc-chart__plot">
+                        <svg class="rc-chart__svg" viewBox="0 0 200 200" role="img" aria-labelledby="rc-chart-gbl-title">
+                           <title id="rc-chart-gbl-title">Energy consumption by source, GBL. Bagasse and biomass briquette 83.6 percent.</title>
+                           <g class="rc-chart__slices"></g>
+                           <text class="rc-chart__value" text-anchor="middle"></text>
+                        </svg>
+                     </div>
+                     <ul class="rc-chart__legend">
+                        <li data-key="hsd" data-value="0.5" data-draw="3" data-color="#1a3d7c"><i></i><span>High speed diesel (HSD)</span></li>
+                        <li data-key="lpg" data-value="0.4" data-draw="4" data-color="#14685c"><i></i><span>LPG</span></li>
+                        <li data-key="da" data-value="0.4" data-draw="5" data-color="#7a3e9a"><i></i><span>Other- Dissolved Acetylene (DA)</span></li>
+                        <li data-key="solarG" data-value="0.5" data-draw="6" data-color="#8fbf55"><i></i><span>Solar energy</span></li>
+                        <li data-key="bagasse" data-value="83.6" data-draw="0" data-color="#ddd6a8"><i></i><span>Bagasse &amp; biomass briquette</span></li>
+                        <li data-key="petrol" data-value="0.7" data-draw="2" data-color="#3d7a32"><i></i><span>Petrol</span></li>
+                        <li data-key="coalG" data-value="13.4" data-draw="1" data-color="#163d2c"><i></i><span>Coal</span></li>
+                        <li data-key="grid" data-value="0.5" data-draw="7" data-color="#d5e0a8"><i></i><span>Grid electricity</span></li>
+                     </ul>
+                  </figure>
+               </div>
+
+               <div class="rc-energy__follow">
+                  <div class="rc-energy__split">
+                     <p class="rc-energy__aside">Reducing our dependence on fossil fuels stabilises our energy costs, enhances our climate performance by lowering emissions, and strengthens our competitiveness.</p>
+                     <div class="rc-energy__follow-copy">
+                        <p>Further, by sharing surplus electricity generated during the sugarcane season with the regional power grid, we enhance grid security and promote decarbonisation for the region.</p>
+                        <p>Apart from transitioning our energy portfolio to renewables, we have increased energy efficiencies through operational and process optimisation such as our high-efficiency cogeneration systems. We reduced our energy consumption by 18% between FY2023 and FY2025 with Sameerwadi, our largest manufacturing facility, delivering an ~10% reduction per annum in this period.</p>
+                     </div>
+                  </div>
+
+                  <article class="common-media-section">
+                     <div class="parallax-wrap">
+                        <img src="@Url.Content("~/Assets/images/sustanability/action-img1.webp")" alt="Wind turbines and a city skyline" class="parallax-img">
+                     </div>
+                     <div class="common-media-caption">
+                        <h2 class="text-h2">Low-emission operations</h2>
+                     </div>
+                  </article>
+
+                  <div class="rc-energy__emissions">
+                     <p>Our renewable energy mix ensures lower emissions. We also keep a close track of plant-level emissions through digital monitoring tools and audits, leading to continuous decarbonisation of our operations.</p>
+                     <ul class="rc-energy__points">
+                        <li>
+                           <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                           <span>Reduced Scope 1 and Scope 2 greenhouse gas (GHG) emissions by 40% in FY2025 (over FY2023); further 20% reduction by 2029</span>
+                        </li>
+                        <li>
+                           <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                           <span>To replace R-22 and other high-global warming potential (GWP) refrigerants by 2028.</span>
+                        </li>
+                     </ul>
+                     <p>Moreover, as an agri-based industry, we recognise the contribution of agriculture to anthropogenic GHG emissions, particularly methane and nitrous oxide. Hence, we work closely with farmers to address these emissions at source by promoting sustainable farming techniques and low-emission agronomy.</p>
+                     <ul class="rc-energy__points">
+                        <li>
+                           <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                           <span>Mapping our GHG emission profile to identify operational hotspots and guide climate-positive actions</span>
+                        </li>
+                        <li>
+                           <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                           <span>Promoting regenerative agriculture practices that improve soil health, increase biodiversity and enhance carbon sequestration</span>
+                        </li>
+                        <li>
+                           <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                           <span>Investing in research and development on soil-carbon capture and nature-based climate solutions</span>
+                        </li>
+                        <li>
+                           <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                           <span>Capacity-building at farmer level to enable sustainable land management and low-emission practices</span>
+                        </li>
+                     </ul>
+                  </div>
+
+
+                  <article class="common-media-section">
+                     <div class="parallax-wrap" aria-hidden="true">
+                        <img src="/Assets/images/careers/ld-3.webp" alt="" class="parallax-img" style="translate: none; rotate: none; scale: none; transform: translate(0%, 0.1693%) translate3d(0px, 0px, 0px);">
+                     </div>
+                     <div class="common-media-caption">
+                        <h2 class="text-h2" style="translate: none; rotate: none; scale: none; clip-path: inset(0px 0px 0%); filter: blur(0px); opacity: 1; transform: translate3d(0px, 0px, 0px);">Conserving water, saving lives</h2>
+                        <p>Conserving water means conserving life on our planet, especially as climate change is impacting the water cycle with erratic rainfall, floods, droughts, disappearing glaciers and receding groundwater.</p>                        
+                     </div>
+                  </article>
+
+                  <p>As an agri-based company, Godavari Biorefineries Ltd understands that water is central to our operations and the ecosystems in which we function. We have embedded water stewardship across our entire operations from sugarcane cultivation to the production of sugar, ethanol and specialty bio-chemicals by reducing dependency on freshwater, improving water efficiencies and preserving the water balance in stressed catchments.</p>
+
+                        <p>Our Sakarwadi and Sameerwadi plants, which are located in water-stressed regions, depend on a mix of surface and groundwater sources from the Godavari and Ghataprabha rivers. We have integrated conservation and circular water use practices to reduce water stress and maintain the ecological health of these river basins. This includes creating artificial reservoirs and rainwater harvesting systems to conserve water and reduce withdrawals from external sources.</p>
+                        
+                        <p>All our operational sites have achieved Zero Liquid Discharge (ZLD) to close the loop on water usage. All industrial wastewater generated through our processes is treated, recycled and reused internally, ensuring that no effluent is released into the surrounding ecosystems, reflecting our commitment to environmental protection.</p>
+
+                        <p>This eliminates the risk of water pollution and minimises the company's ecological footprint. Our ZLD infrastructure is complemented by high-recovery systems that enable reuse of treated water in cooling, processing and utilities.</p>
+
+                        <div class="rc-energy__split">
+                           <ul class="rc-energy__points">
+                              <li>
+                                 <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                                 <span>Harvested and stored 8,568 kilolitres of rainwater in FY2025</span>
+                              </li>
+                              <li>
+                                 <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                                 <span>1.83 Lakh kl water reused/recycled in FY2025</span>
+                              </li>
+                              <li>
+                                 <img src="@Url.Content("~/Assets/images/sustanability/list-icon.webp")" alt="" width="22" height="22">
+                                 <span>Installing 24 KLPD water treatment plant at Sakarwadi to reduce freshwater consumption by 20% by FY2029 (over FY2025)</span>
+                              </li>
+                           </ul>
+                           <p class="rc-energy__aside">These efforts are enabling us to evolve from a water-efficient organisation to a water stewardship leader, committed to equitable and sustainable water use across our value chain and the ecosystem.</p>
+                        </div>
+               </div>
+            
+         </section>
+         <!-- Circular energy model end -->
+      </div>
+   </section>      
+
+@section Scripts {
+   <script src="~/Assets/js/resource-circularity.js" asp-append-version="true"></script>
+}
+
