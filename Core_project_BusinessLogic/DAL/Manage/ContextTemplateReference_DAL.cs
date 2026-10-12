@@ -190,8 +190,9 @@ namespace Core_project_BusinessLogic.DAL
                     r["template_master_id"] as int?,
                 Sequence =
                     r["sequence"] as int?,
-                Status =
-                    r["Status"] as int?,
+                Status = r.Table.Columns.Contains("Status") && r["Status"] != DBNull.Value
+                    ? Convert.ToInt32(r["Status"])
+                    : null,
 
                 Context_Title =
                     r["Context_Title"]?.ToString(),
@@ -284,6 +285,16 @@ namespace Core_project_BusinessLogic.DAL
             };
 
             SQLInsert_Update_Delete_Data("sp_ContextTemplateReference_Delete", p);
+        }
+
+        public void Activate(int id)
+        {
+            SqlParameter[] p =
+            {
+                new SqlParameter("@ID", id)
+            };
+
+            SQLInsert_Update_Delete_Data("sp_ContextTemplateReference_Activate", p);
         }
 
 
