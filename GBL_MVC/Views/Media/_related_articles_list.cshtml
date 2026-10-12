@@ -1,0 +1,72 @@
+@using GBL_MVC.Helpers
+@model List<GBL_BusinessLogic.Entity.ArticleModel>
+
+
+<div class="press-release-slider">
+    <div class="swiper press-release-swiper">
+        <div class="swiper-wrapper">
+
+            @foreach (var item in Model)
+            {
+                var hasContent = !string.IsNullOrWhiteSpace(item.Content);
+
+                var hasPdfUrl = !string.IsNullOrWhiteSpace(item.Url) &&
+                                item.Url.Contains(".pdf", StringComparison.OrdinalIgnoreCase);
+
+                var linkUrl = (!hasContent && !hasPdfUrl)
+                    ? item.ExternalUrl
+                    : item.Url;
+
+                var isExternal = hasPdfUrl ||
+                                 (!string.IsNullOrWhiteSpace(item.ExternalUrl) &&
+                                  linkUrl == item.ExternalUrl);
+
+                <div class="swiper-slide">
+                    <article class="press-release-mini-card card-rise">
+
+                        <div class="press-release-mini-card__date">
+                            @(item.DisplayDate?.ToString("MMM dd, yyyy") ?? "")
+                        </div>
+
+                        <h3 class="press-release-mini-card__title">
+                            @item.Title
+                        </h3>
+
+                        <a href="@linkUrl" target="@(isExternal ? "_blank" : "_self")"
+                           rel="@(isExternal ? "noopener noreferrer" : null)" class="site-btn site-btn--line">
+                            <span class="site-btn__label">Learn More</span>
+                            <span class="site-btn__arrow" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
+
+                    </article>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="press-release-controls">
+        <button type="button" class="press-release-nav press-release-nav--prev" aria-label="Previous press release">
+            <svg width="8" height="13" viewBox="0 0 8 13" fill="none" aria-hidden="true">
+                <path d="M7 1L1.5 6.5L7 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                      stroke-linejoin="round" />
+            </svg>
+        </button>
+
+        <div class="swiper-pagination press-release-pagination"></div>
+
+        <button type="button" class="press-release-nav press-release-nav--next" aria-label="Next press release">
+            <svg width="8" height="13" viewBox="0 0 8 13" fill="none" aria-hidden="true">
+                <path d="M1 1L6.5 6.5L1 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                      stroke-linejoin="round" />
+            </svg>
+        </button>
+    </div>
+</div>
+
+   
