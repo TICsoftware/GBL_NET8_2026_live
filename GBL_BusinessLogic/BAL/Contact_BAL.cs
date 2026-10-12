@@ -147,13 +147,7 @@ namespace GBL_BusinessLogic.BAL
                 (!string.IsNullOrWhiteSpace(obj.Query)
                     ? "<tr><td><strong>Query</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.Query) + "</td></tr>"
                     : "") +
-
-                (!string.IsNullOrWhiteSpace(obj.IPAddress)
-                    ? "<tr><td><strong>IP Address</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.IPAddress) + "</td></tr>"
-                    : "") +
-
-                "<tr><td><strong>Consent</strong></td><td>" + (obj.Consent == true ? "Yes" : "No") + "</td></tr>" +
-
+              
                 "</tbody></table>" +
 
                 "<br/><p><strong>Regards,</strong><br/>" +
