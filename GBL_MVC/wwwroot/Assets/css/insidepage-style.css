@@ -15,12 +15,6 @@ INSIDE BANNER CSS
 background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(0,0,0,0) 93%); 
 }
 
-.breadcrumb-nav,
-.breadcrumb-nav ol,
-.breadcrumb-nav li,
-.breadcrumb-nav a {
-  font-size: 14px;
-}
 
 /* Desktop: 700px at 100% zoom; at ~125%/150% zoom use 80vh so banner fits viewport */
 @media (min-width: 1180px) {
@@ -29,9 +23,9 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
   }
 }
 
-.page-intro-inner{ max-width:1000px; margin: 0 auto; width: 90%; text-align:left;}
+.page-intro-inner{ max-width:min(75vw, 1100px); margin: 0 auto; width: 100%; text-align:left;}
 .page-intro-inner p{
-  font-size: var(--text-20);
+  font-size: var(--text-intro);
   color: #B2B2B2;
 }
 .page-intro-inner .page-intro-fill-word{
@@ -45,6 +39,82 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
 .text-white .page-intro-fill-word{
   color: #f4f4f4;
 }
+
+/* Social — key principles */
+.middle-container .container {
+  width: 100%;
+  max-width: min(75vw, 1100px);
+  margin-inline: auto;
+}
+
+/* common-media-section — same as learningBand, for all inside pages */
+.common-media-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  color: #fff;
+  min-height: clamp(12rem, 34vw, 26rem);
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+  margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+
+.common-media-section > .parallax-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.common-media-section > .parallax-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 22, 26, 0.05) 30%,
+    rgba(20, 22, 26, 0.72) 100%
+  );
+  pointer-events: none;
+}
+
+.common-media-section .parallax-img {
+  position: absolute;
+  left: 0;
+  top: -2.5%;
+  width: 100%;
+  height: 105%;
+  object-fit: cover;
+}
+
+/* common-media-caption — same as learningBand-caption */
+.common-media-caption {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.25rem, 3vw, 1.25rem);
+}
+
+.common-media-caption h2 {
+  margin: 0;
+  max-width: 100%;
+  color: #fff;
+}
+
+.common-media-caption p {
+  margin: 0.75rem 0 0;
+  max-width: 55rem;
+  color: #fff;
+  font-size: var(--text-p);
+  line-height: 1.55;
+}
+
 
 @media (prefers-reduced-motion: reduce) {
   .page-intro-inner p,
@@ -68,4 +138,6 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
 
 
   .page-intro-inner{  width: 100%;}
+
+  .page-intro-inner, .middle-container .container{ max-width:min(100vw, 1100px);}
 }

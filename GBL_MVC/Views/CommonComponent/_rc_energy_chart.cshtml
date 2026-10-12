@@ -1,0 +1,51 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var chartKey = ViewData["ChartKey"] as string ?? "chart";
+    var dataStart = ViewData["DataStart"]?.ToString() ?? "0";
+    var main = Model?.FirstOrDefault(x => x.IsBlock == 0);
+    var slices = Model?.Where(x => x.IsBlock == 1 && !string.IsNullOrWhiteSpace(x.DataKey))
+                      .OrderBy(x => x.Sequence)
+                      .ToList() ?? new List<ComponentModel>();
+
+    if (main == null && slices.Count == 0)
+    {
+        return;
+    }
+
+    var caption = !string.IsNullOrWhiteSpace(main?.Figcaption)
+        ? main!.Figcaption
+        : (main?.Title ?? "");
+    var ariaTitle = !string.IsNullOrWhiteSpace(main?.Title) ? main!.Title : caption;
+    var titleId = $"rc-chart-{chartKey}-title";
+}
+
+<figure class="rc-chart" data-rc-chart="@chartKey" data-start="@dataStart">
+    @if (!string.IsNullOrWhiteSpace(caption))
+    {
+        <figcaption class="rc-chart__title">@Html.Raw(caption.CleanParagraphTags())</figcaption>
+    }
+    <div class="rc-chart__plot">
+        <svg class="rc-chart__svg" viewBox="0 0 200 200" role="img" aria-labelledby="@titleId">
+            <title id="@titleId">@Html.Raw(ariaTitle.CleanParagraphTags())</title>
+            <g class="rc-chart__slices"></g>
+            <text class="rc-chart__value" text-anchor="middle"></text>
+        </svg>
+    </div>
+    @if (slices.Count > 0)
+    {
+        <ul class="rc-chart__legend">
+            @foreach (var s in slices)
+            {
+                <li data-key="@s.DataKey"
+                    data-value="@s.DataValue"
+                    data-draw="@s.DataDraw"
+                    data-color="@s.DataColor">
+                    <i></i><span>@Html.Raw((s.Title ?? "").CleanParagraphTags())</span>
+                </li>
+            }
+        </ul>
+    }
+</figure>
