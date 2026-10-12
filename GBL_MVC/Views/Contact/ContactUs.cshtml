@@ -1,0 +1,314 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.ContactModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Contact-us";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Godavari Biorefineries" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/contact-us.css" asp-append-version="true" />
+   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+}
+
+
+<!-- HERO BANNER END-->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END -->
+
+
+<!--PAGE INTRO OUTER-->
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
+{
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+      <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            @Html.Raw(Model.Content.Cont_intro)
+         </div>
+      </div>
+   </section>
+}
+<!--PAGE INTRO OUTER END-->
+
+
+<!-- CONTACT OFFICES -->
+<section class="relative section-spacing contact-offices-outer">
+
+   <!-- Icon sprite (used via <use href="#...">) -->
+   <svg class="office-icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="icon-pin" viewBox="0 0 24 24">
+         <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" fill="none" stroke="currentColor"
+               stroke-width="1.6" stroke-linejoin="round" />
+         <circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+      </symbol>
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+         <path
+         d="M5 4h3.5l1.6 4-2.2 1.4a11 11 0 0 0 6.7 6.7l1.4-2.2 4 1.6V19a1.8 1.8 0 0 1-1.9 1.8A16.5 16.5 0 0 1 3.2 5.9 1.8 1.8 0 0 1 5 4Z"
+         fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-fax" viewBox="0 0 24 24">
+         <path
+         d="M7 8V3.5h10V8M7 17H4.5A1.5 1.5 0 0 1 3 15.5v-6A1.5 1.5 0 0 1 4.5 8h15A1.5 1.5 0 0 1 21 9.5v6a1.5 1.5 0 0 1-1.5 1.5H17"
+         fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+         <path d="M7 13.5h10v7H7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-mail" viewBox="0 0 24 24">
+         <rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+         <path d="m3.5 6 8.5 7 8.5-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      </symbol>
+   </svg>
+
+   <div class="container">
+      <div class="contact-offices">
+
+         <!-- ROW 1 -->
+         <div class="office-row">
+
+            <!-- Registered and Corporate Office -->
+            @if (Model?.Registered_Corporate_Office_List != null && Model.Registered_Corporate_Office_List.Any())
+            {
+               <div class="office-group" style="--span:1">
+                  @foreach (var item in Model.Registered_Corporate_Office_List.Where(x => x.IsBlock == 0))
+                  {
+                     <h2 class="office-group__title">@item.Title</h2>
+                  }
+                  <div class="office-group__cards">
+                     @foreach (var item in Model.Registered_Corporate_Office_List.Where(x => x.IsBlock == 1).OrderBy(x =>
+                  x.Sequence))
+                     {
+                        <article class="office-card">
+                           <div class="office-card__head">
+                              <svg class="office-card__icon">
+                                 <use href="#icon-pin"></use>
+                              </svg>
+                              <span>@item.Title</span>
+                           </div>
+                           <div class="office-card__body">
+                              @if (!string.IsNullOrWhiteSpace(item.Intro))
+                              {
+                                 @Html.Raw(item.Intro)
+                              }
+                              <div class="office-card__contact">
+                                 @if (!string.IsNullOrWhiteSpace(item.Content))
+                                 {
+                                    @Html.Raw(item.Content)
+                                 }
+                              </div>
+                           </div>
+                        </article>
+                     }
+                  </div>
+               </div>
+            }
+
+            <!-- Marketing Office -->
+            @if (Model?.Marketing_Office_List != null && Model.Marketing_Office_List.Any())
+            {
+               <div class="office-group" style="--span:1">
+                  @foreach (var item in Model.Marketing_Office_List.Where(x => x.IsBlock == 0))
+                  {
+                     <h2 class="office-group__title">@item.Title</h2>
+                  }
+                  <div class="office-group__cards">
+                     @foreach (var item in Model.Marketing_Office_List.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+                     {
+                        <article class="office-card">
+                           <div class="office-card__head">
+                              <svg class="office-card__icon">
+                                 <use href="#icon-pin"></use>
+                              </svg>
+                              <span>@item.Title</span>
+                           </div>
+                           <div class="office-card__body">
+                              @if (!string.IsNullOrWhiteSpace(item.Intro))
+                              {
+                                 @Html.Raw(item.Intro)
+                              }
+                              <div class="office-card__contact">
+                                 @if (!string.IsNullOrWhiteSpace(item.Content))
+                                 {
+                                    @Html.Raw(item.Content)
+                                 }
+                              </div>
+                           </div>
+                        </article>
+                     }
+                  </div>
+               </div>
+            }
+
+            <!-- Products -->
+            @if (Model?.Products_List != null && Model.Products_List.Any())
+            {
+               <div class="office-group" style="--span:2">
+                  @foreach (var item in Model.Products_List.Where(x => x.IsBlock == 0))
+                  {
+                     <h2 class="office-group__title">@item.Title</h2>
+                  }
+                  <div class="office-group__cards">
+                     @foreach (var item in Model.Products_List.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+                     {
+                        <article class="office-card">
+                           <div class="office-card__head">
+                              <svg class="office-card__icon">
+                                 <use href="#icon-pin"></use>
+                              </svg>
+                              <span>@item.Title</span>
+                           </div>
+                           <div class="office-card__body">
+                              @if (!string.IsNullOrWhiteSpace(item.Intro))
+                              {
+                                 @Html.Raw(item.Intro)
+                              }
+                              <div class="office-card__contact">
+                                 @if (!string.IsNullOrWhiteSpace(item.Content))
+                                 {
+                                    @Html.Raw(item.Content)
+                                 }
+                              </div>
+                           </div>
+                        </article>
+                     }
+                  </div>
+               </div>
+            }
+
+
+         </div>
+         <!-- ROW 1 END -->
+
+         <!-- ROW 2 -->
+         <div class="office-row">
+
+            <!-- India Offices -->
+            @if (Model?.India_Offices_List != null && Model.India_Offices_List.Any())
+            {
+               <div class="office-group" style="--span:2">
+                  @foreach (var item in Model.India_Offices_List.Where(x => x.IsBlock == 0))
+                  {
+                     <h2 class="office-group__title">@item.Title</h2>
+                  }
+
+                  <div class="office-group__cards">
+                     @foreach (var item in Model.India_Offices_List.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+                     {
+                        <article class="office-card">
+                           <div class="office-card__head">
+                              <svg class="office-card__icon">
+                                 <use href="#icon-pin"></use>
+                              </svg>
+                              <span>@item.Title</span>
+                           </div>
+                           <div class="office-card__body">
+                              @if (!string.IsNullOrWhiteSpace(item.Intro))
+                              {
+                                 @Html.Raw(item.Intro)
+                              }
+                              <div class="office-card__contact">
+                                 @if (!string.IsNullOrWhiteSpace(item.Content))
+                                 {
+                                    @Html.Raw(item.Content)
+                                 }
+                              </div>
+                           </div>
+                        </article>
+                     }
+                  </div>
+               </div>
+            }
+
+            <!-- International Offices -->
+            @if (Model?.InternationalOffices_List != null && Model.InternationalOffices_List.Any())
+            {
+               <div class="office-group" style="--span:2">
+                  @foreach (var item in Model.InternationalOffices_List.Where(x => x.IsBlock == 0))
+                  {
+                     <h2 class="office-group__title">@item.Title</h2>
+                  }
+                  <div class="office-group__cards">
+                     @foreach (var item in Model.InternationalOffices_List.Where(x => x.IsBlock == 1).OrderBy(x =>
+                  x.Sequence))
+                     {
+                        <article class="office-card">
+                           <div class="office-card__head">
+                              <svg class="office-card__icon">
+                                 <use href="#icon-pin"></use>
+                              </svg>
+                              <span>@item.Title</span>
+                           </div>
+                           <div class="office-card__body">
+                              @if (!string.IsNullOrWhiteSpace(item.Intro))
+                              {
+                                 @Html.Raw(item.Intro)
+                              }
+                              <div class="office-card__contact">
+                                 @if (!string.IsNullOrWhiteSpace(item.Content))
+                                 {
+                                    @Html.Raw(item.Content)
+                                 }
+                              </div>
+                           </div>
+                        </article>
+                     }
+                  </div>
+               </div>
+            }
+
+
+         </div>
+         <!-- ROW 2 END -->
+
+      </div>
+   </div>
+</section>
+<!-- CONTACT OFFICES END -->
+
+
+
+<!-- CONTACT QUERY FORM -->
+@await Html.PartialAsync("_SubmitQuery", new ContactUsModel())
+<!-- CONTACT QUERY FORM END -->
+   
+
+@section Scripts {
+   <script src="~/Assets/js/product-filter.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/product-card-animation.js" asp-append-version="true"></script>
+   <script src="~/scripts/contact/contact.js" asp-append-version="true"></script>
+}

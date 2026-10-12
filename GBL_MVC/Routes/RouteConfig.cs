@@ -46,6 +46,13 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                               name: "contact-us",
+                               pattern: "contact-us",
+                               defaults: new { controller = "Contact", action = "ContactUs", title = "contact-us" }
+                       );
+
+
+            app.MapControllerRoute(
                     name: "work-with-us-submit",
                     pattern: "Career/SubmitWorkWithUs",
                     defaults: new { controller = "Career", action = "SubmitWorkWithUs" }

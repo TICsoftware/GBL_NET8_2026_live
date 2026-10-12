@@ -1,0 +1,138 @@
+@using GBL_BusinessLogic.Entity
+@model ContactUsModel
+
+@{
+    var states = ViewBag.States as List<StateMaster> ?? new List<StateMaster>();
+}
+
+<section class="relative section-spacing contact-query-outer" id="submit-query">
+    <div class="container">
+        <h2 class="text-h2 contact-query__title">Submit your query</h2>
+
+        <div class="contact-form-card">
+            <form id="contact-form" class="contact-form" asp-controller="Contact" asp-action="SubmitQuery" method="post"
+                  novalidate>
+
+                @Html.AntiForgeryToken()
+
+                <div class="contact-form__grid">
+
+                    <div class="cf-field">
+                        <input type="text" id="cf-name" name="Name" placeholder=" " class="cf-field__control"
+                               autocomplete="name" required />
+                        <label for="cf-name" class="cf-field__label">Full Name</label>
+                        <span class="cf-field__error">Please enter your full name.</span>
+                    </div>
+
+                    <div class="cf-field">
+                        <input type="text" id="cf-company" name="CompanyName" placeholder=" " class="cf-field__control"
+                               autocomplete="organization" maxlength="150" required />
+
+                        <label for="cf-company" class="cf-field__label">
+                            Company name
+                        </label>
+
+                        <span class="cf-field__error" style="display:none;">
+                            Please enter company name.
+                        </span>
+                    </div>
+                    <div class="cf-field">
+                        <input type="tel" id="cf-phone" name="PhoneNumber" placeholder=" " class="cf-field__control"
+                               autocomplete="tel" inputmode="tel" pattern="^[+]?[0-9\s\-()]{7,20}$" required />
+                        <label for="cf-phone" class="cf-field__label">Phone number</label>
+                        <span class="cf-field__error">Please enter a valid phone number.</span>
+                    </div>
+
+                    <div class="cf-field">
+                        <input type="email" id="cf-email" name="EmailAddress" placeholder=" " class="cf-field__control"
+                               autocomplete="email" required />
+                        <label for="cf-email" class="cf-field__label">Email</label>
+                        <span class="cf-field__error">Please enter a valid email address.</span>
+                    </div>
+
+                    <div class="cf-field cf-field--select" data-lenis-prevent>
+                        <select id="cf-location" name="SiteLocation" class="cf-field__control" required>
+                            <option value="" selected hidden></option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Ahmednagar">Ahmednagar</option>
+                            <option value="Bagalkot">Bagalkot</option>
+                            <option value="Bangalore">Bangalore</option>
+                            <option value="New Delhi">New Delhi</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <label for="cf-location" class="cf-field__label">
+                            Site location (city and district)
+                        </label>
+                        <svg class="cf-field__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                             focusable="false">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                        <span class="cf-field__error">Please select a site location.</span>
+                    </div>
+
+                    <div class="cf-field cf-field--select" data-lenis-prevent>
+                        <select id="cf-state" name="StateId" class="cf-field__control" required>
+                            <option value="" selected>Select State</option>
+                            @if (states != null && states.Any())
+                            {
+                                foreach (var state in states)
+                                {
+                                    <option value="@state.StateId">@state.StateName</option>
+                                }
+                            }
+                        </select>
+                        <label for="cf-state" class="cf-field__label">State</label>
+                        <svg class="cf-field__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                             focusable="false">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                        <span class="cf-field__error">Please select a state.</span>
+                    </div>
+
+                    <div class="cf-field cf-field--full">
+                        <textarea id="cf-message" name="Query" class="cf-field__control" rows="2"
+                                  placeholder=" "></textarea>
+                        <label for="cf-message" class="cf-field__label">Message</label>
+                    </div>
+
+                </div>
+
+               
+                <div class="contact-form__captcha">
+                    <div class="cf-captcha">
+                        <div class="g-recaptcha" data-sitekey="@ViewBag.captchapublickey">
+                        </div>
+                    </div>
+
+                    <span id="captchaError" class="cf-captcha__error text-red-500" style="display:none;">
+                        Please complete the CAPTCHA.
+                    </span>
+
+                    <div class="text-sm italic">
+                        Cannot view the CAPTCHA? Please make sure Google
+                        and its services are enabled on your system.
+                    </div>
+                </div>
+               
+
+                <div id="contact-form-response" role="status" aria-live="polite"></div>
+
+                <button type="submit" class="site-btn site-btn--fill">
+                    <span class="site-btn__label">Submit</span>
+                    <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </button>
+
+            </form>
+
+           
+        </div>
+    </div>
+</section>

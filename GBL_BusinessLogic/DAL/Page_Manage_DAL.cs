@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using Microsoft.Data.SqlClient;
+using GBL_BusinessLogic.Entity;
 
 namespace GBL_BusinessLogic.DAL
 {
@@ -119,6 +120,28 @@ namespace GBL_BusinessLogic.DAL
         }
 
 
+
+        public DataTable ContactUs_Insert_DAL(ContactEntity model)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@Name", string.IsNullOrWhiteSpace(model.Name) ? (object)DBNull.Value : model.Name),
+                new SqlParameter("@CompanyName", string.IsNullOrWhiteSpace(model.CompanyName) ? (object)DBNull.Value : model.CompanyName),
+                new SqlParameter("@PhoneNumber", string.IsNullOrWhiteSpace(model.PhoneNumber) ? (object)DBNull.Value : model.PhoneNumber),
+                new SqlParameter("@EmailAddress", string.IsNullOrWhiteSpace(model.EmailAddress) ? (object)DBNull.Value : model.EmailAddress),
+                new SqlParameter("@StateId", model.StateId), new SqlParameter("@SiteLocation",  string.IsNullOrWhiteSpace(model.SiteLocation)                        ? (object)DBNull.Value : model.SiteLocation),
+                new SqlParameter("@Query", string.IsNullOrWhiteSpace(model.Query)  ? (object)DBNull.Value : model.Query),
+                new SqlParameter("@IPAddress", string.IsNullOrWhiteSpace(model.IPAddress) ? (object)DBNull.Value : model.IPAddress),
+                new SqlParameter("@Consent", model.Consent.HasValue ? (object)model.Consent.Value : DBNull.Value)
+            };
+
+            return GetDataSet("ContactUs_Insert", sqlParams).Tables[0];
+        }
+
+        public DataTable GetStateMaster()
+        {
+            return GetDataSet("GetStateMaster").Tables[0];
+        }
 
     }
 }
