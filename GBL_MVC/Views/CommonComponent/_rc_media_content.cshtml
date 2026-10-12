@@ -1,0 +1,42 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@{
+    var item = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+    if (item == null)
+    {
+        return;
+    }
+
+    var img = !string.IsNullOrWhiteSpace(item.ComponentThumbnail) ? item.ComponentThumbnail : item.ThumbnailImage;
+    var alt = !string.IsNullOrWhiteSpace(item.ComponentThumbnailAltText)
+        ? item.ComponentThumbnailAltText
+        : (item.ThumbnailAltText ?? item.Title);
+}
+
+<article class="common-media-section">
+    @if (!string.IsNullOrWhiteSpace(img))
+    {
+        <div class="parallax-wrap">
+            <img src="@img" alt="@alt" class="parallax-img">
+        </div>
+    }
+    <div class="common-media-caption">
+        @if (!string.IsNullOrWhiteSpace(item.Title))
+        {
+            <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
+        }
+        @if (!string.IsNullOrWhiteSpace(item.Intro))
+        {
+            <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+        }
+    </div>
+</article>
+
+@if (!string.IsNullOrWhiteSpace(item.Content))
+{
+    <div class="rc-energy__emissions">
+        @Html.Raw(item.Content)
+    </div>
+}

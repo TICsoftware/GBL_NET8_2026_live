@@ -171,6 +171,11 @@ namespace GBL_BusinessLogic.BAL
                     Component_RHS_icon2 = Config_Application_Website.GetPath(group, "RHS component icon image2"),
                     year = Config_Application_Website.GetValue(dict, "Year"),
                     Component_Video_path = Config_Application_Website.GetPath(group, "component video"),
+                    DataKey = Config_Application_Website.GetValue(dict, "data-key", "Data Key"),
+                    DataValue = Config_Application_Website.GetValue(dict, "data-value", "Data Value"),
+                    DataDraw = Config_Application_Website.GetValue(dict, "data-draw", "Data Draw"),
+                    DataColor = Config_Application_Website.GetValue(dict, "data-color", "Data Color"),
+                    Figcaption = Config_Application_Website.GetValue(dict, "figcaption", "Figcaption"),
                 };
             })
             .OrderBy(x => x.Sequence)

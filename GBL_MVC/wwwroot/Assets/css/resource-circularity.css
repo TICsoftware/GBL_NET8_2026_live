@@ -1,0 +1,728 @@
+/* Resource circularity — pillars + circular energy model */
+
+.rc-pillars {
+  background: #000;
+  color: #c8ccd2;
+}
+
+.rc-pillars__stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.9fr) minmax(0, 1fr);
+  grid-template-areas: "energy water waste";
+  column-gap: clamp(4.5rem, 8vw, 8.5rem);
+  align-items: center;
+  justify-items: center;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.rc-pillars__links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.rc-pillar,
+.rc-hub {
+  position: relative;
+  z-index: 1;
+}
+
+.rc-pillar--energy { grid-area: energy; }
+.rc-pillar--water { grid-area: water; width: min(100%, 420px); padding-bottom: 72px; }
+.rc-pillar--waste { grid-area: waste; }
+
+.rc-pillar--energy,
+.rc-pillar--waste {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.rc-capsule {
+  position: relative;
+  width: min(100%, 370px);
+  padding-top: 56px;
+}
+
+.rc-badge,
+.rc-hub {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #3a3a3a;
+}
+
+.rc-badge {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  width: 116px;
+  height: 116px;
+  transform: translateX(-50%);
+}
+
+.rc-badge::before,
+.rc-hub::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f3f3f3 0%, #cfcfcf 38%, #8d8d8d 100%);
+  pointer-events: none;
+}
+
+.rc-badge::before {
+  inset: 12% -6% -18% 24%;
+}
+
+.rc-badge svg,
+.rc-hub svg {
+  display: block;
+  width: 62px;
+  height: 62px;
+}
+
+.rc-capsule__frame {
+  position: relative;
+  z-index: 1;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  padding: 78px 28px 34px;
+  border: 6px solid #5f8a3c;
+  border-radius: 42px 42px 58px 58px;
+  background: #000;
+}
+
+.rc-pillar__title {
+  margin: 1.15rem 0 0;
+  text-align: center;
+  font-family: var(--font-uniNeueBold), sans-serif;
+  font-size: clamp(1.15rem, 1rem + 0.35vw, 1.55rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: #d5d8de;
+}
+
+.rc-pillar--water .rc-pillar__title {
+  margin: 0 0 1rem;
+}
+
+.rc-water {
+  position: relative;
+  z-index: 1;
+  border: 6px solid #cddd4a;
+  border-radius: 32px 32px 64px 64px;
+  padding: 1.7rem 1.55rem 7rem;
+  background: #000;
+}
+
+.rc-hub {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 0;
+  width: 124px;
+  height: 124px;
+  transform: translateX(-50%);
+}
+
+.rc-hub::before {
+  inset: 14% -4% -16% 26%;
+}
+
+.rc-hub svg {
+  width: 64px;
+  height: 64px;
+}
+
+.rc-points {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.rc-points li {
+  position: relative;
+  margin: 0 0 0.85rem;
+  padding-left: 0.95rem;
+  font-size: clamp(14px, 0.85vw, 16px);
+  line-height: 1.45;
+  color: #b7bcc4;
+}
+
+.rc-points li:last-child {
+  margin-bottom: 0;
+}
+
+.rc-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d5d8de;
+}
+
+.rc-points strong {
+  font-family: var(--font-uniNeueBold), sans-serif;
+  font-weight: 400;
+  color: #f3f4f6;
+}
+
+/* Circular energy model */
+.rc-energy {
+  background: #fff;
+}
+
+.rc-energy__title {
+  margin: 0 0 1.15rem;
+  font-family: var(--font-uniNeueBold), sans-serif;
+  font-weight: 400;
+  color: var(--color-primary, #282b31);
+}
+
+.rc-energy__copy {
+  max-width: 980px;
+}
+
+.rc-energy__copy p {
+  margin: 0 0 1rem;
+  color: #3a3f46;
+  line-height: 1.55;
+}
+
+.rc-energy__copy p:last-child {
+  margin-bottom: 0;
+}
+
+.rc-energy__charts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.35rem;
+  margin-top: 2.25rem;
+}
+
+.rc-chart {
+  margin: 0;
+  padding: 1.6rem 1.25rem 1.35rem;
+  background: #f3f3f3;
+  border-radius: 16px;
+}
+
+.rc-chart__title {
+  margin: 0 0 0.35rem;
+  text-align: center;
+  font-family: var(--font-uniNeueBold), sans-serif;
+  font-size: clamp(0.95rem, 0.85rem + 0.2vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.35;
+  color: #2c3138;
+}
+
+.rc-chart__plot {
+  width: min(100%, 280px);
+  margin: 0.35rem auto 0;
+  aspect-ratio: 1;
+}
+
+.rc-chart__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.rc-chart__slices path,
+.rc-chart__legend li {
+  cursor: pointer;
+}
+
+.rc-chart__value {
+  font-family: var(--font-uniNeueBold), sans-serif;
+  font-size: 10px;
+  line-height: 1;
+  fill: #2a2e28;
+  stroke: #f3f3f3;
+  stroke-width: 3px;
+  paint-order: stroke fill;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rc-chart.is-hover .rc-chart__value {
+  opacity: 1;
+}
+
+.rc-chart__legend {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(5, auto);
+  gap: 0.42rem 1rem;
+  margin: 0.85rem 0 0;
+  padding: 0 0.15rem;
+  list-style: none;
+}
+
+.rc-chart__legend li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.25;
+  color: #4a5160;
+}
+
+.rc-chart__legend i {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  margin-top: 0.18em;
+  border-radius: 1px;
+  background: var(--swatch, #ccc);
+  box-shadow: inset 0 0 0 1px rgba(40, 43, 49, 0.12);
+}
+
+@media (max-width: 1100px) {
+  .rc-pillars__stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "energy"
+      "water"
+      "waste";
+    row-gap: 2.75rem;
+    justify-items: center;
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  .rc-pillars__links {
+    display: none;
+  }
+
+  .rc-pillar--water,
+  .rc-pillar--waste {
+    position: relative;
+  }
+
+  .rc-pillar--water::after,
+  .rc-pillar--waste::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -2.75rem;
+    width: 6px;
+    height: 2.75rem;
+    border-radius: 6px;
+    background: #cddd4a;
+    transform: translateX(-50%);
+  }
+
+  .rc-pillar--water {
+    width: min(100%, 420px);
+    padding-bottom: 0;
+  }
+
+  .rc-hub {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    margin: 1.75rem auto 0;
+    transform: none;
+  }
+
+  .rc-hub::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -1.75rem;
+    width: 6px;
+    height: 1.75rem;
+    border-radius: 6px;
+    background: #cddd4a;
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+
+  .rc-energy__charts {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+}
+
+@media (max-width: 640px) {
+  .rc-capsule,
+  .rc-capsule__frame {
+    width: 100%;
+  }
+
+  .rc-capsule__frame {
+    min-height: 0;
+    padding: 72px 22px 28px;
+  }
+
+  .rc-chart__legend {
+    grid-template-rows: none;
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rc-energy__follow {
+  margin-top: 2.75rem;
+}
+
+.rc-energy__split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2.5rem;
+  align-items: stretch;
+}
+
+.rc-energy__split > .rc-energy__points {
+  margin: 0;
+}
+
+.rc-energy__aside {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 1.65rem 1.45rem;
+  background: var(--color-primary, #282b31);
+  color: #fff;
+  font-family: var(--font-uniNeueBold), sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.05rem, 0.92rem + 0.35vw, 1.28rem);
+  line-height: 1.45;
+}
+
+.rc-energy__follow-copy p,
+.rc-energy__emissions p {
+  margin: 0 0 1rem;
+  color: #3a3f46;
+  line-height: 1.55;
+}
+
+.rc-energy__follow-copy p:last-child,
+.rc-energy__emissions p:last-child {
+  margin-bottom: 0;
+}
+
+.rc-energy__emissions {
+  margin-top: 0.25rem;
+}
+
+.rc-energy__points {
+  list-style: none;
+  margin: 0 0 1.15rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.rc-energy__points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin: 0;
+  color: #3a3f46;
+  line-height: 1.45;
+}
+
+.rc-energy__points img {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.15rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+@media (max-width: 800px) {
+  .rc-energy__split {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
+
+/**Infographic**/
+/* Learning & Development — g1 / g2 / g3 infographic */
+.ld-flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.ld-step {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.ld-step--energy { width: 35%; }
+.ld-step--water { width: 34%; margin-top: 0.15rem; }
+.ld-step--waste { width: 26.5%; }
+
+.ld-step__frame {
+  position: relative;
+}
+
+.ld-step img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ld-step h3 {
+  margin: 0rem 0 0;
+  color: var(--color-primary, #282b31);
+  font-size: clamp(1.25rem, 1.35vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ld-step--water h3 {
+  margin: 0 0 0.35rem;
+  text-align: left;
+  position: relative;
+    left: calc(50% - 125px);
+}
+
+.ld-step--energy h3 {
+  /* padding-left: 0.75rem; */
+  text-align: left;
+  position: relative;
+    left: calc(50% - 125px);
+}
+
+.ld-step--waste h3 {
+  /* padding-left: 0.75rem; */
+  text-align: left;
+  position: relative;
+    left: calc(50% - 85px);
+}
+
+.ld-step__copy {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-primary, #282b31);
+}
+
+.ld-step__copy li {
+  position: relative;
+  margin: 0 0 0.4rem;
+  padding-left: 0.75rem;
+  font-size: clamp(1rem, 0.72vw, 1rem);
+  line-height: 1.35;
+}
+
+.ld-step__copy li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ld-step--energy .ld-step__copy {
+  left: 6%;
+  right: 27%;
+  top: 40%;
+}
+
+.ld-step--water .ld-step__copy {
+  left: 8%;
+  right: 32%;
+  top: 10%;
+}
+
+.ld-step--waste .ld-step__copy {
+  left: 8%;
+  right: 12%;
+  top: 40%;
+}
+.ld-step__copy li span{font-weight: 700; font-size:var(--text-20);}
+
+.ld-step {
+  opacity: 0;
+  transform: translateX(-1.25rem);
+}
+
+.ld-step.is-inview {
+  animation: ld-rise 0.7s ease forwards;
+}
+
+.ld-step--water.is-inview { animation-delay: 0.18s; }
+.ld-step--waste.is-inview { animation-delay: 0.36s; }
+
+@keyframes ld-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 150% zoom — 1920×1080 → ~1280×720 */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.5),
+  screen and (min-width: 1025px) and (min-resolution: 144dpi) {
+  .ld-step h3 {
+    font-size: 1rem;
+  }
+
+  .ld-step__copy li {
+    margin-bottom: 0.75rem;
+    padding-left: 0.65rem;
+    font-size: 0.75rem;
+    line-height: 1.28;
+  }
+
+  .ld-step--energy .ld-step__copy {
+    top: 37%;
+    right: 30%;
+  }
+
+  .ld-step--water .ld-step__copy {
+    top: 8%;
+    right: 30%;
+  }
+
+  .ld-step--waste .ld-step__copy {
+    top: 38%;
+    right: 14%;
+  }
+
+  .ld-step--energy h3,
+  .ld-step--water h3 {
+    left: calc(50% - 108px);
+  }
+
+  .ld-step--waste h3 {
+    left: calc(50% - 72px);
+  }
+
+    .ld-step__copy li span{ font-size:0.825rem;}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-step {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ld-step.is-inview {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .ld-flow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2.75rem;
+    overflow: visible;
+    padding: 0.5rem 0rem 0.5rem 0;
+  }
+
+  .ld-step--water.is-inview,
+  .ld-step--waste.is-inview {
+    animation-delay: 0s;
+  }
+
+  .ld-step--energy,
+  .ld-step--water,
+  .ld-step--waste {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ld-step--energy { --ld-line: #66815a; }
+  .ld-step--water { --ld-line: #cde458; }
+  .ld-step--waste { --ld-line: #687e62; }
+
+  .ld-step__frame {
+    position: relative;
+    order: 1;
+    margin-top: 4.25rem;
+    border: 2px solid var(--ld-line);
+    border-radius: 26px;
+    padding: 4rem 1.05rem 1.05rem;
+  }
+
+  .ld-step h3,
+  .ld-step--energy h3,
+  .ld-step--water h3,
+  .ld-step--waste h3 {
+    position: static;
+    left: auto;
+    order: -1;
+    margin: 0 0 0.35rem;
+    text-align: left;
+  }
+
+  .ld-step__copy {
+    position: static;
+  }
+
+  .ld-step__copy li {
+    font-size: 1rem;
+    margin-bottom:1rem;
+  }
+
+  .ld-step img {
+    position: absolute;
+    left: 50%;
+    z-index: 2;
+    width: 112px;
+    height: 112px;
+    max-width: none;
+    border-radius: 50%;
+    object-fit: none;
+    background: #fff;
+    box-shadow: 7px 10px 16px rgba(40, 43, 49, 0.16);
+    border: 6px solid var(--ld-line);
+  }
+
+  .ld-step--energy img,
+  .ld-step--water img,
+  .ld-step--waste img {
+    top: 0;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+  }
+
+  .ld-step--energy img { object-position: -110px -25px; }
+  .ld-step--water img { object-position: -100px -272px; }
+  .ld-step--waste img { object-position: -100px -25px; }
+
+  
+  .ld-step--water {
+    overflow: visible;
+  }
+
+
+}

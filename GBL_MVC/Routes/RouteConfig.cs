@@ -70,6 +70,11 @@ namespace GBL_MVC.Routes
                 defaults: new { controller = "Sustainability", action = "CarbonLightCircularity", title = "carbon-light-circularity" }
             );
 
+            app.MapControllerRoute(
+                name: "resource-circularity",
+                pattern: "sustainability/resource-circularity",
+                defaults: new { controller = "ResourceCircularity", action = "Index", title = "resource-circularity" }
+            );
 
             app.MapControllerRoute(
                  name: "sustainability-reports",

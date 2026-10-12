@@ -74,6 +74,13 @@ namespace GBL_BusinessLogic.Entity
         public string Component_RHS_icon2 { get; set; }
         public string bg_class { get; set; }
         public string year { get; set; }
+
+        // Resource Circularity / chart fields
+        public string DataKey { get; set; }
+        public string DataValue { get; set; }
+        public string DataDraw { get; set; }
+        public string DataColor { get; set; }
+        public string Figcaption { get; set; }
     }
 
 

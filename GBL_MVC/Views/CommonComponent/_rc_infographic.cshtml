@@ -1,0 +1,58 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+
+@if (Model == null || !Model.Any(x => x.IsBlock == 1))
+{
+    return;
+}
+
+@{
+    string StepClass(int seq) => seq switch
+    {
+        1 => "ld-step--energy",
+        2 => "ld-step--water",
+        3 => "ld-step--waste",
+        _ => "ld-step--energy"
+    };
+
+    bool TitleFirst(int seq) => seq == 2;
+}
+
+<div class="ld-flow" aria-label="Environmental performance">
+@foreach (var item in Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
+{
+    var seq = item.Sequence > 0 ? item.Sequence : 1;
+    var lines = (item.Intro ?? "")
+        .Replace("\r\n", "\n")
+        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var img = !string.IsNullOrWhiteSpace(item.ThumbnailImage) ? item.ThumbnailImage : item.ComponentThumbnail;
+    var alt = !string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.ThumbnailAltText : item.Title;
+
+    <article class="ld-step @StepClass(seq)">
+        @if (TitleFirst(seq) && !string.IsNullOrWhiteSpace(item.Title))
+        {
+            <h3>@Html.Raw(item.Title.CleanParagraphTags())</h3>
+        }
+        <div class="ld-step__frame">
+            @if (!string.IsNullOrWhiteSpace(img))
+            {
+                <img src="@img" alt="@alt">
+            }
+            @if (lines.Length > 0)
+            {
+                <ul class="ld-step__copy">
+                    @foreach (var line in lines)
+                    {
+                        <li>@Html.Raw(line)</li>
+                    }
+                </ul>
+            }
+        </div>
+        @if (!TitleFirst(seq) && !string.IsNullOrWhiteSpace(item.Title))
+        {
+            <h3>@Html.Raw(item.Title.CleanParagraphTags())</h3>
+        }
+    </article>
+}
+</div>
