@@ -91,7 +91,7 @@ public class ContactController : Controller
                 return Json(new
                 {
                     status = true,
-                    message = "Thank you for your enquiry. Our team will contact you shortly."
+                    message = result
                 });
             }
 

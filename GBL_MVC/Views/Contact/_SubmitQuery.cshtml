@@ -74,7 +74,7 @@
 
                     <div class="cf-field cf-field--select" data-lenis-prevent>
                         <select id="cf-state" name="StateId" class="cf-field__control" required>
-                            <option value="" selected>Select State</option>
+                            <option value="" selected hidden></option>
                             @if (states != null && states.Any())
                             {
                                 foreach (var state in states)
@@ -83,7 +83,7 @@
                                 }
                             }
                         </select>
-                        <label for="cf-state" class="cf-field__label">State</label>
+                        <label for="cf-state" class="cf-field__label">Select state</label>
                         <svg class="cf-field__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"
                              focusable="false">
                             <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -112,13 +112,13 @@
                     </span>
 
                     <div class="text-sm italic">
-                        Cannot view the CAPTCHA? Please make sure Google
-                        and its services are enabled on your system.
+                        <div>Cannot view the CAPTCHA?</div>
+                        <div>Please make sure Google and its services are enabled on your system.</div>
                     </div>
                 </div>
                
 
-                <div id="contact-form-response" role="status" aria-live="polite"></div>
+               
 
                 <button type="submit" class="site-btn site-btn--fill">
                     <span class="site-btn__label">Submit</span>
@@ -129,6 +129,8 @@
                         </svg>
                     </span>
                 </button>
+
+                <div id="contact-form-response" role="status" aria-live="polite"></div>
 
             </form>
 
