@@ -25,9 +25,17 @@
             <div class="col-md-2">
                 <label class="form-label mb-1" for="pageSize">Rows / page</label>
                 <select name="pageSize" id="pageSize" class="form-select" onchange="this.form.submit()">
-                    <option value="20" @(Model.PageSize == 20 ? "selected" : null)>20 / page</option>
-                    <option value="50" @(Model.PageSize == 50 ? "selected" : null)>50 / page</option>
-                    <option value="100" @(Model.PageSize == 100 ? "selected" : null)>100 / page</option>
+                    @foreach (var size in new[] { 20, 50, 100 })
+                    {
+                        if (Model.PageSize == size)
+                        {
+                            <option value="@size" selected>@size / page</option>
+                        }
+                        else
+                        {
+                            <option value="@size">@size / page</option>
+                        }
+                    }
                 </select>
             </div>
             <div class="col-md-2">
