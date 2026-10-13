@@ -37,3 +37,9 @@ body.modal-open .modal-backdrop:nth-of-type(2) {
 .pm-media-field .js-clear-media {
     display: inline-block;
 }
+
+.pm-list-cert-thumb {
+    max-width: 64px;
+    max-height: 64px;
+    object-fit: contain;
+}

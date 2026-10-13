@@ -23,13 +23,17 @@ namespace GBL_MVC.Controllers.Manage
             _bal = new Product_Master_BAL(config);
         }
 
-        public IActionResult Index(string search = "", int page = 1)
+        public IActionResult Index(string search = "", int page = 1, int pageSize = 20)
         {
+            if (pageSize != 20 && pageSize != 50 && pageSize != 100)
+                pageSize = 20;
+            if (page < 1) page = 1;
+
             Product_Master_Entity entity = new()
             {
                 SearchText = search,
                 PageNumber = page,
-                PageSize = 10
+                PageSize = pageSize
             };
 
             var result = _bal.GetPaged(entity);

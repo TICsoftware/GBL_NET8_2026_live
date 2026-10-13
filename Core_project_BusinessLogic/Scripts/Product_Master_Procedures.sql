@@ -22,6 +22,7 @@ BEGIN
         Banner_Image_media_id INT NULL,
         Technical_Overview NVARCHAR(MAX) NULL,
         SafetyDataSheet_media_id INT NULL,
+        Certification_Image_media_id INT NULL,
         Language_Master_Id INT NULL,
         DisplayOrder INT NOT NULL CONSTRAINT DF_Product_Master_DisplayOrder DEFAULT (0),
         Create_UserId INT NULL,
@@ -31,6 +32,7 @@ BEGIN
         [status] INT NULL,
         Banner_Image_Alt NVARCHAR(500) NULL,
         Thumbnail_Image_Alt NVARCHAR(500) NULL,
+        Certification_Image_Alt NVARCHAR(500) NULL,
         CONSTRAINT PK_Product_Master PRIMARY KEY CLUSTERED (ProductId ASC)
     );
 END
@@ -46,6 +48,14 @@ GO
 
 IF COL_LENGTH('dbo.Product_Master', 'Main_Application') IS NULL
     ALTER TABLE dbo.Product_Master ADD Main_Application NVARCHAR(MAX) NULL;
+GO
+
+IF COL_LENGTH('dbo.Product_Master', 'Certification_Image_media_id') IS NULL
+    ALTER TABLE dbo.Product_Master ADD Certification_Image_media_id INT NULL;
+GO
+
+IF COL_LENGTH('dbo.Product_Master', 'Certification_Image_Alt') IS NULL
+    ALTER TABLE dbo.Product_Master ADD Certification_Image_Alt NVARCHAR(500) NULL;
 GO
 
 IF OBJECT_ID(N'dbo.product_Industry_Mapping', N'U') IS NULL
@@ -137,12 +147,12 @@ GO
 CREATE OR ALTER PROCEDURE dbo.Product_Master_GetPaged
     @Search NVARCHAR(500) = NULL,
     @Page INT = 1,
-    @PageSize INT = 10
+    @PageSize INT = 20
 AS
 BEGIN
     SET NOCOUNT ON;
     IF @Page < 1 SET @Page = 1;
-    IF @PageSize < 1 SET @PageSize = 10;
+    IF @PageSize < 1 SET @PageSize = 20;
     DECLARE @Offset INT = (@Page - 1) * @PageSize;
 
     SELECT
@@ -156,11 +166,14 @@ BEGIN
         p.Thumbnail_Image_media_id,
         p.Banner_Image_media_id,
         p.SafetyDataSheet_media_id,
+        p.Certification_Image_media_id,
         mt.file_path AS Thumbnail_Image_Url,
         mb.file_path AS Banner_Image_Url,
         ms.file_path AS SafetyDataSheet_Url,
+        mc.file_path AS Certification_Image_Url,
         p.Banner_Image_Alt,
         p.Thumbnail_Image_Alt,
+        p.Certification_Image_Alt,
         p.Intro,
         p.Content,
         p.Technical_Overview,
@@ -170,6 +183,7 @@ BEGIN
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
     LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     LEFT JOIN dbo.media ms ON ms.ID = p.SafetyDataSheet_media_id
+    LEFT JOIN dbo.media mc ON mc.ID = p.Certification_Image_media_id
     WHERE (@Search IS NULL OR p.ProductName LIKE N'%' + @Search + N'%')
     ORDER BY p.DisplayOrder, p.ProductId
     OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
@@ -197,11 +211,14 @@ BEGIN
         p.Thumbnail_Image_media_id,
         p.Banner_Image_media_id,
         p.SafetyDataSheet_media_id,
+        p.Certification_Image_media_id,
         mt.file_path AS Thumbnail_Image_Url,
         mb.file_path AS Banner_Image_Url,
         ms.file_path AS SafetyDataSheet_Url,
+        mc.file_path AS Certification_Image_Url,
         p.Banner_Image_Alt,
         p.Thumbnail_Image_Alt,
+        p.Certification_Image_Alt,
         p.Intro,
         p.Content,
         p.Technical_Overview,
@@ -211,6 +228,7 @@ BEGIN
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
     LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     LEFT JOIN dbo.media ms ON ms.ID = p.SafetyDataSheet_media_id
+    LEFT JOIN dbo.media mc ON mc.ID = p.Certification_Image_media_id
     WHERE p.ProductId = @ID;
 
     SELECT IndustryId AS Id
@@ -257,8 +275,10 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Insert
     @Thumbnail_Image_media_id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @SafetyDataSheet_media_id INT = NULL,
+    @Certification_Image_media_id INT = NULL,
     @Banner_Image_Alt NVARCHAR(500) = NULL,
     @Thumbnail_Image_Alt NVARCHAR(500) = NULL,
+    @Certification_Image_Alt NVARCHAR(500) = NULL,
     @Language_Master_Id INT = NULL,
     @Sequence INT,
     @Status INT = 1,
@@ -285,15 +305,15 @@ BEGIN
     INSERT INTO dbo.Product_Master
     (
         ProductName, Product_pagename, Intro, Content, Technical_Overview, Main_Application,
-        Thumbnail_Image_media_id, Banner_Image_media_id, SafetyDataSheet_media_id,
-        Banner_Image_Alt, Thumbnail_Image_Alt,
+        Thumbnail_Image_media_id, Banner_Image_media_id, SafetyDataSheet_media_id, Certification_Image_media_id,
+        Banner_Image_Alt, Thumbnail_Image_Alt, Certification_Image_Alt,
         Language_Master_Id, DisplayOrder, [status], Create_UserId, CreatedDate
     )
     VALUES
     (
         @ProductName, @Product_pagename, @Intro, @Content, @Technical_Overview, @Main_Application,
-        @Thumbnail_Image_media_id, @Banner_Image_media_id, @SafetyDataSheet_media_id,
-        @Banner_Image_Alt, @Thumbnail_Image_Alt,
+        @Thumbnail_Image_media_id, @Banner_Image_media_id, @SafetyDataSheet_media_id, @Certification_Image_media_id,
+        @Banner_Image_Alt, @Thumbnail_Image_Alt, @Certification_Image_Alt,
         @Language_Master_Id, @Sequence, @Status, @Create_UserId, SYSUTCDATETIME()
     );
     SET @NewID = SCOPE_IDENTITY();
@@ -311,8 +331,10 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Update
     @Thumbnail_Image_media_id INT = NULL,
     @Banner_Image_media_id INT = NULL,
     @SafetyDataSheet_media_id INT = NULL,
+    @Certification_Image_media_id INT = NULL,
     @Banner_Image_Alt NVARCHAR(500) = NULL,
     @Thumbnail_Image_Alt NVARCHAR(500) = NULL,
+    @Certification_Image_Alt NVARCHAR(500) = NULL,
     @Language_Master_Id INT = NULL,
     @Sequence INT,
     @Update_UserId INT = NULL
@@ -344,8 +366,10 @@ BEGIN
         Thumbnail_Image_media_id = @Thumbnail_Image_media_id,
         Banner_Image_media_id = @Banner_Image_media_id,
         SafetyDataSheet_media_id = @SafetyDataSheet_media_id,
+        Certification_Image_media_id = @Certification_Image_media_id,
         Banner_Image_Alt = @Banner_Image_Alt,
         Thumbnail_Image_Alt = @Thumbnail_Image_Alt,
+        Certification_Image_Alt = @Certification_Image_Alt,
         Language_Master_Id = @Language_Master_Id,
         DisplayOrder = @Sequence,
         Update_UserId = @Update_UserId,

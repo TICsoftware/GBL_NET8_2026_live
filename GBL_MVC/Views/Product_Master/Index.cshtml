@@ -17,15 +17,24 @@
 <div class="page-heading">
     <h4>Product Master</h4>
 
-    <form method="get">
-        <div class="row">
-            <div class="col-md-10">
+    <form method="get" id="productMasterFilterForm">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-8">
                 <input type="text" name="search" value="@Model.SearchText" class="form-control" placeholder="Search name..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1" for="pageSize">Rows / page</label>
+                <select name="pageSize" id="pageSize" class="form-select" onchange="this.form.submit()">
+                    <option value="20" @(Model.PageSize == 20 ? "selected" : null)>20 / page</option>
+                    <option value="50" @(Model.PageSize == 50 ? "selected" : null)>50 / page</option>
+                    <option value="100" @(Model.PageSize == 100 ? "selected" : null)>100 / page</option>
+                </select>
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-success w-100">Search</button>
             </div>
         </div>
+        <input type="hidden" name="page" value="1" />
     </form>
 
     <div class="mb-3 mt-3">
@@ -42,6 +51,7 @@
                 <th>Name</th>
                 <th>Page Name</th>
                 <th>Language</th>
+                <th>Certification Image</th>
                 <th>Display Order</th>
                 <th>Status</th>
                 <th class="icm-col-action">Action</th>
@@ -58,6 +68,17 @@
                         <td>@item.Product_pagename</td>
                         <td>@item.LanguageName</td>
                         <td>
+                            @if (!string.IsNullOrWhiteSpace(item.Certification_Image_Url))
+                            {
+                                <img src="@item.Certification_Image_Url" alt="@(item.Certification_Image_Alt ?? item.ProductName)"
+                                     class="img-thumbnail pm-list-cert-thumb" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td>
                             <span id="lblseq_@item.ProductId">@item.Sequence</span>
                         </td>
                         <td>
@@ -72,6 +93,11 @@
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-primary product-edit-btn" data-id="@item.ProductId">Edit</button>
+                            @if (!string.IsNullOrWhiteSpace(item.Product_pagename))
+                            {
+                                <a href="/Products/@item.Product_pagename" target="_blank" rel="noopener"
+                                   class="btn btn-sm btn-info">Preview</a>
+                            }
                             @if ((item.Status ?? 1) == 1)
                             {
                                 <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ProductId">Deactivate</button>
@@ -87,7 +113,7 @@
             }
             else
             {
-                <tr><td colspan="7">No records found</td></tr>
+                <tr><td colspan="8">No records found</td></tr>
             }
         </tbody>
     </table>
@@ -95,7 +121,7 @@
     <div class="mt-3">
         @for (int i = 1; i <= totalPages; i++)
         {
-            <a href="@Url.Action("Index", new { search = Model.SearchText, page = i })"
+            <a href="@Url.Action("Index", new { search = Model.SearchText, page = i, pageSize = Model.PageSize })"
                class="btn btn-sm @(i == Model.PageNumber ? "btn-primary" : "btn-outline-primary")">@i</a>
         }
     </div>
@@ -184,6 +210,27 @@
                             <label class="form-label" for="productThumbnailImageAlt">Thumbnail Image Alt Text</label>
                             <textarea id="productThumbnailImageAlt" maxlength="500" class="form-control" rows="3"></textarea>
                             <span id="productThumbnailImageAltError" class="text-danger d-none"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Certification Image</label>
+                            <div class="pm-media-field">
+                                <button type="button"
+                                        class="btn btn-outline-primary select-media"
+                                        data-media-hidden="#productCertMediaId"
+                                        data-media-preview="#productCertPreview">
+                                    Select Certification Image
+                                </button>
+                                <input type="hidden" id="productCertMediaId" value="" />
+                                <img id="productCertPreview" src="" alt="Certification preview"
+                                     class="imgPreview img-thumbnail industry-media-preview mt-2" />
+                                <button type="button" class="btn btn-sm btn-outline-danger js-clear-media d-none mt-2">Delete image</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="productCertificationImageAlt">Certification Image Alt Text</label>
+                            <textarea id="productCertificationImageAlt" maxlength="500" class="form-control" rows="3"></textarea>
+                            <span id="productCertificationImageAltError" class="text-danger d-none"></span>
                         </div>
 
                         <div class="col-12 mb-3">

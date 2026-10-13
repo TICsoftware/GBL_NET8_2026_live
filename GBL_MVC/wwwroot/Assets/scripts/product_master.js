@@ -483,11 +483,14 @@ function resetProductForm() {
     document.getElementById("productBannerMediaId").value = "";
     document.getElementById("productThumbMediaId").value = "";
     document.getElementById("productSdsMediaId").value = "";
+    document.getElementById("productCertMediaId").value = "";
     document.getElementById("productBannerImageAlt").value = "";
     document.getElementById("productThumbnailImageAlt").value = "";
+    document.getElementById("productCertificationImageAlt").value = "";
     setImagePreview(document.getElementById("productBannerPreview"), "");
     setImagePreview(document.getElementById("productThumbPreview"), "");
     setImagePreview(document.getElementById("productSdsPreview"), "");
+    setImagePreview(document.getElementById("productCertPreview"), "");
     setFilePreview(document.getElementById("productSdsFilePreview"), "");
     setEditorData("productIntro", "");
     setEditorData("productContent", "");
@@ -499,6 +502,7 @@ function resetProductForm() {
     setFieldError(document.getElementById("productPageName"), document.getElementById("productPageNameError"), "");
     setFieldError(document.getElementById("productBannerImageAlt"), document.getElementById("productBannerImageAltError"), "");
     setFieldError(document.getElementById("productThumbnailImageAlt"), document.getElementById("productThumbnailImageAltError"), "");
+    setFieldError(document.getElementById("productCertificationImageAlt"), document.getElementById("productCertificationImageAltError"), "");
     setFieldError(document.getElementById("productSeq"), document.getElementById("productSeqError"), "");
     resetListboxPair("availableIndustries", "selectedIndustries");
     resetListboxPair("availableApplications", "selectedApplications");
@@ -528,12 +532,17 @@ function validateProductForm() {
         document.getElementById("productThumbnailImageAltError"),
         validateOptionalText(document.getElementById("productThumbnailImageAlt")?.value, 500)
     );
+    const certAltValid = setFieldError(
+        document.getElementById("productCertificationImageAlt"),
+        document.getElementById("productCertificationImageAltError"),
+        validateOptionalText(document.getElementById("productCertificationImageAlt")?.value, 500)
+    );
     const seqValid = setFieldError(
         document.getElementById("productSeq"),
         document.getElementById("productSeqError"),
         validateSequence(document.getElementById("productSeq")?.value)
     );
-    return nameValid && pageValid && bannerAltValid && thumbAltValid && seqValid && validateCertificates();
+    return nameValid && pageValid && bannerAltValid && thumbAltValid && certAltValid && seqValid && validateCertificates();
 }
 
 function buildProductPayload() {
@@ -551,8 +560,10 @@ function buildProductPayload() {
         Banner_Image_media_id: parseOptionalInt(document.getElementById("productBannerMediaId").value),
         Thumbnail_Image_media_id: parseOptionalInt(document.getElementById("productThumbMediaId").value),
         SafetyDataSheet_media_id: parseOptionalInt(document.getElementById("productSdsMediaId").value),
+        Certification_Image_media_id: parseOptionalInt(document.getElementById("productCertMediaId").value),
         Banner_Image_Alt: (document.getElementById("productBannerImageAlt").value || "").trim(),
         Thumbnail_Image_Alt: (document.getElementById("productThumbnailImageAlt").value || "").trim(),
+        Certification_Image_Alt: (document.getElementById("productCertificationImageAlt").value || "").trim(),
         Intro: document.getElementById("productIntro").value || "",
         Content: document.getElementById("productContent").value || "",
         Technical_Overview: document.getElementById("productTechnicalOverview").value || "",
@@ -587,10 +598,13 @@ async function openProductModal(editId) {
         document.getElementById("productBannerMediaId").value = pickValue(data, "banner_Image_media_id", "Banner_Image_media_id");
         document.getElementById("productThumbMediaId").value = pickValue(data, "thumbnail_Image_media_id", "Thumbnail_Image_media_id");
         document.getElementById("productSdsMediaId").value = pickValue(data, "safetyDataSheet_media_id", "SafetyDataSheet_media_id");
+        document.getElementById("productCertMediaId").value = pickValue(data, "certification_Image_media_id", "Certification_Image_media_id");
         document.getElementById("productBannerImageAlt").value = pickValue(data, "banner_Image_Alt", "Banner_Image_Alt");
         document.getElementById("productThumbnailImageAlt").value = pickValue(data, "thumbnail_Image_Alt", "Thumbnail_Image_Alt");
+        document.getElementById("productCertificationImageAlt").value = pickValue(data, "certification_Image_Alt", "Certification_Image_Alt");
         setImagePreview(document.getElementById("productBannerPreview"), pickValue(data, "banner_Image_Url", "Banner_Image_Url"));
         setImagePreview(document.getElementById("productThumbPreview"), pickValue(data, "thumbnail_Image_Url", "Thumbnail_Image_Url"));
+        setImagePreview(document.getElementById("productCertPreview"), pickValue(data, "certification_Image_Url", "Certification_Image_Url"));
         const sdsUrl = pickValue(data, "safetyDataSheet_Url", "SafetyDataSheet_Url");
         if (isPdfUrl(sdsUrl)) setFilePreview(document.getElementById("productSdsFilePreview"), sdsUrl);
         else setImagePreview(document.getElementById("productSdsPreview"), sdsUrl);
