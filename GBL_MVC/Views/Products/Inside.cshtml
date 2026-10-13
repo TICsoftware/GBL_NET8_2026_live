@@ -1,6 +1,14 @@
 @model Core_project_BusinessLogic.Entity.Product_Inside_Page
 @{
-    var product = Model.Product ?? new Core_project_BusinessLogic.Entity.Product_Inside_Detail();
+    // Public product page: Published only (status = 2)
+    var product = Model?.Product != null && Model.Product.ProductId > 0 && Model.Product.Status == 2
+        ? Model.Product
+        : null;
+    if (product == null)
+    {
+        Context.Response.Redirect("/products");
+        return;
+    }
     var title = product.ProductName ?? "Product";
     var banner = product.BannerUrl ?? "";
     var bannerAlt = product.BannerAlt ?? title;

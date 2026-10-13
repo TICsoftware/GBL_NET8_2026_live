@@ -75,6 +75,7 @@ BEGIN
             p.ProductId,
             p.ProductName,
             p.Product_pagename,
+            ISNULL(p.[status], 0) AS [Status],
             p.DisplayOrder,
             COALESCE(mt.file_path, mb.file_path) AS ThumbnailUrl,
             ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
@@ -115,6 +116,7 @@ BEGIN
         ProductId,
         ProductName,
         Product_pagename,
+        [Status],
         ThumbnailUrl,
         ThumbnailAlt,
         DisplayOrder
@@ -327,6 +329,7 @@ BEGIN
         p.ProductId,
         p.ProductName,
         p.Product_pagename,
+        ISNULL(p.[status], 0) AS [Status],
         COALESCE(mt.file_path, mb.file_path) AS ThumbnailUrl,
         ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt,
         p.DisplayOrder

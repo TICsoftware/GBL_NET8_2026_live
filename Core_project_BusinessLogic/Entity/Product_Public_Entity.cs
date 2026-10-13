@@ -15,6 +15,8 @@ namespace Core_project_BusinessLogic.Entity
         public int ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? Product_pagename { get; set; }
+        /// <summary>0 = Inactive, 1 = Saved, 2 = Published</summary>
+        public int Status { get; set; }
         public string? Intro { get; set; }
         public string? Content { get; set; }
         public string? Technical_Overview { get; set; }
@@ -82,6 +84,8 @@ namespace Core_project_BusinessLogic.Entity
         public int ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? Product_pagename { get; set; }
+        /// <summary>0 = Inactive, 1 = Saved, 2 = Published</summary>
+        public int Status { get; set; }
         public string? ThumbnailUrl { get; set; }
         public string? ThumbnailAlt { get; set; }
         public List<string> Industries { get; set; } = new();

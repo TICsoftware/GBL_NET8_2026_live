@@ -107,21 +107,27 @@
                             }
                         </td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-primary product-edit-btn" data-id="@item.ProductId">Edit</button>
-                            @if (!string.IsNullOrWhiteSpace(item.Product_pagename))
-                            {
-                                <a href="/Products/@item.Product_pagename" target="_blank" rel="noopener"
-                                   class="btn btn-sm btn-info">Preview</a>
-                            }
-                            @if (status == 0)
-                            {
-                                <button type="button" class="btn btn-sm btn-success activate-btn" data-id="@item.ProductId">Activate</button>
-                            }
-                            else
-                            {
-                                <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ProductId">Deactivate</button>
-                            }
-                            <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="@item.ProductId">Delete</button>
+                            <select class="form-select form-select-sm pm-action-select"
+                                    data-id="@item.ProductId"
+                                    data-page="@item.Product_pagename"
+                                    data-status="@status"
+                                    aria-label="Actions">
+                                <option value="">Action</option>
+                                <option value="edit">Edit</option>
+                                @if (!string.IsNullOrWhiteSpace(item.Product_pagename))
+                                {
+                                    <option value="preview">Preview</option>
+                                }
+                                @if (status == 0)
+                                {
+                                    <option value="activate">Activate</option>
+                                }
+                                else
+                                {
+                                    <option value="deactivate">Deactivate</option>
+                                }
+                                <option value="delete">Delete</option>
+                            </select>
                         </td>
                     </tr>
                 }

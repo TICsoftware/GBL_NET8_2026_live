@@ -147,6 +147,7 @@ BEGIN
         p.ProductId,
         p.ProductName,
         p.Product_pagename,
+        ISNULL(p.[status], 0) AS [Status],
         p.Intro,
         p.Content,
         p.Technical_Overview,
@@ -165,12 +166,14 @@ BEGIN
       AND LOWER(LTRIM(RTRIM(p.Product_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
     ORDER BY p.DisplayOrder, p.ProductId;
 
-    SELECT TOP (1) @ProductId = ProductId
-    FROM dbo.Product_Master
-    WHERE ISNULL([status], 0) = 2
-      AND (Language_Master_Id IS NULL OR Language_Master_Id = @LanguageId)
-      AND LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
-    ORDER BY DisplayOrder, ProductId;
+    SET @ProductId = (
+        SELECT TOP (1) ProductId
+        FROM dbo.Product_Master
+        WHERE ISNULL([status], 0) = 2
+          AND (Language_Master_Id IS NULL OR Language_Master_Id = @LanguageId)
+          AND LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+        ORDER BY DisplayOrder, ProductId
+    );
 
     SELECT
         pk.product_packaging_MasterId AS Id,
@@ -268,6 +271,7 @@ BEGIN
             p.ProductId,
             p.ProductName,
             p.Product_pagename,
+            ISNULL(p.[status], 0) AS [Status],
             p.DisplayOrder,
             COALESCE(mt.file_path, mb.file_path) AS ThumbnailUrl,
             ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
@@ -308,6 +312,7 @@ BEGIN
         ProductId,
         ProductName,
         Product_pagename,
+        [Status],
         ThumbnailUrl,
         ThumbnailAlt,
         DisplayOrder
@@ -520,6 +525,7 @@ BEGIN
         p.ProductId,
         p.ProductName,
         p.Product_pagename,
+        ISNULL(p.[status], 0) AS [Status],
         COALESCE(mt.file_path, mb.file_path) AS ThumbnailUrl,
         ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt,
         p.DisplayOrder

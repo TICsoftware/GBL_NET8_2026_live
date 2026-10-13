@@ -703,13 +703,34 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (e.target.classList.contains("product-edit-btn")) {
-            openProductModal(e.target.dataset.id);
+    });
+
+    document.addEventListener("change", function (e) {
+        const sel = e.target.closest ? e.target.closest(".pm-action-select") : null;
+        if (!sel) return;
+
+        const action = (sel.value || "").trim();
+        const id = sel.getAttribute("data-id");
+        const pageName = (sel.getAttribute("data-page") || "").trim();
+        sel.value = "";
+        if (!action || !id) return;
+
+        if (action === "edit") {
+            openProductModal(id);
+            return;
         }
 
-        if (e.target.classList.contains("deactivate-btn") || e.target.classList.contains("activate-btn")) {
-            const id = e.target.dataset.id;
-            const status = e.target.classList.contains("activate-btn") ? 1 : 0;
+        if (action === "preview") {
+            if (!pageName) {
+                alert("Page name is not available for preview.");
+                return;
+            }
+            window.open("/Products/" + encodeURIComponent(pageName), "_blank", "noopener");
+            return;
+        }
+
+        if (action === "activate" || action === "deactivate") {
+            const status = action === "activate" ? 1 : 0;
             const msg = status === 1 ? "Activate this record?" : "Are you sure you want to deactivate?";
             if (!confirm(msg)) return;
 
@@ -728,10 +749,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert(message);
                 }
             });
+            return;
         }
 
-        if (e.target.classList.contains("delete-btn")) {
-            const id = e.target.dataset.id;
+        if (action === "delete") {
             if (!confirm("Permanently delete this record?")) return;
             fetch("/Product_Master/Delete", {
                 method: "POST",
