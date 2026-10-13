@@ -545,11 +545,13 @@ function validateProductForm() {
     return nameValid && pageValid && bannerAltValid && thumbAltValid && certAltValid && seqValid && validateCertificates();
 }
 
-function buildProductPayload() {
+function buildProductPayload(status) {
     const form = document.getElementById("productMasterForm");
     if (typeof window.syncCkEditorsToSource === "function") {
         window.syncCkEditorsToSource(form);
     }
+
+    const saveStatus = status === 2 ? 2 : 1;
 
     return {
         ProductId: parseInt(document.getElementById("productId").value || "0", 10),
@@ -569,7 +571,7 @@ function buildProductPayload() {
         Technical_Overview: document.getElementById("productTechnicalOverview").value || "",
         Main_Application: document.getElementById("productMainApplication").value || "",
         Certificates: collectCertificates(),
-        Status: 1,
+        Status: saveStatus,
         IndustryIds: getSelectValues(document.getElementById("selectedIndustries")),
         ApplicationIds: getSelectValues(document.getElementById("selectedApplications")),
         SubcategoryIds: getSelectValues(document.getElementById("selectedSubcategories")),
@@ -654,31 +656,34 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    document.querySelector(".js-save-product")?.addEventListener("click", async function () {
-        if (!validateProductForm()) return;
-        const payload = buildProductPayload();
-        const uniqueMessage = await checkNameUnique(payload.ProductName, payload.Language_Master_Id, payload.ProductId);
-        if (uniqueMessage) {
-            setFieldError(
-                document.getElementById("productName"),
-                document.getElementById("productNameError"),
-                uniqueMessage
-            );
-            return;
-        }
-        const pageUniqueMessage = await checkPageNameUnique(payload.Product_pagename, payload.ProductId);
-        if (pageUniqueMessage) {
-            setFieldError(
-                document.getElementById("productPageName"),
-                document.getElementById("productPageNameError"),
-                pageUniqueMessage
-            );
-            return;
-        }
-        const url = payload.ProductId > 0
-            ? "/Product_Master/UpdateAjax"
-            : "/Product_Master/AddAjax";
-        postMaster(url, payload);
+    document.querySelectorAll(".js-save-product").forEach((btn) => {
+        btn.addEventListener("click", async function () {
+            if (!validateProductForm()) return;
+            const status = parseInt(this.getAttribute("data-status") || "1", 10);
+            const payload = buildProductPayload(status);
+            const uniqueMessage = await checkNameUnique(payload.ProductName, payload.Language_Master_Id, payload.ProductId);
+            if (uniqueMessage) {
+                setFieldError(
+                    document.getElementById("productName"),
+                    document.getElementById("productNameError"),
+                    uniqueMessage
+                );
+                return;
+            }
+            const pageUniqueMessage = await checkPageNameUnique(payload.Product_pagename, payload.ProductId);
+            if (pageUniqueMessage) {
+                setFieldError(
+                    document.getElementById("productPageName"),
+                    document.getElementById("productPageNameError"),
+                    pageUniqueMessage
+                );
+                return;
+            }
+            const url = payload.ProductId > 0
+                ? "/Product_Master/UpdateAjax"
+                : "/Product_Master/AddAjax";
+            postMaster(url, payload);
+        });
     });
 
     document.addEventListener("click", function (e) {

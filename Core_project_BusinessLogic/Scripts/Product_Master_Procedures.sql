@@ -1,6 +1,6 @@
 /*
   Product Master + industry / application / subcategory / packaging mappings
-  Status: 1 = Active, 0 = Inactive
+  Status: 0 = Inactive, 1 = Saved, 2 = Published
   Media preview joins dbo.media (ID, file_path).
 */
 
@@ -288,7 +288,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
     SET @NewID = 0;
-    IF @Status IS NULL SET @Status = 1;
+    IF @Status IS NULL OR @Status NOT IN (1, 2) SET @Status = 1;
 
     IF EXISTS (
         SELECT 1 FROM dbo.Product_Master
@@ -337,10 +337,12 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_Update
     @Certification_Image_Alt NVARCHAR(500) = NULL,
     @Language_Master_Id INT = NULL,
     @Sequence INT,
+    @Status INT = 1,
     @Update_UserId INT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
+    IF @Status IS NULL OR @Status NOT IN (1, 2) SET @Status = 1;
 
     IF EXISTS (
         SELECT 1 FROM dbo.Product_Master
@@ -372,6 +374,7 @@ BEGIN
         Certification_Image_Alt = @Certification_Image_Alt,
         Language_Master_Id = @Language_Master_Id,
         DisplayOrder = @Sequence,
+        [status] = @Status,
         Update_UserId = @Update_UserId,
         ModifiedDate = SYSUTCDATETIME()
     WHERE ProductId = @ProductId;

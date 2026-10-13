@@ -115,6 +115,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@Certification_Image_Alt", (object?)m.Certification_Image_Alt ?? DBNull.Value),
                 new("@Language_Master_Id", m.Language_Master_Id.HasValue ? m.Language_Master_Id.Value : DBNull.Value),
                 new("@Sequence", m.Sequence.HasValue ? m.Sequence.Value : DBNull.Value),
+                new("@Status", m.Status ?? 1),
                 new("@Update_UserId", m.Update_UserId.HasValue ? m.Update_UserId.Value : DBNull.Value)
             };
 

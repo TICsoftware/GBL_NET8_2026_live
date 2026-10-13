@@ -90,9 +90,16 @@
                             <span id="lblseq_@item.ProductId">@item.Sequence</span>
                         </td>
                         <td>
-                            @if ((item.Status ?? 1) == 1)
+                            @{
+                                var status = item.Status ?? 1;
+                            }
+                            @if (status == 2)
                             {
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success">Published</span>
+                            }
+                            else if (status == 1)
+                            {
+                                <span class="badge bg-warning text-dark">Saved</span>
                             }
                             else
                             {
@@ -106,13 +113,13 @@
                                 <a href="/Products/@item.Product_pagename" target="_blank" rel="noopener"
                                    class="btn btn-sm btn-info">Preview</a>
                             }
-                            @if ((item.Status ?? 1) == 1)
+                            @if (status == 0)
                             {
-                                <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ProductId">Deactivate</button>
+                                <button type="button" class="btn btn-sm btn-success activate-btn" data-id="@item.ProductId">Activate</button>
                             }
                             else
                             {
-                                <button type="button" class="btn btn-sm btn-success activate-btn" data-id="@item.ProductId">Activate</button>
+                                <button type="button" class="btn btn-sm btn-warning deactivate-btn" data-id="@item.ProductId">Deactivate</button>
                             }
                             <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="@item.ProductId">Delete</button>
                         </td>
@@ -372,7 +379,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success js-save-product">Save</button>
+                <button type="button" class="btn btn-success js-save-product" data-status="1">Save</button>
+                <button type="button" class="btn btn-primary js-save-product" data-status="2">Save and Publish</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>

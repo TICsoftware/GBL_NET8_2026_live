@@ -55,7 +55,7 @@ namespace Core_project_BusinessLogic.Entity
         [Range(1, 9999, ErrorMessage = "Display order must be between 1 and 9999.")]
         public int? Sequence { get; set; }
 
-        /// <summary>1 = Active, 0 = Inactive</summary>
+        /// <summary>0 = Inactive, 1 = Saved, 2 = Published</summary>
         public int? Status { get; set; }
 
         public int? Create_UserId { get; set; }

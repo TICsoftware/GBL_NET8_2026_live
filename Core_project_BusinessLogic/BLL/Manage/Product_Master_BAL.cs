@@ -59,10 +59,12 @@ namespace Core_project_BusinessLogic.BAL
 
             ValidateCertificates(entity.Certificates);
 
+            if (entity.Status != 1 && entity.Status != 2)
+                entity.Status = 1;
+
             int productId;
             if (entity.ProductId == 0)
             {
-                entity.Status ??= 1;
                 productId = _dal.Insert(entity);
             }
             else

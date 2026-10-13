@@ -107,7 +107,8 @@ namespace GBL_MVC.Controllers.Manage
             try
             {
                 model.Create_UserId = GetCurrentUserId();
-                model.Status ??= 1;
+                if (model.Status != 1 && model.Status != 2)
+                    model.Status = 1;
                 _bal.Save(model);
                 return Ok();
             }
@@ -136,6 +137,8 @@ namespace GBL_MVC.Controllers.Manage
             try
             {
                 model.Update_UserId = GetCurrentUserId();
+                if (model.Status != 1 && model.Status != 2)
+                    model.Status = 1;
                 _bal.Save(model);
                 return Ok();
             }
