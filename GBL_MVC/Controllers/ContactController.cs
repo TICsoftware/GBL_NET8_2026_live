@@ -28,8 +28,8 @@ public class ContactController : Controller
         try
         {
             var data = _bal.GetContact_BAL(title, 1, 1);
-            var states = _bal.GetStateMaster_Bal();
-            ViewBag.States = states;
+            var country = _bal.GetCountryMaster_Bal();
+            ViewBag.Country = country;
             ViewBag.captchapublickey = _configuration["CaptchaKeys:PublicKey"];
 
             return View(data);
@@ -75,7 +75,7 @@ public class ContactController : Controller
                 CompanyName = model.CompanyName,
                 PhoneNumber = model.PhoneNumber,
                 EmailAddress = model.EmailAddress,
-                StateId = model.StateId,
+                CountryId = model.CountryId,
                 SiteLocation = model.SiteLocation,
                 Query = model.Query,
                 IPAddress = GetClientIpAddress(),
@@ -85,13 +85,14 @@ public class ContactController : Controller
             DataTable dt = _bal.ContactUs_Insert_BAL(entity);
 
             string result = dt.Rows.Count > 0 ? dt.Rows[0][0]?.ToString() ?? string.Empty : string.Empty;
+            string resultMessage = dt.Rows.Count > 0 ? dt.Rows[0]["Message"]?.ToString() ?? string.Empty : string.Empty;
 
-            if (int.TryParse(result, out int id) && id > 0)
+            if (int.TryParse(result, out int id) && (id > 0 || id == -1))
             {
                 return Json(new
                 {
                     status = true,
-                    message = result
+                    message = resultMessage
                 });
             }
 

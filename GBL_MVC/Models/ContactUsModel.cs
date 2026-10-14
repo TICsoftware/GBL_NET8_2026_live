@@ -23,7 +23,7 @@ public class ContactUsModel
     public string EmailAddress { get; set; }
 
     [Required]
-    public int StateId { get; set; }
+    public int CountryId { get; set; }
 
     [Required]
     [StringLength(200)]

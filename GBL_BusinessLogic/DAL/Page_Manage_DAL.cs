@@ -129,7 +129,8 @@ namespace GBL_BusinessLogic.DAL
                 new SqlParameter("@CompanyName", string.IsNullOrWhiteSpace(model.CompanyName) ? (object)DBNull.Value : model.CompanyName),
                 new SqlParameter("@PhoneNumber", string.IsNullOrWhiteSpace(model.PhoneNumber) ? (object)DBNull.Value : model.PhoneNumber),
                 new SqlParameter("@EmailAddress", string.IsNullOrWhiteSpace(model.EmailAddress) ? (object)DBNull.Value : model.EmailAddress),
-                new SqlParameter("@StateId", model.StateId), new SqlParameter("@SiteLocation",  string.IsNullOrWhiteSpace(model.SiteLocation)                        ? (object)DBNull.Value : model.SiteLocation),
+                new SqlParameter("@CountryId", model.CountryId), 
+                new SqlParameter("@SiteLocation",  string.IsNullOrWhiteSpace(model.SiteLocation)                        ? (object)DBNull.Value : model.SiteLocation),
                 new SqlParameter("@Query", string.IsNullOrWhiteSpace(model.Query)  ? (object)DBNull.Value : model.Query),
                 new SqlParameter("@IPAddress", string.IsNullOrWhiteSpace(model.IPAddress) ? (object)DBNull.Value : model.IPAddress),
                 new SqlParameter("@Consent", model.Consent.HasValue ? (object)model.Consent.Value : DBNull.Value)
@@ -138,9 +139,16 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("ContactUs_Insert", sqlParams).Tables[0];
         }
 
-        public DataTable GetStateMaster()
+
+ public DataTable GetStateMaster()
         {
             return GetDataSet("GetStateMaster").Tables[0];
+        }
+
+
+        public DataTable GetCountryMaster()
+        {
+            return GetDataSet("GetCountryMaster").Tables[0];
         }
 
     }

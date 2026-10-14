@@ -2,7 +2,7 @@
 @model ContactUsModel
 
 @{
-    var states = ViewBag.States as List<StateMaster> ?? new List<StateMaster>();
+    var country = ViewBag.Country as List<CountryMaster> ?? new List<CountryMaster>();
 }
 
 <section class="relative section-spacing contact-query-outer" id="submit-query">
@@ -51,47 +51,34 @@
                     </div>
 
                     <div class="cf-field cf-field--select" data-lenis-prevent>
-                        <select id="cf-location" name="SiteLocation" class="cf-field__control" required>
+                        <select id="cf-country" name="CountryId" class="cf-field__control" required>
                             <option value="" selected hidden></option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Pune">Pune</option>
-                            <option value="Ahmednagar">Ahmednagar</option>
-                            <option value="Bagalkot">Bagalkot</option>
-                            <option value="Bangalore">Bangalore</option>
-                            <option value="New Delhi">New Delhi</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <label for="cf-location" class="cf-field__label">
-                            Site location (city and district)
-                        </label>
-                        <svg class="cf-field__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-                             focusable="false">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round" />
-                        </svg>
-                        <span class="cf-field__error">Please select a site location.</span>
-                    </div>
-
-                    <div class="cf-field cf-field--select" data-lenis-prevent>
-                        <select id="cf-state" name="StateId" class="cf-field__control" required>
-                            <option value="" selected hidden></option>
-                            @if (states != null && states.Any())
+                            @if (country != null && country.Any())
                             {
-                                foreach (var state in states)
+                                foreach (var item in country)
                                 {
-                                    <option value="@state.StateId">@state.StateName</option>
+                                    <option value="@item.CountryId">@item.CountryName</option>
                                 }
                             }
                         </select>
-                        <label for="cf-state" class="cf-field__label">Select state</label>
+                        <label for="cf-country" class="cf-field__label">Select country</label>
                         <svg class="cf-field__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"
                              focusable="false">
                             <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                   stroke-linejoin="round" />
                         </svg>
-                        <span class="cf-field__error">Please select a state.</span>
+                        <span class="cf-field__error">Please select country.</span>
+                    </div>
+                    
+
+                     <div class="cf-field">
+                        <input type="text" id="cf-location" name="SiteLocation" placeholder=" " class="cf-field__control"
+                               autocomplete="location" required />
+                        <label for="cf-location" class="cf-field__label">Site location (city and district)</label>
+                        <span class="cf-field__error">Please enter your Site location (city and district).</span>
                     </div>
 
+                    
                     <div class="cf-field cf-field--full">
                         <textarea id="cf-message" name="Query" class="cf-field__control" rows="2"
                                   placeholder=" "></textarea>

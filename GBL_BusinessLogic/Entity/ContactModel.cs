@@ -25,13 +25,20 @@ namespace GBL_BusinessLogic.Entity
         public string CompanyName { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
-        public int StateId { get; set; }
+        public int CountryId { get; set; }
         public string SiteLocation { get; set; }
         public string Query { get; set; }
         public DateTime CreatedDate { get; set; }
         public int Status { get; set; }
         public string IPAddress { get; set; }
         public bool? Consent { get; set; }
+    }
+
+
+    public class CountryMaster
+    {
+        public int CountryId { get; set; }
+        public string CountryName { get; set; }
     }
 
     public class StateMaster
@@ -41,5 +48,7 @@ namespace GBL_BusinessLogic.Entity
         public bool Status { get; set; }
         public DateTime? CreateDate { get; set; }
     }
+
+
 
 }

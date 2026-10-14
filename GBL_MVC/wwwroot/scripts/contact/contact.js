@@ -155,8 +155,8 @@ $(document).ready(function () {
         }
 
         // State
-        if (!$("#cf-state").val() || $("#cf-state").val() === "0") {
-            showError("#cf-state", "Please select a state.");
+        if (!$("#cf-country").val() || $("#cf-country").val() === "0") {
+            showError("#cf-country", "Please select a country.");
             isValid = false;
         }
 

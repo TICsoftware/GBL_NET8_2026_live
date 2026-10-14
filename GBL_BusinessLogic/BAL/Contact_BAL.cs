@@ -141,19 +141,39 @@ namespace GBL_BusinessLogic.BAL
                 "<tr><td><strong>Company Name</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.CompanyName) + "</td></tr>" +
                 "<tr><td><strong>Phone Number</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.PhoneNumber) + "</td></tr>" +
                 "<tr><td><strong>Email Address</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.EmailAddress) + "</td></tr>" +
-                "<tr><td><strong>State ID</strong></td><td>" + obj.StateId + "</td></tr>" +
+                "<tr><td><strong>Country</strong></td><td>" + obj.CountryId + "</td></tr>" +
                 "<tr><td><strong>Site Location</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.SiteLocation) + "</td></tr>" +
 
                 (!string.IsNullOrWhiteSpace(obj.Query)
                     ? "<tr><td><strong>Query</strong></td><td>" + System.Net.WebUtility.HtmlEncode(obj.Query) + "</td></tr>"
                     : "") +
-              
+
                 "</tbody></table>" +
 
                 "<br/><p><strong>Regards,</strong><br/>" +
                 "<strong>Godavari Biorefineries Website</strong></p>";
         }
 
+
+        public List<CountryMaster> GetCountryMaster_Bal()
+        {
+            List<CountryMaster> lst = new List<CountryMaster>();
+
+            DataTable dt = GetCountryMaster();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                CountryMaster obj = new CountryMaster
+                {
+                    CountryId = Convert.ToInt32(row["CountryId"]),
+                    CountryName = row["CountryName"]?.ToString()
+                };
+
+                lst.Add(obj);
+            }
+
+            return lst;
+        }
 
         public List<StateMaster> GetStateMaster_Bal()
         {
