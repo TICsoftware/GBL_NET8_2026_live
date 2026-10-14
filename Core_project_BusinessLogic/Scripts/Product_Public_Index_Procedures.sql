@@ -75,13 +75,14 @@ BEGIN
             p.ProductId,
             p.ProductName,
             p.Product_pagename,
+            ISNULL(p.[status], 0) AS [Status],
             p.DisplayOrder,
             COALESCE(mt.file_path, mb.file_path) AS ThumbnailUrl,
             ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
         FROM dbo.Product_Master p
         LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
         LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
-        WHERE ISNULL(p.[status], 1) = 1
+        WHERE ISNULL(p.[status], 0) = 2
           AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
           AND (
                 NOT EXISTS (SELECT 1 FROM @Ind)
@@ -115,6 +116,7 @@ BEGIN
         ProductId,
         ProductName,
         Product_pagename,
+        [Status],
         ThumbnailUrl,
         ThumbnailAlt,
         DisplayOrder
@@ -124,7 +126,7 @@ BEGIN
 
     SELECT COUNT(1) AS TotalCount
     FROM dbo.Product_Master p
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             NOT EXISTS (SELECT 1 FROM @Ind)
@@ -159,7 +161,7 @@ BEGIN
     LEFT JOIN dbo.product_Industry_Mapping pim ON pim.IndustryId = i.IndustryId
     LEFT JOIN dbo.Product_Master p
         ON p.ProductId = pim.ProductId
-       AND ISNULL(p.[status], 1) = 1
+       AND ISNULL(p.[status], 0) = 2
        AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
        AND (
             NOT EXISTS (SELECT 1 FROM @App)
@@ -190,7 +192,7 @@ BEGIN
     LEFT JOIN dbo.product_application_Mapping pam ON pam.ApplicationId = a.ApplicationId
     LEFT JOIN dbo.Product_Master p
         ON p.ProductId = pam.ProductId
-       AND ISNULL(p.[status], 1) = 1
+       AND ISNULL(p.[status], 0) = 2
        AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
        AND (
             NOT EXISTS (SELECT 1 FROM @Ind)
@@ -221,7 +223,7 @@ BEGIN
     LEFT JOIN dbo.product_subcategory_Mapping psm ON psm.Category_Master_Id = c.SubcategoryId
     LEFT JOIN dbo.Product_Master p
         ON p.ProductId = psm.ProductId
-       AND ISNULL(p.[status], 1) = 1
+       AND ISNULL(p.[status], 0) = 2
        AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
        AND (
             NOT EXISTS (SELECT 1 FROM @Ind)
@@ -253,7 +255,7 @@ BEGIN
     (
         SELECT p.ProductId
         FROM dbo.Product_Master p
-        WHERE ISNULL(p.[status], 1) = 1
+        WHERE ISNULL(p.[status], 0) = 2
           AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
           AND (
                 NOT EXISTS (SELECT 1 FROM @Ind)
@@ -327,13 +329,14 @@ BEGIN
         p.ProductId,
         p.ProductName,
         p.Product_pagename,
+        ISNULL(p.[status], 0) AS [Status],
         COALESCE(mt.file_path, mb.file_path) AS ThumbnailUrl,
         ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt,
         p.DisplayOrder
     FROM dbo.Product_Master p
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
     LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             NOT EXISTS (SELECT 1 FROM @Ind)
@@ -364,7 +367,7 @@ BEGIN
 
     SELECT COUNT(1) AS TotalCount
     FROM dbo.Product_Master p
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             NOT EXISTS (SELECT 1 FROM @Ind)
@@ -400,7 +403,7 @@ BEGIN
     (
         SELECT p.ProductId
         FROM dbo.Product_Master p
-        WHERE ISNULL(p.[status], 1) = 1
+        WHERE ISNULL(p.[status], 0) = 2
           AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
           AND (
                 NOT EXISTS (SELECT 1 FROM @Ind)
@@ -440,7 +443,7 @@ BEGIN
     LEFT JOIN dbo.product_Industry_Mapping pim ON pim.IndustryId = i.IndustryId
     LEFT JOIN dbo.Product_Master p
         ON p.ProductId = pim.ProductId
-       AND ISNULL(p.[status], 1) = 1
+       AND ISNULL(p.[status], 0) = 2
        AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
        AND (
             NOT EXISTS (SELECT 1 FROM @App)
@@ -471,7 +474,7 @@ BEGIN
     LEFT JOIN dbo.product_application_Mapping pam ON pam.ApplicationId = a.ApplicationId
     LEFT JOIN dbo.Product_Master p
         ON p.ProductId = pam.ProductId
-       AND ISNULL(p.[status], 1) = 1
+       AND ISNULL(p.[status], 0) = 2
        AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
        AND (
             NOT EXISTS (SELECT 1 FROM @Ind)
@@ -502,7 +505,7 @@ BEGIN
     LEFT JOIN dbo.product_subcategory_Mapping psm ON psm.Category_Master_Id = c.SubcategoryId
     LEFT JOIN dbo.Product_Master p
         ON p.ProductId = psm.ProductId
-       AND ISNULL(p.[status], 1) = 1
+       AND ISNULL(p.[status], 0) = 2
        AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
        AND (
             NOT EXISTS (SELECT 1 FROM @Ind)

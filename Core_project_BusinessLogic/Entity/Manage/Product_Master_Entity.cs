@@ -29,10 +29,12 @@ namespace Core_project_BusinessLogic.Entity
         public int? Thumbnail_Image_media_id { get; set; }
         public int? Banner_Image_media_id { get; set; }
         public int? SafetyDataSheet_media_id { get; set; }
+        public int? Certification_Image_media_id { get; set; }
 
         public string? Thumbnail_Image_Url { get; set; }
         public string? Banner_Image_Url { get; set; }
         public string? SafetyDataSheet_Url { get; set; }
+        public string? Certification_Image_Url { get; set; }
 
         [StringLength(500, ErrorMessage = "Masthead image alt cannot exceed 500 characters.")]
         [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
@@ -42,6 +44,10 @@ namespace Core_project_BusinessLogic.Entity
         [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
         public string? Thumbnail_Image_Alt { get; set; }
 
+        [StringLength(500, ErrorMessage = "Certification image alt cannot exceed 500 characters.")]
+        [RegularExpression(TextBoxPattern, ErrorMessage = TextBoxPatternMessage)]
+        public string? Certification_Image_Alt { get; set; }
+
         public int? Language_Master_Id { get; set; }
         public string? LanguageName { get; set; }
 
@@ -49,7 +55,7 @@ namespace Core_project_BusinessLogic.Entity
         [Range(1, 9999, ErrorMessage = "Display order must be between 1 and 9999.")]
         public int? Sequence { get; set; }
 
-        /// <summary>1 = Active, 0 = Inactive</summary>
+        /// <summary>0 = Inactive, 1 = Saved, 2 = Published</summary>
         public int? Status { get; set; }
 
         public int? Create_UserId { get; set; }
@@ -63,7 +69,7 @@ namespace Core_project_BusinessLogic.Entity
 
         public string? SearchText { get; set; }
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = 20;
         public int TotalRecords { get; set; }
     }
 

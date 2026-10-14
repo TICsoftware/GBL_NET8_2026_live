@@ -26,6 +26,7 @@ BEGIN
         p.ProductId,
         p.ProductName,
         p.Product_pagename,
+        ISNULL(p.[status], 0) AS [Status],
         p.Intro,
         p.Content,
         p.Technical_Overview,
@@ -39,17 +40,19 @@ BEGIN
     LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
     LEFT JOIN dbo.media ms ON ms.ID = p.SafetyDataSheet_media_id
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND LOWER(LTRIM(RTRIM(p.Product_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
     ORDER BY p.DisplayOrder, p.ProductId;
 
-    SELECT TOP (1) @ProductId = ProductId
-    FROM dbo.Product_Master
-    WHERE ISNULL([status], 1) = 1
-      AND (Language_Master_Id IS NULL OR Language_Master_Id = @LanguageId)
-      AND LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
-    ORDER BY DisplayOrder, ProductId;
+    SET @ProductId = (
+        SELECT TOP (1) ProductId
+        FROM dbo.Product_Master
+        WHERE ISNULL([status], 0) = 2
+          AND (Language_Master_Id IS NULL OR Language_Master_Id = @LanguageId)
+          AND LOWER(LTRIM(RTRIM(Product_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+        ORDER BY DisplayOrder, ProductId
+    );
 
     SELECT
         pk.product_packaging_MasterId AS Id,

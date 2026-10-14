@@ -23,13 +23,17 @@ namespace GBL_MVC.Controllers.Manage
             _bal = new Product_Master_BAL(config);
         }
 
-        public IActionResult Index(string search = "", int page = 1)
+        public IActionResult Index(string search = "", int page = 1, int pageSize = 20)
         {
+            if (pageSize != 20 && pageSize != 50 && pageSize != 100)
+                pageSize = 20;
+            if (page < 1) page = 1;
+
             Product_Master_Entity entity = new()
             {
                 SearchText = search,
                 PageNumber = page,
-                PageSize = 10
+                PageSize = pageSize
             };
 
             var result = _bal.GetPaged(entity);
@@ -103,7 +107,8 @@ namespace GBL_MVC.Controllers.Manage
             try
             {
                 model.Create_UserId = GetCurrentUserId();
-                model.Status ??= 1;
+                if (model.Status != 1 && model.Status != 2)
+                    model.Status = 1;
                 _bal.Save(model);
                 return Ok();
             }
@@ -132,6 +137,8 @@ namespace GBL_MVC.Controllers.Manage
             try
             {
                 model.Update_UserId = GetCurrentUserId();
+                if (model.Status != 1 && model.Status != 2)
+                    model.Status = 1;
                 _bal.Save(model);
                 return Ok();
             }

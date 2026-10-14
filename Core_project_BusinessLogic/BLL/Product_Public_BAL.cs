@@ -32,7 +32,12 @@ namespace Core_project_BusinessLogic.BAL
 
         public Product_Inside_Page GetInside(string pageName, int languageId)
         {
-            return _dal.GetInside((pageName ?? string.Empty).Trim().Trim('/'), languageId);
+            var model = _dal.GetInside((pageName ?? string.Empty).Trim().Trim('/'), languageId);
+            if (model.Product == null || model.Product.ProductId <= 0 || model.Product.Status != 2)
+            {
+                return new Product_Inside_Page();
+            }
+            return model;
         }
     }
 }

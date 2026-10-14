@@ -77,7 +77,7 @@ BEGIN
     FROM dbo.Product_Master p
     INNER JOIN dbo.product_Industry_Mapping pim
         ON pim.ProductId = p.ProductId AND pim.IndustryId = @IndustryId
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             @CategoryId IS NULL OR @CategoryId = 0
@@ -107,7 +107,7 @@ BEGIN
     FROM dbo.Product_Master p
     INNER JOIN dbo.product_Industry_Mapping pim
         ON pim.ProductId = p.ProductId AND pim.IndustryId = @IndustryId
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             @CategoryId IS NULL OR @CategoryId = 0
@@ -155,7 +155,7 @@ BEGIN
     FROM dbo.Product_Master p
     INNER JOIN dbo.product_Industry_Mapping pim
         ON pim.ProductId = p.ProductId AND pim.IndustryId = @IndustryId
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             @CategoryId IS NULL OR @CategoryId = 0
@@ -185,7 +185,7 @@ BEGIN
     FROM dbo.Product_Master p
     INNER JOIN dbo.product_Industry_Mapping pim
         ON pim.ProductId = p.ProductId AND pim.IndustryId = @IndustryId
-    WHERE ISNULL(p.[status], 1) = 1
+    WHERE ISNULL(p.[status], 0) = 2
       AND (p.Language_Master_Id IS NULL OR p.Language_Master_Id = @LanguageId)
       AND (
             @CategoryId IS NULL OR @CategoryId = 0

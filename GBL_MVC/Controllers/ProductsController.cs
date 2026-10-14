@@ -55,7 +55,8 @@ public class ProductsController : Controller
                 return Redirect("/products");
 
             var model = _bal.GetInside(pageName, 1);
-            if (model.Product == null || model.Product.ProductId <= 0)
+            // Public product page: Published only (status = 2)
+            if (model.Product == null || model.Product.ProductId <= 0 || model.Product.Status != 2)
                 return Redirect("/products");
 
             return View(model);

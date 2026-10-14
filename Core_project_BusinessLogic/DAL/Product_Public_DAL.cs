@@ -107,7 +107,15 @@ namespace Core_project_BusinessLogic.DAL
             var model = new Product_Inside_Page();
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                model.Product = MapProduct(ds.Tables[0].Rows[0]);
+            {
+                var product = MapProduct(ds.Tables[0].Rows[0]);
+                // Public pages show Published products only (status = 2)
+                if (product.ProductId > 0 && product.Status == 2)
+                    model.Product = product;
+            }
+
+            if (model.Product == null || model.Product.ProductId <= 0)
+                return model;
 
             if (ds.Tables.Count > 1)
                 model.Packaging = MapPackaging(ds.Tables[1]);
@@ -128,6 +136,7 @@ namespace Core_project_BusinessLogic.DAL
                 ProductId = ColInt(r, "ProductId") ?? 0,
                 ProductName = ColStr(r, "ProductName"),
                 Product_pagename = ColStr(r, "Product_pagename"),
+                Status = ColInt(r, "Status") ?? 0,
                 Intro = ColStr(r, "Intro"),
                 Content = ColStr(r, "Content"),
                 Technical_Overview = ColStr(r, "Technical_Overview"),
@@ -228,14 +237,22 @@ namespace Core_project_BusinessLogic.DAL
             var items = new List<Product_Public_Item>();
             foreach (DataRow r in products.Rows)
             {
+                var status = ColInt(r, "Status");
+                // Public listing: Published only (status = 2).
+                // If Status column is missing (older SP), keep row; SP still filters.
+                if (status.HasValue && status.Value != 2)
+                    continue;
+
                 var item = new Product_Public_Item
                 {
                     ProductId = ColInt(r, "ProductId") ?? 0,
                     ProductName = ColStr(r, "ProductName"),
                     Product_pagename = ColStr(r, "Product_pagename"),
+                    Status = status ?? 2,
                     ThumbnailUrl = ColStr(r, "ThumbnailUrl"),
                     ThumbnailAlt = ColStr(r, "ThumbnailAlt")
                 };
+                if (item.ProductId <= 0) continue;
                 if (names.TryGetValue(item.ProductId, out var industryNames))
                     item.Industries = industryNames;
                 items.Add(item);

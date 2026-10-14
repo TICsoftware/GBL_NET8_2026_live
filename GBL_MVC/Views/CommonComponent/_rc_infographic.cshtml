@@ -41,12 +41,12 @@
             }
             @if (lines.Length > 0)
             {
-                <ul class="ld-step__copy">
+               
                     @foreach (var line in lines)
                     {
-                        <li>@Html.Raw(line)</li>
+                       @Html.Raw(line)
                     }
-                </ul>
+              
             }
         </div>
         @if (!TitleFirst(seq) && !string.IsNullOrWhiteSpace(item.Title))

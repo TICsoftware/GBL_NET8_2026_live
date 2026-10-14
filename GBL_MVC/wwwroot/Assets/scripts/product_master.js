@@ -483,11 +483,14 @@ function resetProductForm() {
     document.getElementById("productBannerMediaId").value = "";
     document.getElementById("productThumbMediaId").value = "";
     document.getElementById("productSdsMediaId").value = "";
+    document.getElementById("productCertMediaId").value = "";
     document.getElementById("productBannerImageAlt").value = "";
     document.getElementById("productThumbnailImageAlt").value = "";
+    document.getElementById("productCertificationImageAlt").value = "";
     setImagePreview(document.getElementById("productBannerPreview"), "");
     setImagePreview(document.getElementById("productThumbPreview"), "");
     setImagePreview(document.getElementById("productSdsPreview"), "");
+    setImagePreview(document.getElementById("productCertPreview"), "");
     setFilePreview(document.getElementById("productSdsFilePreview"), "");
     setEditorData("productIntro", "");
     setEditorData("productContent", "");
@@ -499,6 +502,7 @@ function resetProductForm() {
     setFieldError(document.getElementById("productPageName"), document.getElementById("productPageNameError"), "");
     setFieldError(document.getElementById("productBannerImageAlt"), document.getElementById("productBannerImageAltError"), "");
     setFieldError(document.getElementById("productThumbnailImageAlt"), document.getElementById("productThumbnailImageAltError"), "");
+    setFieldError(document.getElementById("productCertificationImageAlt"), document.getElementById("productCertificationImageAltError"), "");
     setFieldError(document.getElementById("productSeq"), document.getElementById("productSeqError"), "");
     resetListboxPair("availableIndustries", "selectedIndustries");
     resetListboxPair("availableApplications", "selectedApplications");
@@ -528,19 +532,26 @@ function validateProductForm() {
         document.getElementById("productThumbnailImageAltError"),
         validateOptionalText(document.getElementById("productThumbnailImageAlt")?.value, 500)
     );
+    const certAltValid = setFieldError(
+        document.getElementById("productCertificationImageAlt"),
+        document.getElementById("productCertificationImageAltError"),
+        validateOptionalText(document.getElementById("productCertificationImageAlt")?.value, 500)
+    );
     const seqValid = setFieldError(
         document.getElementById("productSeq"),
         document.getElementById("productSeqError"),
         validateSequence(document.getElementById("productSeq")?.value)
     );
-    return nameValid && pageValid && bannerAltValid && thumbAltValid && seqValid && validateCertificates();
+    return nameValid && pageValid && bannerAltValid && thumbAltValid && certAltValid && seqValid && validateCertificates();
 }
 
-function buildProductPayload() {
+function buildProductPayload(status) {
     const form = document.getElementById("productMasterForm");
     if (typeof window.syncCkEditorsToSource === "function") {
         window.syncCkEditorsToSource(form);
     }
+
+    const saveStatus = status === 2 ? 2 : 1;
 
     return {
         ProductId: parseInt(document.getElementById("productId").value || "0", 10),
@@ -551,14 +562,16 @@ function buildProductPayload() {
         Banner_Image_media_id: parseOptionalInt(document.getElementById("productBannerMediaId").value),
         Thumbnail_Image_media_id: parseOptionalInt(document.getElementById("productThumbMediaId").value),
         SafetyDataSheet_media_id: parseOptionalInt(document.getElementById("productSdsMediaId").value),
+        Certification_Image_media_id: parseOptionalInt(document.getElementById("productCertMediaId").value),
         Banner_Image_Alt: (document.getElementById("productBannerImageAlt").value || "").trim(),
         Thumbnail_Image_Alt: (document.getElementById("productThumbnailImageAlt").value || "").trim(),
+        Certification_Image_Alt: (document.getElementById("productCertificationImageAlt").value || "").trim(),
         Intro: document.getElementById("productIntro").value || "",
         Content: document.getElementById("productContent").value || "",
         Technical_Overview: document.getElementById("productTechnicalOverview").value || "",
         Main_Application: document.getElementById("productMainApplication").value || "",
         Certificates: collectCertificates(),
-        Status: 1,
+        Status: saveStatus,
         IndustryIds: getSelectValues(document.getElementById("selectedIndustries")),
         ApplicationIds: getSelectValues(document.getElementById("selectedApplications")),
         SubcategoryIds: getSelectValues(document.getElementById("selectedSubcategories")),
@@ -587,10 +600,13 @@ async function openProductModal(editId) {
         document.getElementById("productBannerMediaId").value = pickValue(data, "banner_Image_media_id", "Banner_Image_media_id");
         document.getElementById("productThumbMediaId").value = pickValue(data, "thumbnail_Image_media_id", "Thumbnail_Image_media_id");
         document.getElementById("productSdsMediaId").value = pickValue(data, "safetyDataSheet_media_id", "SafetyDataSheet_media_id");
+        document.getElementById("productCertMediaId").value = pickValue(data, "certification_Image_media_id", "Certification_Image_media_id");
         document.getElementById("productBannerImageAlt").value = pickValue(data, "banner_Image_Alt", "Banner_Image_Alt");
         document.getElementById("productThumbnailImageAlt").value = pickValue(data, "thumbnail_Image_Alt", "Thumbnail_Image_Alt");
+        document.getElementById("productCertificationImageAlt").value = pickValue(data, "certification_Image_Alt", "Certification_Image_Alt");
         setImagePreview(document.getElementById("productBannerPreview"), pickValue(data, "banner_Image_Url", "Banner_Image_Url"));
         setImagePreview(document.getElementById("productThumbPreview"), pickValue(data, "thumbnail_Image_Url", "Thumbnail_Image_Url"));
+        setImagePreview(document.getElementById("productCertPreview"), pickValue(data, "certification_Image_Url", "Certification_Image_Url"));
         const sdsUrl = pickValue(data, "safetyDataSheet_Url", "SafetyDataSheet_Url");
         if (isPdfUrl(sdsUrl)) setFilePreview(document.getElementById("productSdsFilePreview"), sdsUrl);
         else setImagePreview(document.getElementById("productSdsPreview"), sdsUrl);
@@ -640,31 +656,34 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    document.querySelector(".js-save-product")?.addEventListener("click", async function () {
-        if (!validateProductForm()) return;
-        const payload = buildProductPayload();
-        const uniqueMessage = await checkNameUnique(payload.ProductName, payload.Language_Master_Id, payload.ProductId);
-        if (uniqueMessage) {
-            setFieldError(
-                document.getElementById("productName"),
-                document.getElementById("productNameError"),
-                uniqueMessage
-            );
-            return;
-        }
-        const pageUniqueMessage = await checkPageNameUnique(payload.Product_pagename, payload.ProductId);
-        if (pageUniqueMessage) {
-            setFieldError(
-                document.getElementById("productPageName"),
-                document.getElementById("productPageNameError"),
-                pageUniqueMessage
-            );
-            return;
-        }
-        const url = payload.ProductId > 0
-            ? "/Product_Master/UpdateAjax"
-            : "/Product_Master/AddAjax";
-        postMaster(url, payload);
+    document.querySelectorAll(".js-save-product").forEach((btn) => {
+        btn.addEventListener("click", async function () {
+            if (!validateProductForm()) return;
+            const status = parseInt(this.getAttribute("data-status") || "1", 10);
+            const payload = buildProductPayload(status);
+            const uniqueMessage = await checkNameUnique(payload.ProductName, payload.Language_Master_Id, payload.ProductId);
+            if (uniqueMessage) {
+                setFieldError(
+                    document.getElementById("productName"),
+                    document.getElementById("productNameError"),
+                    uniqueMessage
+                );
+                return;
+            }
+            const pageUniqueMessage = await checkPageNameUnique(payload.Product_pagename, payload.ProductId);
+            if (pageUniqueMessage) {
+                setFieldError(
+                    document.getElementById("productPageName"),
+                    document.getElementById("productPageNameError"),
+                    pageUniqueMessage
+                );
+                return;
+            }
+            const url = payload.ProductId > 0
+                ? "/Product_Master/UpdateAjax"
+                : "/Product_Master/AddAjax";
+            postMaster(url, payload);
+        });
     });
 
     document.addEventListener("click", function (e) {
@@ -684,13 +703,34 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (e.target.classList.contains("product-edit-btn")) {
-            openProductModal(e.target.dataset.id);
+    });
+
+    document.addEventListener("change", function (e) {
+        const sel = e.target.closest ? e.target.closest(".pm-action-select") : null;
+        if (!sel) return;
+
+        const action = (sel.value || "").trim();
+        const id = sel.getAttribute("data-id");
+        const pageName = (sel.getAttribute("data-page") || "").trim();
+        sel.value = "";
+        if (!action || !id) return;
+
+        if (action === "edit") {
+            openProductModal(id);
+            return;
         }
 
-        if (e.target.classList.contains("deactivate-btn") || e.target.classList.contains("activate-btn")) {
-            const id = e.target.dataset.id;
-            const status = e.target.classList.contains("activate-btn") ? 1 : 0;
+        if (action === "preview") {
+            if (!pageName) {
+                alert("Page name is not available for preview.");
+                return;
+            }
+            window.open("/Products/" + encodeURIComponent(pageName), "_blank", "noopener");
+            return;
+        }
+
+        if (action === "activate" || action === "deactivate") {
+            const status = action === "activate" ? 1 : 0;
             const msg = status === 1 ? "Activate this record?" : "Are you sure you want to deactivate?";
             if (!confirm(msg)) return;
 
@@ -709,10 +749,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert(message);
                 }
             });
+            return;
         }
 
-        if (e.target.classList.contains("delete-btn")) {
-            const id = e.target.dataset.id;
+        if (action === "delete") {
             if (!confirm("Permanently delete this record?")) return;
             fetch("/Product_Master/Delete", {
                 method: "POST",
