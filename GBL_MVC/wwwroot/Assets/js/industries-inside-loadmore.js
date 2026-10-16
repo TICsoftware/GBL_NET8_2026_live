@@ -20,10 +20,14 @@
     const pageName = pick(item, "product_pagename", "Product_pagename");
     const intro = pick(item, "intro", "Intro");
     const thumb = pick(item, "thumbnailUrl", "ThumbnailUrl");
-    const alt = pick(item, "thumbnailAlt", "ThumbnailAlt") || name;
+    const banner = pick(item, "bannerUrl", "BannerUrl");
+    const imageUrl = thumb || banner;
+    const alt = (thumb
+      ? pick(item, "thumbnailAlt", "ThumbnailAlt")
+      : pick(item, "bannerAlt", "BannerAlt")) || name;
     const apps = item.applications || item.Applications || [];
     const href = pageName ? "/Products/" + encodeURIComponent(pageName) : "/Products/Inside_html";
-    const img = thumb ? '<img src="' + escapeHtml(thumb) + '" alt="' + escapeHtml(alt) + '">' : "";
+    const img = imageUrl ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(alt) + '">' : "";
     const introHtml = intro ? "<p>" + escapeHtml(intro) + "</p>" : "";
     let appsHtml = "";
     if (apps.length) {

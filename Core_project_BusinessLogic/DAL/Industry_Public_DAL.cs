@@ -244,7 +244,9 @@ namespace Core_project_BusinessLogic.DAL
                     Product_pagename = ColStr(r, "Product_pagename"),
                     Intro = ColStr(r, "Intro"),
                     ThumbnailUrl = ColStr(r, "ThumbnailUrl"),
-                    ThumbnailAlt = ColStr(r, "ThumbnailAlt")
+                    ThumbnailAlt = ColStr(r, "ThumbnailAlt"),
+                    BannerUrl = ColStr(r, "BannerUrl"),
+                    BannerAlt = ColStr(r, "BannerAlt")
                 };
                 if (appMap.TryGetValue(item.ProductId, out var names))
                     item.Applications = names;

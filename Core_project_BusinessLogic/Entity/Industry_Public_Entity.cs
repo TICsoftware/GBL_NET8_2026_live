@@ -91,6 +91,9 @@ namespace Core_project_BusinessLogic.Entity
         public string? Intro { get; set; }
         public string? ThumbnailUrl { get; set; }
         public string? ThumbnailAlt { get; set; }
+        /// <summary>Product masthead / banner image; used when thumbnail is missing.</summary>
+        public string? BannerUrl { get; set; }
+        public string? BannerAlt { get; set; }
         public List<string> Applications { get; set; } = new();
     }
 

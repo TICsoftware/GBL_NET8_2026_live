@@ -97,10 +97,13 @@ BEGIN
         p.Product_pagename,
         p.Intro,
         mt.file_path AS ThumbnailUrl,
-        ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
+        ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt,
+        mb.file_path AS BannerUrl,
+        ISNULL(NULLIF(LTRIM(RTRIM(p.Banner_Image_Alt)), N''), p.ProductName) AS BannerAlt
     FROM @Paged x
     INNER JOIN dbo.Product_Master p ON p.ProductId = x.ProductId
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
+    LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     ORDER BY p.DisplayOrder, p.ProductName;
 
     SELECT COUNT(1) AS TotalCount
@@ -175,10 +178,13 @@ BEGIN
         p.Product_pagename,
         p.Intro,
         mt.file_path AS ThumbnailUrl,
-        ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
+        ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt,
+        mb.file_path AS BannerUrl,
+        ISNULL(NULLIF(LTRIM(RTRIM(p.Banner_Image_Alt)), N''), p.ProductName) AS BannerAlt
     FROM @Paged x
     INNER JOIN dbo.Product_Master p ON p.ProductId = x.ProductId
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
+    LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     ORDER BY p.DisplayOrder, p.ProductName;
 
     SELECT COUNT(1) AS TotalCount
