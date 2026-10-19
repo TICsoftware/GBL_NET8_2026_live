@@ -296,4 +296,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   bindMediaParallax(activeProductPanel());
+
+  /* Rebind after tab AJAX injects product cards (images / animations). */
+  document.addEventListener("industryProductsLoaded", function (e) {
+    var panel = (e && e.detail && e.detail.panel) || activeProductPanel();
+    if (!panel) return;
+    requestAnimationFrame(function () {
+      bindProductRise(panel, true);
+      bindMediaParallax(panel);
+      refreshTriggers();
+    });
+  });
 });
