@@ -1,0 +1,78 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.InvestorsModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Investor Relations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+    var totalCount = Model?.TotalCount ?? 0;
+    var pageSize = GBL_BusinessLogic.BAL.Investors_BAL.DefaultPageSize;
+}
+
+@section head {
+    <title>@(content?.cont_window_title)</title>
+
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+    <meta itemprop="name" content="Godavari Biorefineries" />
+    <meta itemprop="description" content="@(content?.cont_metadesc)" />
+    <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/news-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/investor-pdf.css" asp-append-version="true" />
+}
+
+@if (Model?.Content != null)
+{
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+
+<section class="cg-docs section-spacing">
+    <div class="container">
+        <p class="fh-year-filter__empty" data-investor-empty hidden>No documents found.</p>
+
+        <ul id="DivContent"
+            class="cg-docs__grid card-list-items"
+            data-investor-grid
+            data-page-size="@pageSize"
+            data-total-count="@totalCount"
+            data-content-id="@(content?.ContId ?? 0)"
+            data-load-url="@Url.Action("LoadPdfs", "Investors")">
+            @await Html.PartialAsync("_investor_pdf_list", Model?.SectionArticles_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>())
+        </ul>
+
+        <div class="news-load-more" data-investor-load-more-wrap @(totalCount > pageSize ? null : "hidden")>
+            <button type="button" class="site-btn site-btn--fill" data-investor-load-more>
+                <span class="site-btn__label">Load More</span>
+                <span class="site-btn__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                    </svg>
+                </span>
+            </button>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+    <script src="~/scripts/Investors/investor-pdf-listing.js" asp-append-version="true"></script>
+}

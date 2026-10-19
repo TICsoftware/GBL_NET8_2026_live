@@ -90,6 +90,34 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                name: "investor-load-pdfs",
+                pattern: "Investors/LoadPdfs",
+                defaults: new { controller = "Investors", action = "LoadPdfs" }
+            );
+
+            app.MapControllerRoute(
+                name: "investor-shareholding-pattern",
+                pattern: "investor-relations/shareholding-pattern",
+                defaults: new
+                {
+                    controller = "Investors",
+                    action = "Pdflisting",
+                    title = "investor-relations/shareholding-pattern"
+                }
+            );
+
+            app.MapControllerRoute(
+                name: "investor-subsidiaries",
+                pattern: "investor-relations/subsidiaries",
+                defaults: new
+                {
+                    controller = "Investors",
+                    action = "Pdflisting",
+                    title = "investor-relations/subsidiaries"
+                }
+            );
+
+            app.MapControllerRoute(
                name: "media-coverage",
                pattern: "media/media-coverage",
                defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage" }

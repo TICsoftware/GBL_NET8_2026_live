@@ -1,0 +1,21 @@
+@model List<GBL_BusinessLogic.Entity.ArticleModel>
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        var href = !string.IsNullOrWhiteSpace(item.Url)
+            ? item.Url
+            : (!string.IsNullOrWhiteSpace(item.MediafilePath) ? item.MediafilePath : item.ExternalUrl);
+
+        <li class="card-rise">
+            <a class="cg-doc"
+               href="@(string.IsNullOrWhiteSpace(href) ? "#" : href)"
+               target="_blank"
+               rel="noopener noreferrer">
+                <span class="cg-doc__title">@item.Title</span>
+                <span class="cg-doc__icon" aria-hidden="true"></span>
+            </a>
+        </li>
+    }
+}
