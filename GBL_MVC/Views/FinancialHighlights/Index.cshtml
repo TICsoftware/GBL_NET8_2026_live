@@ -1,0 +1,155 @@
+@{
+    ViewData["Title"] = "Corporate governance";
+    var pdfBase = "https://www.godavaribiorefineries.com/sites/default/files/";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/corporate-governance-intro.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/corporate-governance-banner.webp">                  
+
+                  <!-- Desktop -->
+                  <img
+                     src="~/Assets/images/banners/corporate-governance-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                           Financial Highlights
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Investor Relations
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                              Financial Highlights
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->  
+
+
+   <div class="fh-year-filter bg-gray section-spacing-sm">
+      <div class="container">       
+            <label class="fh-year-filter__label" for="fh-year">Filter by year</label>
+            <div class="cselect">
+               <select id="fh-year" name="year" class="cselect-native">
+                  <option value="2025-2026" selected>FY 2025 - 2026</option>
+                  <option value="2024-2025">FY 2024 - 2025</option>
+                  <option value="2023-2024">FY 2023 - 2024</option>
+                  <option value="2022-2023">FY 2022 - 2023</option>
+                  <option value="2025-2026">FY 2025 - 2026</option>
+                  <option value="2024-2025">FY 2024 - 2025</option>
+                  <option value="2023-2024">FY 2023 - 2024</option>
+                  <option value="2022-2023">FY 2022 - 2023</option>
+               </select>
+            </div>
+      </div>      
+   </div>
+
+   <section class="cg-docs section-spacing">
+      <div class="container">       
+
+         <p class="fh-year-filter__empty" hidden>No documents for this year.</p>
+         <ul class="cg-docs__grid card-list-items">
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+
+            <li class="card-rise" data-year="2025-2026">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+         </ul>
+      </div>
+   </section>
+
+
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/industries-filter.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/corporate-governance.js" asp-append-version="true"></script>
+}

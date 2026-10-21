@@ -1,71 +1,30 @@
-.cg-docs__grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem 1.25rem;
-}
-
-.cg-docs__grid > li {
-  margin: 0;
-}
-
-.cg-doc {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: 4.5rem;
-  padding: 1rem 1.15rem;
-  background: #f3f3f3;
-  border-radius: 10px;
-  color: var(--color-primary, #282b31);
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.cg-doc:hover,
-.cg-doc:focus-visible {
-  background: #e9ebe8;
-  color: var(--color-secondary, #67815a);
-}
-
 .cg-doc__title {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.35;
 }
 
 .cg-doc__icon {
-  flex: 0 0 auto;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: var(--color-secondary, #67815a) center / 1.05rem no-repeat;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-color: transparent !important;
+  background-image: url("../images/investors/pdf-icon.svg") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 37px 37px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
 }
 
 .cg-doc:hover .cg-doc__icon,
 .cg-doc:focus-visible .cg-doc__icon {
-  background-color: var(--color-primary, #282b31);
-}
-
-.fh-year-filter__empty {
-  margin: 0 0 1rem;
-  color: #6b7280;
+  background-color: transparent !important;
+  filter: brightness(0) invert(1);
 }
 
 .cg-docs .news-load-more {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
 }
 
-@media (max-width: 767px) {
-  .cg-docs__grid {
-    grid-template-columns: 1fr;
-  }
+.cg-docs .news-load-more[hidden] {
+  display: none;
 }

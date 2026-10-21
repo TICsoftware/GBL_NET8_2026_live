@@ -35,7 +35,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Assets/css/news-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/corporate-governance-intro.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/investor-pdf.css" asp-append-version="true" />
 }
 
@@ -58,7 +58,7 @@
             @await Html.PartialAsync("_investor_pdf_list", Model?.SectionArticles_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>())
         </ul>
 
-        <div class="news-load-more" data-investor-load-more-wrap @(totalCount > pageSize ? null : "hidden")>
+        <div class="news-load-more" data-investor-load-more-wrap hidden>
             <button type="button" class="site-btn site-btn--fill" data-investor-load-more>
                 <span class="site-btn__label">Load More</span>
                 <span class="site-btn__arrow" aria-hidden="true">

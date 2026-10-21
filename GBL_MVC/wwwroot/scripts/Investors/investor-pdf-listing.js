@@ -18,13 +18,9 @@ $(function () {
     function updateButton() {
         const loadedCount = $grid.children("li").length;
 
-        if (loadedCount === 0) {
-            $empty.prop("hidden", false);
-        } else {
-            $empty.prop("hidden", true);
-        }
+        $empty.prop("hidden", loadedCount > 0);
 
-        if (loadedCount >= totalCount || totalCount <= pageSize || loadedCount === 0) {
+        if (loadedCount >= totalCount || totalCount <= pageSize) {
             $loadMoreWrap.prop("hidden", true).hide();
         } else {
             $loadMoreWrap.prop("hidden", false).show();
@@ -61,10 +57,6 @@ $(function () {
                 $grid.attr("data-total-count", totalCount);
 
                 updateButton();
-
-                if (typeof window.initCardRise === "function") {
-                    window.initCardRise();
-                }
             },
             error: function (xhr) {
                 console.error("Error loading investor documents:", xhr.responseText);
