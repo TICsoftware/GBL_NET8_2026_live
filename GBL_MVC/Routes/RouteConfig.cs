@@ -105,6 +105,16 @@ namespace GBL_MVC.Routes
                     title = "shareholding-pattern"
                 }
             );
+   app.MapControllerRoute(
+                name: "investor-disclosures",
+                pattern: "investor-relations/disclosures",
+                defaults: new
+                {
+                    controller = "Investors",
+                    action = "Pdflisting",
+                    title = "disclosures"
+                }
+            );
 
             app.MapControllerRoute(
                 name: "investor-subsidiaries",
