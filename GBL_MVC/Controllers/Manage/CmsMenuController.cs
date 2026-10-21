@@ -103,6 +103,9 @@ namespace GBL_MVC.Controllers.Manage
 
         public IActionResult Edit(string id)
         {
+
+            ViewBag.ParentMenus = bal.GetParentMenus();
+            
             int menuId = Convert.ToInt32(CryptoEngine.Decrypt(id));
 
             var menu = bal.GetMenuById(menuId);
@@ -137,7 +140,7 @@ namespace GBL_MVC.Controllers.Manage
                 Status = menu.Status
             };
 
-            ViewBag.ParentMenus = bal.GetMenus().Where(x => x.MenuId != menuId).ToList();
+            //ViewBag.ParentMenus = bal.GetMenus().Where(x => x.MenuId != menuId).ToList();
 
             return View("AddEdit", model);
         }
