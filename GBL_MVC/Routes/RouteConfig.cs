@@ -102,7 +102,7 @@ namespace GBL_MVC.Routes
                 {
                     controller = "Investors",
                     action = "Pdflisting",
-                    title = "investor-relations/shareholding-pattern"
+                    title = "shareholding-pattern"
                 }
             );
 
@@ -113,7 +113,7 @@ namespace GBL_MVC.Routes
                 {
                     controller = "Investors",
                     action = "Pdflisting",
-                    title = "investor-relations/subsidiaries"
+                    title = "subsidiaries"
                 }
             );
 

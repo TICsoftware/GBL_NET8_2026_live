@@ -1,4 +1,15 @@
 /**=====================================
+PRODUCT INSIDE — header
+The hero is light gray, so the shared inner-page white nav
+(meant for dark banners) is unreadable until the bar compacts.
+=====================================**/
+@media (min-width: 1200px) {
+  .site-header--inner:not(.is-compact) .site-header__bar {
+    color: var(--header-ink, #333333);
+  }
+}
+
+/**=====================================
 PRODUCT INSIDE — split banner
 .product-inside-banner-outer
 =====================================**/
@@ -27,9 +38,9 @@ PRODUCT INSIDE — split banner
 
 .product-inside-banner__intro p {
   font-size: var(--text-22);
-  margin: 0;
 }
 
+.product-inside-banner__intro p:last-child{ margin-bottom: 0;}
 .product-inside-banner__intro .page-intro-fill-word {
   display: inline;
   color: #b2b2b2;
@@ -248,15 +259,116 @@ PACKAGING / APPLICATIONS
 
 /**=====================================
 TECHNICAL OVERVIEW / SDS
-SDS sits beside the table only. Certificates stay under the table
-and do not stretch the SDS panel.
+=====================================**/
+/* .technical-Safety-outer .packaging-application {
+  align-items: stretch;
+}
+
+.technical-Safety-outer .packaging-block,
+.technical-Safety-outer .application-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.technical-Safety-outer .tech-overview,
+.technical-Safety-outer .sds-panel {
+  flex: 1 1 auto;
+}
+
+.technical-Safety-outer .tech-overview {
+  overflow-x: auto;
+}
+
+.technical-Safety-outer .tech-overview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.technical-Safety-outer .tech-overview-table th,
+.technical-Safety-outer .tech-overview-table td {
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  font-size: var(--text-p);
+  vertical-align: top;
+}
+
+.technical-Safety-outer .tech-overview-table thead th {
+  background: var(--color-gray, #f4f4f4);
+  font-weight: 700;
+}
+
+.technical-Safety-outer .tech-overview-table tbody td {
+  border-bottom: 1px solid rgba(40, 43, 49, 0.12);
+}
+
+.technical-Safety-outer .sds-panel {
+  background: var(--color-gray, #f4f4f4);
+  padding: clamp(1.5rem, 3vw, 2.5rem); 
+  align-content: center;
+}
+
+.technical-Safety-outer .sds-panel__name {
+  margin: 0 0 1.35rem;
+  font-size: var(--text-p);
+  font-weight: 700;
+  color: var(--color-primary, #282b31);
+}
+
+.technical-Safety-outer .sds-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.technical-Safety-outer .sds-download,
+.technical-Safety-outer .sds-enquire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  font-size: var(--text-button);
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.technical-Safety-outer .sds-download {
+  background: var(--color-secondary, #67815a);
+  color: var(--color-white, #fff);
+  border: 1px solid var(--color-secondary, #67815a);
+}
+
+.technical-Safety-outer .sds-download:hover {
+  background: #556c4c;
+  border-color: #556c4c;
+}
+
+.technical-Safety-outer .sds-enquire {
+  background: var(--color-white, #fff);
+  color: var(--color-primary, #282b31);
+  border: 1px solid rgba(40, 43, 49, 0.28);
+}
+
+.technical-Safety-outer .sds-enquire:hover {
+  border-color: var(--color-primary, #282b31);
+} */
+
+
+
+/**=====================================
+TECHNICAL OVERVIEW / SDS
+Left column is the spec table. Right column is the SDS card
+with certificates stacked under it, so the panel does not stretch.
 =====================================**/
 .technical-Safety-outer .technical-safety-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: clamp(2rem, 4vw, 4.5rem);
+  column-gap: clamp(1.25rem, 2vw, 2rem);
   row-gap: 0;
-  align-items: stretch;
+  align-items: start;
 }
 
 .technical-Safety-outer .tech-overview-col {
@@ -273,6 +385,76 @@ and do not stretch the SDS panel.
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+
+.technical-safety-grid .tech-overview-meta {
+  list-style: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+  margin: 0 0 1.35rem;
+  padding: 0;
+}
+
+.technical-safety-grid .tech-overview-meta li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  color: var(--color-primary, #282b31);
+}
+
+.technical-safety-grid .tech-overview-meta__label {
+  display: block;
+  font-size: var(--text-p, 1rem);
+  font-weight: 700;
+}
+
+.technical-safety-grid .tech-overview-meta__value {
+  display: block;
+  font-size: var(--text-p);
+  font-weight: 400;
+}
+
+.technical-safety-grid .tech-overview-table th,
+.technical-safety-grid .tech-overview-table td {
+  border-bottom: 1px solid rgba(40, 43, 49, 0.12);
+}
+
+.technical-safety-grid .tech-overview-table th {
+  width: 46%;
+  font-weight: 700;
+  color: var(--color-primary, #282b31);
+}
+
+.technical-safety-grid .tech-overview-table tr:first-child th,
+.technical-safety-grid .tech-overview-table tr th{
+  background: var(--color-gray, #f4f4f4);
+}
+
+.technical-safety-grid .tech-overview-table p {
+  margin: 0;
+}
+
+.technical-safety-grid .sds-col .title-section,
+.technical-safety-grid .tech-overview-col .title-section {
+  margin-bottom: 0.55rem;
+}
+
+.technical-safety-grid .title-section .text-h2 {
+  margin: 0;
+}
+
+.technical-safety-grid .sds-col > .title-section:not(:first-child) {
+  margin-top: 3.5rem;
+}
+
+.technical-safety-grid .product-cert-bar {
+  margin-top: 0;
 }
 
 .technical-Safety-outer .tech-overview {
@@ -308,6 +490,11 @@ and do not stretch the SDS panel.
   justify-content: center;
   background: var(--color-gray, #f4f4f4);
   padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.technical-Safety-outer .technical-safety-grid .sds-panel {
+  flex: 0 0 auto;
+  justify-content: flex-start;
 }
 
 .technical-Safety-outer .sds-panel__name {
@@ -383,30 +570,31 @@ and do not stretch the SDS panel.
 }
 
 /**=====================================
-CERTIFICATES BAR — review this block
-Matches the Technical Overview PDF row:
-olive PDF icon, wrapped title, grey bar, vertical dividers.
+CERTIFICATES — wrapping pills
 =====================================**/
 .product-cert-bar {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  grid-column: 1;
-  grid-row: 2;
-  background: var(--color-gray, #f4f4f4);
-  margin-top: 1.25rem;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 0.65rem;
+  background: transparent;
+  margin-top: 0;
 }
 
 .product-cert-item {
-  flex: 1 1 0;
+  flex: 0 1 auto;
+  max-width: 100%;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.7rem;
-  padding: 1.35rem 1.1rem 1.5rem;
-  text-align: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.95rem 0.4rem 0.5rem;
+  border: 1px solid rgba(40, 43, 49, 0.22);
+  border-radius: 999px;
+  background: var(--color-white, #fff);
+  text-align: left;
   text-decoration: none;
   color: var(--color-primary, #282b31);
   position: relative;
@@ -414,24 +602,20 @@ olive PDF icon, wrapped title, grey bar, vertical dividers.
 
 a.product-cert-item:hover {
   color: var(--color-secondary, #67815a);
+  border-color: var(--color-secondary, #67815a);
 }
 
 .product-cert-item:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 22%;
-  right: 0;
-  width: 1px;
-  height: 56%;
-  background: rgba(40, 43, 49, 0.14);
+  content: none;
 }
 
 .product-cert-item__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.35rem;
-  height: 2.35rem;
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
   color: var(--color-secondary, #67815a);
 }
 
@@ -443,10 +627,11 @@ a.product-cert-item:hover {
 
 .product-cert-item__title {
   display: block;
-  max-width: 11.5rem;
-  font-size: var(--text-small, 0.875rem);
-  line-height: 1.35;
+  max-width: none;
+  font-size: var(--text-p, 1rem);
+  line-height: 1.25;
   font-weight: 500;
+  white-space: nowrap;
   color: inherit;
 }
 
@@ -455,42 +640,42 @@ a.product-cert-item:hover {
     grid-template-columns: 1fr;
   }
 
-  .technical-Safety-outer .tech-overview-col {
+  .technical-Safety-outer .tech-overview-col,
+  .technical-Safety-outer .sds-col {
     grid-column: 1;
-    grid-row: 1;
-  }
-
-  .technical-Safety-outer .product-cert-bar {
-    grid-column: 1;
-    grid-row: 2;
+    grid-row: auto;
   }
 
   .technical-Safety-outer .sds-col {
-    grid-column: 1;
-    grid-row: 3;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
   }
 }
 
 @media (max-width: 699px) {
-  .product-cert-bar {
-    flex-direction: column;
+  .technical-safety-grid .tech-overview-meta {
+    flex-wrap: wrap;
+    row-gap: 1rem;
+  }
+
+  .technical-safety-grid .tech-overview-meta li {
+    flex: 1 1 8.5rem;
   }
 
   .product-cert-item {
-    padding: 1.1rem 1rem;
-  }
-
-  .product-cert-item:not(:last-child)::after {
-    top: auto;
-    right: 12%;
-    left: 12%;
-    width: auto;
-    height: 1px;
-    bottom: 0;
+    padding: 0.4rem 0.85rem 0.4rem 0.45rem;
   }
 
   .product-cert-item__title {
-    max-width: none;
+    white-space: normal;
+  }
+
+  .technical-safety-grid .tech-overview-table th,
+  .technical-safety-grid .tech-overview-table td {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .technical-safety-grid .tech-overview-table th {
+    width: 48%;
   }
 }
+
