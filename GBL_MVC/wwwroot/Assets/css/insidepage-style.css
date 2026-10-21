@@ -133,11 +133,10 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
 @media all and (max-width: 1179px) {
   .innerbanner-image-wrapper{ height:auto !important;}
   .inside-banner-outer .innerbanner-image{ position: relative;}
-  .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:10px 0; text-align: center; background:#fff}
+  .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:20px 0; text-align: center; background:#fff}
   .innerbanner-caption *{ color: var(--text-black);}
+  .innerbanner-caption .breadcrumb-nav{ margin-bottom: 0;}
 
-
-  .page-intro-inner{  width: 100%;}
-
+  .page-intro-inner{width: 100%;}
   .page-intro-inner, .middle-container .container{ max-width:min(100vw, 1100px);}
 }

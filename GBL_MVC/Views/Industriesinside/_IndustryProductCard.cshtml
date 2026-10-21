@@ -3,12 +3,19 @@
     var href = string.IsNullOrWhiteSpace(Model.Product_pagename)
         ? "/Products/Inside_html"
         : "/Products/" + Model.Product_pagename;
+    // Prefer product thumbnail; fall back to masthead (banner) when thumbnail is missing
+    var imageUrl = !string.IsNullOrWhiteSpace(Model.ThumbnailUrl)
+        ? Model.ThumbnailUrl
+        : Model.BannerUrl;
+    var imageAlt = !string.IsNullOrWhiteSpace(Model.ThumbnailUrl)
+        ? (Model.ThumbnailAlt ?? Model.ProductName)
+        : (Model.BannerAlt ?? Model.ProductName);
 }
 <article class="industry-product-card">
    <div class="industry-product-card__media">
-      @if (!string.IsNullOrWhiteSpace(Model.ThumbnailUrl))
+      @if (!string.IsNullOrWhiteSpace(imageUrl))
       {
-          <img src="@Model.ThumbnailUrl" alt="@(Model.ThumbnailAlt ?? Model.ProductName)">
+          <img src="@imageUrl" alt="@imageAlt">
       }
    </div>
    <div class="industry-product-card__body">

@@ -44,12 +44,14 @@ BEGIN
       AND LOWER(LTRIM(RTRIM(i.Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
     ORDER BY i.DisplayOrder, i.IndustryId;
 
-    SELECT TOP (1) @IndustryId = IndustryId
-    FROM dbo.Industry_Master
-    WHERE ISNULL([Status], 1) = 1
-      AND (Language_Master_Id IS NULL OR Language_Master_Id = @LanguageId)
-      AND LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
-    ORDER BY DisplayOrder, IndustryId;
+    SET @IndustryId = (
+        SELECT TOP (1) IndustryId
+        FROM dbo.Industry_Master
+        WHERE ISNULL([Status], 1) = 1
+          AND (Language_Master_Id IS NULL OR Language_Master_Id = @LanguageId)
+          AND LOWER(LTRIM(RTRIM(Industry_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+        ORDER BY DisplayOrder, IndustryId
+    );
 
     SELECT
         c.SubcategoryId AS Id,
@@ -62,12 +64,14 @@ BEGIN
 
     IF (@CategoryId IS NULL OR @CategoryId = 0) AND @IndustryId IS NOT NULL
     BEGIN
-        SELECT TOP (1) @CategoryId = c.SubcategoryId
-        FROM dbo.Industry_Subcategory_Mapping m
-        INNER JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = m.Category_Master_Id
-        WHERE m.IndustryId = @IndustryId
-          AND ISNULL(c.[Status], 1) = 1
-        ORDER BY m.DisplayOrder, c.SubcategoryName;
+        SET @CategoryId = (
+            SELECT TOP (1) c.SubcategoryId
+            FROM dbo.Industry_Subcategory_Mapping m
+            INNER JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = m.Category_Master_Id
+            WHERE m.IndustryId = @IndustryId
+              AND ISNULL(c.[Status], 1) = 1
+            ORDER BY m.DisplayOrder, c.SubcategoryName
+        );
     END
 
     DECLARE @Paged TABLE (ProductId INT NOT NULL PRIMARY KEY);
@@ -96,11 +100,19 @@ BEGIN
         p.ProductName,
         p.Product_pagename,
         p.Intro,
-        mt.file_path AS ThumbnailUrl,
-        ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
+        /* Prefer thumbnail; fall back to masthead (banner) */
+        COALESCE(NULLIF(LTRIM(RTRIM(mt.file_path)), N''), mb.file_path) AS ThumbnailUrl,
+        CASE
+            WHEN NULLIF(LTRIM(RTRIM(mt.file_path)), N'') IS NOT NULL
+                THEN ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName)
+            ELSE ISNULL(NULLIF(LTRIM(RTRIM(p.Banner_Image_Alt)), N''), p.ProductName)
+        END AS ThumbnailAlt,
+        mb.file_path AS BannerUrl,
+        ISNULL(NULLIF(LTRIM(RTRIM(p.Banner_Image_Alt)), N''), p.ProductName) AS BannerAlt
     FROM @Paged x
     INNER JOIN dbo.Product_Master p ON p.ProductId = x.ProductId
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
+    LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     ORDER BY p.DisplayOrder, p.ProductName;
 
     SELECT COUNT(1) AS TotalCount
@@ -174,11 +186,19 @@ BEGIN
         p.ProductName,
         p.Product_pagename,
         p.Intro,
-        mt.file_path AS ThumbnailUrl,
-        ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName) AS ThumbnailAlt
+        /* Prefer thumbnail; fall back to masthead (banner) — used by tab AJAX */
+        COALESCE(NULLIF(LTRIM(RTRIM(mt.file_path)), N''), mb.file_path) AS ThumbnailUrl,
+        CASE
+            WHEN NULLIF(LTRIM(RTRIM(mt.file_path)), N'') IS NOT NULL
+                THEN ISNULL(NULLIF(LTRIM(RTRIM(p.Thumbnail_Image_Alt)), N''), p.ProductName)
+            ELSE ISNULL(NULLIF(LTRIM(RTRIM(p.Banner_Image_Alt)), N''), p.ProductName)
+        END AS ThumbnailAlt,
+        mb.file_path AS BannerUrl,
+        ISNULL(NULLIF(LTRIM(RTRIM(p.Banner_Image_Alt)), N''), p.ProductName) AS BannerAlt
     FROM @Paged x
     INNER JOIN dbo.Product_Master p ON p.ProductId = x.ProductId
     LEFT JOIN dbo.media mt ON mt.ID = p.Thumbnail_Image_media_id
+    LEFT JOIN dbo.media mb ON mb.ID = p.Banner_Image_media_id
     ORDER BY p.DisplayOrder, p.ProductName;
 
     SELECT COUNT(1) AS TotalCount

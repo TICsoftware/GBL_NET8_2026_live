@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.BAL;
@@ -51,7 +52,7 @@ namespace GBL_MVC.Controllers
                 return Json(new
                 {
                     success = true,
-                    items = data.Data,
+                    items = ToProductItems(data.Data),
                     total = data.Total,
                     page = 1,
                     pageSize = filter.PageSize
@@ -77,7 +78,7 @@ namespace GBL_MVC.Controllers
                 return Json(new
                 {
                     success = true,
-                    items = data.Data,
+                    items = ToProductItems(data.Data),
                     total = data.Total,
                     page = filter.PageNumber,
                     pageSize = filter.PageSize
@@ -88,6 +89,36 @@ namespace GBL_MVC.Controllers
                 FileLogger.LogError("/IndustriesInside/LoadMore : Post :", ex);
                 return Json(new { success = false, message = "Something went wrong. Please try again." });
             }
+        }
+
+        /// <summary>
+        /// Explicit JSON shape for tab AJAX: imageUrl = thumbnail or masthead fallback.
+        /// </summary>
+        private static object ToProductItems(System.Collections.Generic.List<Industry_Inside_Product> products)
+        {
+            return (products ?? new System.Collections.Generic.List<Industry_Inside_Product>()).Select(p =>
+            {
+                var thumb = (p.ThumbnailUrl ?? string.Empty).Trim();
+                var banner = (p.BannerUrl ?? string.Empty).Trim();
+                var imageUrl = !string.IsNullOrWhiteSpace(thumb) ? thumb : banner;
+                var imageAlt = !string.IsNullOrWhiteSpace(thumb)
+                    ? (p.ThumbnailAlt ?? p.ProductName)
+                    : (p.BannerAlt ?? p.ProductName);
+                return new
+                {
+                    productId = p.ProductId,
+                    productName = p.ProductName,
+                    product_pagename = p.Product_pagename,
+                    intro = p.Intro,
+                    thumbnailUrl = thumb,
+                    thumbnailAlt = p.ThumbnailAlt,
+                    bannerUrl = banner,
+                    bannerAlt = p.BannerAlt,
+                    imageUrl,
+                    imageAlt,
+                    applications = p.Applications ?? new System.Collections.Generic.List<string>()
+                };
+            }).ToList();
         }
     }
 }

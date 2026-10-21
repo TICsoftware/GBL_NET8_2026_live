@@ -15,15 +15,29 @@
     return item[camel] != null && item[camel] !== "" ? item[camel] : (item[pascal] || "");
   }
 
+  function resolveImage(item) {
+    const imageUrl = pick(item, "imageUrl", "ImageUrl")
+      || pick(item, "thumbnailUrl", "ThumbnailUrl")
+      || pick(item, "bannerUrl", "BannerUrl");
+    const thumb = pick(item, "thumbnailUrl", "ThumbnailUrl");
+    const alt = pick(item, "imageAlt", "ImageAlt")
+      || (thumb
+        ? pick(item, "thumbnailAlt", "ThumbnailAlt")
+        : pick(item, "bannerAlt", "BannerAlt"));
+    return { imageUrl: imageUrl, alt: alt };
+  }
+
   function buildCard(item) {
     const name = pick(item, "productName", "ProductName");
     const pageName = pick(item, "product_pagename", "Product_pagename");
     const intro = pick(item, "intro", "Intro");
-    const thumb = pick(item, "thumbnailUrl", "ThumbnailUrl");
-    const alt = pick(item, "thumbnailAlt", "ThumbnailAlt") || name;
+    const image = resolveImage(item);
+    const alt = image.alt || name;
     const apps = item.applications || item.Applications || [];
     const href = pageName ? "/Products/" + encodeURIComponent(pageName) : "/Products/Inside_html";
-    const img = thumb ? '<img src="' + escapeHtml(thumb) + '" alt="' + escapeHtml(alt) + '">' : "";
+    const img = image.imageUrl
+      ? '<img src="' + escapeHtml(image.imageUrl) + '" alt="' + escapeHtml(alt) + '" loading="lazy">'
+      : "";
     const introHtml = intro ? "<p>" + escapeHtml(intro) + "</p>" : "";
     let appsHtml = "";
     if (apps.length) {
@@ -91,6 +105,14 @@
 
     grid.insertAdjacentHTML("beforeend", items.map(buildCard).join(""));
     toggleLoadMore(panel, total || 0, parseInt(panel.getAttribute("data-page") || "1", 10));
+
+    // Ensure newly injected cards are visible (GSAP may have left prior state)
+    if (typeof gsap !== "undefined") {
+      gsap.set(grid.querySelectorAll(".industry-product-card"), { autoAlpha: 1, y: 0, clearProps: "visibility" });
+    }
+
+    // Let tab script rebind rise / media parallax after AJAX inject
+    document.dispatchEvent(new CustomEvent("industryProductsLoaded", { detail: { panel: panel } }));
   }
 
   function loadProducts(panel, page, append) {
