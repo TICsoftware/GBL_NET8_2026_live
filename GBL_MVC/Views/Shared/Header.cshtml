@@ -1,224 +1,349 @@
 @using GBL_BusinessLogic.Entity
 @using GBL_MVC.Helpers
 @model List<MenuHeader>
+
 @{
   var menus = Model?.ToList() ?? new List<MenuHeader>();
 
-  var parentMenus = menus
-    .Where(x => x.ParentMenuId == null && x.MenuCategory == 3)
-    .OrderBy(x => x.Sequence)
-    .ToList();
+  var headerLogo = menus.FirstOrDefault(x => x.MenuCategory == 1);
 
-  var headerLogo = Model?.FirstOrDefault(x => x.MenuCategory == 1);
+  var topMenus = menus
+      .Where(x => x.ParentMenuId == null && x.MenuCategory == 2)
+      .OrderBy(x => x.Sequence)
+      .ToList();
+
+  var parentMenus = menus
+      .Where(x => x.ParentMenuId == null && x.MenuCategory == 3)
+      .OrderBy(x => x.Sequence)
+      .ToList();
+
+  var isHomePage =
+      ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+      ViewContext.RouteData.Values["action"]?.ToString() == "Index";
 }
 
-<template id="navSource">
+<header class="site-header @(isHomePage ? "site-header--home is-dark" : "site-header--inner is-dark")" id="header"
+        data-theme="@(isHomePage ? "home" : "inner")">
 
-  @foreach (var parent in parentMenus)
-  {
-    var children = menus
-    .Where(x => x.ParentMenuId == parent.MenuId)
-    .OrderBy(x => x.Sequence)
-    .ToList();
+  <div class="site-header__backdrop" data-header-backdrop></div>
 
-    var menuKey = !string.IsNullOrEmpty(parent.MenuName)
-    ? parent.MenuName.ToLower().Replace(" ", "-").Replace("&", "and")
-    : $"menu-{parent.MenuId}";
+  <div class="site-header__bar">
+    <div class="container site-header__inner">
 
-    @* MEGA MENU *@
-    if (parent.MenuType == "MegaMenu")
-    {
-      <section class="nav-data" data-key="@menuKey" data-label="@parent.MenuName">
+      @* Company Logo *@
+      <a class="site-header__logo site-header__logo--gbl" href="@(headerLogo?.Url ?? Url.Action("Index", "Home"))"
+         aria-label="@(headerLogo?.MenuName ?? "Godavari Biorefineries Ltd — Home")">
 
-        @if (children.Any())
-        {
-          <ul class="mega-links">
-            @foreach (var child in children)
+        <img src="@(headerLogo?.FeatureImage ?? Url.Content("~/Assets/images/logo/gbl-logo.svg"))"
+             alt="@(headerLogo?.MenuName ?? "Godavari Biorefineries Ltd")" width="110" height="178">
+      </a>
+
+      <div class="site-header__nav-wrap" id="siteHeaderNav">
+
+        <span class="mega-menu__caret" data-mega-caret aria-hidden="true"></span>
+
+        @* Utility Menu *@
+        <div class="site-header__utility">
+
+          <ul class="site-header__utility-list">
+
+            @foreach (var menu in topMenus)
             {
               <li>
-                <a href="@child.Url" target="@(child.Target ?? "_self")">
-
-                  <span class="ml-title">@child.MenuName</span>
-
-                  @if (!string.IsNullOrEmpty(child.FeatureDescription))
-                  {
-                    <span class="ml-desc">
-                      @Html.Raw(child.FeatureDescription.CleanParagraphTags())
-                    </span>
-                  }
+                <a href="@(menu.Url ?? "#")" target="@(menu.Target ?? "_self")"
+                   rel="@(menu.Target == "_blank" ? "noopener noreferrer" : null)">
+                  @menu.MenuName
                 </a>
               </li>
             }
+
           </ul>
-        }
 
-        @if (!string.IsNullOrEmpty(parent.FeatureImage) ||
-            !string.IsNullOrEmpty(parent.FeatureTitle))
-        {
-          <div class="mega-promo">
-            <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" target="@(parent.FeatureButtonTarget ?? "_self")">
+          <div class="site-header__tools">
 
-              @if (!string.IsNullOrEmpty(parent.FeatureImage))
-              {
-                <img class="mp-media" src="@parent.FeatureImage" alt="@parent.FeatureTitle" />
-              }
+            @* Search *@
+            <div class="site-header__search-wrap">
 
-              @if (!string.IsNullOrEmpty(parent.FeatureTitle))
-              {
-                <h4>@parent.FeatureTitle</h4>
-              }
+              <button type="button" class="site-header__search-btn" data-search-toggle aria-label="Open search" aria-expanded="false" aria-controls="headerSearch">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </button>
 
-              @if (!string.IsNullOrEmpty(parent.FeatureButtonText))
-              {
-                <div class="mp-cta">
-                  @parent.FeatureButtonText
-                  <img src="~/Assets/images/common-images/button-arrow-icon.svg" alt="button arrow icon" />
-                </div>
-              }
-            </a>
-          </div>
-        }
+              <div class="site-header__search" id="headerSearch" hidden>
+                <form class="site-header__search-form" action="/search/" method="get" role="search">
+                  <label class="sr-only" for="headerSearchInput">Search</label>
+                  <div class="site-header__search-field">
+                    <span class="site-header__search-icon" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/>
+                        <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <input type="search" id="headerSearchInput" name="q" class="site-header__search-input" placeholder="What are you looking for?" autocomplete="off">
+                    <button type="submit" class="site-header__search-submit">Search</button>
+                    <button type="button" class="site-header__search-close" data-search-close aria-label="Close search">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
 
-      </section>
-    }
-    else
-    {
-      @* NORMAL MENU *@
-      <section class="nav-data" data-key="@menuKey" data-label="@parent.MenuName" data-href="@parent.Url">
-      </section>
-
-    }
-  }
-
-
-
-</template>
-
-
-<header class="site-header is-intro" id="siteHeader">
-  <div class="container">
-    <div class="header-inner">
-
-      <a href="@(headerLogo?.Url ?? "/")" class="logo-link"
-        aria-label="@(headerLogo?.MenuName ?? "Godavari Biorefineries — Home")">
-
-        <img src="@(headerLogo?.ThumbImage ?? "/Assets/images/logo/godavaribiorefineries-logo-red.svg")"
-          alt="@(headerLogo?.MenuName ?? "Godavari Biorefineries logo")">
-      </a>
-
-      <nav class="primary-nav" id="primaryNav" aria-label="Primary">
-        <div class="nav-pill" id="navPill"></div>
-        <!-- nav items injected by JS -->
-      </nav>
-
-      <div class="header-actions">
-        @* <div class="lang-wrap" id="langWrap">
-            <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
-                <img src="~/Assets/images/common-images/global-icon.svg" alt="whatsapp icon"><span class="lang-label">EN</span>
-            <svg class="chev" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="lang-menu">
-            <button aria-current="true">English</button>
-            <button>हिन्दी</button>
             </div>
-        </div> *@
 
-        <div class="divider-v"></div>
+            @* Mobile Toggle *@
+            <button type="button" class="site-header__toggle" data-nav-toggle aria-label="Open menu"
+                    aria-expanded="false" aria-controls="siteHeaderNav">
 
-        @* <a href="#" class="btn-dealer"><span class="dealer-full">Find a Dealer</span></a> *@
+              <span></span>
+              <span></span>
+              <span></span>
 
-        @* <a class="icon-btn whatsapp-btn" href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-            <img src="~/Assets/images/common-images/whatsapp-icon.svg" alt="whatsapp icon">
-        </a> *@
+            </button>
 
-        <div class="search-wrap">
-          <button class="icon-btn search-trigger" id="searchTrigger" aria-label="Search">
-            <img src="~/Assets/images/common-images/search-icon.svg" alt="search icon">
-          </button>
+          </div>
+
         </div>
 
+        @* Primary Navigation *@
+        <nav class="site-header__nav" aria-label="Primary">
+
+          <ul class="site-header__primary">
+
+            @foreach (var parent in parentMenus)
+            {
+                var children = menus
+                    .Where(x => x.ParentMenuId == parent.MenuId)
+                    .OrderBy(x => x.Sequence)
+                    .ToList();
 
 
-        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
-          <span></span>
-        </button>
+                var menuKey = System.Text.RegularExpressions.Regex.Replace(
+                    (parent.MenuName ?? "").Trim().ToLowerInvariant()
+                        .Replace("&", "and")
+                        .Replace("/", "-"),
+                    @"[\s-]+", "-"
+                );
+
+                if (string.IsNullOrWhiteSpace(menuKey))
+                {
+                    menuKey = $"menu-{parent.MenuId}";
+                }
+
+                var menuId = $"mega-{menuKey}";
+
+                var hasMegaMenu = string.Equals(
+                    parent.MenuType?.Trim(),
+                    "MegaMenu",
+                    StringComparison.OrdinalIgnoreCase
+                );
+
+              <li class="site-header__item" data-nav-item>
+
+                <a href="@(hasMegaMenu ? "#" : (parent.Url ?? "#"))"
+                  class="site-header__link"
+                  data-mega-trigger="@(hasMegaMenu ? menuKey : "")"
+                  aria-haspopup="@(hasMegaMenu ? "true" : "false")"
+                  aria-expanded="false"
+                  aria-controls="@menuId"
+                  target="@parent.Target">
+
+                    @parent.MenuName
+
+                    @if (hasMegaMenu)
+                    {
+                        <span class="site-header__caret" aria-hidden="true"></span>
+                    }
+                </a>
+
+                @* Mega Menu *@
+                @if (hasMegaMenu)
+                {
+                  <div class="mega-menu" id="@menuId" data-mega="@menuKey" hidden>
+
+                    <div class="mega-menu__grid">
+
+                      @* Second-Level Menus *@
+                      <div class="mega-menu__col mega-menu__col--l2">
+
+                                          
+                    <ul class="mega-l2">
+
+                        @foreach (var child in children)
+                        {
+                            var subChildren = menus
+                                .Where(x => x.ParentMenuId == child.MenuId)
+                                .OrderBy(x => x.Sequence)
+                                .ToList();
+
+                            var panelId = $"panel-{child.MenuId}";
+
+                            <li>
+
+                                <a href="@(subChildren.Any() ? "#" : (child.Url ?? "#"))"
+                                  class="mega-l2__item"
+                                  data-l2
+                                  @if (subChildren.Any())
+                                  {
+                                      <text>data-panel="@panelId" aria-expanded="false"</text>
+                                  }
+                                  target="@(subChildren.Any() ? null : (child.Target ?? "_self"))"
+                                  rel="@(child.Target == "_blank" && !subChildren.Any() ? "noopener noreferrer" : null)">
+
+                                    @child.MenuName
+
+                                    @if (subChildren.Any())
+                                    {
+                                        <span class="mega-chevron" aria-hidden="true"></span>
+                                    }
+
+                                </a>
+
+                                @* Third-Level Menus *@
+                                @if (subChildren.Any())
+                                {
+                                    <div class="mega-l3-panel"
+                                        data-panel="@panelId"
+                                        hidden>
+
+                                        @foreach (var subChild in subChildren)
+                                        {
+                                            var thirdLevelChildren = menus
+                                                .Where(x => x.ParentMenuId == subChild.MenuId)
+                                                .OrderBy(x => x.Sequence)
+                                                .ToList();
+
+                                            <div class="mega-l3-item">
+
+                                                <a href="@(thirdLevelChildren.Any() ? "#" : (subChild.Url ?? "#"))"
+                                                  class="mega-l3"
+                                                  @if (thirdLevelChildren.Any())
+                                                  {
+                                                      <text>data-l3 data-panel="panel-@subChild.MenuId" aria-expanded="false"</text>
+                                                  }
+                                                  target="@(thirdLevelChildren.Any() ? null : (subChild.Target ?? "_self"))"
+                                                  rel="@(subChild.Target == "_blank" && !thirdLevelChildren.Any() ? "noopener noreferrer" : null)">
+
+                                                    @subChild.MenuName
+
+                                                    @if (thirdLevelChildren.Any())
+                                                    {
+                                                        <span class="mega-chevron" aria-hidden="true"></span>
+                                                    }
+
+                                                </a>
+
+                                                @* Fourth-Level Menus *@
+                                                @if (thirdLevelChildren.Any())
+                                                {
+                                                    <div class="mega-l3-children"
+                                                        data-panel="panel-@subChild.MenuId"
+                                                        hidden>
+
+                                                        @foreach (var thirdChild in thirdLevelChildren)
+                                                        {
+                                                            <a href="@(thirdChild.Url ?? "#")"
+                                                              class="mega-l3"
+                                                              target="@(thirdChild.Target ?? "_self")"
+                                                              rel="@(thirdChild.Target == "_blank" ? "noopener noreferrer" : null)">
+
+                                                                @thirdChild.MenuName
+
+                                                            </a>
+                                                        }
+
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                }
+
+                            </li>
+                        }
+
+                    </ul>
+
+
+                      </div>
+
+                      @* Feature Card *@
+                      @if (!string.IsNullOrWhiteSpace(parent.FeatureImage)
+                          || !string.IsNullOrWhiteSpace(parent.FeatureTitle)
+                          || !string.IsNullOrWhiteSpace(parent.FeatureDescription)
+                          || !string.IsNullOrWhiteSpace(parent.FeatureButtonText))
+                      {
+                        <div class="mega-menu__col mega-menu__col--feature">
+
+                          <article class="mega-featured">
+
+                            @if (!string.IsNullOrWhiteSpace(parent.FeatureImage))
+                            {
+                              <div class="mega-featured__media">
+
+                                <img src="@parent.FeatureImage" alt="@(parent.FeatureTitle ?? parent.MenuName ?? "")">
+
+                              </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(parent.FeatureTitle))
+                            {
+                              <h3 class="mega-featured__title">
+                                @parent.FeatureTitle
+                              </h3>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(parent.FeatureDescription))
+                            {
+                              <div class="mega-featured__copy">
+                                @Html.Raw(parent.FeatureDescription.CleanParagraphTags())
+                              </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(parent.FeatureButtonText))
+                            {
+                              <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" class="mega-featured__cta"
+                                 target="@(parent.FeatureButtonTarget ?? "_self")"
+                                 rel="@(parent.FeatureButtonTarget == "_blank" ? "noopener noreferrer" : null)">
+
+                                <span aria-hidden="true">&rarr;</span>
+
+                                @parent.FeatureButtonText
+
+                              </a>
+                            }
+
+                          </article>
+
+                        </div>
+                      }
+
+                    </div>
+
+                  </div>
+                }
+
+              </li>
+            }
+
+          </ul>
+
+        </nav>
+
       </div>
+
+      @* Somaiya Group Logo *@
+      <a class="site-header__logo site-header__logo--somaiya" href="https://www.somaiya.com/" target="_blank"
+         rel="noopener noreferrer" aria-label="Somaiya Group (opens in a new tab)">
+
+        <img src="@headerLogo.ThumbImage" alt="Somaiya Group" width="152" height="114">
+
+      </a>
+
     </div>
   </div>
 
-  <!-- desktop mega menu -->
-  <div class="mega-backdrop" id="megaBackdrop"></div>
-  <div class="mega-stage" id="megaStage">
-    <div class="mega-panel" id="megaPanel">
-      <div class="mega-inner" id="megaInner"></div>
-    </div>
-  </div>
-
-  <!-- mobile drawer — pure navigation only; search / language / dealer / WhatsApp
-       all live in the header above, not duplicated in here -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-  <aside class="mobile-nav" id="mobileNav" aria-label="Mobile menu">
-    <div class="drawer-head">
-      <img src="~/Assets/images/logo/godavaribiorefineries-logo-red.svg" alt="Godavari Biorefineries logo">
-      <button class="drawer-close" id="drawerClose" aria-label="Close menu">
-        <svg viewBox="0 0 20 20" fill="none">
-          <path d="M4 4l12 12M16 4L4 16" stroke-width="1.7" stroke-linecap="round" />
-        </svg>
-      </button>
-    </div>
-    <div class="drawer-body" id="drawerBody">
-      <div class="drawer-screen drawer-root" id="drawerRoot"></div>
-      <div class="drawer-screen drawer-sub" id="drawerSub"></div>
-    </div>
-  </aside>
 </header>
-
-<!-- cmd-k style search overlay -->
-<form class="search-form">
-  <div class="search-overlay" id="searchOverlay">
-    <div class="search-modal" id="searchModal">
-      <div class="search-modal-input" id="searchInputWrap">
-
-        <img src="~/Assets/images/common-images/search-icon.svg" alt="search icon">
-
-        <input type="text" placeholder="Search products, tools, dealers..." id="searchInput" name="keyword"
-          autocomplete="off">
-
-        <button type="button" class="search-clear" id="searchClear" aria-label="Clear search">
-          <svg viewBox="0 0 12 12" fill="none">
-            <path d="M1 1l10 10M11 1L1 11" stroke-width="1.6" stroke-linecap="round" />
-          </svg>
-        </button>
-
-        <button type="button" class="search-modal-close" id="searchModalClose" aria-label="Close search">
-          <svg viewBox="0 0 18 18" fill="none">
-            <path d="M3.5 3.5l11 11M14.5 3.5l-11 11" stroke-width="1.7" stroke-linecap="round" />
-          </svg>
-        </button>
-
-      </div>
-    </div>
-  </div>
-</form>
-
-@* <form class="search-form">
-  <div class="search-overlay" id="searchOverlay">
-    <div class="search-modal" id="searchModal">
-      <div class="search-modal-input" id="searchInputWrap">
-
-        <img src="~/Assets/images/common-images/search-icon.svg" alt="search icon">
-        <input type="text" placeholder="Search products, tools, dealers..." id="searchInput" autocomplete="off">
-        <button class="search-clear" id="searchClear" aria-label="Clear search">
-          <svg viewBox="0 0 12 12" fill="none">
-            <path d="M1 1l10 10M11 1L1 11" stroke-width="1.6" stroke-linecap="round" />
-          </svg>
-        </button>
-        <button class="search-modal-close" id="searchModalClose" aria-label="Close search">
-          <svg viewBox="0 0 18 18" fill="none">
-            <path d="M3.5 3.5l11 11M14.5 3.5l-11 11" stroke-width="1.7" stroke-linecap="round" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-</form> *@

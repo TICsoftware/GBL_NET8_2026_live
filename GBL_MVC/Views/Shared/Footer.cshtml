@@ -5,159 +5,157 @@
 @{
     var footerMenus = Model ?? new List<MenuFooter>();
 
-   
     var columns = footerMenus
-    .Where(x => x.ParentFooterId == null || x.ParentFooterId == 0)
-    .Where(x => x.FooterType == "Column")
-    .OrderBy(x => x.Sequence)
-    .ToList();
+        .Where(x => (x.ParentFooterId == null || x.ParentFooterId == 0)
+                    && x.FooterType == "Column")
+        .OrderBy(x => x.Sequence)
+        .ToList();
 
     var socialMenus = footerMenus
-    .Where(x => x.FooterType == "Social")
-    .OrderBy(x => x.Sequence)
-    .ToList();
+        .Where(x => x.FooterType == "Social")
+        .OrderBy(x => x.Sequence)
+        .ToList();
 
     var companyInfo = footerMenus
-    .FirstOrDefault(x => x.FooterType == "CompanyInfo");
+        .FirstOrDefault(x => x.FooterType == "CompanyInfo");
 
     var copyright = footerMenus
-    .FirstOrDefault(x => x.FooterType == "Copyright");
+        .FirstOrDefault(x => x.FooterType == "Copyright");
 
     var bottomLinks = footerMenus
-    .Where(x => x.FooterType == "BottomLink")
-    .OrderBy(x => x.Sequence)
-    .ToList();
+        .Where(x => x.FooterType == "BottomLink")
+        .OrderBy(x => x.Sequence)
+        .ToList();
 }
 
-<footer class="relative overflow-hidden text-white">
+<footer class="site-footer relative overflow-hidden text-white">
 
-    <img src="~/Assets/images/common-images/footer-bg.webp"
-        class="object-cover w-full h-full lg:h-full absolute inset-0 bottom-0 -z-1" alt="" />
+    @if (!string.IsNullOrEmpty(companyInfo?.FooterThumbImage))
+    {
+        <video class="site-footer-bg" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="@companyInfo.FooterThumbImage" type="video/mp4">
+        </video>
+    }
 
-    <img src="~/Assets/images/common-images/footer-vector.webp" alt=""
-        class="footer-vector pointer-events-none select-none absolute bottom-0 sm:bottom-17 left-0 w-full h-auto" />
+    <div class="site-footer-overlay" aria-hidden="true"></div>
 
-    <!-- Footer Logo -->
-    <div class="container">
-        <div class="relative z-10 sm:max-w-5xl mx-auto pt-6">
-            <div class="flex flex-col items-center text-center">
-                <div class="flex items-center gap-3">
+    <div class="container relative z-10">
 
-                    <img src="@(companyInfo?.FooterThumbImage ?? 
-                                                 Url.Content("~/Assets/images/logo/godavaribiorefineries-logo-white.svg"))"
-                        alt="@(companyInfo?.Title ?? "Godavari Biorefineries")" />
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="border-t border-white/40"></div>
-
-    <!-- Footer Columns -->
-    <div class="container">
-        <div class="relative z-10 sm:max-w-4xl mx-auto pt-6 pb-0">
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-10 py-10 text-sm linkcolumns-outer">
-
-                @foreach (var column in columns.OrderBy(x => x.Sequence))
+        <div class="site-footer-grid section-spacing-sm">
+            <div class="site-footer-col">
+                @if (!string.IsNullOrEmpty(companyInfo?.Title))
                 {
-                    var links = footerMenus
+                    <h5 class="site-footer-heading">@companyInfo.Title</h5>
+                }
+
+                @if (!string.IsNullOrEmpty(companyInfo?.Description))
+                {
+                    @Html.Raw(companyInfo.Description)
+                }
+            </div>
+
+            @foreach (var column in columns)
+            {
+                var links = footerMenus
                     .Where(x => x.ParentFooterId == column.FooterId)
                     .OrderBy(x => x.Sequence)
                     .ToList();
 
-                    <div class="linkcolumns-block">
-                        <h4 class="font-bold text-white tracking-wide mb-4">
-                            @column.Title
-                        </h4>
+                var hasLinks = links.Any();
+                var title = column.Title.ToString();
 
-                        @if (column.Title?.ToUpper() == "FOLLOW ON US")
-                        {
-                            <ul class="space-y-3 text-white/80">
-                                @foreach (var link in links)
-                                {
-                                    <li>
-                                        <a href="@(link.Url ?? "#")" target="@(link.Target ?? "_blank")"
-                                            class="social-item flex items-center gap-2.5">
+                <div class="site-footer-col">
+                    @if (hasLinks)
+                    {
+                        <ul class="site-footer-nav">
+                            @foreach (var link in links)
+                            {
+                                <li>
+                                    @if (!string.IsNullOrWhiteSpace(link.Url))
+                                    {
+                                        <a href="@link.Url" target="@link.Target"
+                                           class="@(link.Target == "_blank" ? "site-footer-external" : "") @link.IconClass"
+                                           rel="@(link.Target == "_blank" ? "noopener noreferrer" : null)">
 
-                                            @if (!string.IsNullOrEmpty(link.FooterImage))
+                                            @link.Title
+
+                                            @if (link.Target == "_blank")
                                             {
-                                                <span
-                                                    class="social-circle w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                                                    <img src="@link.FooterImage" alt="@link.Title" />
+                                                <span class="site-footer-ext-icon" aria-hidden="true">
+                                                    <img src="@Url.Content("~/Assets/images/common-images/external-link.svg")" alt="" />
                                                 </span>
                                             }
-
-                                            @link.Title
                                         </a>
-                                    </li>
-                                }
-                            </ul>
-                        }
-                        else
+                                    }
+                                    else
+                                    {
+                                        <span class="@link.IconClass">@link.Title</span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+
+                        if (title == "Column 3")
                         {
-                            <ul class="space-y-2.5 text-white">
-                                @foreach (var link in links)
-                                {
-                                    <li>
-                                        <a href="@(link.Url ?? "#")" target="@link.Target" class="link-item block">
-                                            @link.Title
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
+                            if (socialMenus.Any())
+                            {
+                                <div class="site-footer-col">
+                                    <div class="site-footer-follow">
+                                        <span>Follow Us</span>
+
+                                        @foreach (var social in socialMenus)
+                                        {
+                                            if (social.Sequence > 0)
+                                            {
+                                                <a href="@(social.Url ?? "#")" target="@(social.Target ?? "_blank")" rel="noopener noreferrer"
+                                                   aria-label="@social.Title">
+
+                                                    @if (!string.IsNullOrEmpty(social.FooterImage))
+                                                    {
+                                                        <img src="@social.FooterImage" alt="@social.Title" />
+                                                    }
+                                                    else
+                                                    {
+                                                        @social.Title
+                                                    }
+                                                </a>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
                         }
-
-                    </div>
-                }
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Company Information -->
-    @if (!string.IsNullOrEmpty(companyInfo?.Description))
-    {
-        <div class="container">
-            <div class="relative z-10 max-w-full bottom-line-wrapper">
-                <div class="text-center text-white py-5">
-                    @Html.Raw(companyInfo.Description)
-                </div>
-            </div>
-        </div>
-    }
-
-    <!-- Bottom Copyright -->
-    <div class="relative z-10 border-t border-white/40 bottom-bar-wrapper">
-        <div class="container">
-            <div
-                class="pt-4 pb-5 sm:pb-8 flex flex-col md:flex-row items-center justify-center gap-2 text-sm text-white bottom-bar-wrapper-inner relative">
-
-                <div>
-                    @if (copyright != null)
-                    {
-                        <text>
-                            &copy; <span id="year-foot"></span> @copyright.Description.CleanParagraphTags()
-                        </text>
                     }
 
-                    @foreach (var link in bottomLinks)
-                    {
-                        <span class="mx-1.5">|</span>
+                </div>
+            }
+            @* Social media section *@
+        </div>
 
-                        <a href="@link.Url" target="@link.Target" class="link-item">
+        <div class="site-footer-bottom">
+            <p class="site-footer-copy">
+                @if (copyright != null)
+                {
+                    <text>
+                        &copy; <span id="year-foot"></span>
+                        @copyright.Description.CleanParagraphTags()
+                    </text>
+                }
+            </p>
+
+            <ul class="site-footer-legal">
+                @foreach (var link in bottomLinks)
+                {
+                    <li>
+                        <a href="@(link.Url ?? "#")" target="@link.Target"
+                           rel="@(link.Target == "_blank" ? "noopener noreferrer" : null)">
                             @link.Title
                         </a>
-                    }
-                </div>
-
-                <p class="text-white/30 text-[10px]! tic-text">
-                    <a href="https://www.ticworks.com/" target="_blank">TIC</a>
-                </p>
-
-            </div>
+                    </li>
+                }
+            </ul>
         </div>
+
     </div>
 
 </footer>
