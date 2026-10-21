@@ -49,13 +49,12 @@
   }
 
   <!-- Header -->
-  @Html.Partial("~/Views/Shared/_Header.cshtml")
-
+  @await Component.InvokeAsync("HeaderMenu")
 
   <main id="main-content">
     @RenderBody()
 
-    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+        @await Component.InvokeAsync("FooterMenu")
 
   </main>
 
