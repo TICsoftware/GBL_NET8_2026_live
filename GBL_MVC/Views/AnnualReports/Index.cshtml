@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "Annual Reports";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/annual-reports.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER -->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <picture>
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/annual-report-banner.webp">
+                  <img
+                     src="~/Assets/images/banners/annual-report-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <div class="innerbanner-overlay"></div>
+            </div>
+
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                           Annual Reports
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">Home</a>
+                           </li>
+                           <li class="text-white/60">/</li>
+                           <li>
+                              <a href="/InvestorRelations" class="text-white/70 hover:text-white transition">Investor Relations</a>
+                           </li>
+                           <li class="text-white/60">/</li>
+                           <li class="text-white">Annual Reports</li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <section class="ar-reports section-spacing" data-ar-reports aria-label="Annual reports">
+      <div class="container">
+         <ul class="ar-reports__grid">
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2025-2026</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Godavari_Biorefineries_Ltd_Annual_Report_2025-26.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-1.webp" alt="Godavari Biorefineries Ltd Annual Report 2025-26" loading="eager" fetchpriority="high">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2024-2025</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Godavari_Biorefineries_Ltd_Annual_Report_2024-25.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-2.webp" alt="Godavari Biorefineries Ltd Annual Report 2024-25" loading="eager">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2023-2024</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Godavari_Biorefineries_Ltd_Annual_Report_2023-24.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-3.webp" alt="Godavari Biorefineries Ltd Annual Report 2023-24" loading="eager">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2022-2023</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Godavari_Biorefineries_Ltd-Annual_Report_2022-23_0.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-4.webp" alt="Godavari Biorefineries Ltd Annual Report 2022-23" loading="eager">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2021-2022</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Godavari_Biorefineries_Ltd-Annual_Report_2021-22.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-5.webp" alt="Godavari Biorefineries Ltd Annual Report 2018-19">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2020-2021</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Godavari_Biorefineries_Ltd-Annual_Report_2020-21.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-6.webp" alt="Godavari Biorefineries Ltd Annual Report 2018-19">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2019-2020</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Annual-Report-GBL-2019-20.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-7.webp" alt="Godavari Biorefineries Ltd Annual Report 2018-19">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            <li class="ar-reports__item">
+               <p class="ar-reports__year">2018-2019</p>
+               <a class="ar-reports__card" href="https://www.godavaribiorefineries.com/sites/default/files/Annual-Report-GBL-2018-19.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="ar-reports__media">
+                     <img src="/assets/images/annualReport/annual-report-8.webp" alt="Godavari Biorefineries Ltd Annual Report 2018-19">                 
+                  </span>
+                  <span class="site-btn site-btn--fill ar-reports__download">
+                     <span class="site-btn__label">Download</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </span>
+               </a>
+            </li>
+            
+         </ul>
+
+         <div class="ar-reports__more">
+            <button type="button" class="site-btn site-btn--outline" data-ar-more>
+               <span class="site-btn__label">View more</span>
+               <span class="site-btn__arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </span>
+            </button>
+         </div>
+      </div>
+   </section>
+
+@section Scripts {
+   <script src="~/Assets/js/annual-reports.js" asp-append-version="true"></script>
+}
