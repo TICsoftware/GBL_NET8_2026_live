@@ -32,6 +32,16 @@ namespace GBL_MVC.Routes
                    pattern: "sustainability/social",
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "social" }
            );
+    app.MapControllerRoute(
+                   name: "diversity-and-inclusion",
+                   pattern: "careers/diversity-and-inclusion",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "diversity-and-inclusion" }
+           );
+ app.MapControllerRoute(
+                   name: "wellbeing-and-benefits",
+                   pattern: "careers/wellbeing-and-benefits",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "wellbeing-and-benefits" }
+           );
 
             app.MapControllerRoute(
                    name: "careers",
