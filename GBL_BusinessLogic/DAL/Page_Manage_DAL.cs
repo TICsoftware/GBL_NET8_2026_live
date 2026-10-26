@@ -131,6 +131,18 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Investor_Pdf_Articles_List", sqlParams);
         }
 
+        public DataSet Get_Annual_Reports_page_wise_DAL(int contentId, int page, int pageSize)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@ContentId", contentId),
+                new SqlParameter("@PageNumber", page),
+                new SqlParameter("@PageSize", pageSize)
+            };
+
+            return GetDataSet("Get_Annual_Reports_Articles_List", sqlParams);
+        }
+
 
 
         public DataTable ContactUs_Insert_DAL(ContactEntity model)

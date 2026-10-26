@@ -237,11 +237,13 @@ namespace GBL_BusinessLogic
                     Url = GetArticleUrl(row),
                     UrlTarget = GetArticleTarget(row),
 
-                    DisplayDate = table.Columns.Contains("cont_displaydate")
-                        ? row.Field<DateTime?>("cont_displaydate")
+                    DisplayDate = table.Columns.Contains("cont_displaydate") && row["cont_displaydate"] != DBNull.Value
+                        ? Convert.ToDateTime(row["cont_displaydate"])
                         : null,
 
-                    Sequence = row.Field<int?>("cont_sequence") ?? 0,
+                    Sequence = table.Columns.Contains("cont_sequence") && row["cont_sequence"] != DBNull.Value
+                        ? Convert.ToInt32(row["cont_sequence"])
+                        : 0,
                     Content = row["content"]?.ToString(),
 
 
