@@ -10,12 +10,13 @@ namespace GBL_BusinessLogic.BAL
     public class Investors_BAL : BasePageBAL
     {
         public const int DefaultPageSize = 12;
+        public const int AnnualReportPageSize = 8;
 
         public Investors_BAL(IConfiguration configuration) : base(configuration)
         {
         }
 
-        public InvestorsModel GetPdfListing_BAL(string pagename, int languageId, int geographyId)
+        public InvestorsModel GetPdfListing_BAL(string pagename, int languageId, int geographyId, int pageSize = DefaultPageSize)
         {
             var model = new InvestorsModel();
             var pageName = NormalizePageName(pagename);
@@ -31,10 +32,12 @@ namespace GBL_BusinessLogic.BAL
                 model.Content = MapContent(ds.Tables[0].Rows[0]);
             }
 
+            if (pageSize < 1) pageSize = DefaultPageSize;
+
             var contentId = model.Content?.ContId ?? 0;
             if (contentId > 0)
             {
-                var pageData = GetPdfListing_page_wise_BAL(contentId, 1, DefaultPageSize);
+                var pageData = GetPdfListing_page_wise_BAL(contentId, 1, pageSize);
                 model.SectionArticles_List = pageData.SectionArticles_List;
                 model.TotalCount = pageData.TotalCount;
             }
@@ -44,8 +47,8 @@ namespace GBL_BusinessLogic.BAL
                 model.TotalCount = articles.Count;
                 model.SectionArticles_List = articles
                     .OrderBy(a => a.Sequence)
-                    .ThenBy(a => a.Title, StringComparer.OrdinalIgnoreCase)
-                    .Take(DefaultPageSize)
+                    .ThenByDescending(a => a.Title, StringComparer.OrdinalIgnoreCase)
+                    .Take(pageSize)
                     .ToList();
             }
 

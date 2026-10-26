@@ -1,0 +1,53 @@
+@model List<GBL_BusinessLogic.Entity.ArticleModel>
+@using System.Text.RegularExpressions
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        var href = !string.IsNullOrWhiteSpace(item.Url)
+            ? item.Url
+            : (!string.IsNullOrWhiteSpace(item.MediafilePath) ? item.MediafilePath : item.ExternalUrl);
+
+        var title = item.Title ?? "";
+        var year = title;
+        var yearMatch = Regex.Match(title, @"(\d{4})\s*[-–]\s*(\d{2,4})");
+        if (yearMatch.Success)
+        {
+            var start = yearMatch.Groups[1].Value;
+            var end = yearMatch.Groups[2].Value;
+            if (end.Length == 2 && start.Length == 4)
+            {
+                end = start.Substring(0, 2) + end;
+            }
+            year = $"{start}-{end}";
+        }
+
+        var alt = !string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.ThumbnailAltText : title;
+        var thumb = item.ThumbnailImage;
+
+        <li class="ar-reports__item">
+            <p class="ar-reports__year">@year</p>
+            <a class="ar-reports__card"
+               href="@(string.IsNullOrWhiteSpace(href) ? "#" : href)"
+               target="_blank"
+               rel="noopener noreferrer">
+                @if (!string.IsNullOrWhiteSpace(thumb))
+                {
+                    <span class="ar-reports__media">
+                        <img src="@thumb" alt="@alt" loading="lazy">
+                    </span>
+                }
+                <span class="site-btn site-btn--fill ar-reports__download">
+                    <span class="site-btn__label">Download</span>
+                    <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </span>
+            </a>
+        </li>
+    }
+}

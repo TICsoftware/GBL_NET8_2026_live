@@ -138,6 +138,34 @@ namespace GBL_MVC.Routes
             );
 
             app.MapControllerRoute(
+                name: "annual-reports-load",
+                pattern: "AnnualReports/LoadReports",
+                defaults: new { controller = "AnnualReports", action = "LoadReports" }
+            );
+
+            app.MapControllerRoute(
+                name: "investor-annual-reports",
+                pattern: "investor-relations/annual-reports",
+                defaults: new
+                {
+                    controller = "AnnualReports",
+                    action = "Index",
+                    title = "annual-reports"
+                }
+            );
+
+            app.MapControllerRoute(
+                name: "annual-reports",
+                pattern: "AnnualReports",
+                defaults: new
+                {
+                    controller = "AnnualReports",
+                    action = "Index",
+                    title = "annual-reports"
+                }
+            );
+
+            app.MapControllerRoute(
                name: "media-coverage",
                pattern: "media/media-coverage",
                defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage" }
