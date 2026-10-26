@@ -1,0 +1,378 @@
+@{
+    ViewData["Title"] = "Corporate governance";
+    var pdfBase = "https://www.godavaribiorefineries.com/sites/default/files/";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />   
+   <link rel="stylesheet" href="~/Assets/css/corporate-governance-intro.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/corporate-governance-banner.webp">                  
+
+                  <!-- Desktop -->
+                  <img
+                     src="~/Assets/images/banners/corporate-governance-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                           Corporate Governance
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Investor Relations
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                              Corporate governance
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+  
+
+   <div class="cg-page">
+   <div class="cg-jump-sentinel" aria-hidden="true"></div>
+   <section class="cg-jump" aria-label="Corporate governance sections">
+      <div class="container">
+         <div class="cg-jump__track">
+            <button type="button" class="cg-jump__arrow cg-jump__arrow--prev" aria-label="Previous section">
+               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <nav class="cg-jump__nav">
+               <a class="cg-jump__btn" href="#policies">Policies</a>
+               <a class="cg-jump__btn" href="#code-of-conduct">Code of Conduct</a>
+               <a class="cg-jump__btn" href="#committees">Committees of the Board</a>
+            </nav>
+            <button type="button" class="cg-jump__arrow cg-jump__arrow--next" aria-label="Next section">
+               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 6 15.5 12l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+         </div>
+      </div>
+   </section>
+
+   <section class="cg-docs section-spacing" id="policies" aria-labelledby="policies-title">
+      <div class="container">
+         <h2 id="policies-title" class="text-h2 title-animation">Policies</h2>
+         <ul class="cg-docs__grid card-list-items">
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Terms_and_Condition_of_Appointment_of_Independent_Directors.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Terms and Condition of Appointment of Independent Directors</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Policy_determine%20Material%20Subsidiary.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Policy for Determination of Material Subsidiaries</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)GBL_CSR_Policy.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Corporate Social Responsibility Policy</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Code_of_pratices_and_procedures_of_fair_disclosure_of_UPSI.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Pratices and Procedures of Fair Disclosure of UPSI</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)PIT_Code_Annexure_C.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">PIT Code - Annexure C</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Leak_of_UPSI_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Policy on Leak of UPSI</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Divident_Distribution_Policy.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Dividend Distribution Policy</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Familiarization_Programme_for_ID_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Familiarization Programme for Independent Directors</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)PIT_Code_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code on Prohibition of Insider Trading</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Materiality_of_Information_and_Events_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Policy on Materiality of Information and Events</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Nomination_and_Remuneration_Policy_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Nomination and Remuneration Policy</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Preservation_of_Documents_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Policy on Preservation of Documents</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Policy_on_Board_Diversity_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Policy on Board Diversity</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Policy%20on%20RPT_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Policy on Related Party Transactions</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Vigil_Mechanism_Policy_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Vigil Mechanism Policy</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Risk_Management_Policy_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Risk Management Policy</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Succession_Plan.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Succession Plan</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Final%20sexual%20Harassment%20policy%20%284%29.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Sexual Harassment policy</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Updatd_Consent_Compliance_Monitoring_Report.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Updated Consent Compliance Monitoring Report</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Consent_Compliance_Monitoring_Report.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Consent Compliance Monitoring Report</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+         </ul>
+      </div>
+   </section>
+
+   <section class="cg-docs cg-docs--muted section-spacing" id="code-of-conduct" aria-labelledby="code-of-conduct-title">
+      <div class="container">
+         <h2 id="code-of-conduct-title" class="text-h2 title-animation">Code of Conduct</h2>
+         <ul class="cg-docs__grid card-list-items">
+            <li class="card-rise">
+               <a class="cg-doc" href="@(pdfBase)Code_of_Conduct_GBL.pdf" target="_blank" rel="noopener noreferrer">
+                  <span class="cg-doc__title">Code of Conduct</span>
+                  <span class="cg-doc__icon" aria-hidden="true"></span>
+               </a>
+            </li>
+         </ul>
+      </div>
+   </section>
+
+   <section class="cg-docs section-spacing" id="committees" aria-labelledby="committees-title">
+      <div class="container">
+         <h2 id="committees-title" class="text-h2 title-animation">Committees of the Board</h2>
+         <ul class="cg-committees card-list-items">
+            <li class="cg-committee card-rise">
+               <h3>Audit Committee</h3>
+               <ul>
+                  <li>
+                     <span class="cg-committee__name">Mr. Hemant Luthra</span>
+                     <span class="cg-committee__role">Chairman</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Prof. Lakshmi Kantam Mannepalli</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Samir Shantilal Somaiya</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Sean E. Reagan</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+               </ul>
+            </li>
+            <li class="cg-committee card-rise">
+               <h3>Stakeholders' Relationship Committee</h3>
+               <ul>
+                  <li>
+                     <span class="cg-committee__name">Mr. Hemant Luthra</span>
+                     <span class="cg-committee__role">Chairman</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Prof. Lakshmi Kantam Mannepalli</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Bhalachandra Bakshi</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Dr. Raman Ramachandran</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Nandan Mehta</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+               </ul>
+            </li>
+            <li class="cg-committee card-rise">
+               <h3>Nomination and Remuneration Committee</h3>
+               <ul>
+                  <li>
+                     <span class="cg-committee__name">Prof. Lakshmi Kantam Mannepalli</span>
+                     <span class="cg-committee__role">Chairman</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Hemant Luthra</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Nandan Mehta</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+               </ul>
+            </li>
+            <li class="cg-committee card-rise   ">
+               <h3>Corporate Social Responsibility Committee</h3>
+               <ul>
+                  <li>
+                     <span class="cg-committee__name">Prof. Lakshmi Kantam Mannepalli</span>
+                     <span class="cg-committee__role">Chairman</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Hemant Luthra</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Bhalachandra Bakshi</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+                  <li>
+                     <span class="cg-committee__name">Mr. Suhas Uttam Godage</span>
+                     <span class="cg-committee__role">Member</span>
+                  </li>
+               </ul>
+            </li>
+            <li class="cg-committee cg-committee--wide card-rise">
+               <h3>Risk Management Committee</h3>
+               <div class="cg-committee__cols">
+                  <ul>
+                     <li>
+                        <span class="cg-committee__name">Dr. Raman Ramachandran</span>
+                        <span class="cg-committee__role">Chairman</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Mr. Hemant Luthra</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Prof. Lakshmi Kantam Mannepalli</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Mr. Samir Shantilal Somaiya</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Mr. Nitin Mehta</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                  </ul>
+                  <ul>
+                     <li>
+                        <span class="cg-committee__name">Mr. Bhalachandra Bakshi</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Dr. Sangeeta Srivastava</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Mr. Suhas U. Godage</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                     <li>
+                        <span class="cg-committee__name">Dr. Sean E Reagan</span>
+                        <span class="cg-committee__role">Member</span>
+                     </li>
+                  </ul>
+               </div>
+            </li>
+         </ul>
+      </div>
+   </section>
+   </div>
+
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/corporate-governance.js" asp-append-version="true"></script>
+}

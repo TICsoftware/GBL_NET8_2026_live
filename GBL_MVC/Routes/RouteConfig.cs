@@ -52,6 +52,12 @@ app.MapControllerRoute(
                    pattern: "sustainability/regenerative-processes",
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "regenerative-processes" }
            );
+
+                   app.MapControllerRoute(
+                   name: "health-and-safety",
+                   pattern: "sustainability/health-and-safety",
+                   defaults: new { controller = "sustainability", action = "LearningDevelopment", title = "health-and-safety" }
+           );
             app.MapControllerRoute(
                    name: "careers",
                    pattern: "careers",
@@ -143,6 +149,17 @@ app.MapControllerRoute(
                     controller = "Investors",
                     action = "Pdflisting",
                     title = "subsidiaries"
+                }
+            );
+
+     app.MapControllerRoute(
+                name: "investor-policies",
+                pattern: "investor-relations/policies",
+                defaults: new
+                {
+                    controller = "Investors",
+                    action = "Pdflisting",
+                    title = "policies"
                 }
             );
 

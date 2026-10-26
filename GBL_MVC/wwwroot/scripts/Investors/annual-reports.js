@@ -23,7 +23,7 @@ $(function () {
         if (loadedCount >= totalCount || totalCount <= pageSize) {
             $loadMoreWrap.prop("hidden", true).hide();
         } else {
-            $loadMoreWrap.prop("hidden", false).show();
+            $loadMoreWrap.prop("hidden", false).css("display", "flex");
         }
     }
 

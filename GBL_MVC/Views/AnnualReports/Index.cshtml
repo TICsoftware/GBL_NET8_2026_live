@@ -57,7 +57,7 @@
             @await Html.PartialAsync("_annual_report_list", Model?.SectionArticles_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>())
         </ul>
 
-        <div class="ar-reports__more" data-ar-load-more-wrap hidden>
+        <div class="ar-reports__more" data-ar-load-more-wrap @(totalCount > pageSize ? null : "hidden")>
             <button type="button" class="site-btn site-btn--outline" data-ar-load-more>
                 <span class="site-btn__label">View more</span>
                 <span class="site-btn__arrow" aria-hidden="true">
@@ -72,5 +72,5 @@
 </section>
 
 @section Scripts {
-    <script src="~/scripts/Investors/annual-reports.js" asp-append-version="true"></script>
+    <script src="~/Assets/js/annual-reports.js" asp-append-version="true"></script>
 }
