@@ -45,12 +45,12 @@ namespace GBL_MVC.Routes
 app.MapControllerRoute(
                    name: "circular-products",
                    pattern: "sustainability/circular-products",
-                   defaults: new { controller = "Sustainability", action = "LearningDevelopment", title = "circular-products" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "circular-products" }
            );
            app.MapControllerRoute(
                    name: "regenerative-processes",
                    pattern: "sustainability/regenerative-processes",
-                   defaults: new { controller = "Sustainability", action = "LearningDevelopment", title = "regenerative-processes" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "regenerative-processes" }
            );
             app.MapControllerRoute(
                    name: "careers",

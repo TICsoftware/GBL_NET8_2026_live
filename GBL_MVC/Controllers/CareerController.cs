@@ -61,6 +61,7 @@ public class CareerController : Controller
         }
     }
 
+
     public IActionResult WorkWithUs(string title)
     {
         try
