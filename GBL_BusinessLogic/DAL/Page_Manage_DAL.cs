@@ -143,6 +143,16 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Annual_Reports_Articles_List", sqlParams);
         }
 
+        public DataSet Get_Quarterly_Reports_Years_DAL(int contentId)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@ContentId", contentId)
+            };
+
+            return GetDataSet("Get_Quarterly_Reports_Years_List", sqlParams);
+        }
+
 
 
         public DataTable ContactUs_Insert_DAL(ContactEntity model)

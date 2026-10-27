@@ -83,7 +83,10 @@ namespace GBL_BusinessLogic.BAL
                         FieldName = row.Field<string>("field_name") ?? "",
                         FieldKey = row.Field<string>("name_key") ?? "",
                         FieldValue = row.Field<string>("field_value") ?? "",
-                        ImagePath = row.Field<string>("component_image_path") ?? "",
+                        ImagePath = FirstNonEmpty(
+                            GetColumnString(row, "component_image_path"),
+                            GetColumnString(row, "File_path"),
+                            GetColumnString(row, "field_media_path")),
                         sequence = group.Key.Sequence,
                         IsBlock = group.Key.IsBlock
                     }).ToList()
@@ -181,6 +184,26 @@ namespace GBL_BusinessLogic.BAL
             .OrderBy(x => x.Sequence)
             .ToList();
 
+        }
+
+        protected static string GetColumnString(DataRow row, string columnName)
+        {
+            if (row?.Table == null || !row.Table.Columns.Contains(columnName) || row[columnName] == DBNull.Value)
+            {
+                return "";
+            }
+
+            return row[columnName]?.ToString()?.Trim() ?? "";
+        }
+
+        protected static string FirstNonEmpty(params string[] values)
+        {
+            foreach (var value in values)
+            {
+                if (!string.IsNullOrWhiteSpace(value)) return value;
+            }
+
+            return "";
         }
     }
 }

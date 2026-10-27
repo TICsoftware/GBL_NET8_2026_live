@@ -65,7 +65,7 @@ namespace GBL_BusinessLogic
                 || value.StartsWith("uploads", StringComparison.OrdinalIgnoreCase)
                 || System.Text.RegularExpressions.Regex.IsMatch(
                     value,
-                    @"\.(webp|png|jpe?g|gif|svg|pdf|docx?|xlsx?|pptx?|zip|rar|csv|txt)(\?|#|$)",
+                    @"\.(webp|png|jpe?g|gif|svg|pdf|docx?|xlsx?|pptx?|zip|rar|csv|txt|mp3|wav|m4a|aac|wma|mp4|mpeg)(\?|#|$)",
                     System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
             if (!isUrl && !looksLikePath)

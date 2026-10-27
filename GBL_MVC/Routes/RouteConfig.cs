@@ -203,6 +203,28 @@ app.MapControllerRoute(
                 }
             );
 
+            app.MapControllerRoute(
+                name: "investor-quarterly-reports",
+                pattern: "investor-relations/quarterly-reports",
+                defaults: new
+                {
+                    controller = "QuarterlyReports",
+                    action = "Index",
+                    title = "quarterly-reports"
+                }
+            );
+
+            app.MapControllerRoute(
+                name: "quarterly-reports",
+                pattern: "quarterly-reports",
+                defaults: new
+                {
+                    controller = "QuarterlyReports",
+                    action = "Index",
+                    title = "quarterly-reports"
+                }
+            );
+
                  
 
             app.MapControllerRoute(
