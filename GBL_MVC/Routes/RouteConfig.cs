@@ -152,7 +152,7 @@ app.MapControllerRoute(
                 }
             );
 
-     app.MapControllerRoute(
+            app.MapControllerRoute(
                 name: "investor-policies",
                 pattern: "investor-relations/policies",
                 defaults: new
@@ -162,6 +162,29 @@ app.MapControllerRoute(
                     title = "policies"
                 }
             );
+
+            app.MapControllerRoute(
+                name: "investor-code-of-conduct",
+                pattern: "investor-relations/code-of-conduct",
+                defaults: new
+                {
+                    controller = "Investors",
+                    action = "Pdflisting",
+                    title = "code-of-conduct"
+                }
+            );
+
+            app.MapControllerRoute(
+                name: "corporate-governance",
+                pattern: "investor-relations/corporate-governance",
+                defaults: new
+                {
+                    controller = "CorporateGovernance",
+                    action = "Index",
+                    title = "corporate-governance"
+                }
+            );
+
 
             app.MapControllerRoute(
                 name: "annual-reports-load",
