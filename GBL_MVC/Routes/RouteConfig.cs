@@ -194,12 +194,12 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-annual-report",
-                pattern: "investor-relations/annual-report",
+                pattern: "investor-relations/annual-reports",
                 defaults: new
                 {
                     controller = "AnnualReports",
                     action = "Index",
-                    title = "annual-report"
+                    title = "annual-reports"
                 }
             );
 

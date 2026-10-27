@@ -94,7 +94,7 @@
                 <ul class="cg-committees card-list-items">
                     @foreach (var committee in committees)
                     {
-                        var isWide = committee.Members.Count > 4;
+                        var isWide = committee.Members.Count > 5;
                         var mid = (int)Math.Ceiling(committee.Members.Count / 2.0);
                         <li class="cg-committee@(isWide ? " cg-committee--wide" : "") card-rise">
                             @if (!string.IsNullOrWhiteSpace(committee.Title))
