@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function listCards(list) {
     return Array.from(list.querySelectorAll('.card-rise')).filter(function (el) {
       if (isStoryCard(el)) return false;
+      if (el.hidden) return false;
       return el.closest('.card-list-items') === list;
     });
   }

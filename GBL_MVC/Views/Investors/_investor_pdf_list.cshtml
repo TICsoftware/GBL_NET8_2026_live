@@ -1,5 +1,9 @@
 @model List<GBL_BusinessLogic.Entity.ArticleModel>
 @using System.Globalization
+@{
+    int? visibleCount = ViewData["PdfVisibleCount"] is int count ? count : null;
+    var index = 0;
+}
 
 @if (Model != null)
 {
@@ -16,7 +20,8 @@
             title = parsedTitle.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
         }
 
-        <li class="card-rise">
+        var isHidden = visibleCount.HasValue && index >= visibleCount.Value;
+        <li class="card-rise" @(isHidden ? "hidden" : null)>
             <a class="cg-doc"
                href="@(string.IsNullOrWhiteSpace(href) ? "#" : href)"
                target="_blank"
@@ -25,5 +30,6 @@
                 <span class="cg-doc__icon" aria-hidden="true"></span>
             </a>
         </li>
+        index++;
     }
 }

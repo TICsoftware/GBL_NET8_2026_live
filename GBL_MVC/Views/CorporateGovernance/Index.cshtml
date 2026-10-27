@@ -7,6 +7,7 @@
     var policies = Model?.Policies_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>();
     var codes = Model?.CodeOfConduct_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>();
     var committees = Model?.Committees_List ?? new List<GBL_BusinessLogic.Entity.CommitteeModel>();
+    const int policyPageSize = 12;
 }
 
 @section head {
@@ -59,9 +60,22 @@
     <section class="cg-docs section-spacing" id="policies" aria-labelledby="policies-title">
         <div class="container">
             <h2 id="policies-title" class="text-h2 title-animation">Policies</h2>
-            <ul class="cg-docs__grid card-list-items">
+            @{ ViewData["PdfVisibleCount"] = policyPageSize; }
+            <ul class="cg-docs__grid card-list-items" data-cg-docs-grid data-page-size="@policyPageSize">
                 @await Html.PartialAsync("~/Views/Investors/_investor_pdf_list.cshtml", policies)
             </ul>
+            @{ ViewData.Remove("PdfVisibleCount"); }
+            <div class="news-load-more" data-cg-load-more-wrap @(policies.Count > policyPageSize ? null : "hidden")>
+                <button type="button" class="site-btn site-btn--fill" data-cg-load-more>
+                    <span class="site-btn__label">Load More</span>
+                    <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
         </div>
     </section>
 
@@ -140,4 +154,5 @@
 
 @section Scripts {
     <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+    <script src="~/Assets/js/corporate-governance.js" asp-append-version="true"></script>
 }
