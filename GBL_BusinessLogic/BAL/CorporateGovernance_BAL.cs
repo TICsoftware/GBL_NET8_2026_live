@@ -31,6 +31,13 @@ namespace GBL_BusinessLogic.BAL
             "investor-relations/code-of-conduct"
         };
 
+        private static readonly string[] CommitteesPageNames =
+        {
+            "committees-of-the-board",
+            "investor-relations/committees-of-the-board",
+            "committees-of-the-boards"
+        };
+
         public CorporateGovernance_BAL(IConfiguration configuration) : base(configuration)
         {
         }
@@ -53,12 +60,6 @@ namespace GBL_BusinessLogic.BAL
 
                 model.Content = MapContent(ds.Tables[0].Rows[0]);
 
-                if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
-                {
-                    var grouped = GetGroupedComponents(ds.Tables[1]);
-                    model.Committees_List = MapCommittees(grouped);
-                }
-
                 if ((model.Content?.ContId ?? 0) > 0)
                 {
                     break;
@@ -67,8 +68,30 @@ namespace GBL_BusinessLogic.BAL
 
             model.Policies_List = LoadPdfArticles(PoliciesPageNames, languageId, geographyId);
             model.CodeOfConduct_List = LoadPdfArticles(CodeOfConductPageNames, languageId, geographyId);
+            model.Committees_List = LoadCommittees(CommitteesPageNames, languageId, geographyId);
 
             return model;
+        }
+
+        private List<CommitteeModel> LoadCommittees(IEnumerable<string> pageNames, int languageId, int geographyId)
+        {
+            foreach (var name in pageNames)
+            {
+                var ds = GetContentComponentData_DAL(name, languageId, geographyId);
+                if (ds == null || ds.Tables.Count < 2 || ds.Tables[1].Rows.Count == 0)
+                {
+                    continue;
+                }
+
+                var grouped = GetGroupedComponents(ds.Tables[1]);
+                var committees = MapCommittees(grouped);
+                if (committees.Count > 0)
+                {
+                    return committees;
+                }
+            }
+
+            return new List<CommitteeModel>();
         }
 
         private List<ArticleModel> LoadPdfArticles(IEnumerable<string> pageNames, int languageId, int geographyId)
@@ -111,32 +134,39 @@ namespace GBL_BusinessLogic.BAL
 
             foreach (var sequence in sequences)
             {
-                var items = MapComponents(grouped, sequence);
-                if (items == null || items.Count == 0) continue;
+                var groups = grouped
+                    .Where(g => (g.Fields.FirstOrDefault()?.sequence ?? 0) == sequence)
+                    .ToList();
 
-                var titleItem = items.FirstOrDefault(x => x.IsBlock == 1)
-                    ?? items.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Title) && x.IsBlock != 0);
+                if (groups.Count == 0) continue;
 
-                var title = StripHtml(
-                    titleItem?.Title
-                    ?? titleItem?.Section_title
-                    ?? titleItem?.DisplayTitle
-                    ?? titleItem?.BlockDisplayTitle
-                    ?? "");
+                // is_block = 0 → Component Title (committee name)
+                var title = groups
+                    .Where(g => (g.Fields.FirstOrDefault()?.IsBlock ?? 0) == 0)
+                    .SelectMany(g => g.Fields)
+                    .Where(f =>
+                        f.FieldName.Equals("Component Title", StringComparison.OrdinalIgnoreCase)
+                        || (f.FieldKey ?? "").Contains("main_component_title", StringComparison.OrdinalIgnoreCase))
+                    .Select(f => StripHtml(f.FieldValue))
+                    .FirstOrDefault(v => !string.IsNullOrWhiteSpace(v))
+                    ?? "";
 
-                var members = items
-                    .Where(x => x.IsBlock == 0 && !string.IsNullOrWhiteSpace(x.Title))
-                    .Select(x => new CommitteeMemberModel
+                // is_block = 1 → Title (name) + Designation (role) + Sequence
+                var members = groups
+                    .Where(g => (g.Fields.FirstOrDefault()?.IsBlock ?? 0) == 1)
+                    .Select(g =>
                     {
-                        Name = StripHtml(x.Title),
-                        Role = StripHtml(
-                            !string.IsNullOrWhiteSpace(x.Designation)
-                                ? x.Designation
-                                : x.Component_Designation),
-                        Sequence = x.Sequence
+                        var dict = Config_Application_Website.GetFieldDictionary(g);
+                        return new CommitteeMemberModel
+                        {
+                            Name = StripHtml(Config_Application_Website.GetValue(dict, "Title")),
+                            Role = StripHtml(Config_Application_Website.GetValue(dict, "Designation")),
+                            Sequence = Config_Application_Website.GetIntValue(dict, "Sequence")
+                        };
                     })
-                    .OrderBy(x => x.Sequence)
-                    .ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                    .Where(m => !string.IsNullOrWhiteSpace(m.Name))
+                    .OrderBy(m => m.Sequence)
+                    .ThenBy(m => m.Name, StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
                 if (string.IsNullOrWhiteSpace(title) && members.Count == 0)
