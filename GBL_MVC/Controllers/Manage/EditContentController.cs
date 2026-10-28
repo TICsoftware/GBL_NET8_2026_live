@@ -1230,5 +1230,215 @@ public class EditContentController : Controller
         return View(Modelobj);
     }
 
+    public IActionResult ManageStatus()
+    {
+        if (TempData["alert_message"] != null)
+        {
+            ViewBag.alert_message = TempData["alert_message"];
+        }
+        CMS_pages Model = new();
+        using ContentManager objBal = new(objconfig);
+        CMS_pageload cmsbal = new();
+
+        try
+        {
+            ViewBag.page_no = "1";
+            cmsbal = objBal.CMS_Pageload_Get_BAL(1, 0, 2);
+            Model.language_id = 1;
+            Model.Content_Status = Content_Status.Publish;
+            Model.section_id = 0;
+            Model.subSection_id = 0;
+            Model.Languages = [];
+            if (cmsbal.Languages != null && cmsbal.Languages.Count > 0)
+            {
+                foreach (var item in cmsbal.Languages)
+                {
+                    Model.Languages.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+            Model.Sections = [];
+            if (cmsbal.Sections != null && cmsbal.Sections.Count > 0)
+            {
+                foreach (var item in cmsbal.Sections)
+                {
+                    Model.Sections.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+            Model.subSections = [];
+            if (cmsbal.Subsections != null && cmsbal.Subsections.Count > 0)
+            {
+                Model.subSections = Helper.BuildHierarchy(cmsbal.Subsections, Model.section_id);
+            }
+            Model.Geographies = [];
+            if (cmsbal.geographies != null && cmsbal.geographies.Count > 0)
+            {
+                foreach (var item in cmsbal.geographies)
+                {
+                    Model.Geographies.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+            Model.Language_sections = [];
+            if (cmsbal.Language_sections != null && cmsbal.Language_sections.Count > 0)
+            {
+                foreach (var item in cmsbal.Language_sections)
+                {
+                    Model.Language_sections.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+
+            Model.Language_subSections = [];
+            if (cmsbal.Language_subSections != null && cmsbal.Language_subSections.Count > 0)
+            {
+                foreach (var item in cmsbal.Language_subSections)
+                {
+                    Model.Language_subSections.Add(new SelectListItem { Text = item.title, Value = item.id.ToString() });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("Get", ex);
+            ModelState.AddModelError("", "Something went wrong. Please try again");
+        }
+        finally
+        {
+            objBal.Dispose();
+        }
+        return View(Model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateManageStatus(IFormCollection form, string Command)
+    {
+        if (Command != "Activate" && Command != "Deactivate")
+        {
+            return Json(new { success = false, message = "Invalid action." });
+        }
+
+        var selectedValues = form["formchk"];
+        bool hasSelection = false;
+        foreach (var value in selectedValues)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                hasSelection = true;
+                break;
+            }
+        }
+
+        if (!hasSelection)
+        {
+            return Json(new { success = false, message = "Please select atleast one record" });
+        }
+
+        using ContentManager objBal = new(objconfig);
+        try
+        {
+            int userId = Convert.ToInt32(User.GetUserId());
+            foreach (var value in selectedValues)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    continue;
+                }
+
+                int cont_id = Convert.ToInt32(CryptoEngine.Decrypt(value));
+                if (Command == "Activate")
+                {
+                    objBal.Update_Content_Status_BAL(cont_id, Content_Status.Publish, userId);
+                }
+                else
+                {
+                    objBal.Update_Content_Status_BAL(cont_id, Content_Status.InActive, userId);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("UpdateManageStatus", ex);
+            return Json(new { success = false, message = "Something went wrong. Please try again" });
+        }
+
+        string message = Command == "Activate"
+            ? "Selected record(s) are activated successfully."
+            : "Selected record(s) are deactivated successfully.";
+        return Json(new { success = true, message });
+    }
+
+    [HttpPost]
+    public IActionResult DisplayList(CMS_pages obj, string page_no, string status)
+    {
+        using ContentManager objBal = new(objconfig);
+        List_CMS_pages model = new();
+        Manage_List_CMS_page cmsObj = new();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                status = obj.Content_Status.ToString();
+            }
+            if (status != "0" && status != "2")
+            {
+                status = "2";
+            }
+            ViewBag.page_no = page_no;
+            model.Contents = new();
+            if (obj.Content_Type_ID == 0)
+                obj.Content_Type_ID = 1;
+
+            model.Content_Type_ID = obj.Content_Type_ID;
+            if (status == "0")
+            {
+                cmsObj = objBal.List_Inactive_Content_BAL(obj.subSection_id != 0 ? obj.subSection_id : obj.section_id, obj.searchquery ?? "", obj.language_id,
+                           string.IsNullOrWhiteSpace(page_no) ? 1 : Convert.ToInt32(page_no), obj.Content_Type_ID, pageSize);
+            }
+            else
+            {
+                cmsObj = objBal.CMS_Published_List(obj.subSection_id != 0 ? obj.subSection_id : obj.section_id, obj.searchquery ?? "", obj.language_id,
+                           string.IsNullOrWhiteSpace(page_no) ? 1 : Convert.ToInt32(page_no), obj.Content_Type_ID, pageSize);
+            }
+
+            ViewBag.search_status = status;
+            if (cmsObj.sections != null)
+            {
+                foreach (var item in cmsObj.sections)
+                {
+                    model.Contents.Add(new Page_detail
+                    {
+                        Id = item.Id,
+                        Title = item.Title,
+                        Language = item.Language,
+                        Parent_title = item.Parent_title,
+                        Created_date = item.Created_date,
+                        Updated_date = item.Updated_date,
+                        Isreprocess = item.IsReprocessed
+                    });
+                }
+                model.No_of_pages = cmsObj.Sections_no_of_pages;
+                model.Objpaging = new()
+                {
+                    PageNumber = Convert.ToInt32(page_no),
+                    PageSize = pageSize,
+                    TotalRecords = model.No_of_pages
+                };
+            }
+            else
+                model.Contents = null;
+
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("Get", ex);
+            ModelState.AddModelError("", "Something went wrong. Please try again");
+        }
+        finally
+        {
+            objBal.Dispose();
+        }
+        return PartialView(model);
+    }
+
+
 
 }

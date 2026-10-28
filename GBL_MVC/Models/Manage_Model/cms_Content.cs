@@ -198,6 +198,7 @@ public class CMS_pages
     public List<Page_detail>? articles_list { get; set; }
     public int? article_no_of_pages { get; set; }
     public int Content_Type_ID { get; set; }
+    public int Content_Status { get; set; }
     public List<SelectListItem>? Language_sections { get; set; }
     public List<SelectListItem>? Language_subSections { get; set; }
 }

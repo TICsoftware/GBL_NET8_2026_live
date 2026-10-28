@@ -1,0 +1,81 @@
+@model List_CMS_pages
+@{
+    string encrypt_cont_id= string.Empty;
+}
+<div>
+    @if (Model.Content_Type_ID == 1)
+    {
+        <h2>Sections</h2>
+    }
+    else
+    {
+        <h2>Articles</h2>
+    }
+
+    @if (Model.Contents != null)
+    {
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th><input type="checkbox"  id="formchkall" /></th>
+                    <th>Title</th>
+                    <th>Parent title</th>
+                    <th>Language</th>
+                    <th>Created date</th>
+                    <th>Updated Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Contents)
+                {
+                    encrypt_cont_id=Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString());
+                    <tr class="js-pagination-section-item">
+                        
+                        <td><input type="checkbox" value="@encrypt_cont_id" name="formchk"  class="formchk"/> </td>
+                        <td>@Html.Raw(item.Title)</td>
+                        <td>@Html.Raw(item.Parent_title)</td>
+                        <td>@(item.Language)</td>
+                        <td>@item.Created_date.ToString("dd-MMM-yyyy")</td>
+                        <td>@(item.Updated_date == null ? "" : item.Updated_date?.ToString("dd-MMM-yyyy"))</td>
+                        <td>
+                            @if (item.Isreprocess == 1)
+                            {
+                                <strong>Reprocessed</strong>
+                            }
+                            else
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-Id="@(Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString()))"
+                                   class="btn btn-sm btn-outline-secondary">Edit</a> 
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.Objpaging != null)
+        {
+            @await Html.PartialAsync("~/Views/Shared/Manage/_pagination.cshtml", Model.Objpaging)
+        }
+        <div class="col-12 col-md-12 text-center">
+            @if(ViewBag.search_status == "0")
+            {
+                <input type="button" class="btn btn-primary mb-3" id="btnactivate" value="Activate" name="Command"  /> 
+            }
+            else
+            {
+                <input type="button" class="btn btn-primary mb-3" id="btndeactivate"  value="Deactivate" name="Command" /> 
+            }
+        </div>
+    }
+    else
+    {
+        <p>
+            No record found
+        </p>
+    }
+</div>
+ 

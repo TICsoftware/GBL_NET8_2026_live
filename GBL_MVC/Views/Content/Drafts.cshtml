@@ -122,6 +122,7 @@
                                 <table class="table table-bordered">
                                     <thead class="table-dark">
                                         <tr>
+                                            <th></th>
                                             <th>Title</th>
                                             <th>Parent title</th>
                                             <th>Language</th>
@@ -138,6 +139,7 @@
                                         { 
                                             encrypt_cont_id=Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString());
                                             <tr class="js-pagination-section-item">
+                                                <td><input type="checkbox" value="@encrypt_cont_id" name="formchk" /> </td>
                                                 <td>@item.Title</td>
                                                 <td>@item.Parent_title</td>
                                                 <td>@(item.Language)</td>
@@ -237,6 +239,14 @@
                             </p>
                         }
                     </div>
+                    @if (Model.sections_list != null ||  Model.articles_list != null) 
+                    {
+                    <div class="row">
+                        <div class="col-12 col-md-12 text-center">
+                            <input type="submit" class="btn btn-primary mb-3" value="Publish" /> 
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
         </div> 
