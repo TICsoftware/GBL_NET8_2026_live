@@ -140,6 +140,16 @@ app.MapControllerRoute(
                     title = "disclosures"
                 }
             );
+ app.MapControllerRoute(
+                name: "postal-ballot",
+                pattern: "investor-relations/postal-ballot",
+                defaults: new
+                {
+                    controller = "Investors",
+                    action = "Pdflisting",
+                    title = "postal-ballot"
+                }
+            );
 
             app.MapControllerRoute(
                 name: "investor-subsidiaries",

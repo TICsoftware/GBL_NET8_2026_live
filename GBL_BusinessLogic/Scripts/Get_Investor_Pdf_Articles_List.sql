@@ -5,13 +5,15 @@
 
   Order: cont_displaydate DESC (newest first), then cont_id DESC.
 
+  @Year:
+    NULL  = no FY filter (corporate-governance / all documents)
+    0     = latest financial year (April–March)
+    2025  = FY 2025-2026 = 1 Apr 2025 through 31 Mar 2026
+
   CMS page names:
     investor-relations/shareholding-pattern
     investor-relations/subsidiaries
     investor-relations/disclosures
-    investor-relations/corporate-governance
-    investor-relations/policies
-    investor-relations/code-of-conduct
 */
 SET ANSI_NULLS ON;
 GO
@@ -22,7 +24,8 @@ CREATE OR ALTER PROCEDURE dbo.Get_Investor_Pdf_Articles_List
 (
     @ContentId  INT,
     @PageSize   INT = 12,
-    @PageNumber INT = 1
+    @PageNumber INT = 1,
+    @Year       INT = NULL
 )
 AS
 BEGIN
@@ -30,6 +33,24 @@ BEGIN
 
     IF @PageNumber IS NULL OR @PageNumber < 1 SET @PageNumber = 1;
     IF @PageSize IS NULL OR @PageSize < 1 SET @PageSize = 12;
+
+    DECLARE @FyStart INT = @Year;
+
+    IF @FyStart = 0
+    BEGIN
+        SELECT @FyStart = MAX(
+            CASE
+                WHEN MONTH(c.cont_displaydate) >= 4 THEN YEAR(c.cont_displaydate)
+                ELSE YEAR(c.cont_displaydate) - 1
+            END
+        )
+        FROM content c
+        WHERE
+            c.cont_parent_id = @ContentId
+            AND c.cont_status = 2
+            AND c.content_type_ID = 3
+            AND c.cont_displaydate IS NOT NULL;
+    END
 
     /* ==========================================
        Article List (page load + load more)
@@ -83,6 +104,14 @@ BEGIN
         c.cont_parent_id = @ContentId
         AND c.cont_status = 2
         AND c.content_type_ID = 3
+        AND (
+            @FyStart IS NULL
+            OR (
+                c.cont_displaydate IS NOT NULL
+                AND c.cont_displaydate >= DATETIMEFROMPARTS(@FyStart, 4, 1, 0, 0, 0, 0)
+                AND c.cont_displaydate < DATETIMEFROMPARTS(@FyStart + 1, 4, 1, 0, 0, 0, 0)
+            )
+        )
     ORDER BY
         c.cont_displaydate DESC,
         c.cont_id DESC
@@ -90,7 +119,7 @@ BEGIN
     FETCH NEXT @PageSize ROWS ONLY;
 
     /* ==========================================
-       Total Count
+       Total Count (same FY filter)
        ========================================== */
     SELECT
         COUNT(*) AS TotalCount
@@ -98,6 +127,37 @@ BEGIN
     WHERE
         c.cont_parent_id = @ContentId
         AND c.cont_status = 2
-        AND c.content_type_ID = 3;
+        AND c.content_type_ID = 3
+        AND (
+            @FyStart IS NULL
+            OR (
+                c.cont_displaydate IS NOT NULL
+                AND c.cont_displaydate >= DATETIMEFROMPARTS(@FyStart, 4, 1, 0, 0, 0, 0)
+                AND c.cont_displaydate < DATETIMEFROMPARTS(@FyStart + 1, 4, 1, 0, 0, 0, 0)
+            )
+        );
+
+    /* ==========================================
+       Financial years (April–March), newest first
+       ========================================== */
+    SELECT
+        y.FyStart,
+        N'FY ' + CAST(y.FyStart AS nvarchar(4)) + N' - ' + CAST(y.FyStart + 1 AS nvarchar(4)) AS FyLabel
+    FROM
+    (
+        SELECT DISTINCT
+            CASE
+                WHEN MONTH(c.cont_displaydate) >= 4 THEN YEAR(c.cont_displaydate)
+                ELSE YEAR(c.cont_displaydate) - 1
+            END AS FyStart
+        FROM content c
+        WHERE
+            c.cont_parent_id = @ContentId
+            AND c.cont_status = 2
+            AND c.content_type_ID = 3
+            AND c.cont_displaydate IS NOT NULL
+    ) y
+    ORDER BY
+        y.FyStart DESC;
 END
 GO

@@ -48,13 +48,18 @@ public class InvestorsController : Controller
     public async Task<IActionResult> LoadPdfs(
         int contentId,
         int pageNumber = 1,
-        int pageSize = Investors_BAL.DefaultPageSize)
+        int pageSize = Investors_BAL.DefaultPageSize,
+        int? year = null)
     {
         try
         {
             if (pageSize < 1) pageSize = Investors_BAL.DefaultPageSize;
 
-            var result = _bal.GetPdfListing_page_wise_BAL(contentId, pageNumber, pageSize);
+            var result = _bal.GetPdfListing_page_wise_BAL(contentId, pageNumber, pageSize, year);
+
+            ViewData["PdfYear"] = year.HasValue && year.Value > 0
+                ? year.Value + "-" + (year.Value + 1)
+                : null;
 
             var html = await _partialViewRenderer.RenderPartialToStringAsync(
                 this,

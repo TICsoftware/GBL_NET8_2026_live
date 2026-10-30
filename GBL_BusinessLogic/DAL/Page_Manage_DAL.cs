@@ -119,13 +119,14 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Sustainability_Reports_Articles_List", sqlParams);
         }
 
-        public DataSet Get_Investor_Pdf_page_wise_DAL(int contentId, int page, int pageSize)
+        public DataSet Get_Investor_Pdf_page_wise_DAL(int contentId, int page, int pageSize, int? year = null)
         {
             SqlParameter[] sqlParams =
             {
                 new SqlParameter("@ContentId", contentId),
                 new SqlParameter("@PageNumber", page),
-                new SqlParameter("@PageSize", pageSize)
+                new SqlParameter("@PageSize", pageSize),
+                new SqlParameter("@Year", (object?)year ?? DBNull.Value)
             };
 
             return GetDataSet("Get_Investor_Pdf_Articles_List", sqlParams);

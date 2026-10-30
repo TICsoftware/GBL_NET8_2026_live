@@ -6,6 +6,13 @@
     var content = Model?.Content;
     var totalCount = Model?.TotalCount ?? 0;
     var pageSize = GBL_BusinessLogic.BAL.Investors_BAL.DefaultPageSize;
+    var years = Model?.Year_List ?? new List<GBL_BusinessLogic.Entity.DropdownModel>();
+    var selectedYear = Model?.SelectedYear ?? "";
+    var selectedYearKey = "";
+    if (int.TryParse(selectedYear, out var fyStart))
+    {
+        selectedYearKey = fyStart + "-" + (fyStart + 1);
+    }
 }
 
 @section head {
@@ -35,6 +42,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/corporate-governance-intro.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/investor-pdf.css" asp-append-version="true" />
 }
@@ -44,19 +52,50 @@
     @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
 
+@if (years.Count > 0)
+{
+    <div class="fh-year-filter cg-year-filter">
+        <div class="container">
+            <label class="fh-year-filter__label" for="investor-year">Filter by year</label>
+            <div class="cselect">
+                <select id="investor-year" name="year" class="cselect-native" data-investor-year>
+                    @foreach (var year in years)
+                    {
+                        if (year.Value == selectedYear)
+                        {
+                            <option value="@year.Value" selected>@year.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@year.Value">@year.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+}
+
 <section class="cg-docs section-spacing">
     <div class="container">
-        <p class="fh-year-filter__empty" data-investor-empty hidden>No documents found.</p>
+        <p class="fh-year-filter__empty" data-investor-empty @(totalCount == 0 ? null : "hidden")>No documents found.</p>
 
+        @{
+            ViewData["PdfYear"] = string.IsNullOrWhiteSpace(selectedYearKey) ? null : selectedYearKey;
+        }
         <ul id="DivContent"
             class="cg-docs__grid card-list-items"
             data-investor-grid
             data-page-size="@pageSize"
             data-total-count="@totalCount"
             data-content-id="@(content?.ContId ?? 0)"
+            data-year="@selectedYear"
             data-load-url="@Url.Action("LoadPdfs", "Investors")">
             @await Html.PartialAsync("_investor_pdf_list", Model?.SectionArticles_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>())
         </ul>
+        @{
+            ViewData.Remove("PdfYear");
+        }
 
         <div class="news-load-more" data-investor-load-more-wrap hidden>
             <button type="button" class="site-btn site-btn--fill" data-investor-load-more>
