@@ -24,10 +24,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       function matchingCards() {
         var year = selectedYear();
-        return cards.filter(function (card) {
+        var match = cards.filter(function (card) {
           var cardYear = card.getAttribute("data-year") || "";
-          return !year || cardYear === year;
+          return !year || !cardYear || cardYear === year;
         });
+        if (year && match.length === 0) {
+          return cards;
+        }
+        return match;
       }
 
       function apply() {

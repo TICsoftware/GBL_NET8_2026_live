@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
@@ -121,23 +122,69 @@ namespace GBL_BusinessLogic.BAL
                 text,
                 @"(?:FY\s*)?(?<start>(?:19|20)\d{2})\s*[-–/]\s*(?<end>(?:19|20)?\d{2})",
                 RegexOptions.IgnoreCase);
-            if (!match.Success) return "";
-
-            if (!int.TryParse(match.Groups["start"].Value, out var start)) return "";
-            var endRaw = match.Groups["end"].Value;
-            int end;
-            if (endRaw.Length == 2)
+            if (match.Success
+                && int.TryParse(match.Groups["start"].Value, out var start))
             {
-                if (!int.TryParse(endRaw, out var shortEnd)) return "";
-                end = (start / 100) * 100 + shortEnd;
-                if (end < start) end += 100;
-            }
-            else if (!int.TryParse(endRaw, out end))
-            {
-                return "";
+                var endRaw = match.Groups["end"].Value;
+                int end;
+                if (endRaw.Length == 2)
+                {
+                    if (!int.TryParse(endRaw, out var shortEnd)) return "";
+                    end = (start / 100) * 100 + shortEnd;
+                    if (end < start) end += 100;
+                }
+                else if (!int.TryParse(endRaw, out end))
+                {
+                    return "";
+                }
+
+                return start + "-" + end;
             }
 
-            return start + "-" + end;
+            if (TryParseEmbeddedDate(text, out var date))
+            {
+                return FinancialYearKey(date);
+            }
+
+            return "";
+        }
+
+        private static bool TryParseEmbeddedDate(string text, out DateTime date)
+        {
+            date = default;
+            var named = Regex.Match(
+                text,
+                @"\b(?<d>\d{1,2})\s+(?<m>Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(?<y>(?:19|20)\d{2})\b",
+                RegexOptions.IgnoreCase);
+            if (named.Success
+                && DateTime.TryParseExact(
+                    named.Value.Replace(".", ""),
+                    new[] { "d MMM yyyy", "dd MMM yyyy", "d MMMM yyyy", "dd MMMM yyyy" },
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out date))
+            {
+                return true;
+            }
+
+            var numeric = Regex.Match(
+                text,
+                @"\b(?<d>\d{1,2})[./-](?<m>\d{1,2})[./-](?<y>(?:19|20)\d{2})\b");
+            if (numeric.Success)
+            {
+                var value = numeric.Groups["d"].Value + "/" + numeric.Groups["m"].Value + "/" + numeric.Groups["y"].Value;
+                if (DateTime.TryParseExact(
+                    value,
+                    new[] { "d/M/yyyy", "dd/MM/yyyy" },
+                    CultureInfo.GetCultureInfo("en-GB"),
+                    DateTimeStyles.None,
+                    out date))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string FinancialYearLabel(string? key)

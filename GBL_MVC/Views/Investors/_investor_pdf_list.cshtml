@@ -16,8 +16,10 @@
             : (!string.IsNullOrWhiteSpace(item.MediafilePath) ? item.MediafilePath : item.ExternalUrl);
 
         var title = item.Title;
-        if (DateTime.TryParse(title, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTitle)
-            || DateTime.TryParse(title, out parsedTitle))
+        if (!string.IsNullOrWhiteSpace(title)
+            && title.Trim().Length <= 20
+            && (DateTime.TryParse(title, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTitle)
+                || DateTime.TryParse(title, out parsedTitle)))
         {
             title = parsedTitle.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
         }
