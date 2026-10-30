@@ -185,7 +185,16 @@ app.MapControllerRoute(
                 }
             );
 
-
+              app.MapControllerRoute(
+                name: "Notice-of-meeting",
+                pattern: "investor-relations/notice-of-meeting",
+                defaults: new
+                {
+                    controller = "CorporateGovernance",
+                    action = "Index",
+                    title = "notice-of-meeting"
+                }
+            );
             app.MapControllerRoute(
                 name: "annual-reports-load",
                 pattern: "AnnualReports/LoadReports",
