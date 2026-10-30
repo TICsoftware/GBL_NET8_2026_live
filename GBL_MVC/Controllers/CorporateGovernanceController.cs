@@ -21,9 +21,17 @@ public class CorporateGovernanceController : Controller
     {
         try
         {
+            var path = (Request?.Path.Value ?? "").Trim().Trim('/');
             var pageName = string.IsNullOrWhiteSpace(title)
-                ? "corporate-governance"
+                ? (string.IsNullOrWhiteSpace(path) ? "corporate-governance" : path)
                 : title.Trim().TrimStart('/');
+
+            if (!string.IsNullOrWhiteSpace(path)
+                && path.StartsWith("investor-relations/", StringComparison.OrdinalIgnoreCase)
+                && !pageName.StartsWith("investor-relations/", StringComparison.OrdinalIgnoreCase))
+            {
+                pageName = path;
+            }
 
             var data = _bal.GetCorporateGovernance_BAL(pageName, 1, 1);
             return View(data);

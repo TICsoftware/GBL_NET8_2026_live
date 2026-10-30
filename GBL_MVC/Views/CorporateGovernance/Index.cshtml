@@ -1,13 +1,12 @@
 @using GBL_MVC.Helpers
+@using GBL_BusinessLogic.BAL
 @model GBL_BusinessLogic.Entity.CorporateGovernanceModel
 @{
-    ViewData["Title"] = Model?.Content?.ContTitle ?? "Corporate governance";
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Investor Relations";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
-    var policies = Model?.Policies_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>();
-    var codes = Model?.CodeOfConduct_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>();
-    var committees = Model?.Committees_List ?? new List<GBL_BusinessLogic.Entity.CommitteeModel>();
-    const int policyPageSize = 12;
+    var sections = Model?.Sections ?? new List<GBL_BusinessLogic.Entity.GovernanceSectionModel>();
+    const int pageSize = CorporateGovernance_BAL.PdfVisibleCount;
 }
 
 @section head {
@@ -28,6 +27,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/corporate-governance-intro.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/investor-pdf.css" asp-append-version="true" />
 }
@@ -37,120 +37,111 @@
     @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
 
-<div class="cg-page">
-    <div class="cg-jump-sentinel" aria-hidden="true"></div>
-    <section class="cg-jump" aria-label="Corporate governance sections">
-        <div class="container">
-            <div class="cg-jump__track">
-                <button type="button" class="cg-jump__arrow cg-jump__arrow--prev" aria-label="Previous section">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <nav class="cg-jump__nav">
-                    <a class="cg-jump__btn" href="#policies">Policies</a>
-                    <a class="cg-jump__btn" href="#code-of-conduct">Code of Conduct</a>
-                    <a class="cg-jump__btn" href="#committees">Committees of the Board</a>
-                </nav>
-                <button type="button" class="cg-jump__arrow cg-jump__arrow--next" aria-label="Next section">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 6 15.5 12l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <section class="cg-docs section-spacing" id="policies" aria-labelledby="policies-title">
-        <div class="container">
-            <h2 id="policies-title" class="text-h2 title-animation">Policies</h2>
-            @{ ViewData["PdfVisibleCount"] = policyPageSize; }
-            <ul class="cg-docs__grid card-list-items" data-cg-docs-grid data-page-size="@policyPageSize">
-                @await Html.PartialAsync("~/Views/Investors/_investor_pdf_list.cshtml", policies)
-            </ul>
-            @{ ViewData.Remove("PdfVisibleCount"); }
-            <div class="news-load-more" data-cg-load-more-wrap @(policies.Count > policyPageSize ? null : "hidden")>
-                <button type="button" class="site-btn site-btn--fill" data-cg-load-more>
-                    <span class="site-btn__label">Load More</span>
-                    <span class="site-btn__arrow" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round" />
-                        </svg>
-                    </span>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <section class="cg-docs cg-docs--muted section-spacing" id="code-of-conduct" aria-labelledby="code-of-conduct-title">
-        <div class="container">
-            <h2 id="code-of-conduct-title" class="text-h2 title-animation">Code of Conduct</h2>
-            <ul class="cg-docs__grid card-list-items">
-                @await Html.PartialAsync("~/Views/Investors/_investor_pdf_list.cshtml", codes)
-            </ul>
-        </div>
-    </section>
-
-    <section class="cg-docs section-spacing" id="committees" aria-labelledby="committees-title">
+@if (sections.Count > 0)
+{
+    <div class="cg-page">
+        <div class="cg-jump-sentinel" aria-hidden="true"></div>
+        <section class="cg-jump" aria-label="Page sections">
             <div class="container">
-                <h2 id="committees-title" class="text-h2 title-animation">Committees of the Board</h2>
-                <ul class="cg-committees card-list-items">
-                    @foreach (var committee in committees)
-                    {
-                        var isWide = committee.Members.Count > 5;
-                        var mid = (int)Math.Ceiling(committee.Members.Count / 2.0);
-                        <li class="cg-committee@(isWide ? " cg-committee--wide" : "") card-rise">
-                            @if (!string.IsNullOrWhiteSpace(committee.Title))
-                            {
-                                <h3>@committee.Title</h3>
-                            }
-                            @if (isWide)
-                            {
-                                <div class="cg-committee__cols">
-                                    <ul>
-                                        @foreach (var member in committee.Members.Take(mid))
-                                        {
-                                            <li>
-                                                <span class="cg-committee__name">@member.Name</span>
-                                                @if (!string.IsNullOrWhiteSpace(member.Role))
-                                                {
-                                                    <span class="cg-committee__role">@member.Role</span>
-                                                }
-                                            </li>
-                                        }
-                                    </ul>
-                                    <ul>
-                                        @foreach (var member in committee.Members.Skip(mid))
-                                        {
-                                            <li>
-                                                <span class="cg-committee__name">@member.Name</span>
-                                                @if (!string.IsNullOrWhiteSpace(member.Role))
-                                                {
-                                                    <span class="cg-committee__role">@member.Role</span>
-                                                }
-                                            </li>
-                                        }
-                                    </ul>
-                                </div>
-                            }
-                            else
-                            {
-                                <ul>
-                                    @foreach (var member in committee.Members)
-                                    {
-                                        <li>
-                                            <span class="cg-committee__name">@member.Name</span>
-                                            @if (!string.IsNullOrWhiteSpace(member.Role))
-                                            {
-                                                <span class="cg-committee__role">@member.Role</span>
-                                            }
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                        </li>
-                    }
-                </ul>
+                <div class="cg-jump__track">
+                    <button type="button" class="cg-jump__arrow cg-jump__arrow--prev" aria-label="Previous section">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <nav class="cg-jump__nav">
+                        @for (var i = 0; i < sections.Count; i++)
+                        {
+                            var tab = sections[i];
+                            <a class="cg-jump__btn@(i == 0 ? " is-active" : "")" href="#@(tab.Anchor)">@tab.Title</a>
+                        }
+                    </nav>
+                    <button type="button" class="cg-jump__arrow cg-jump__arrow--next" aria-label="Next section">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 6 15.5 12l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
         </section>
-</div>
+
+        @for (var i = 0; i < sections.Count; i++)
+        {
+            var tab = sections[i];
+            var muted = i % 2 == 1;
+            var titleId = tab.Anchor + "-title";
+            var matchingCount = tab.Articles.Count(a =>
+            {
+                if (!tab.ShowYearFilter || string.IsNullOrWhiteSpace(tab.SelectedYear)) return true;
+                return CorporateGovernance_BAL.FinancialYearKey(a) == tab.SelectedYear;
+            });
+
+            <section class="cg-docs@(muted ? " cg-docs--muted" : "") section-spacing"
+                     id="@tab.Anchor"
+                     aria-labelledby="@titleId">
+                <div class="container">
+                    <h2 id="@titleId" class="text-h2 title-animation">@tab.Title</h2>
+                </div>
+
+                @if (tab.ShowYearFilter)
+                {
+                    <div class="fh-year-filter cg-year-filter">
+                        <div class="container">
+                            <label class="fh-year-filter__label" for="cg-year-@tab.Anchor">Filter by year</label>
+                            <div class="cselect">
+                                <select id="cg-year-@tab.Anchor"
+                                        name="year"
+                                        class="cselect-native"
+                                        data-cg-year
+                                        data-cg-year-target="#@tab.Anchor">
+                                    @foreach (var year in tab.Years)
+                                    {
+                                        if (year.Value == tab.SelectedYear)
+                                        {
+                                            <option value="@year.Value" selected>@year.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@year.Value">@year.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="container">
+                    @if (tab.IsCommitteeSection)
+                    {
+                        @await Html.PartialAsync("_cg_committees", tab.Committees)
+                    }
+                    else
+                    {
+                        <p class="fh-year-filter__empty" data-cg-empty @(tab.Articles.Count == 0 ? null : "hidden")>No documents found.</p>
+                        ViewData["PdfVisibleCount"] = pageSize;
+                        ViewData["PdfYear"] = tab.ShowYearFilter ? tab.SelectedYear : null;
+                        <ul class="cg-docs__grid card-list-items"
+                            data-cg-docs-grid
+                            data-page-size="@pageSize"
+                            data-cg-year-value="@(tab.ShowYearFilter ? tab.SelectedYear : "")">
+                            @await Html.PartialAsync("~/Views/Investors/_investor_pdf_list.cshtml", tab.Articles)
+                        </ul>
+                        ViewData.Remove("PdfVisibleCount");
+                        ViewData.Remove("PdfYear");
+                        <div class="news-load-more" data-cg-load-more-wrap @(matchingCount > pageSize ? null : "hidden")>
+                            <button type="button" class="site-btn site-btn--fill" data-cg-load-more>
+                                <span class="site-btn__label">Load More</span>
+                                <span class="site-btn__arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+}
 
 @section Scripts {
     <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>

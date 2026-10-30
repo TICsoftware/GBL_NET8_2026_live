@@ -185,7 +185,15 @@ app.MapControllerRoute(
                 }
             );
 
-              app.MapControllerRoute(
+            // Sectioned IR pages: CMS children become tabs (first 2 = articles + year filter).
+            // Point additional URLs at CorporateGovernance/Index to reuse this layout.
+            app.MapControllerRoute(
+                name: "investor-general-meeting",
+                pattern: "investor-relations/general-meeting/{*title}",
+                defaults: new { controller = "CorporateGovernance", action = "Index" }
+            );
+
+            app.MapControllerRoute(
                 name: "Notice-of-meeting",
                 pattern: "investor-relations/notice-of-meeting",
                 defaults: new
@@ -209,6 +217,17 @@ app.MapControllerRoute(
                     controller = "AnnualReports",
                     action = "Index",
                     title = "annual-reports"
+                }
+            );
+
+            app.MapControllerRoute(
+                name: "investor-annual-report-singular",
+                pattern: "investor-relations/annual-report",
+                defaults: new
+                {
+                    controller = "AnnualReports",
+                    action = "Index",
+                    title = "annual-report"
                 }
             );
 

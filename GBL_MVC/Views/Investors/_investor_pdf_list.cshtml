@@ -1,8 +1,10 @@
 @model List<GBL_BusinessLogic.Entity.ArticleModel>
 @using System.Globalization
+@using GBL_BusinessLogic.BAL
 @{
     int? visibleCount = ViewData["PdfVisibleCount"] is int count ? count : null;
-    var index = 0;
+    var filterYear = ViewData["PdfYear"] as string;
+    var shown = 0;
 }
 
 @if (Model != null)
@@ -20,8 +22,22 @@
             title = parsedTitle.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
         }
 
-        var isHidden = visibleCount.HasValue && index >= visibleCount.Value;
-        <li class="card-rise" @(isHidden ? "hidden" : null)>
+        var yearKey = CorporateGovernance_BAL.FinancialYearKey(item);
+        var yearMatch = string.IsNullOrWhiteSpace(filterYear)
+            || string.Equals(yearKey, filterYear, StringComparison.OrdinalIgnoreCase);
+
+        var hideMore = false;
+        if (yearMatch)
+        {
+            if (visibleCount.HasValue && shown >= visibleCount.Value)
+            {
+                hideMore = true;
+            }
+            shown++;
+        }
+
+        var isHidden = !yearMatch || hideMore;
+        <li class="card-rise" data-year="@yearKey" @(isHidden ? "hidden" : null)>
             <a class="cg-doc"
                href="@(string.IsNullOrWhiteSpace(href) ? "#" : href)"
                target="_blank"
@@ -30,6 +46,5 @@
                 <span class="cg-doc__icon" aria-hidden="true"></span>
             </a>
         </li>
-        index++;
     }
 }

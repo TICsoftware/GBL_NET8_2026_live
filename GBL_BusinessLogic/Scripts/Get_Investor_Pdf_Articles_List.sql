@@ -1,13 +1,17 @@
 /*
   Investor Relations PDF listing / load-more
   Used by: InvestorsController.Pdflisting (page 1) and LoadPdfs (page 2+)
+           CorporateGovernance_BAL policies / code of conduct lists
 
-  No year / month / tag filters (no displaydate-driven filters).
-  Order: cont_sequence, then title (alphabetical).
+  Order: cont_displaydate DESC (newest first), then cont_id DESC.
 
   CMS page names:
     investor-relations/shareholding-pattern
     investor-relations/subsidiaries
+    investor-relations/disclosures
+    investor-relations/corporate-governance
+    investor-relations/policies
+    investor-relations/code-of-conduct
 */
 SET ANSI_NULLS ON;
 GO
@@ -29,6 +33,7 @@ BEGIN
 
     /* ==========================================
        Article List (page load + load more)
+       Ordered by display date, newest first
        ========================================== */
     SELECT
         c.cont_id,
@@ -41,7 +46,7 @@ BEGIN
         c.cont_intro,
         c.cont_hmpg_intro,
         c.content,
-
+        c.cont_displaydate,
         c.Masthead_image_Media_id,
         m1.file_path AS masthead_image_path,
         c.Masthead_alt_text,
@@ -64,8 +69,7 @@ BEGIN
         c.tag_master_selected_id,
         CAST(NULL AS NVARCHAR(MAX)) AS TagNames,
         c.Cont_Publication,
-        c.cont_search_url,
-        c.cont_displaydate
+        c.cont_search_url
     FROM content c
     LEFT JOIN media m1
         ON c.Masthead_image_Media_id = m1.id
@@ -80,9 +84,8 @@ BEGIN
         AND c.cont_status = 2
         AND c.content_type_ID = 3
     ORDER BY
-        ISNULL(c.cont_sequence, 999999),
-        ISNULL(NULLIF(LTRIM(RTRIM(c.cont_hmpg_title)), N''), c.cont_title),
-        c.cont_id
+        c.cont_displaydate DESC,
+        c.cont_id DESC
     OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 

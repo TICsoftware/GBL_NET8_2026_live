@@ -1,0 +1,59 @@
+@model List<GBL_BusinessLogic.Entity.CommitteeModel>
+
+<ul class="cg-committees card-list-items">
+    @foreach (var committee in Model ?? new List<GBL_BusinessLogic.Entity.CommitteeModel>())
+    {
+        var isWide = committee.Members.Count > 5;
+        var mid = (int)Math.Ceiling(committee.Members.Count / 2.0);
+        <li class="cg-committee@(isWide ? " cg-committee--wide" : "") card-rise">
+            @if (!string.IsNullOrWhiteSpace(committee.Title))
+            {
+                <h3>@committee.Title</h3>
+            }
+            @if (isWide)
+            {
+                <div class="cg-committee__cols">
+                    <ul>
+                        @foreach (var member in committee.Members.Take(mid))
+                        {
+                            <li>
+                                <span class="cg-committee__name">@member.Name</span>
+                                @if (!string.IsNullOrWhiteSpace(member.Role))
+                                {
+                                    <span class="cg-committee__role">@member.Role</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                    <ul>
+                        @foreach (var member in committee.Members.Skip(mid))
+                        {
+                            <li>
+                                <span class="cg-committee__name">@member.Name</span>
+                                @if (!string.IsNullOrWhiteSpace(member.Role))
+                                {
+                                    <span class="cg-committee__role">@member.Role</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var member in committee.Members)
+                    {
+                        <li>
+                            <span class="cg-committee__name">@member.Name</span>
+                            @if (!string.IsNullOrWhiteSpace(member.Role))
+                            {
+                                <span class="cg-committee__role">@member.Role</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+    }
+</ul>

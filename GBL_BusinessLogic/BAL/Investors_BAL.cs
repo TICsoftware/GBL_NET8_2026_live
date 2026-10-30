@@ -18,8 +18,23 @@ namespace GBL_BusinessLogic.BAL
 
         public InvestorsModel GetPdfListing_BAL(string pagename, int languageId, int geographyId, int pageSize = DefaultPageSize)
         {
+            if (pageSize < 1) pageSize = DefaultPageSize;
+
+            foreach (var pageName in GetPdfListingPageNames(pagename))
+            {
+                var model = LoadPdfListing(pageName, languageId, geographyId, pageSize);
+                if ((model.Content?.ContId ?? 0) > 0 || (model.SectionArticles_List?.Count ?? 0) > 0)
+                {
+                    return model;
+                }
+            }
+
+            return new InvestorsModel();
+        }
+
+        private InvestorsModel LoadPdfListing(string pageName, int languageId, int geographyId, int pageSize)
+        {
             var model = new InvestorsModel();
-            var pageName = NormalizePageName(pagename);
             var ds = GetContentComponentData_DAL(pageName, languageId, geographyId);
 
             if (ds == null || ds.Tables.Count == 0)
@@ -32,8 +47,6 @@ namespace GBL_BusinessLogic.BAL
                 model.Content = MapContent(ds.Tables[0].Rows[0]);
             }
 
-            if (pageSize < 1) pageSize = DefaultPageSize;
-
             var contentId = model.Content?.ContId ?? 0;
             if (contentId > 0)
             {
@@ -43,13 +56,10 @@ namespace GBL_BusinessLogic.BAL
             }
             else if (ds.Tables.Count > 2 && ds.Tables[2].Rows.Count > 0)
             {
-                var articles = Config_Application_Website.MapArticleList(ds.Tables[2]);
+                var articles = OrderPdfArticlesByDisplayDate(
+                    Config_Application_Website.MapArticleList(ds.Tables[2]));
                 model.TotalCount = articles.Count;
-                model.SectionArticles_List = articles
-                    .OrderBy(a => a.Sequence)
-                    .ThenByDescending(a => a.Title, StringComparer.OrdinalIgnoreCase)
-                    .Take(pageSize)
-                    .ToList();
+                model.SectionArticles_List = articles.Take(pageSize).ToList();
             }
 
             return model;
@@ -128,6 +138,31 @@ namespace GBL_BusinessLogic.BAL
             }
 
             return model;
+        }
+
+        private static IEnumerable<string> GetPdfListingPageNames(string? pagename)
+        {
+            var requested = NormalizePageName(pagename);
+            if (string.IsNullOrWhiteSpace(requested))
+            {
+                yield break;
+            }
+
+            yield return requested;
+
+            if (!requested.StartsWith("investor-relations/", StringComparison.OrdinalIgnoreCase))
+            {
+                yield return "investor-relations/" + requested;
+            }
+        }
+
+        private static List<ArticleModel> OrderPdfArticlesByDisplayDate(IEnumerable<ArticleModel> articles)
+        {
+            return articles
+                .OrderByDescending(a => a.DisplayDate.HasValue)
+                .ThenByDescending(a => a.DisplayDate)
+                .ThenByDescending(a => a.ContId)
+                .ToList();
         }
 
         private static string NormalizePageName(string? pagename)

@@ -68,6 +68,22 @@
   padding-block: clamp(2.25rem, 4vw, 3.5rem);
 }
 
+.cg-year-filter {
+  margin: 0 0 2rem;
+  padding-block: 1.5rem;
+  background: var(--color-gray, #f4f4f4);
+}
+
+.cg-docs--muted .cg-year-filter {
+  background: #fff;
+}
+
+.cg-year-filter .cselect-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .fh-year-filter .container {
   display: flex;
   align-items: center;
