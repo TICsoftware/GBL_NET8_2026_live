@@ -56,7 +56,7 @@ app.MapControllerRoute(
                    app.MapControllerRoute(
                    name: "health-and-safety",
                    pattern: "sustainability/health-and-safety",
-                   defaults: new { controller = "sustainability", action = "LearningDevelopment", title = "health-and-safety" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "health-and-safety" }
            );
             app.MapControllerRoute(
                    name: "careers",
