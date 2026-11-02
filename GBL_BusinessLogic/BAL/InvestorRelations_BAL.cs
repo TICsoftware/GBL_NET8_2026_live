@@ -14,6 +14,7 @@ namespace GBL_BusinessLogic.BAL
         private const string DefaultShareholderImage = "/Assets/images/investors/information-img.webp";
         private const string DefaultSubsidiariesImage = "/Assets/images/investors/subsidiaries-img.webp";
         private const string DefaultAnnualThumb = "/Assets/images/investors/annual-report-img.webp";
+        private const int SubsidiaryLandingCount = 5;
 
         private static readonly string[] PageNames =
         {
@@ -357,7 +358,7 @@ namespace GBL_BusinessLogic.BAL
             List<ArticleModel> articles = new();
             try
             {
-                var ds = Get_Investor_Pdf_page_wise_DAL(section.ContId, 1, 12, 0);
+                var ds = Get_Investor_Pdf_page_wise_DAL(section.ContId, 1, SubsidiaryLandingCount, null);
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     articles = Config_Application_Website.MapArticleList(ds.Tables[0]);
@@ -374,13 +375,14 @@ namespace GBL_BusinessLogic.BAL
                     .Where(a => a.ContParentId == section.ContId)
                     .OrderByDescending(a => a.DisplayDate.HasValue)
                     .ThenByDescending(a => a.DisplayDate)
-                    .ThenBy(a => a.Sequence)
-                    .Take(12)
+                    .ThenByDescending(a => a.ContId)
+                    .Take(SubsidiaryLandingCount)
                     .ToList();
             }
 
             model.SubsidiaryLinks = articles
                 .Where(a => !string.IsNullOrWhiteSpace(a.Title))
+                .Take(SubsidiaryLandingCount)
                 .Select(a => new InvestorLinkModel
                 {
                     Title = a.Title ?? "",
