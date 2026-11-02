@@ -12,6 +12,7 @@ namespace GBL_BusinessLogic.Entity
         public List<InvestorLinkModel> ShareholderLinks { get; set; } = new();
         public List<InvestorLinkModel> GovernanceLinks { get; set; } = new();
         public string GovernanceBackground { get; set; } = "/Assets/images/investors/governance-img1.webp";
+        public string GovernanceBackgroundAlt { get; set; } = "";
         public List<InvestorLinkModel> SubsidiaryLinks { get; set; } = new();
         public string SubsidiariesImage { get; set; } = "";
         public string SubsidiariesImageAlt { get; set; } = "";

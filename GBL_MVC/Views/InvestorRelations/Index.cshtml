@@ -21,6 +21,9 @@
     var governanceBg = string.IsNullOrWhiteSpace(Model?.GovernanceBackground)
         ? "/Assets/images/investors/governance-img1.webp"
         : Model.GovernanceBackground;
+    var governanceBgAlt = string.IsNullOrWhiteSpace(Model?.GovernanceBackgroundAlt)
+        ? "Corporate Governance"
+        : Model.GovernanceBackgroundAlt;
     var shareholderImg = string.IsNullOrWhiteSpace(Model?.ShareholderImage)
         ? "/Assets/images/investors/information-img.webp"
         : Model.ShareholderImage;
@@ -311,8 +314,8 @@ else
 @if (governanceLinks.Count > 0)
 {
     <section class="corporateGovernance section-spacing" aria-labelledby="corporate-governance-title">
-        <div class="cg-bg" aria-hidden="true">
-            <img src="@governanceBg" alt="">
+        <div class="cg-bg">
+            <img src="@governanceBg" alt="@governanceBgAlt">
         </div>
         <div class="container">
             <div class="cg-panel">

@@ -16,6 +16,7 @@
     1  Grandchildren (annual reports, subsidiary PDFs, quarterly years, CG tabs)
     2  What's New: press-release / media-coverage tagged to this section
     3  Corporate-governance children (Policies, Code of Conduct, Committees)
+    4  Investor Contact components (context_details of the 'investors contact' child, e.g. cont_id = 476)
 
   Example:
     EXEC dbo.Get_Investor_Relations_Home
@@ -64,6 +65,23 @@ BEGIN
             c.cont_id
     );
 
+    DECLARE @ContactId INT =
+    (
+        SELECT TOP 1 c.cont_id
+        FROM content c
+        WHERE
+            c.cont_status = 2
+            AND c.cont_parent_id = @ContentId
+            AND (
+                LOWER(REPLACE(ISNULL(c.cont_pagename, N''), N' ', N'')) LIKE N'%investor%contact%'
+                OR LOWER(REPLACE(ISNULL(c.cont_title, N''), N' ', N'')) LIKE N'%investor%contact%'
+                OR LOWER(REPLACE(ISNULL(c.cont_hmpg_title, N''), N' ', N'')) LIKE N'%investor%contact%'
+            )
+        ORDER BY
+            ISNULL(c.cont_sequence, 999999),
+            c.cont_id
+    );
+
     /* ==========================================
        0. Section children of investor-relations
        ========================================== */
@@ -89,6 +107,9 @@ BEGIN
         c.Hmpg_thumbnail_Media_id,
         m3.file_path AS Hmpg_thumbnail,
         c.Hmpg_thumbnail_alt_text,
+        c.Background_image_Media_id,
+        mbg.file_path AS background_image_path,
+        c.Background_alt_text,
         dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
         c.cont_external_url,
         CAST(NULL AS NVARCHAR(MAX)) AS MediafilePath,
@@ -101,6 +122,7 @@ BEGIN
     LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
     LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
     LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+    LEFT JOIN media mbg ON c.Background_image_Media_id = mbg.id
     WHERE
         c.cont_parent_id = @ContentId
         AND c.cont_status = 2
@@ -267,5 +289,66 @@ BEGIN
     ORDER BY
         ISNULL(c.cont_sequence, 999999),
         c.cont_id;
+
+    /* ==========================================
+       4. Investor Contact components
+          SELECT * FROM context_details WHERE cont_id = @ContactId
+          (e.g. 476 — Title + Content + Sequence)
+       ========================================== */
+    SELECT
+        cd.cont_id,
+        cd.context_group_id,
+        ISNULL(cf.name, N'') AS field_name,
+        ISNULL(cf.name_key, N'') AS name_key,
+        ISNULL(
+            (
+                SELECT TOP 1 TRY_CONVERT(int, NULLIF(LTRIM(RTRIM(seq.content)), N''))
+                FROM dbo.context_details seq
+                LEFT JOIN dbo.context_fields seqf
+                    ON seqf.id = seq.context_field_id
+                WHERE
+                    seq.cont_id = cd.cont_id
+                    AND seq.context_group_id = cd.context_group_id
+                    AND (
+                        seq.context_field_id = 10
+                        OR LOWER(ISNULL(seqf.name, N'')) IN (N'sequence', N'component sequence')
+                        OR LOWER(ISNULL(seqf.name_key, N'')) LIKE N'%sequence%'
+                    )
+            ),
+            1
+        ) AS component_sequence,
+        1 AS is_block,
+        ISNULL(cd.content, N'') AS field_value,
+        COALESCE(
+            m.file_path,
+            CASE
+                WHEN cd.File_path LIKE N'%/%' OR cd.File_path LIKE N'%.%' THEN cd.File_path
+                ELSE NULL
+            END
+        ) AS component_image_path,
+        cd.File_path
+    FROM dbo.context_details cd
+    LEFT JOIN dbo.context_fields cf
+        ON cf.id = cd.context_field_id
+    OUTER APPLY (
+        SELECT TOP (1) mx.file_path
+        FROM dbo.media mx
+        WHERE (
+                TRY_CONVERT(INT, NULLIF(LTRIM(RTRIM(ISNULL(cd.File_path, N''))), N'')) IS NOT NULL
+                AND mx.id = TRY_CONVERT(INT, NULLIF(LTRIM(RTRIM(cd.File_path)), N''))
+            )
+            OR (
+                cd.File_path LIKE N'%/%'
+                AND (
+                    mx.file_path = cd.File_path
+                    OR mx.file_path = N'/' + LTRIM(cd.File_path)
+                )
+            )
+        ORDER BY mx.id
+    ) m
+    WHERE
+        @ContactId IS NOT NULL
+        AND cd.cont_id = @ContactId
+        AND cd.context_group_id IS NOT NULL;
 END
 GO

@@ -61,6 +61,8 @@ namespace GBL_BusinessLogic.Entity
         public string Hmpg_thumbnail { get; set; }
         public string Hmpg_thumbnail_alt_text { get; set; }
         public string Masthead_image_Alt_text { get; set; }
+        public string BackgroundImage { get; set; }
+        public string Background_image_Alt_text { get; set; }
         public string CanonicalUrl { get; set; }
 
         public string cont_meta_image { get; set; }

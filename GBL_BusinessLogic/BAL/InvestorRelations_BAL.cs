@@ -62,11 +62,6 @@ namespace GBL_BusinessLogic.BAL
                 }
             }
 
-            if (parentDs != null && parentDs.Tables.Count > 1 && parentDs.Tables[1].Rows.Count > 0)
-            {
-                MapInvestorContact(model, parentDs.Tables[1]);
-            }
-
             var contentId = model.Content?.ContId ?? 0;
             var homeDs = contentId > 0 ? SafeHomeData(contentId) : null;
 
@@ -87,15 +82,15 @@ namespace GBL_BusinessLogic.BAL
                 ? Config_Application_Website.MapArticleList(homeDs.Tables[3])
                 : new List<ArticleModel>();
 
-            model.ShareholderImage = DefaultShareholderImage;
-            model.ShareholderImageAlt = "Shareholders reviewing company documents together";
+            BindShareholderImage(model);
+            BindGovernanceBackground(model, sections);
             model.ShareholderLinks = BuildShareholderLinks(sections);
             model.GovernanceLinks = BuildGovernanceLinks(cgChildren, sections, nested);
-            model.GovernanceBackground = DefaultGovernanceBackground;
 
             MapAnnualReport(model, sections, nested);
             MapSubsidiaries(model, sections, nested);
             MapLatestQuarter(model, languageId, geographyId);
+            MapInvestorContactSection(model, sections, homeDs, languageId, geographyId);
 
             return model;
         }
@@ -112,9 +107,88 @@ namespace GBL_BusinessLogic.BAL
             }
         }
 
+        private void MapInvestorContactSection(
+            InvestorRelationsModel model,
+            List<ArticleModel> sections,
+            DataSet? homeDs,
+            int languageId,
+            int geographyId)
+        {
+            var section = FindSection(sections,
+                "investors-contact",
+                "investor-contact",
+                "investorscontact",
+                "investorcontact");
+
+            if (homeDs != null && homeDs.Tables.Count > 4 && homeDs.Tables[4].Rows.Count > 0)
+            {
+                MapInvestorContact(model, homeDs.Tables[4]);
+            }
+
+            if (model.InvestorContact_List.Count == 0 && section != null)
+            {
+                foreach (var name in ContactPageNames(section.PageName))
+                {
+                    try
+                    {
+                        var ds = GetContentComponentData_DAL(name, languageId, geographyId);
+                        if (ds != null && ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                        {
+                            MapInvestorContact(model, ds.Tables[1]);
+                            if (model.InvestorContact_List.Count > 0) break;
+                        }
+                    }
+                    catch
+                    {
+                        // Page name may not resolve until the contact subsection is published.
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(section?.Title))
+            {
+                model.InvestorContactTitle = section.Title;
+            }
+            else if (string.IsNullOrWhiteSpace(model.InvestorContactTitle))
+            {
+                model.InvestorContactTitle = "Investor Contact";
+            }
+        }
+
+        private static IEnumerable<string> ContactPageNames(string? pageName)
+        {
+            var names = new List<string>();
+            void Add(string? value)
+            {
+                var name = (value ?? "").Trim().Trim('/');
+                if (string.IsNullOrWhiteSpace(name)) return;
+                if (!names.Exists(x => x.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    names.Add(name);
+                }
+            }
+
+            Add(pageName);
+            Add(LastSegment(pageName));
+            Add("investors-contact");
+            Add("investor-contact");
+            Add("investor-relations/investors-contact");
+            Add("investor-relations/investor-contact");
+            return names;
+        }
+
         private void MapInvestorContact(InvestorRelationsModel model, DataTable table)
         {
-            var grouped = GetGroupedComponents(table);
+            List<ComponentGroup> grouped;
+            try
+            {
+                grouped = GetGroupedComponents(table);
+            }
+            catch
+            {
+                return;
+            }
+
             if (grouped.Count == 0) return;
 
             var sequences = grouped
@@ -129,16 +203,8 @@ namespace GBL_BusinessLogic.BAL
 
             model.InvestorContact_List = model.InvestorContact_List
                 .Where(c => !string.IsNullOrWhiteSpace(c.Title) || !string.IsNullOrWhiteSpace(c.Content))
+                .OrderBy(c => c.Sequence)
                 .ToList();
-
-            var sectionTitle = model.InvestorContact_List
-                .Select(c => c.Section_title)
-                .FirstOrDefault(t => !string.IsNullOrWhiteSpace(t));
-
-            if (!string.IsNullOrWhiteSpace(sectionTitle))
-            {
-                model.InvestorContactTitle = sectionTitle;
-            }
         }
 
         private static void MapWhatsNew(InvestorRelationsModel model, DataTable table)
@@ -251,6 +317,33 @@ namespace GBL_BusinessLogic.BAL
             {
                 model.LatestAnnualReport.ThumbnailImage = DefaultAnnualThumb;
             }
+        }
+
+        private static void BindShareholderImage(InvestorRelationsModel model)
+        {
+            model.ShareholderImage = FirstNonEmpty(
+                model.Content?.Hmpg_thumbnail,
+                model.Content?.BackgroundImage,
+                DefaultShareholderImage);
+            model.ShareholderImageAlt = FirstNonEmpty(
+                model.Content?.Hmpg_thumbnail_alt_text,
+                model.Content?.Background_image_Alt_text,
+                "Shareholders reviewing company documents together");
+        }
+
+        private static void BindGovernanceBackground(InvestorRelationsModel model, List<ArticleModel> sections)
+        {
+            var section = FindSection(sections, "corporate-governance");
+            model.GovernanceBackground = FirstNonEmpty(
+                section?.BackgroundImage,
+                section?.MastheadImage,
+                section?.ThumbnailImage,
+                DefaultGovernanceBackground);
+            model.GovernanceBackgroundAlt = FirstNonEmpty(
+                section?.BackgroundAltText,
+                section?.MastheadAltText,
+                section?.ThumbnailAltText,
+                "Corporate Governance");
         }
 
         private void MapSubsidiaries(InvestorRelationsModel model, List<ArticleModel> sections, List<ArticleModel> nested)
@@ -405,7 +498,7 @@ namespace GBL_BusinessLogic.BAL
             }
 
             var compactTitle = Regex.Replace(title, @"[\s\-]+", "");
-            return slugs.Any(s => compactTitle.Equals(s.Replace("-", ""), StringComparison.OrdinalIgnoreCase));
+            return slugs.Any(s => compactTitle.Equals(Regex.Replace(s, @"[\s\-]+", ""), StringComparison.OrdinalIgnoreCase));
         }
 
         private static bool IsPress(ArticleModel item)

@@ -2010,6 +2010,7 @@
   src: url('/Assets/fonts/unineue-bold-webfont.eot?#iefix') format('embedded-opentype'), url('/Assets/fonts/unineue-bold-webfont.woff2') format('woff2'), url('/Assets/fonts/unineue-bold-webfont.woff') format('woff'), url('/Assets/fonts/unineue-bold-webfont.ttf') format('truetype'), url('/Assets/fonts/unineue-bold-webfont.svg#uni_neuebold') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'uni_neuelight';
@@ -2017,6 +2018,7 @@
   src: url('/Assets/fonts/unineue-light-webfont.eot?#iefix') format('embedded-opentype'), url('/Assets/fonts/unineue-light-webfont.woff2') format('woff2'), url('/Assets/fonts/unineue-light-webfont.woff') format('woff'), url('/Assets/fonts/unineue-light-webfont.ttf') format('truetype'), url('/Assets/fonts/unineue-light-webfont.svg#uni_neuelight') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'uni_neueregular';
@@ -2024,6 +2026,7 @@
   src: url('/Assets/fonts/unineue-regular-webfont.eot?#iefix') format('embedded-opentype'), url('/Assets/fonts/unineue-regular-webfont.woff2') format('woff2'), url('/Assets/fonts/unineue-regular-webfont.woff') format('woff'), url('/Assets/fonts/unineue-regular-webfont.ttf') format('truetype'), url('/Assets/fonts/unineue-regular-webfont.svg#uni_neueregular') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 p {
   font-family: var(--font-body);
@@ -2053,10 +2056,7 @@ body {
 }
 @layer base {
   h1, h2, h3, h4, h5 {
-    font-weight: 700;
-  }
-  h1, h2, h3, h4, h5 {
-    font-family: var(--font-body);
+    font-family: var(--font-uniNeueBold);
     color: var(--color-primary);
     line-height: 1.25;
     margin-bottom: 1rem;

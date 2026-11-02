@@ -230,6 +230,18 @@ namespace GBL_BusinessLogic
 
                     ThumbnailImage = row["Hmpg_thumbnail"]?.ToString(),
                     ThumbnailAltText = row["Hmpg_thumbnail_alt_text"]?.ToString(),
+                    BackgroundImage = table.Columns.Contains("background_image_path")
+                        ? row["background_image_path"]?.ToString()
+                        : "",
+                    BackgroundAltText = table.Columns.Contains("Background_alt_text")
+                        ? row["Background_alt_text"]?.ToString()
+                        : "",
+                    MastheadImage = table.Columns.Contains("masthead_image_path")
+                        ? row["masthead_image_path"]?.ToString()
+                        : "",
+                    MastheadAltText = table.Columns.Contains("Masthead_alt_text")
+                        ? row["Masthead_alt_text"]?.ToString()
+                        : "",
 
                     ExternalUrl = row["cont_external_url"]?.ToString(),
                     MediafilePath = row["MediafilePath"]?.ToString(),

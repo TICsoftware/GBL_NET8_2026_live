@@ -47,6 +47,10 @@ namespace GBL_BusinessLogic.BAL
                 Hmpg_thumbnail = row.Field<string>("Hmpg_thumbnail") ?? "",
                 Hmpg_thumbnail_alt_text = row.Field<string>("Hmpg_thumbnail_alt_text") ?? "",
                 Masthead_image_Alt_text = row.Field<string>("Masthead_alt_text") ?? "",
+                BackgroundImage = GetColumnString(row, "background_image_path"),
+                Background_image_Alt_text = FirstNonEmpty(
+                    GetColumnString(row, "Background_alt_text"),
+                    GetColumnString(row, "background_alt_text")),
                 CanonicalUrl = Config_Application_Website.GetMetaUrl(baseurl, canUrl),
                 ParentLink = row.Field<string>("parentLink") ?? "",
 

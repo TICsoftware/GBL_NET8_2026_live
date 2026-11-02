@@ -99,6 +99,10 @@ namespace GBL_BusinessLogic.Entity
 
         public string ThumbnailImage { get; set; }
         public string ThumbnailAltText { get; set; }
+        public string BackgroundImage { get; set; }
+        public string BackgroundAltText { get; set; }
+        public string MastheadImage { get; set; }
+        public string MastheadAltText { get; set; }
 
         public string ExternalUrl { get; set; }
         public string MediafilePath { get; set; }
