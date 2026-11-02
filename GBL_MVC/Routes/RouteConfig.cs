@@ -115,6 +115,12 @@ app.MapControllerRoute(
             );
 
             app.MapControllerRoute(
+                name: "investor-relations",
+                pattern: "investor-relations",
+                defaults: new { controller = "InvestorRelations", action = "Index", title = "investor-relations" }
+            );
+
+            app.MapControllerRoute(
                 name: "investor-load-pdfs",
                 pattern: "Investors/LoadPdfs",
                 defaults: new { controller = "Investors", action = "LoadPdfs" }

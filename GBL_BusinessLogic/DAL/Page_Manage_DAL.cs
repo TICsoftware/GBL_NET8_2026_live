@@ -164,6 +164,18 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Investor_Section_Children", sqlParams);
         }
 
+        public DataSet Get_Investor_Relations_Home_DAL(int contentId, int pressParentId = 3, int mediaParentId = 7)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@ContentId", contentId),
+                new SqlParameter("@PressParentId", pressParentId),
+                new SqlParameter("@MediaParentId", mediaParentId)
+            };
+
+            return GetDataSet("Get_Investor_Relations_Home", sqlParams);
+        }
+
 
 
         public DataTable ContactUs_Insert_DAL(ContactEntity model)
