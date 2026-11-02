@@ -7,6 +7,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.15rem;
   align-items: stretch;
+  padding-bottom: 1.25rem;
 }
 
 .whatsNew__card {
@@ -16,26 +17,134 @@
   margin: 0;
   padding: 1.15rem 1.1rem 1.2rem;
   background: #f3f3f3;
-  border-radius: 14px;
+}
+
+.whatsNew__card:has(> a) {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  padding-bottom: 3.75rem;
+  clip-path: inset(0 0 -22px 0);
+  --card-fill: var(--color-secondary, #67815a);
+}
+
+.whatsNew__card:has(> a)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--fill-top, 0px);
+  bottom: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whatsNew__card:has(> a).is-filled::before,
+.whatsNew__card:has(> a):focus-within::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
+}
+
+.whatsNew__card:has(> a)::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+
+.whatsNew__card:has(> a) > * {
+  position: relative;
+  z-index: 2;
+}
+
+.whatsNew__card:has(> a):hover,
+.whatsNew__card:has(> a):focus-within {
+  z-index: 1;
+}
+
+.whatsNew__card:has(> a).is-filled,
+.whatsNew__card:has(> a):focus-within {
+  color: #fff;
+}
+
+.whatsNew__card:has(> a).is-filled h3,
+.whatsNew__card:has(> a):focus-within h3,
+.whatsNew__card:has(> a).is-filled p,
+.whatsNew__card:has(> a):focus-within p {
+  color: #fff;
+}
+
+.whatsNew__card:has(> a).is-filled .whatsNew__tag,
+.whatsNew__card:has(> a):focus-within .whatsNew__tag {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.whatsNew__card:has(> a).is-filled time,
+.whatsNew__card:has(> a):focus-within time {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.whatsNew__card:has(> a).is-filled .site-btn--line,
+.whatsNew__card:has(> a):focus-within .site-btn--line {
+  color: #fff;
+  --btn-black: #fff;
+}
+
+.whatsNew__card:has(> a).is-filled .site-btn--line::after,
+.whatsNew__card:has(> a):focus-within .site-btn--line::after {
+  background: #fff;
 }
 
 .whatsNew__card h3 {
-  margin: 0.85rem 0 1.25rem;
+  margin: 0.85rem 0 0;
   color: var(--color-primary, #282b31);
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.35;
+  font-size: var(--text-p);
+   font-family: var(--font-uniNeue), sans-serif;
+   line-height: 1.5;
 }
 
 .whatsNew__card p {
   margin: 0;
   color: #3a3f46;
-  line-height: 1.45;
 }
 
-.whatsNew__card .site-btn {
-  margin-top: auto;
-  align-self: flex-start;
+.whatsNew__card:has(> a) a.site-btn {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 1.15rem;
+  z-index: 2;
+  margin: 0;
+  max-width: calc(100% - 2.2rem);
+  opacity: 0;
+  transform: translateY(calc(100% + 1.15rem));
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+              transform 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whatsNew__card:has(> a):hover a.site-btn,
+.whatsNew__card:has(> a):focus-within a.site-btn,
+.whatsNew__card:has(> a).is-filled a.site-btn {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+@media (hover: none) {
+  .whatsNew__card:has(> a) a.site-btn {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
 }
 
 .whatsNew__meta {
@@ -66,8 +175,9 @@
 }
 
 .whatsNew__media {
+  position: relative;
+  z-index: 3;
   margin: -1.15rem -1.1rem 0.85rem;
-  border-radius: 14px 14px 0 0;
   overflow: hidden;
 }
 
@@ -88,6 +198,7 @@
   gap: 0.85rem;
   height: 100%;
   min-height: 0;
+  padding-bottom: 1.25rem;
 }
 
 .whatsNew__aside .whatsNew__card {
@@ -103,7 +214,6 @@
   padding: 0.75rem 0.8rem 0.85rem;
   background: #fff;
   border: 1px solid #e6e6e6;
-  border-radius: 10px;
   box-shadow: 0 1px 2px rgba(40, 43, 49, 0.04);
 }
 
@@ -198,7 +308,6 @@
   min-height: 280px;
   padding: 1.75rem 1.75rem;
   background: #fff;
-  border-radius: 16px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -222,11 +331,34 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 1.5rem 0.75rem;
   width: calc(100% - 13vw);
   margin: 0 0 0 auto;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 1.25rem;
   list-style: none;
+}
+
+.qr-files li {
+  position: relative;
+  isolation: isolate;
+}
+
+.qr-files li:hover,
+.qr-files li:focus-within {
+  z-index: 1;
+}
+
+.qr-files li::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .qr-files a {
@@ -234,18 +366,53 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
   min-height: 4.6rem;
   padding: 0.85rem 1rem;
   background: #f3f3f3;
-  border-radius: 8px;
   color: var(--color-primary, #282b31);
   text-decoration: none;
+  --card-fill: var(--color-secondary, #67815a);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.qr-files a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 50%));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.qr-files a.is-filled::before,
+.qr-files a:focus-visible::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 50%));
+}
+
+.qr-files a.is-filled,
+.qr-files a:focus-visible {
+  color: #fff;
+}
+
+.qr-files a > * {
+  position: relative;
+  z-index: 2;
+}
+
+.qr-files a.is-filled img,
+.qr-files a:focus-visible img {
+  filter: brightness(0) invert(1);
 }
 
 .qr-files img {
   width: 28px;
   height: 28px;
   object-fit: contain;
+  transition: filter 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .qr-panel--report {
@@ -259,7 +426,6 @@
   width: min(256px, 46%);
   height: auto;
   flex: 0 0 auto;
-  border-radius: 4px;
   box-shadow: 0 10px 24px rgba(40, 43, 49, 0.16);
 }
 
@@ -323,14 +489,13 @@
 .si-row {
   display: grid;
   grid-template-columns: minmax(240px, 34%) minmax(0, 1fr);
-  gap: 1.15rem;
+  gap: 2rem;
   align-items: stretch;
 }
 
 .si-media {
   position: relative;
   min-height: 100%;
-  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -354,10 +519,33 @@
 .si-list {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 1.15rem;
   margin: 0;
-  padding: 0;
+  padding: 0 0 1.25rem;
   list-style: none;
+}
+
+.si-list li {
+  position: relative;
+  isolation: isolate;
+}
+
+.si-list li:hover,
+.si-list li:focus-within {
+  z-index: 1;
+}
+
+.si-list li::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .si-list a {
@@ -365,26 +553,56 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
   min-height: 4.15rem;
   padding: 0.9rem 1.05rem;
   background: #f3f3f3;
-  border-radius: 6px;
   color: var(--color-primary, #282b31);
-  font-size: 0.95rem;
+  font-size: var(--text-20, 1.25rem);
   line-height: 1.3;
   text-decoration: none;
+  --card-fill: var(--color-secondary, #67815a);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.si-list a:hover,
+.si-list a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 50%));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.si-list a.is-filled::before,
+.si-list a:focus-visible::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 50%));
+}
+
+.si-list a.is-filled,
 .si-list a:focus-visible {
-  background: #e8e8e8;
+  color: #fff;
+}
+
+.si-list a.is-filled .si-arrow,
+.si-list a:focus-visible .si-arrow {
+  color: #fff;
+}
+
+.si-list a > * {
+  position: relative;
+  z-index: 2;
 }
 
 .si-arrow {
-  flex: 0 0 16px;
-  width: 16px;
-  height: 16px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
   color: #2a2e34;
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .si-arrow svg {
@@ -409,6 +627,159 @@
   }
 }
 
+.corporateGovernance {
+  position: relative;
+  display: flex;
+  align-items: center;
+  aspect-ratio: 1922 / 674;
+  min-height: 0;
+  overflow: hidden;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.corporateGovernance.section-spacing {
+  padding-block: clamp(1.25rem, 2.4vw, 3rem);
+}
+
+.cg-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.cg-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.corporateGovernance .container {
+  position: relative;
+  z-index: 1;
+}
+
+.cg-panel {
+  width: min(32rem, 38%);
+}
+
+.corporateGovernance .text-h2 {
+  margin: 0 0 1.15rem;
+  color: #fff;
+}
+
+.cg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin: 0;
+  padding: 0 0 1.25rem;
+  list-style: none;
+}
+
+.cg-list li {
+  position: relative;
+  isolation: isolate;
+}
+
+.cg-list li:hover,
+.cg-list li:focus-within {
+  z-index: 1;
+}
+
+.cg-list li::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+
+.cg-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 4.15rem;
+  padding: 0.9rem 1.05rem;
+  background: rgba(48, 51, 56, 0.82);
+  color: #fff;
+  font-size: var(--text-20, 1.25rem);
+  font-weight: 500;
+  text-decoration: none;
+  --card-fill: var(--color-secondary, #67815a);
+}
+
+.cg-list a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 50%));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cg-list a.is-filled::before,
+.cg-list a:focus-visible::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 50%));
+}
+
+.cg-list a > * {
+  position: relative;
+  z-index: 2;
+}
+
+.cg-list .si-arrow {
+  color: #fff;
+}
+
+@media (max-width: 1100px) {
+  .cg-panel {
+    width: min(26rem, 46%);
+  }
+
+  .cg-list a {
+    min-height: 3.4rem;
+    padding: 0.7rem 0.9rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .corporateGovernance {
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+
+  .cg-bg img {
+    object-position: 72% center;
+  }
+
+  .cg-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(16, 18, 22, 0.72) 0%, rgba(16, 18, 22, 0.45) 100%);
+  }
+
+  .cg-panel {
+    width: 100%;
+  }
+}
+
+.subsidiaries .text-h2 {
+  margin: 0 0 1.5rem;
+}
+
 .codeOfConduct .text-h2 {
   margin: 0 0 1.5rem;
 }
@@ -424,7 +795,6 @@
   margin: 0;
   padding: 1.5rem 1.35rem 1.25rem;
   background: #f3f3f3;
-  border-radius: 6px;
   color: var(--color-primary, #282b31);
   font-style: normal;
   line-height: 1.45;
@@ -479,6 +849,19 @@
 @media (max-width: 1100px) {
   .whatsNew__grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whatsNew__card:has(> a)::before,
+  .whatsNew__card:has(> a),
+  .whatsNew__card:has(> a) a.site-btn,
+  .qr-files a::before,
+  .qr-files a,
+  .si-list a::before,
+  .si-list a,
+  .cg-list a::before {
+    transition: none;
   }
 }
 

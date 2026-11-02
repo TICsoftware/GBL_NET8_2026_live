@@ -135,7 +135,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var grid = panel.querySelector(".industry-product-grid");
     var cards = grid
-      ? Array.from(grid.querySelectorAll(".industry-product-card"))
+      ? Array.from(grid.querySelectorAll(".industry-product-card")).filter(function (card) {
+          return !card.hidden;
+        })
       : [];
     if (!cards.length) return;
 
@@ -215,8 +217,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   tabs.forEach(function (tab) {
-    tab.addEventListener("click", function () {
+    tab.addEventListener("click", function (event) {
+      if (tab.tagName === "A") return;
       if (tab.classList.contains("is-active")) return;
+      event.preventDefault();
       activateTab(tab, true);
     });
   });
@@ -297,14 +301,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
   bindMediaParallax(activeProductPanel());
 
-  /* Rebind after tab AJAX injects product cards (images / animations). */
-  document.addEventListener("industryProductsLoaded", function (e) {
-    var panel = (e && e.detail && e.detail.panel) || activeProductPanel();
-    if (!panel) return;
-    requestAnimationFrame(function () {
-      bindProductRise(panel, true);
-      bindMediaParallax(panel);
-      refreshTriggers();
+  function placeFill(card, e) {
+    var media = card.querySelector(".industry-product-card__media");
+    var cardRect = card.getBoundingClientRect();
+    var mediaRect = media ? media.getBoundingClientRect() : null;
+    var top = mediaRect ? Math.max(0, mediaRect.bottom - cardRect.top) : cardRect.height * 0.46;
+    var fillW = cardRect.width;
+    var fillH = Math.max(0, cardRect.height - top);
+    var x = e ? e.clientX - cardRect.left : fillW / 2;
+    var y = e ? e.clientY - cardRect.top - top : fillH / 2;
+    x = Math.min(Math.max(x, 0), fillW);
+    y = Math.min(Math.max(y, 0), fillH);
+    var radius = Math.ceil(Math.hypot(Math.max(x, fillW - x), Math.max(y, fillH - y))) + 16;
+    card.style.setProperty("--fill-top", top + "px");
+    card.style.setProperty("--hx", x + "px");
+    card.style.setProperty("--hy", y + "px");
+    card.style.setProperty("--hr", radius + "px");
+  }
+
+  function bindCardFill() {
+    document.querySelectorAll(".industry-product-card").forEach(function (card) {
+      if (card.dataset.fillBound) return;
+      card.dataset.fillBound = "1";
+      placeFill(card, null);
+      card.addEventListener("mouseenter", function (e) {
+        placeFill(card, e);
+        card.classList.add("is-filled");
+      });
+      card.addEventListener("mouseleave", function () {
+        card.classList.remove("is-filled");
+      });
+    });
+  }
+
+  function refreshCardFill(panel) {
+    var root = panel || document;
+    root.querySelectorAll(".industry-product-card").forEach(function (card) {
+      placeFill(card, null);
+    });
+  }
+
+  bindCardFill();
+  window.addEventListener("resize", function () {
+    refreshCardFill();
+  });
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      requestAnimationFrame(function () {
+        refreshCardFill(activeProductPanel());
+      });
     });
   });
 });

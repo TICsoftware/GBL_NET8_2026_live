@@ -8,18 +8,47 @@ Mobile: below 1180px
   display: grid;
   gap: clamp(1.25rem, 2vw, 1.75rem);
   align-items: start;
+  padding-bottom: 1.25rem;
+}
+
+.industries-list > .industry-card[hidden] {
+  display: none !important;
+}
+
+.industries-load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.industries-load-more[hidden] {
+  display: none !important;
 }
 
 .industry-card {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   background: var(--color-white, #fff);
   color: inherit;
   text-decoration: none;
   cursor: pointer;
+}
+
+.industry-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -22px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 /* Scroll moves cards under a fixed cursor → false :hover. Block until idle. */
@@ -46,8 +75,8 @@ Mobile: below 1180px
 
 .industry-card__caption {
   flex: 0 0 auto;
-  background: #fff;
-  padding: 1rem 1rem 0;
+  background: #f8f8f8;
+  padding: 1rem 1rem;
 }
 .industry-card__caption h3{ margin-bottom:0 ;}
 
@@ -80,6 +109,11 @@ Mobile: below 1180px
   .industry-card {
     height: 30vw;
   }
+
+  .industry-card__media {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 }
 
 @media (min-width: 1180px) and (max-width: 1279px) {
@@ -89,6 +123,11 @@ Mobile: below 1180px
 
   .industry-card {
     height: 42vw;
+  }
+
+  .industry-card__media {
+    flex: 1 1 auto;
+    min-height: 0;
   }
 }
 
@@ -199,8 +238,8 @@ Mobile: below 1180px
   }
 
   .industry-card__details-inner p {
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: inherit;
+    line-clamp: inherit;
   }
 }
 

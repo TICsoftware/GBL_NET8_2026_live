@@ -7,8 +7,27 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 3rem 1.75rem;
   margin: 0;
-  padding: 0;
+  padding: 0 0 1.25rem;
   list-style: none;
+}
+
+.ar-reports__item {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 22px;
+}
+
+.ar-reports__item::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: 0;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .ar-reports__item[hidden] {
@@ -43,17 +62,11 @@
   position: relative;
   display: block;
   overflow: hidden;
-  container-type: inline-size;
+  perspective: 800px;
   background: #fff;
   padding: var(--ar-pad);
   color: inherit;
   text-decoration: none;
-  transition: transform 0.35s ease;
-}
-
-.ar-reports__card:hover,
-.ar-reports__card:focus-visible {
-  transform: translateY(-4px);
 }
 
 .ar-reports__card:focus-visible {
@@ -65,14 +78,15 @@
   position: relative;
   z-index: 1;
   display: block;
-  transform: scale(1);
-  transform-origin: center;
-  transition: transform 0.5s ease;
+  transform: rotateX(0deg) rotateY(0deg);
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.ar-reports__card:hover .ar-reports__media,
-.ar-reports__card:focus-visible .ar-reports__media {
-  transform: scale(calc((100cqi + (var(--ar-pad) * 2)) / 100cqi));
+.ar-reports__card.is-tilting .ar-reports__media {
+  transition: transform 0.12s linear;
 }
 
 .ar-reports__card img {
@@ -136,5 +150,13 @@
 @media (max-width: 640px) {
   .ar-reports__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ar-reports__media,
+  .ar-reports__card.is-tilting .ar-reports__media {
+    transform: none;
+    transition: none;
   }
 }

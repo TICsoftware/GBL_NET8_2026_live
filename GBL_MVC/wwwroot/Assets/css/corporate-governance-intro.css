@@ -64,24 +64,34 @@
   margin: 0 0 1.6rem;
 }
 
-.fh-year-filter {
-  padding-block: clamp(2.25rem, 4vw, 3.5rem);
+.cg-docs__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.6rem;
+}
+
+.cg-docs__head .text-h2 {
+  margin: 0;
 }
 
 .cg-year-filter {
-  margin: 0 0 2rem;
-  padding-block: 1.5rem;
-  background: var(--color-gray, #f4f4f4);
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  position: relative;
+  z-index: 5;
 }
 
-.cg-docs--muted .cg-year-filter {
-  background: #fff;
+.cg-year-filter .cselect-trigger,
+.cg-year-filter .cselect-native {
+  min-width: 12.5rem;
 }
 
-.cg-year-filter .cselect-menu {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.fh-year-filter {
+  padding-block: clamp(1.5rem, 4vw, 1.5rem);
 }
 
 .fh-year-filter .container {
@@ -116,8 +126,9 @@
   display: none;
 }
 
-.cg-docs__grid > [hidden] {
-  display: none;
+.cg-docs__grid > [hidden],
+.cg-committees > [hidden] {
+  display: none !important;
 }
 
 .cg-docs__grid {
@@ -125,8 +136,27 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   margin: 0;
-  padding: 0;
+  padding: 0 0 1.25rem;
   list-style: none;
+}
+
+.cg-docs__grid > .card-rise {
+  position: relative;
+  isolation: isolate;
+  /* padding-bottom: 22px; */
+}
+
+.cg-docs__grid > .card-rise::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -22px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .cg-doc {
@@ -134,14 +164,32 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  position: relative;
+  overflow: hidden;
   min-height: 4.75rem;
   height: 100%;
   padding: 1rem 1.15rem;
   background: var(--color-gray, #f4f4f4);
   color: var(--color-primary, #282b31);
   text-decoration: none;
-  transform: scale(1);
-  transition: background-color 0.35s ease, color 0.35s ease, transform 0.35s ease;
+  --card-fill: var(--color-secondary, #67815a);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cg-doc::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 50%));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cg-doc.is-filled::before,
+.cg-doc:focus-visible::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 50%));
 }
 
 .cg-docs--muted {
@@ -158,13 +206,9 @@
   z-index: 1;
 }
 
-.cg-doc:hover,
-.cg-doc:focus-visible,
-.cg-docs--muted .cg-doc:hover,
-.cg-docs--muted .cg-doc:focus-visible {
-  background: var(--color-secondary, #67815a);
+.cg-doc.is-filled,
+.cg-doc:focus-visible {
   color: #fff;
-  transform: scale(1.04);
 }
 
 .cg-doc:focus-visible {
@@ -172,17 +216,24 @@
   outline-offset: 2px;
 }
 
+.cg-doc__title {
+  position: relative;
+  z-index: 2;
+}
+
 .cg-doc__icon {
+  position: relative;
+  z-index: 2;
   flex: 0 0 auto;
   width: 40px;
   height: 40px;
   background-color: #282b31;
   -webkit-mask: url("../images/investors/pdf-icon.svg") center / contain no-repeat;
   mask: url("../images/investors/pdf-icon.svg") center / contain no-repeat;
-  transition: background-color 0.35s ease;
+  transition: background-color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.cg-doc:hover .cg-doc__icon,
+.cg-doc.is-filled .cg-doc__icon,
 .cg-doc:focus-visible .cg-doc__icon {
   background-color: #fff;
 }
@@ -193,16 +244,32 @@
   gap: 2rem;
   align-items: stretch;
   margin: 0;
-  padding: 0;
+  padding: 0 0 1.25rem;
   list-style: none;
 }
 
 .cg-committee {
   display: flex;
   flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
   height: 100%;
   background: var(--color-gray, #f4f4f4);
   padding: 1.35rem 1.4rem 0.65rem;
+}
+
+.cg-committee::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .cg-committee--wide {
@@ -212,7 +279,7 @@
 .cg-committee h3 {
   margin: 0 0 1rem;
   font-size: var(--text-22, 22px);
- font-family: var(--font-uniNeueBold);
+  font-family: var(--font-uniNeueBold);
 }
 
 .cg-committee ul {
@@ -244,6 +311,14 @@
   color: var(--color-primary);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .cg-doc::before,
+  .cg-doc,
+  .cg-doc__icon {
+    transition: none;
+  }
+}
+
 .cg-committee__cols {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -265,6 +340,16 @@
   .fh-year-filter .container {
     flex-wrap: wrap;
     gap: 0.75rem;
+  }
+
+  .cg-docs__head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cg-year-filter {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .cg-jump__track {

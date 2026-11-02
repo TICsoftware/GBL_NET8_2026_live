@@ -2,6 +2,13 @@
 .whyJoin-cards-outer {
   margin-top: 2rem;
   overflow: hidden;
+  padding-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .whyJoin-cards-outer.swiper {
+    overflow: visible;
+  }
 }
 
 .whyJoin-cards-outer .swiper-wrapper {
@@ -12,6 +19,8 @@
 }
 
 .whyJoin-cards-outer .swiper-slide {
+  display: flex;
+  flex-direction: column;
   height: auto;
   width: auto;
 }
@@ -20,13 +29,48 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  isolation: isolate;
   height: 100%;
   background: #fff;
-  overflow: hidden;
+  overflow: visible;
+  --card-fill: var(--color-secondary, #67815a);
+}
+
+.whyJoin-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--fill-top, 46%);
+  bottom: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whyJoin-card.is-filled::before,
+.whyJoin-card:focus-within::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
+}
+
+.whyJoin-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .whyJoin-card__media {
   position: relative;
+  z-index: 2;
   overflow: hidden;
   aspect-ratio: 4 / 3;
 }
@@ -45,18 +89,32 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+  position: relative;
   padding: 1.25rem 1.25rem 5.25rem;
 }
 
 .whyJoin-card__body h3 {
+  position: relative;
+  z-index: 2;
   margin: 0 0 0.65rem;
   color: var(--color-primary);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .whyJoin-card__body p {
+  position: relative;
+  z-index: 2;
   margin: 0;
   color: var(--color-gray-dark);
   font-size: var(--text-p);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whyJoin-card.is-filled h3,
+.whyJoin-card:focus-within h3,
+.whyJoin-card.is-filled p,
+.whyJoin-card:focus-within p {
+  color: #fff;
 }
 
 .whyJoin-card a.site-btn {
@@ -75,10 +133,30 @@
 }
 
 .whyJoin-card:hover a.site-btn,
-.whyJoin-card:focus-within a.site-btn {
+.whyJoin-card:focus-within a.site-btn,
+.whyJoin-card.is-filled a.site-btn {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+  color: #fff;
+  border-color: #fff;
+}
+
+.whyJoin-card .site-btn.site-btn--outline:hover,
+.whyJoin-card .site-btn.site-btn--outline:focus-visible {
+  color: var(--color-secondary, #67815a);
+  border-color: #fff;
+  background-color: #fff;
+  --btn-fill: #fff;
+  --btn-white: var(--color-secondary, #67815a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whyJoin-card::before,
+  .whyJoin-card__body h3,
+  .whyJoin-card__body p {
+    transition: none;
+  }
 }
 
 .whyJoin-controls {
@@ -100,6 +178,20 @@
   .whyJoin-cards-outer .swiper-slide {
     width: 100%;
     height: auto;
+    padding-bottom: 22px;
+    background-clip: content-box;
+  }
+
+  .whyJoin-card::after {
+    bottom: 0;
+  }
+
+  .whyJoin-card::before {
+    bottom: 22px;
+  }
+
+  .whyJoin-card a.site-btn {
+    bottom: 42px;
   }
 
   .whyJoin-controls {

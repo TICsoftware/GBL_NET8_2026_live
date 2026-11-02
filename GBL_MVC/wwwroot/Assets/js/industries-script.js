@@ -24,17 +24,175 @@ document.addEventListener("DOMContentLoaded", function () {
   var list = document.querySelector(".industries-list");
   if (!list) return;
 
-  var cards = Array.from(list.querySelectorAll(".industry-card"));
-  if (!cards.length) return;
-  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var allCards = Array.from(list.querySelectorAll(".industry-card"));
+  if (!allCards.length) return;
 
-  gsap.registerPlugin(ScrollTrigger);
+  function placeFill(card, e) {
+    var caption = card.querySelector(".industry-card__caption");
+    if (!caption) return;
+    var rect = caption.getBoundingClientRect();
+    var cardRect = card.getBoundingClientRect();
+    var x = e ? e.clientX - rect.left : rect.width / 2;
+    var y = e ? e.clientY - rect.top : 0;
+    x = Math.min(Math.max(x, 0), Math.max(rect.width, 0));
+    y = Math.min(Math.max(y, 0), Math.max(rect.height, 0));
+    var radius = Math.ceil(Math.hypot(cardRect.width, cardRect.height)) + 16;
+    caption.style.setProperty("--hx", x + "px");
+    caption.style.setProperty("--hy", y + "px");
+    caption.style.setProperty("--hr", radius + "px");
+  }
+
+  allCards.forEach(function (card) {
+    card.addEventListener("mouseenter", function (e) {
+      placeFill(card, e);
+      card.classList.add("is-filled");
+    });
+    card.addEventListener("mouseleave", function () {
+      card.classList.remove("is-filled");
+    });
+  });
+
+  window.addEventListener("resize", function () {
+    allCards.forEach(function (card) {
+      if (card.classList.contains("is-filled")) placeFill(card, null);
+    });
+  });
+
+  var pageSize = parseInt(list.getAttribute("data-page-size") || "8", 10);
+  if (!pageSize || pageSize < 1) pageSize = allCards.length;
+
+  var shown = Math.min(pageSize, allCards.length);
+  var wrap = list.parentElement && list.parentElement.querySelector("[data-industries-load-more-wrap]");
+  var loadBtn = wrap && wrap.querySelector("[data-industries-load-more]");
+
+  function syncPage() {
+    allCards.forEach(function (card, index) {
+      card.hidden = index >= shown;
+    });
+    if (wrap) wrap.hidden = shown >= allCards.length;
+  }
+
+  syncPage();
+
+  /* Scroll rise only for the first page. Later pages play on Load More. */
+  var cards = allCards.filter(function (card) {
+    return !card.hidden;
+  });
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var canAnimate =
+    typeof gsap !== "undefined" &&
+    typeof ScrollTrigger !== "undefined" &&
+    !reduceMotion;
 
   /* Lenis only above 992; native window scroll on smaller devices. */
   var useNativeScroll = window.matchMedia("(max-width: 992px)").matches;
   var stScroller = useNativeScroll ? window : document.documentElement;
   var isMobileLayout = window.matchMedia("(max-width: 1179px)").matches;
+
+  function gridColumns() {
+    if (window.matchMedia("(max-width: 767px)").matches) return 1;
+    if (window.matchMedia("(max-width: 1279px)").matches) return 2;
+    return 4;
+  }
+
+  function bindPhoneParallax(cardList, idPrefix) {
+    if (!canAnimate) return;
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+
+    cardList.forEach(function (card, i) {
+      if (card.dataset.parallaxBound === "1") return;
+      var media = card.querySelector(".industry-card__media");
+      var img = media && media.querySelector("img");
+      if (!img) return;
+
+      card.dataset.parallaxBound = "1";
+      gsap.set(img, {
+        force3D: true,
+        z: 0.01
+      });
+
+      gsap.fromTo(
+        img,
+        { yPercent: -6 },
+        {
+          yPercent: 6,
+          ease: "none",
+          force3D: true,
+          scrollTrigger: {
+            id: idPrefix + i,
+            trigger: media,
+            scroller: stScroller,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.4,
+            invalidateOnRefresh: true
+          }
+        }
+      );
+    });
+  }
+
+  /* Same rise as the scroll cards, played once when Load More reveals them. */
+  function playLoadedCards(incoming) {
+    if (!incoming.length || !canAnimate) return;
+
+    var rise = isMobileLayout ? MOBILE_RISE : CARD_RISE;
+    var cols = gridColumns();
+    var stagger = CARD_RISE.stagger;
+
+    gsap.set(incoming, { autoAlpha: 0, y: rise.y, force3D: true });
+
+    var tl = gsap.timeline({
+      defaults: { force3D: true, ease: rise.ease || "power2.out" }
+    });
+
+    incoming.forEach(function (card, i) {
+      var row = Math.floor(i / cols);
+      var col = i % cols;
+      tl.to(
+        card,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: rise.duration,
+          overwrite: "auto"
+        },
+        row * stagger + col * stagger
+      );
+    });
+
+    bindPhoneParallax(incoming, "industry-card-mobile-parallax-more-");
+
+    tl.eventCallback("onComplete", function () {
+      ScrollTrigger.refresh();
+    });
+  }
+
+  if (loadBtn) {
+    loadBtn.addEventListener("click", function () {
+      var start = shown;
+      shown = Math.min(shown + pageSize, allCards.length);
+      var incoming = allCards.slice(start, shown);
+
+      incoming.forEach(function (card) {
+        card.hidden = false;
+      });
+      if (wrap) wrap.hidden = shown >= allCards.length;
+
+      playLoadedCards(incoming);
+
+      if (typeof ScrollTrigger !== "undefined") {
+        requestAnimationFrame(function () {
+          ScrollTrigger.refresh();
+        });
+      }
+    });
+  }
+
+  if (!canAnimate) return;
+
+  gsap.registerPlugin(ScrollTrigger);
 
   if (isMobileLayout) {
     /* One card at a time: slide up when that card enters the viewport. */
@@ -67,37 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     /* Image parallax — phone only (≤767). Desktop / tablet unchanged. */
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      cards.forEach(function (card, i) {
-        var media = card.querySelector(".industry-card__media");
-        var img = media && media.querySelector("img");
-        if (!img) return;
-
-        gsap.set(img, {
-          force3D: true,
-          z: 0.01
-        });
-
-        gsap.fromTo(
-          img,
-          { yPercent: -6 },
-          {
-            yPercent: 6,
-            ease: "none",
-            force3D: true,
-            scrollTrigger: {
-              id: "industry-card-mobile-parallax-" + i,
-              trigger: media,
-              scroller: stScroller,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1.4,
-              invalidateOnRefresh: true
-            }
-          }
-        );
-      });
-    }
+    bindPhoneParallax(cards, "industry-card-mobile-parallax-");
   } else {
     /** Grid columns — matches industries-list.css desktop breakpoints. */
     function columns() {

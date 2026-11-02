@@ -1,0 +1,723 @@
+/* =========================================================
+   FOUNDING FAMILY PAGE
+   Uses theme tokens from the main Tailwind @theme:
+   --color-primary, --color-secondary, --color-gray,
+   --color-gray-dark, --text-*, --font-uniNeue*, --ease
+========================================================= */
+
+/* ---------- Intro ---------- */
+.family-intro {
+  max-width: 52rem;
+  text-align: left;
+}
+.family-intro p {
+  font-size: var(--text-intro);
+  line-height: 1.5;
+}
+
+/* ---------- Section title ---------- */
+.family-outer .section-intro {
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+.family-outer .section-intro h2 {
+  font-family: var(--font-uniNeueBold);
+  font-weight: normal;
+  margin-bottom: 0;
+}
+
+/* ---------- List ---------- */
+.family-list {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+/* ---------- Card ---------- */
+.family-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  align-items: flex-start; /* keeps the image column short so sticky can work */
+  background-color: var(--color-gray);
+  padding: clamp(1.25rem, 3.5vw, 3.5rem);
+}
+
+@media (min-width: 992px) {
+  .family-card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 4.5vw, 5rem);
+  }
+  .family-card--reverse .family-card__media {
+    order: 2;
+  }
+}
+
+/* ---------- Media ---------- */
+.family-card__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 6 / 5;
+}
+/* .family-card--reverse .family-card__media {
+  aspect-ratio: 5 / 6;
+} */
+@media (min-width: 992px) {
+  /* Sticky image: stays in view while the text column scrolls,
+     and releases when the card's content ends.
+     Placed after the base .family-card__media rule so it overrides position: relative. */
+  .family-card__media {
+    position: sticky;
+    top: var(--family-sticky-top, 120px); /* your fixed header height + gap */
+  }
+
+  /* keep the portrait image from overpowering the text column */
+  /* .family-card--reverse .family-card__media {
+    width: 85%;
+    justify-self: end;
+  } */
+}
+.family-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease);
+}
+.family-card:hover .family-card__media img {
+  transform: scale(1.04);
+}
+
+/* ---------- Content ---------- */
+.family-card__eyebrow {
+  display: block;
+  font-family: var(--font-uniNeueBold);
+  font-size: var(--text-20);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.family-card__name {
+  font-family: var(--font-uniNeueBold);
+  font-weight: normal;
+  font-size: var(--text-h2);
+  line-height: 1.2;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.family-card__years {
+  display: block;
+  font-size: var(--text-small);
+  color: var(--color-gray-dark);
+}
+
+.family-card__body {
+  margin-top: clamp(1.25rem, 2vw, 1.75rem);
+}
+.family-card__body p {
+  font-size: var(--text-p);
+  line-height: 1.6;
+  color: var(--color-gray-dark);
+  margin-bottom: 1rem;
+}
+.family-card__body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 991px) {
+  .family-card__media,
+  .family-card--reverse .family-card__media {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+
+
+
+/* =========================================================
+   MILESTONES SLIDER
+   Uses theme tokens: --color-primary, --color-secondary,
+   --color-gray, --color-gray-dark, --color-white,
+   --title-grey, --line, --ease, --font-uniNeueBold
+========================================================= */
+
+.milestones-outer {
+  background-color: var(--color-gray);
+  overflow-x: clip; /* stops sideways scroll without breaking sticky elsewhere */
+}
+.milestones-outer .section-intro h2 {
+  font-family: var(--font-uniNeueBold);
+  font-weight: normal;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+/* ---------- Sizes (desktop) ---------- */
+.milestones {
+  --ms-img-w: clamp(300px, 34vw, 640px);     /* image width (every slide) */
+  --ms-content-w: clamp(240px, 21vw, 380px); /* white text panel (active slide) */
+  --ms-img-h: clamp(320px, 31vw, 580px);     /* slide height */
+  --ms-gap: clamp(16px, 1.8vw, 30px);
+  --ms-speed: 0.7s;
+  --ms-fade: 255, 255, 255;                  /* right-side overlay colour (white) */
+
+  position: relative;
+}
+
+/* ---------- Viewport + right white overlay ---------- */
+.milestones-viewport {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.milestones-viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(80px, 10%, 280px);
+  background: linear-gradient(
+    to right,
+    rgba(var(--ms-fade), 0) 0%,
+    rgba(var(--ms-fade), 0.55) 65%,
+    rgba(var(--ms-fade), 0.92) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ---------- Track ---------- */
+.milestones-track {
+  display: flex;
+  gap: var(--ms-gap);
+  transform: translateX(calc((var(--ms-img-w) + var(--ms-gap)) * var(--ms-index, 0) * -1));
+  transition: transform var(--ms-speed) var(--ease);
+  will-change: transform;
+}
+
+/* ---------- Slide ---------- */
+.milestone-slide {
+  flex: 0 0 auto;
+  display: flex;
+  height: var(--ms-img-h);
+  cursor: pointer;
+}
+.milestone-slide.is-active {
+  cursor: default;
+}
+
+.milestone-slide__media {
+  flex: 0 0 var(--ms-img-w);
+  width: var(--ms-img-w);
+  height: 100%;
+  overflow: hidden;
+}
+.milestone-slide__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+.milestone-slide:not(.is-active):hover .milestone-slide__media img {
+  transform: scale(1.04);
+}
+
+/* White panel opens only on the active slide */
+.milestone-slide__content {
+  width: 0;
+  overflow: hidden;
+  background-color: var(--color-white);
+  transition: width var(--ms-speed) var(--ease);
+}
+.milestone-slide.is-active .milestone-slide__content {
+  width: var(--ms-content-w);
+}
+
+.milestone-slide__content-inner {
+  width: var(--ms-content-w); /* fixed so text doesn't reflow while opening */
+  height: 100%;
+  padding: clamp(1.25rem, 2.4vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.6s var(--ease);
+}
+.milestone-slide.is-active .milestone-slide__content-inner {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.25s;
+}
+
+.milestone-slide__year {
+  position: relative;
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-uniNeueBold);
+  font-size: clamp(2.25rem, 1.4rem + 2.2vw, 3.5rem);
+  line-height: 1;
+  color: var(--color-primary);
+  padding-bottom: 0.9rem;
+}
+.milestone-slide__year::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 64px;
+  height: 3px;
+  background-color: var(--color-secondary);
+}
+
+.milestone-slide__title {
+  font-family: var(--font-uniNeueBold);
+  font-weight: normal;
+  font-size: clamp(0.9375rem, 0.85rem + 0.25vw, 1.125rem);
+  line-height: 1.35;
+  color: var(--color-primary);
+  margin-bottom: 0.75rem;
+}
+.milestone-slide__text {
+  font-size: var(--text-small);
+  line-height: 1.55;
+  color: var(--color-gray-dark);
+  margin: 0;
+}
+
+/* ---------- Arrows (desktop: outside the container) ---------- */
+.milestones-arrow {
+  position: absolute;
+  top: calc(var(--ms-img-h) / 2);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease, transform 0.3s var(--ease);
+}
+.milestones-arrow svg {
+  width: 28px;
+  height: auto;
+}
+.milestones-arrow--prev { left: calc(-2.5vw - 22px); }
+.milestones-arrow--next { right: calc(-2.5vw - 22px); }
+
+.milestones-arrow--prev:hover:not(:disabled) { transform: translate(-4px, -50%); }
+.milestones-arrow--next:hover:not(:disabled) { transform: translate(4px, -50%); }
+
+.milestones-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.milestones-arrow:focus-visible,
+.milestones-year:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+/* ---------- Year timeline ---------- */
+.milestones-timeline {
+  position: relative; /* offset parent for centring the active year */
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+}
+.milestones-timeline::-webkit-scrollbar {
+  display: none;
+}
+
+.milestones-years {
+  display: flex;
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.milestones-year {
+  position: relative;
+  min-width: clamp(56px, 4.2vw, 74px);
+  padding: 0 0.5rem 18px;
+  border: 0;
+  background: none;
+  font-size: var(--text-small);
+  line-height: 1;
+  color: var(--title-grey);
+  text-align: center;
+  transition: color 0.3s ease;
+}
+/* line */
+.milestones-year::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3px;
+  height: 1px;
+  background-color: var(--title-grey);
+  opacity: 0.6;
+}
+/* dot */
+.milestones-year::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--title-grey);
+  transform: translateX(-50%);
+  transition: background-color 0.3s ease, transform 0.3s var(--ease);
+  z-index: 123;
+}
+.milestones-year:hover {
+  color: var(--color-gray-dark);
+}
+.milestones-year.is-active {
+  font-family: var(--font-uniNeueBold);
+  color: var(--color-secondary);
+}
+.milestones-year.is-active::after {
+  background-color: #ffff66;;
+  transform: translateX(-50%) scale(1.4);
+}
+
+
+/* =========================================================
+   MILESTONES – ACTIVE YEAR, CONNECTOR, KNOBS + PROGRESS
+   Replace the earlier milestones-active-year CSS in
+   ~/Assets/css/our-legacy.css with this.
+   Your existing horizontal line and dots are not touched:
+   the knobs sit on top of them, and the gradient progress
+   line runs over the grey line.
+
+   --ms-lift        how far the active year moves up
+   --ms-line-gap    gap between year text and the horizontal line
+   --ms-accent      active year text + connector colour
+   --ms-start       start knob / gradient start colour
+   --ms-mid         gradient middle colour
+   --ms-end         active knob / gradient end colour
+   --ms-knob        knob diameter
+========================================================= */
+.milestones-timeline {
+  --ms-lift: 8px;
+  --ms-line-gap: 14px;
+  --ms-accent: #0f4d24;   /* deep forest green (footer)          */
+  --ms-start: #b5cf3a;    /* leaf lime-yellow (Godavari logo)    */
+  --ms-mid: #2f8f2f;      /* bright green (footer highlight)     */
+  --ms-end: #0f4d24;      /* deep forest green                   */
+  --ms-knob: 26px;
+}
+
+.milestones-years {
+  position: relative;
+  padding-top: 10px;                                 /* room for the lift */
+  padding-bottom: calc(var(--ms-knob) / 2 + 10px);   /* room for knob + shadow */
+}
+
+/* ---------- Year label ---------- */
+.milestones-year {
+  text-align: center;
+}
+
+.milestones-year__label {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  transition: transform .3s ease, color .3s ease;
+}
+
+.milestones-year.is-active .milestones-year__label {
+  transform: translateY(calc(var(--ms-lift) * -1));
+  color: var(--ms-accent);
+  font-weight: 600;
+}
+
+/* ---------- Vertical connector ---------- */
+.milestones-year__label::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 100%;
+  width: 2px;
+  height: calc(var(--ms-line-gap) + var(--ms-lift));
+  background: var(--ms-accent);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform .3s ease;
+  pointer-events: none;
+}
+
+.milestones-year.is-active .milestones-year__label::after {
+  transform: scaleY(1);
+}
+
+/* ---------- Raised knob (active + start) ---------- */
+.milestones-year__label::before {
+  --knob-color: var(--ms-end);
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: calc(100% + var(--ms-line-gap));
+  width: var(--ms-knob);
+  height: var(--ms-knob);
+  margin: calc(var(--ms-knob) / -2) 0 0 calc(var(--ms-knob) / -2);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%,
+      var(--knob-color) 0 calc(var(--ms-knob) * .3),
+      transparent calc(var(--ms-knob) * .3 + .5px)),
+    linear-gradient(160deg, #ffffff 0%, #ecebe6 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, .12),
+    6px 8px 14px rgba(0, 0, 0, .16),
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    inset 0 -2px 3px rgba(0, 0, 0, .06);
+  transform: scale(0);
+  transition: transform .35s cubic-bezier(.34, 1.56, .64, 1);
+  pointer-events: none;
+}
+
+/* Active knob: label is lifted, so push the knob back down onto the line */
+.milestones-year.is-active .milestones-year__label::before {
+  top: calc(100% + var(--ms-line-gap) + var(--ms-lift));
+  transform: scale(1);
+}
+
+/* Start knob on the first year */
+.milestones-year.is-start .milestones-year__label::before {
+  --knob-color: var(--ms-start);
+  transform: scale(1);
+}
+
+/* When the first year itself is active, use the active colour */
+.milestones.is-at-start .milestones-year.is-start .milestones-year__label::before {
+  --knob-color: var(--ms-end);
+}
+
+/* ---------- Small timeline dots ----------
+   Sit exactly on top of your existing grey dots.
+   Upcoming years: soft sage. Passed years: white on the gradient. */
+.milestones-year__dot {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: calc(100% + var(--ms-line-gap));
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #b7c9b0;
+  box-shadow: 0 0 0 2px #f3f3f3;   /* match the section background */
+  transition: background .3s ease, box-shadow .3s ease, opacity .2s ease;
+  pointer-events: none;
+}
+
+.milestones-year.is-past .milestones-year__dot {
+  background: #ffffff;
+  box-shadow: 0 0 0 1.5px var(--ms-mid), 0 1px 3px rgba(0, 0, 0, .15);
+}
+
+/* The knobs replace the dot on the active and start years */
+.milestones-year.is-active .milestones-year__dot,
+.milestones-year.is-start .milestones-year__dot {
+  opacity: 0;
+}
+
+/* ---------- Gradient progress line ---------- */
+.milestones-progress {
+  position: absolute;
+  z-index: 1;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--ms-start) 0%, var(--ms-mid) 55%, var(--ms-end) 100%);
+  list-style: none;
+  pointer-events: none;
+  transition: width .45s ease, top .3s ease;
+}
+
+/* =========================================================
+   SLIDE MOTION + CONTENT REVEAL
+   Only changes timing/easing of your existing track movement
+   (the property it animates is left as you defined it).
+========================================================= */
+.milestones {
+  --ms-ease-slide: cubic-bezier(.65, 0, .35, 1);     /* smooth in-out glide */
+  --ms-ease-reveal: cubic-bezier(.22, 1, .36, 1);    /* soft settle         */
+  --ms-slide-time: .9s;
+}
+
+.milestones-track {
+  transition-duration: var(--ms-slide-time) !important;
+  transition-timing-function: var(--ms-ease-slide) !important;
+  will-change: transform;
+}
+
+/* Slides fade/scale slightly as they move in and out of focus */
+.milestone-slide {
+  transition: opacity .6s ease, filter .6s ease;
+}
+/* .milestone-slide:not(.is-active) {
+  opacity: .55;
+  filter: saturate(.7);
+} */
+.milestone-slide.is-active {
+  opacity: 1;
+  filter: none;
+}
+
+/* Image: gentle zoom-out as the slide becomes active */
+.milestone-slide__media {
+  overflow: hidden;
+}
+.milestone-slide__media img {
+  transform: scale(1.08);
+  transition: transform 1.4s var(--ms-ease-reveal);
+}
+.milestone-slide.is-active .milestone-slide__media img {
+  transform: scale(1);
+}
+
+/* Text: hide quickly on exit, reveal staggered on entry */
+.milestone-slide__year,
+.milestone-slide__title,
+.milestone-slide__text {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(4px);
+  transition: opacity .25s ease, transform .25s ease, filter .25s ease;
+}
+
+.milestone-slide.is-active .milestone-slide__year,
+.milestone-slide.is-active .milestone-slide__title,
+.milestone-slide.is-active .milestone-slide__text {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity .7s ease var(--ms-delay, 0s),
+    transform .8s var(--ms-ease-reveal) var(--ms-delay, 0s),
+    filter .7s ease var(--ms-delay, 0s);
+}
+
+.milestone-slide.is-active .milestone-slide__year  { --ms-delay: .35s; }
+.milestone-slide.is-active .milestone-slide__title { --ms-delay: .5s; }
+.milestone-slide.is-active .milestone-slide__text  { --ms-delay: .65s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .milestones-track,
+  .milestone-slide,
+  .milestone-slide__media img,
+  .milestone-slide__year,
+  .milestone-slide__title,
+  .milestone-slide__text {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .milestone-slide__year,
+  .milestone-slide__title,
+  .milestone-slide__text { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .milestones-year__label,
+  .milestones-year__label::after,
+  .milestones-year__label::before,
+  .milestones-progress { transition: none; }
+}
+/* =========================================================
+   TABLET (≤991px) — container is full width, arrows sit on the image
+========================================================= */
+@media (max-width: 991px) {
+  .milestones {
+    --ms-img-w: 46vw;
+    --ms-content-w: 36vw;
+    --ms-img-h: 52vw;
+  }
+
+  .milestones-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4px 14px rgba(40, 43, 49, 0.12);
+  }
+  .milestones-arrow svg { width: 20px; }
+  .milestones-arrow--prev { left: 10px; }
+  .milestones-arrow--next { right: 10px; }
+  .milestones-arrow:disabled { opacity: 0; pointer-events: none; }
+}
+
+/* =========================================================
+   MOBILE (≤767px) — image on top, text below, next slide peeks in
+========================================================= */
+@media (max-width: 767px) {
+  .milestones {
+    --ms-img-w: 76vw;
+    --ms-content-w: 76vw;
+    --ms-img-h: 58vw;
+    --ms-gap: 12px;
+  }
+
+  .milestones-track {
+    align-items: flex-start;
+  }
+
+  .milestone-slide {
+    flex-direction: column;
+    width: var(--ms-img-w);
+    height: auto;
+  }
+  .milestone-slide__media {
+    flex: 0 0 auto;
+    height: var(--ms-img-h);
+  }
+
+  .milestone-slide__content,
+  .milestone-slide.is-active .milestone-slide__content {
+    width: 100%;
+  }
+  .milestone-slide__content-inner {
+    width: 100%;
+    height: auto;
+    padding: 1.25rem;
+    gap: 1.25rem;
+    opacity: 0.45;
+    transform: none;
+  }
+
+  .milestone-slide__year {
+    font-size: 2.25rem;
+  }
+
+  .milestones-viewport::after {
+    width: 18%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .milestones-track,
+  .milestone-slide__content,
+  .milestone-slide__content-inner,
+  .milestone-slide__media img {
+    transition: none !important;
+  }
+}
+

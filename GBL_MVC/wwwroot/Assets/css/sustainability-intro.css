@@ -325,6 +325,7 @@
 .carbonCircularity-cards {
   /* margin-top: 2.5rem; */
   overflow: hidden;
+  padding-bottom: 1.25rem;
 }
 
 @media (min-width: 768px) {
@@ -344,6 +345,8 @@
 
 .turningCommitment-cards-outer .swiper-slide,
 .carbonCircularity-cards .swiper-slide {
+  display: flex;
+  flex-direction: column;
   height: auto;
   width: auto;
 }
@@ -355,9 +358,47 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  isolation: isolate;
   height: 100%;
   background: #fff;
-  overflow: hidden;
+  overflow: visible;
+  --card-fill: var(--color-secondary, #67815a);
+}
+
+.turningCommitment-card::after,
+.carbonCircularity-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat; opacity: 0.25;
+}
+
+/* Fill from the bottom of the image to the bottom edge of the card */
+.turningCommitment-cards-outer .swiper-slide::before,
+.carbonCircularity-cards .swiper-slide::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--fill-top, 46%);
+  bottom: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.turningCommitment-cards-outer .swiper-slide.is-filled::before,
+.turningCommitment-cards-outer .swiper-slide:focus-within::before,
+.carbonCircularity-cards .swiper-slide.is-filled::before,
+.carbonCircularity-cards .swiper-slide:focus-within::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
 }
 
 .carbonCircularity-card { background: var(--color-gray, #f4f4f4); }
@@ -365,6 +406,7 @@
 .turningCommitment-card__media,
 .carbonCircularity-card__media {
   position: relative;
+  z-index: 2;
   overflow: hidden;
   aspect-ratio: 4 / 3.15;
 }
@@ -387,20 +429,39 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+  position: relative;
+  overflow: hidden;
   padding: 1.25rem 1.25rem 5.25rem;
 }
 
 .turningCommitment-card__body h3,
 .carbonCircularity-card__body h3 {
+  position: relative;
+  z-index: 2;
   margin: 0 0 0.65rem;
   color: var(--color-primary);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .turningCommitment-card__body p,
 .carbonCircularity-card__body p {
+  position: relative;
+  z-index: 2;
   margin: 0;
   color: var(--color-gray-dark);
   font-size: var(--text-p);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.turningCommitment-cards-outer .swiper-slide.is-filled h3,
+.turningCommitment-cards-outer .swiper-slide:focus-within h3,
+.turningCommitment-cards-outer .swiper-slide.is-filled p,
+.turningCommitment-cards-outer .swiper-slide:focus-within p,
+.carbonCircularity-cards .swiper-slide.is-filled h3,
+.carbonCircularity-cards .swiper-slide:focus-within h3,
+.carbonCircularity-cards .swiper-slide.is-filled p,
+.carbonCircularity-cards .swiper-slide:focus-within p {
+  color: #fff;
 }
 
 .turningCommitment-card__body p + p,
@@ -425,11 +486,37 @@
 
 .turningCommitment-card:hover a.site-btn,
 .turningCommitment-card:focus-within a.site-btn,
+.turningCommitment-card.is-filled a.site-btn,
 .carbonCircularity-card:hover a.site-btn,
-.carbonCircularity-card:focus-within a.site-btn {
+.carbonCircularity-card:focus-within a.site-btn,
+.carbonCircularity-card.is-filled a.site-btn {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+  color: #fff;
+  border-color: #fff;
+}
+
+.turningCommitment-card .site-btn.site-btn--outline:hover,
+.turningCommitment-card .site-btn.site-btn--outline:focus-visible,
+.carbonCircularity-card .site-btn.site-btn--outline:hover,
+.carbonCircularity-card .site-btn.site-btn--outline:focus-visible {
+  color: var(--color-secondary, #67815a);
+  border-color: #fff;
+  background-color: #fff;
+  --btn-fill: #fff;
+  --btn-white: var(--color-secondary, #67815a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turningCommitment-cards-outer .swiper-slide::before,
+  .carbonCircularity-cards .swiper-slide::before,
+  .turningCommitment-card__body h3,
+  .turningCommitment-card__body p,
+  .carbonCircularity-card__body h3,
+  .carbonCircularity-card__body p {
+    transition: none;
+  }
 }
 
 .turningCommitment-controls,
@@ -460,6 +547,27 @@
   .carbonCircularity-cards .swiper-slide {
     width: 100%;
     height: auto;
+    padding-bottom: 22px;
+    background-clip: content-box;
+  }
+
+  .turningCommitment-card::after,
+  .carbonCircularity-card::after {
+    left: 2%;
+    width: 96%;
+    bottom: 0;
+    height: 22px;
+    opacity: 0.25;
+  }
+
+  .turningCommitment-cards-outer .swiper-slide::before,
+  .carbonCircularity-cards .swiper-slide::before {
+    bottom: 22px;
+  }
+
+  .turningCommitment-card a.site-btn,
+  .carbonCircularity-card a.site-btn {
+    bottom: 42px;
   }
 
   .turningCommitment-controls,
@@ -725,32 +833,48 @@
 .sustainabilityReportsList__grid {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0 1.25rem;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.25rem;
+  gap: 2rem ;
 }
 
 .sustainabilityReportsList__card {
   display: flex;
   flex-direction: column;
+  position: relative;
+  isolation: isolate;
   margin: 0;
+  overflow: visible;
   background: #fff;
   padding: 0.85rem 0.85rem 1rem;
+}
+
+.sustainabilityReportsList__card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .sustainabilityReportsList__media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 340 / 241;
+  aspect-ratio: 3 / 2.0125;
 }
 
 .sustainabilityReportsList__media .parallax-img {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 124%;
-  top: -12%;
+  height: 110%;
+  top: -5%;
   object-fit: cover;
   object-position: center;
 }
@@ -791,6 +915,11 @@
 .sustainabilityReportsList__download:focus-visible {
   background: var(--color-primary, #282b31);
 }
+
+
+
+
+
 
 @media (max-width: 1179px) {
   .sustainabilityReportsList__grid {

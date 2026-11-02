@@ -105,6 +105,10 @@ PACKAGING / APPLICATIONS
   gap: 1rem;
 }
 
+.packaging-block__head .title-section {
+  margin-bottom: 0;
+}
+
 
 .packaging-block__nav {
   display: none;
@@ -213,11 +217,50 @@ PACKAGING / APPLICATIONS
   width: 100%;
   max-width: 100%;
   overflow: hidden;
+  padding-bottom: 24px;
 }
 
 .packaging-swiper .swiper-slide {
   height: auto;
   box-sizing: border-box;
+  overflow: visible;
+}
+
+.packaging-card {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.packaging-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+
+.packaging-card .image-box img {
+  transition: transform 0.8s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.packaging-card:hover .image-box img {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .packaging-card .image-box img {
+    transition: none;
+  }
+
+  .packaging-card:hover .image-box img {
+    transform: none;
+  }
 }
 
 
@@ -613,9 +656,9 @@ a.product-cert-item:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 2rem;
-  width: 2rem;
-  height: 2rem;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
   color: var(--color-secondary, #67815a);
 }
 

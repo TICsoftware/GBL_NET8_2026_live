@@ -9,12 +9,29 @@ ENQUIRY — underline form
   --enquiry-bg: var(--color-gray, #f4f4f4);
   display: flex;
   flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
   gap: 25px;
   width: 100%;
   max-width: 60vw;
   margin-inline: auto;
+  margin-bottom: 1.25rem;
   padding: clamp(2rem, 4vw, 3rem);
   background: var(--enquiry-bg);
+}
+
+.enquiry-form::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 .enquiry-form__row,

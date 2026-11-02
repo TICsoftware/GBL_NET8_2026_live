@@ -1,0 +1,447 @@
+@{
+    ViewData["Title"] = "Investor Relations";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/investor.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/investor-banner.webp">
+
+                  
+
+                  <!-- Mobile -->
+                  <img
+                     src="~/Assets/images/banners/investor-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">Investor Relations</h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>                           
+                           <li class="text-white/60">/</li>
+                           <li class="text-white">Investor Relations</li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>Godavari Biorefineries Ltd. is committed to disciplined corporate governance, transparent market disclosures and consistent shareholder communication. This repository houses all essential investor information, including financial statements, share and stock data, statutory policies, press releases and meeting disclosures to support informed decision-making.</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+   <!--What's New-->
+   <section class="whatsNew section-spacing" aria-labelledby="whats-new-title">
+      <div class="container">
+         <h2 id="whats-new-title" class="whatsNew__title text-h2">What's New</h2>
+
+         <div class="whatsNew__grid">
+            <article class="whatsNew__card">
+               <p class="whatsNew__meta"><span class="whatsNew__tag">Press Release</span><time datetime="2026-02-07">Feb 07, 2026</time></p>
+               <h3>Godavari Biorefineries Limited partners with Synthomer to develop bio-based alternatives to fossil-based monomers</h3>
+               <a href="/news/press-release" class="site-btn site-btn--line">
+                  <span class="site-btn__label">Read More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+               </a>
+            </article>
+
+            <article class="whatsNew__card">
+               <p class="whatsNew__meta"><span class="whatsNew__tag">Press Release</span><time datetime="2025-12-17">Dec 17, 2025</time></p>
+               <h3>Sathgen Therapeutics Division of Godavari Biorefineries Ltd, India, Expands to the U.S. with Launch of Princeton Based Subsidiary</h3>
+               <a href="/news/press-release" class="site-btn site-btn--line">
+                  <span class="site-btn__label">Read More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+               </a>
+            </article>
+
+            <article class="whatsNew__card whatsNew__card--media">
+               <div class="whatsNew__media">
+                  <img src="@Url.Content("~/Assets/images/press-release/mini-1.png")" alt="Godavari Biorefineries plant">
+               </div>
+               <p class="whatsNew__meta"><span class="whatsNew__tag">Media Coverage</span><time datetime="2026-02-07">Feb 07, 2026</time></p>
+               <p>Nam vel sapien sit amet ipsum laoreet aliquam. Donec iaculis semper est non aliquam.</p>
+               <a href="/news/media-coverage" class="site-btn site-btn--line">
+                  <span class="site-btn__label">Read More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+               </a>
+            </article>
+
+            <div class="whatsNew__aside">
+               <div class="whatsNew__quote" data-inv-quote>
+                 <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-single-ticker.js"></script>
+                 <tv-single-ticker symbol="BSE:GODAVARIB"></tv-single-ticker>
+               </div>
+               <article class="whatsNew__card whatsNew__card--note">
+                  <h3>Announcement</h3>
+                  <p>Nam vel sapien sit amet ipsum laoreet aliquam. Donec iaculis semper est non aliquam.</p>
+                  <a href="/news/press-release" class="site-btn site-btn--line">
+                     <span class="site-btn__label">Read More</span>
+                     <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </article>
+            </div>
+         </div>
+
+         <a href="/news" class="site-btn site-btn--outline">
+            <span class="site-btn__label">View All</span>
+            <span class="site-btn__arrow" aria-hidden="true">
+               <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+         </a>
+      </div>
+   </section>
+   <!--What's New End-->
+
+   <!--Quarterly results / Annual report-->
+   <section class="quarterlyResults section-spacing">
+      <div class="container">
+         <div class="qr-row">
+            <div class="qr-col">
+               <h2 class="text-h2">Quarterly results</h2>
+               <div class="qr-panel">
+                  <span class="qr-panel__mark" aria-hidden="true">Q1</span>
+                  <ul class="qr-files">
+                     <li>
+                        <a href="#">
+                           <span>Financial Results</span>
+                           <img src="@Url.Content("~/Assets/images/homepage/our-performance/pdf-icon.svg")" alt="" width="28" height="28">
+                        </a>
+                     </li>
+                     <li>
+                        <a href="#">
+                           <span>Transcript</span>
+                           <img src="@Url.Content("~/Assets/images/homepage/our-performance/pdf-icon.svg")" alt="" width="28" height="28">
+                        </a>
+                     </li>
+                     <li>
+                        <a href="#">
+                           <span>Presentations</span>
+                           <img src="@Url.Content("~/Assets/images/homepage/our-performance/pdf-icon.svg")" alt="" width="28" height="28">
+                        </a>
+                     </li>
+                     <li>
+                        <a href="#">
+                           <span>Audio</span>
+                           <img src="@Url.Content("~/Assets/images/homepage/our-performance/voice-icon.svg")" alt="" width="28" height="28">
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+               <a href="#" class="site-btn site-btn--outline">
+                  <span class="site-btn__label">View All Quarterly</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+               </a>
+            </div>
+
+            <div class="qr-col">
+               <h2 class="text-h2">Annual report</h2>
+               <div class="qr-panel qr-panel--report">
+                  <img src="@Url.Content("~/Assets/images/investors/annual-report-img.webp")" alt="Creating a Beautiful World, 71st Annual Report 2025-26">
+                  <div class="qr-report__copy">
+                     <p>71<sup>st</sup> Annual Report<br>2025-26</p>
+                     <a href="#" class="site-btn site-btn--line">
+                        <span class="site-btn__label">Download</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </div>
+               </div>
+               <a href="#" class="site-btn site-btn--outline">
+                  <span class="site-btn__label">View All Reports</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+               </a>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!--Quarterly results End-->
+
+   <!--Shareholder Information-->
+   <section class="shareholderInfo section-spacing" aria-labelledby="shareholder-info-title">
+      <div class="container">
+         <h2 id="shareholder-info-title" class="text-h2">Shareholder Information</h2>
+         <div class="si-row">
+            <div class="si-media">
+               <img src="@Url.Content("~/Assets/images/investors/information-img.webp")" alt="Shareholders reviewing company documents together">
+            </div>
+            <div class="si-links">
+               <ul class="si-list">
+                  <li>
+                     <a href="#">
+                        <span>Shareholding Pattern</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>Scheme of Arrangements</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>Tax on Dividend</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>General Meetings</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>Dividend/ Shares</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+               </ul>
+               <ul class="si-list">
+                  <li>
+                     <a href="#">
+                        <span>Online Dispute Resolution Mechanism</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>Postal Ballot</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>Shareholder Communication</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="#">
+                        <span>Investors FAQ</span>
+                        <span class="si-arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!--Shareholder Information End-->   
+
+   <!--Corporate Governance-->
+   <section class="corporateGovernance section-spacing" aria-labelledby="corporate-governance-title">
+      <div class="cg-bg" aria-hidden="true">
+         <img src="@Url.Content("~/Assets/images/investors/governance-img1.webp")" alt="">
+      </div>
+      <div class="container">
+         <div class="cg-panel">
+            <h2 id="corporate-governance-title" class="text-h2">Corporate Governance</h2>
+            <ul class="cg-list">
+               <li>
+                  <a href="#">
+                     <span>Committees of the Board</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#">
+                     <span>Code of Conduct</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#">
+                     <span>Policies</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </section>
+   <!--Corporate Governance End-->
+
+   <!--Subsidiaries-->
+   <section class="subsidiaries section-spacing" aria-labelledby="subsidiaries-title">
+      <div class="container">
+         <h2 id="subsidiaries-title" class="text-h2">Subsidiaries</h2>
+         <div class="si-row">
+            <div class="si-media">
+               <img src="@Url.Content("~/Assets/images/investors/subsidiaries-img.webp")" alt="Representatives meeting across Godavari Biorefineries subsidiaries">
+            </div>
+            <ul class="si-list sub-list">
+               <li>
+                  <a href="#">
+                     <span>Solar Magic Private Limited</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#">
+                     <span>Cayuga Investments B.V.</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#">
+                     <span>Godavari Biorefineries B.V.</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#">
+                     <span>Godavari Biorefineries Inc.</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#">
+                     <span>Sathgen Therapeutics LLC</span>
+                     <span class="si-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     </span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </section>
+   <!--Subsidiaries End-->
+
+   <!--Code of Conduct-->
+   <section class="codeOfConduct section-spacing" aria-labelledby="code-conduct-title">
+      <div class="container">
+         <h2 id="code-conduct-title" class="text-h2">Code of Conduct</h2>
+         <div class="coc-row">
+            <!--Investor desk-->
+            <address class="coc-card">
+               <h3>Mr. Manoj Jain and Ms. Swarna Gunware</h3>
+               <p>
+                  Somaiya Bhavan, 45/47<br>
+                  M.G.Road, Fort, Mumbai-400006
+               </p>
+               <p>P | <a href="tel:+912261702100">022-6170-2100</a>/ <a href="tel:+912261702177">022-6170-2177</a>/<a href="tel:+912261702165">022-6170-2165</a></p>
+               <p>Website: <a href="https://godavaribiorefineries.com" target="_blank" rel="noopener noreferrer">godavaribiorefineries.com</a></p>
+               <p class="coc-line">
+                  <img src="@Url.Content("~/Assets/images/investors/mail-icon.svg")" alt="">
+                  <span>Email Id: <a href="mailto:investor@somaiya.com">investor@somaiya.com</a></span>
+               </p>
+            </address>
+            <!--Registrar and Share Transfer Agent-->
+            <address class="coc-card">
+               <h3>Registrar and Share Transfer Agent</h3>
+               <p>
+                  MUFG Intime India Private Limited<br>
+                  Unit: Godavari Biorefineries Limited<br>
+                  C 101, 247 Park,<br>
+                  L B S Marg, Vikhroli West,<br>
+                  Mumbai 400 083
+               </p>
+               <p class="coc-line">
+                  <img src="@Url.Content("~/Assets/images/investors/phone-icon.svg")" alt="">
+                  <span>Tel: <a href="tel:+912249186000">+91 22 49186000</a></span>
+               </p>
+               <p class="coc-line">
+                  <img src="@Url.Content("~/Assets/images/investors/fax-icon.svg")" alt="">
+                  <span>Fax: <a href="tel:+912249186060">+91 22 49186060</a></span>
+               </p>
+               <p class="coc-line">
+                  <img src="@Url.Content("~/Assets/images/investors/mail-icon.svg")" alt="">
+                  <span>Email Id: <a href="mailto:rnt.helpdesk@in.mpms.mufg.com">rnt.helpdesk@in.mpms.mufg.com</a></span>
+               </p>
+            </address>
+         </div>
+      </div>
+   </section>
+   <!--Code of Conduct End-->
+
+@section Scripts {
+   <script src="~/Assets/js/investor.js" asp-append-version="true"></script>
+}        
+   
+
+
+
+
+
+
+
