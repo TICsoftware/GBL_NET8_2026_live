@@ -81,6 +81,36 @@ public class SustainabilityController : Controller
         }
     }
 
+    public IActionResult Governance(string title)
+    {
+        try
+        {
+            var path = (Request?.Path.Value ?? "").Trim().Trim('/');
+            var pageName = string.IsNullOrWhiteSpace(title)
+                ? (string.IsNullOrWhiteSpace(path) ? "sustainability/governance" : path)
+                : title.Trim().TrimStart('/');
+
+            if (!string.IsNullOrWhiteSpace(path)
+                && path.StartsWith("sustainability/", StringComparison.OrdinalIgnoreCase)
+                && !pageName.StartsWith("sustainability/", StringComparison.OrdinalIgnoreCase))
+            {
+                pageName = path;
+            }
+
+            var data = _bal.GetGovernance_BAL(pageName, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/Sustainability/Governance :", ex);
+            return View(new SustainabilityModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> LoadSustainabilityReports(int contentId, int pageNumber = 1, int pageSize = 10)

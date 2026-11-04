@@ -25,7 +25,8 @@ namespace GBL_BusinessLogic.Entity
 
         public List<ComponentModel> Carbon_light_circularity_Section_List { get; set; } = new();
 
-
+        /// <summary>Sections/tabs for /sustainability/governance (PDF lists, same shape as corporate governance).</summary>
+        public List<GovernanceSectionModel> Sections { get; set; } = new();
 
         public int TotalCount { get; set; }
 

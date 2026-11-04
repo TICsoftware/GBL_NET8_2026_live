@@ -107,6 +107,17 @@ app.MapControllerRoute(
                  defaults: new { controller = "Sustainability", action = "SustainabilityReports", title = "sustainability-reports" }
             );
 
+            app.MapControllerRoute(
+                name: "sustainability-governance",
+                pattern: "sustainability/governance",
+                defaults: new
+                {
+                    controller = "Sustainability",
+                    action = "Governance",
+                    title = "sustainability/governance"
+                }
+            );
+
 
             app.MapControllerRoute(
                  name: "press-release",

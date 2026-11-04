@@ -1,0 +1,633 @@
+@{
+    ViewData["Title"] = "Products";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   
+      <link rel="stylesheet" href="~/Assets/css/our-legacy.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/product-banner-desktop.webp">
+                  
+
+                  <!-- Mobile -->
+                  <img
+                     src="~/Assets/images/banners/product-banner-desktop.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                       Our Legacy
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>                           
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                              Our Legacy
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>Godavari Biorefineries Ltd has continually evolved over the last 80 years, responding to changing markets, advancing science and reimagining how renewable resources can create greater value while staying true to the values laid out by the founders.</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+
+   <!-- FOUNDING FAMILY -->
+   <section class="relative section-spacing family-outer">
+      <div class="container">
+         <div class="section-intro">
+            <div class="section-intro__title title-section">
+               <h2 class="text-h2">Our Founding Family</h2>
+            </div>
+         </div>
+
+         <div class="family-list">
+
+            <!-- Card 1 : image left -->
+            <article class="family-card" aria-labelledby="family-kj-somaiya">
+               <div class="family-card__media">
+                  <img src="@Url.Content("~/Assets/images/our-legacy/kj-somaiya.webp")"
+                       alt="Shri Karamshi Jethabhai Somaiya with his wife"
+                       loading="lazy">
+               </div>
+               <div class="family-card__content">
+                  <span class="family-card__eyebrow">Our Founder</span>
+                  <h3 class="family-card__name" id="family-kj-somaiya">Shri Karamshi <br class="hidden lg:block">Jethabhai Somaiya</h3>
+                  <span class="family-card__years">(1902&ndash;1991)</span>
+
+                  <div class="family-card__body">
+                     <p>The company&rsquo;s founder, Shri Karamshi Jethabhai Somaiya, a recipient of the Padma Bhushan, lived by one abiding principle as expressed in the Atharva Veda: &ldquo;What you receive from society, you must return multifold.&rdquo; In doing so, he built an enduring legacy as an industrialist and a philanthropist.</p>
+                     <p>Born on May 16, 1902, in the remote village of Malunjar in Ahmednagar district of Maharashtra, Shri K.J. Somaiya grew up in a modest household, which shaped his determination to build a socially responsible business and foster inclusive growth for all. With relentless striving and fortitude, he turned a fledgling sugar trading business into a sugar manufacturing enterprise, founding the Godavari Sugar Mills in 1939. What began with two sugar factories in Sakarwadi and Lakshmiwadi in Maharashtra grew under his leadership to become one of the foremost sugar companies in the state, based on the principles of regenerative agriculture and co-creation with farmers.</p>
+                     <p>Simultaneously, his deep compassion and humanism, imbibed from the teachings of Mahatma Gandhi as a young child, compelled Shri K.J. Somaiya to use his entrepreneurial success as an instrument for social good and uplift the less privileged through education and healthcare. He founded the Somaiya Vidyavihar Mandir school in rural Maharashtra in 1942 before establishing Somaiya Vidyavihar, the Somaiya Trust and more. At the age of 57, he decided to focus full-time on his philanthropic works, relinquishing charge of the business to his son, Dr Shantilal Karamshi Somaiya.</p>
+                  </div>
+               </div>
+            </article>
+
+            <!-- Card 2 : image right -->
+            <article class="family-card family-card--reverse" aria-labelledby="family-sk-somaiya">
+               <div class="family-card__media">
+                  <img src="@Url.Content("~/Assets/images/our-legacy/shantilal-somaiya.webp")"
+                       alt="Dr Shantilal Karamshi Somaiya"
+                       loading="lazy">
+               </div>
+               <div class="family-card__content">
+                  <span class="family-card__eyebrow">A Nation Builder</span>
+                  <h3 class="family-card__name" id="family-sk-somaiya">Dr Shantilal <br class="hidden lg:block">Karamshi Somaiya</h3>
+                  <span class="family-card__years">(1935&ndash;2020)</span>
+
+                  <div class="family-card__body">
+                     <p>An equally astute businessman and committed humanist, Dr Shantilal Karamshi Somaiya laid the scientific groundwork for Godavari Sugar Mills&rsquo; transition into a globally competitive business built on the foundation of vidya (wisdom and learning) and vigyan (science and technology), diversifying the company&rsquo;s business into chemical manufacturing with ethanol as a core raw material in the 1960s. He also established the K.J. Somaiya Institute of Applied Agricultural Research (KIAAR) at Sameerwadi in Karnataka to empower farmers with scientific knowledge and best practices. This positioned the company at the intersection of agriculture and industrial chemistry, long before sustainable development became a global imperative.</p>
+                     <p>At the same time, Dr Somaiya nurtured a vision of integrated development through his endeavours in education, healthcare and the promotion of inter-religious dialogue and Indian philosophy and culture. His vision, which encompasses all and engages rather than divides, is lived out in Godavari Biorefineries&rsquo; guiding principles of shared growth and creating value for all.</p>
+                     <p>Under Dr Shantilal Somaiya&rsquo;s mentorship and the leadership of his son, the current Chairman and Managing Director, Mr Samir Somaiya, Godavari Biorefineries Ltd made a strategic pivot in the 1990s. A chemical engineer and MBA from Cornell University and a master&rsquo;s degree holder in public administration from Harvard University, Mr Samir Somaiya turned the focus to building research and innovation capacities to unlock product, process and application capabilities in bio-chemistry.</p>
+                  </div>
+               </div>
+            </article>
+
+            <!-- Card 3 : image left -->
+            <article class="family-card" aria-labelledby="family-samir-somaiya">
+               <div class="family-card__media">
+                  <img src="@Url.Content("~/Assets/images/our-legacy/samir-somaiya.webp")"
+                       alt="Mr Samir Somaiya"
+                       loading="lazy">
+               </div>
+               <div class="family-card__content">
+                  <span class="family-card__eyebrow">Carrying the Legacy Forward</span>
+                  <h3 class="family-card__name" id="family-samir-somaiya">Mr Samir Somaiya</h3>
+
+                  <div class="family-card__body">
+                     <p>Over the last 30 years, Mr Samir Somaiya has spearheaded the company&rsquo;s rise as a globally competitive integrated biorefinery with a strong focus on innovation, sustainability and customer needs. Under his watch, the company has expanded its portfolio of value-added specialty products as well as its geographical footprint across the globe. At the same time, he has built on his father and grandfather&rsquo;s legacy of humanism and compassion through his vision of unifying growth, sustainability and inclusivity.</p>
+                     <p>Mr Somaiya&rsquo;s work includes building on the Somaiya Group&rsquo;s philanthropic legacy of giving back to society through the Somaiya Trusts&rsquo; various initiatives in education, healthcare, women empowerment and rural development.</p>
+                     <p>Today, Godavari Biorefineries is one of the country&rsquo;s largest integrated biorefineries, building a sustainable and inclusive community. The company does not view corporate legacy as a static record, but as a continuous pattern of responsible growth. Each chapter of its journey has been defined by one constant: transforming nature&rsquo;s bounty into solutions for a changing world, ensuring that its expanding industrial capabilities continuously align with environmental stewardship.</p>
+                  </div>
+               </div>
+            </article>
+
+         </div>
+      </div>
+   </section>
+   <!-- FOUNDING FAMILY END -->
+
+      <!-- MILESTONES -->
+   <section class="relative section-spacing milestones-outer">
+      <div class="container">
+         <div class="section-intro">
+            <div class="section-intro__title title-section">
+               <h2 class="text-h2">Milestones</h2>
+            </div>
+         </div>
+
+         <div class="milestones" data-milestones
+              role="region" aria-roledescription="carousel" aria-label="Company milestones">
+
+            <button type="button" class="milestones-arrow milestones-arrow--prev" data-ms-prev aria-label="Previous milestone">
+               <svg viewBox="0 0 32 16" fill="none" aria-hidden="true"><path d="M31 8H1M8 1L1 8l7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <div class="milestones-viewport">
+               <div class="milestones-track" style="--ms-index:0">
+                  <!-- 1939 -->
+                  <article class="milestone-slide is-active" data-ms-slide="0" role="group" aria-roledescription="slide" aria-label="1939, 1 of 26" aria-hidden="false">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Founded Godavari Sugar Mills" loading="eager">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1939</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Founded Godavari Sugar Mills</h3>
+                              <p class="milestone-slide__text">Shri Karamshi Jethabhai Somaiya founded Godavari Sugar Mills, beginning with two sugar factories at Sakarwadi and Lakshmiwadi in Maharashtra.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 1940 -->
+                  <article class="milestone-slide" data-ms-slide="1" role="group" aria-roledescription="slide" aria-label="1940, 2 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="eager">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1940</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 1962 -->
+                  <article class="milestone-slide" data-ms-slide="2" role="group" aria-roledescription="slide" aria-label="1962, 3 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1962</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 1973 -->
+                  <article class="milestone-slide" data-ms-slide="3" role="group" aria-roledescription="slide" aria-label="1973, 4 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1973</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 1985 -->
+                  <article class="milestone-slide" data-ms-slide="4" role="group" aria-roledescription="slide" aria-label="1985, 5 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1985</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 1993 -->
+                  <article class="milestone-slide" data-ms-slide="5" role="group" aria-roledescription="slide" aria-label="1993, 6 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1993</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 1998 -->
+                  <article class="milestone-slide" data-ms-slide="6" role="group" aria-roledescription="slide" aria-label="1998, 7 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">1998</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2003 -->
+                  <article class="milestone-slide" data-ms-slide="7" role="group" aria-roledescription="slide" aria-label="2003, 8 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2003</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2004 -->
+                  <article class="milestone-slide" data-ms-slide="8" role="group" aria-roledescription="slide" aria-label="2004, 9 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2004</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2005 -->
+                  <article class="milestone-slide" data-ms-slide="9" role="group" aria-roledescription="slide" aria-label="2005, 10 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2005</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2008 -->
+                  <article class="milestone-slide" data-ms-slide="10" role="group" aria-roledescription="slide" aria-label="2008, 11 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2008</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2009 -->
+                  <article class="milestone-slide" data-ms-slide="11" role="group" aria-roledescription="slide" aria-label="2009, 12 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Established international supply corridors" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2009</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Established international supply corridors</h3>
+                              <p class="milestone-slide__text">Incorporated wholly owned foreign subsidiaries, Cayuga Investments BV and Godavari Biorefineries BV in the Netherlands, and Godavari Biorefineries Inc in the US.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2010 -->
+                  <article class="milestone-slide" data-ms-slide="12" role="group" aria-roledescription="slide" aria-label="2010, 13 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2010</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2011 -->
+                  <article class="milestone-slide" data-ms-slide="13" role="group" aria-roledescription="slide" aria-label="2011, 14 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2011</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2014 -->
+                  <article class="milestone-slide" data-ms-slide="14" role="group" aria-roledescription="slide" aria-label="2014, 15 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2014</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2015 -->
+                  <article class="milestone-slide" data-ms-slide="15" role="group" aria-roledescription="slide" aria-label="2015, 16 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2015</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2016 -->
+                  <article class="milestone-slide" data-ms-slide="16" role="group" aria-roledescription="slide" aria-label="2016, 17 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2016</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2017 -->
+                  <article class="milestone-slide" data-ms-slide="17" role="group" aria-roledescription="slide" aria-label="2017, 18 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2017</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2019 -->
+                  <article class="milestone-slide" data-ms-slide="18" role="group" aria-roledescription="slide" aria-label="2019, 19 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2019</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2020 -->
+                  <article class="milestone-slide" data-ms-slide="19" role="group" aria-roledescription="slide" aria-label="2020, 20 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2020</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2021 -->
+                  <article class="milestone-slide" data-ms-slide="20" role="group" aria-roledescription="slide" aria-label="2021, 21 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2021</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2022 -->
+                  <article class="milestone-slide" data-ms-slide="21" role="group" aria-roledescription="slide" aria-label="2022, 22 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2022</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2023 -->
+                  <article class="milestone-slide" data-ms-slide="22" role="group" aria-roledescription="slide" aria-label="2023, 23 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2023</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2024 -->
+                  <article class="milestone-slide" data-ms-slide="23" role="group" aria-roledescription="slide" aria-label="2024, 24 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2024</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2025 -->
+                  <article class="milestone-slide" data-ms-slide="24" role="group" aria-roledescription="slide" aria-label="2025, 25 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="lazy">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2025</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+
+                  <!-- 2026 -->
+                  <article class="milestone-slide" data-ms-slide="25" role="group" aria-roledescription="slide" aria-label="2026, 26 of 26" aria-hidden="true">
+                     <div class="milestone-slide__media">
+                        <img src="@Url.Content("~/Assets/images/our-legacy/1939.webp")" alt="Add milestone title" loading="eager">
+                     </div>
+                     <div class="milestone-slide__content">
+                        <div class="milestone-slide__content-inner">
+                           <span class="milestone-slide__year">2026</span>
+                           <div>
+                              <h3 class="milestone-slide__title">Add milestone title</h3>
+                              <p class="milestone-slide__text">Add milestone description.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </article>
+               </div>
+            </div>
+
+            <button type="button" class="milestones-arrow milestones-arrow--next" data-ms-next aria-label="Next milestone">
+               <svg viewBox="0 0 32 16" fill="none" aria-hidden="true"><path d="M1 8h30M24 1l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <!-- Year timeline -->
+            <div class="milestones-timeline">
+               <ol class="milestones-years">
+                  <li><button type="button" class="milestones-year is-active" data-ms-year="0" aria-label="Go to 1939" aria-current="step">1939</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="1" aria-label="Go to 1940">1940</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="2" aria-label="Go to 1962">1962</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="3" aria-label="Go to 1973">1973</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="4" aria-label="Go to 1985">1985</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="5" aria-label="Go to 1993">1993</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="6" aria-label="Go to 1998">1998</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="7" aria-label="Go to 2003">2003</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="8" aria-label="Go to 2004">2004</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="9" aria-label="Go to 2005">2005</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="10" aria-label="Go to 2008">2008</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="11" aria-label="Go to 2009">2009</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="12" aria-label="Go to 2010">2010</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="13" aria-label="Go to 2011">2011</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="14" aria-label="Go to 2014">2014</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="15" aria-label="Go to 2015">2015</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="16" aria-label="Go to 2016">2016</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="17" aria-label="Go to 2017">2017</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="18" aria-label="Go to 2019">2019</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="19" aria-label="Go to 2020">2020</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="20" aria-label="Go to 2021">2021</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="21" aria-label="Go to 2022">2022</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="22" aria-label="Go to 2023">2023</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="23" aria-label="Go to 2024">2024</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="24" aria-label="Go to 2025">2025</button></li>
+                  <li><button type="button" class="milestones-year" data-ms-year="25" aria-label="Go to 2026">2026</button></li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- MILESTONES END -->
+   
+
+@section Scripts {
+   <script src="~/Assets/js/milestones-slider.js" asp-append-version="true"></script>
+
+
+}

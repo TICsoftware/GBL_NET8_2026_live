@@ -754,6 +754,28 @@ namespace GBL_BusinessLogic.BAL
                 };
             }
 
+            // /sustainability/governance — default subsection Key Governance Policies
+            if (blob.Contains("key-governance-policies")
+                || (blob.Contains("sustainability") && blob.Contains("governance"))
+                || blob == "governance"
+                || blob.EndsWith("/governance"))
+            {
+                return new List<KnownTab>
+                {
+                    new(
+                        "Key Governance Policies",
+                        "key-governance-policies",
+                        TabPageNames("key-governance-policies", "governance")
+                            .Concat(new[]
+                            {
+                                "sustainability/key-governance-policies",
+                                "sustainability/governance/key-governance-policies"
+                            })
+                            .Distinct(StringComparer.OrdinalIgnoreCase)
+                            .ToArray())
+                };
+            }
+
             return new List<KnownTab>();
         }
 
@@ -767,6 +789,8 @@ namespace GBL_BusinessLogic.BAL
                 "general-meeting/" + parentSlug + "/" + slug,
                 "investor-relations/" + slug,
                 "investor-relations/" + parentSlug + "/" + slug,
+                "sustainability/" + slug,
+                "sustainability/" + parentSlug + "/" + slug,
                 "investor-relations/general-meeting/" + slug,
                 "investor-relations/general-meeting/" + parentSlug + "/" + slug
             };
@@ -804,14 +828,17 @@ namespace GBL_BusinessLogic.BAL
             var last = parts[^1];
             Add(last);
             Add("investor-relations/" + last);
+            Add("sustainability/" + last);
             Add("general-meeting/" + last);
             Add("investor-relations/general-meeting/" + last);
+            Add("sustainability/governance/" + last);
 
             if (parts.Length >= 2)
             {
                 var lastTwo = string.Join("/", parts.Skip(parts.Length - 2));
                 Add(lastTwo);
                 Add("investor-relations/" + lastTwo);
+                Add("sustainability/" + lastTwo);
             }
 
             foreach (var name in names)
