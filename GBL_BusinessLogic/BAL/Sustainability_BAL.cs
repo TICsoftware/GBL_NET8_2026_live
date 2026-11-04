@@ -129,8 +129,25 @@ namespace GBL_BusinessLogic.BAL
             return model;
         }
 
+        /// <summary>
+        /// /sustainability/governance — banner + child subsections as PDF lists
+        /// (default: Key Governance Policies / key-governance-policies).
+        /// Uses the same child/PDF SPs as investor corporate-governance.
+        /// </summary>
+        public SustainabilityModel GetGovernance_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new SustainabilityModel();
+            var pageName = string.IsNullOrWhiteSpace(pagename)
+                ? "sustainability/governance"
+                : pagename.Trim().TrimStart('/');
 
+            using var cgBal = new CorporateGovernance_BAL(_configuration);
+            var cg = cgBal.GetCorporateGovernance_BAL(pageName, languageId, geographyId);
 
+            model.Content = cg.Content;
+            model.Sections = cg.Sections ?? new List<GovernanceSectionModel>();
+            return model;
+        }
 
     }
 }

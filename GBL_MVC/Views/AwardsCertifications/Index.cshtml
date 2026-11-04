@@ -1,0 +1,393 @@
+@{
+    ViewData["Title"] = "Products";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   
+      <link rel="stylesheet" href="~/Assets/css/awards.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/product-banner-desktop.webp">
+                  
+
+                  <!-- Mobile -->
+                  <img
+                     src="~/Assets/images/banners/product-banner-desktop.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                       Our Legacy
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>                           
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                              Our Legacy
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>Godavari Biorefineries Ltd has continually evolved over the last 80 years, responding to changing markets, advancing science and reimagining how renewable resources can create greater value while staying true to the values laid out by the founders.</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+
+   <!-- AWARDS & ACCOLADES -->
+   <section class="relative section-spacing awards-outer">
+      <div class="container">
+
+         <div class="awards-head">
+            <h2 class="text-h2 awards-head__title">Awards &amp; Accolades</h2>
+            <p class="awards-head__intro">Honours that celebrate our commitment to excellence, innovation and sustainability.</p>
+         </div>
+
+         <!-- ================= INDIVIDUAL HONOURS ================= -->
+         <div class="awards-group">
+            <h3 class="awards-group__title ">Individual Honours</h3>
+
+            <div class="awards-slider" data-awards
+                 role="region" aria-roledescription="carousel" aria-label="Individual honours">
+
+               <button type="button" class="awards-arrow awards-arrow--prev" data-aw-prev aria-label="Previous award">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </button>
+
+               <ul class="awards-track" data-aw-track>
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/plinio-nastari-award.webp")" alt="Plinio Nastari Sugar Excellence Award ceremony" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__titl ">Plinio Nastari Sugar Excellence Award</h4>
+                        <p class="award-card__text">Leadership in Sustainable Sugar and Bioenergy</p>
+                        <span class="award-card__year">2025</span>
+                     </div>
+                  </li>
+
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/best-cogen-manager.webp")" alt="Best Co-Gen Manager Award at the National Cogeneration Awards" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">Best Co-Gen Manager Award</h4>
+                        <p class="award-card__text">Operational Leadership Recognition</p>
+                        <span class="award-card__year">2025</span>
+                     </div>
+                  </li>
+
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/sissta-best-paper.webp")" alt="SISSTA Best Paper Award plaque" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">SISSTA Best Paper Award in Process and Shri Mydur Anand Gold Medal</h4>
+                        <p class="award-card__text">Technical Research &amp; Process Innovation</p>
+                        <span class="award-card__year">2021&ndash;22</span>
+                     </div>
+                  </li>
+
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/placeholder.webp")" alt="Add award title" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">Add award title</h4>
+                        <p class="award-card__text">Add award category</p>
+                        <span class="award-card__year">Year</span>
+                     </div>
+                  </li>
+               </ul>
+
+               <button type="button" class="awards-arrow awards-arrow--next" data-aw-next aria-label="Next award">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </button>
+            </div>
+         </div>
+
+         <!-- ================= COMPANY & FACILITY AWARDS ================= -->
+         <div class="awards-group">
+            <h3 class="awards-group__title">Company &amp; Facility Awards</h3>
+
+            <div class="awards-slider" data-awards
+                 role="region" aria-roledescription="carousel" aria-label="Company and facility awards">
+
+               <button type="button" class="awards-arrow awards-arrow--prev" data-aw-prev aria-label="Previous award">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </button>
+
+               <ul class="awards-track" data-aw-track>
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/india-green-energy-award.webp")" alt="5th India Green Energy Award certificate" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">5th India Green Energy Award</h4>
+                        <p class="award-card__text">Bioenergy Producer</p>
+                        <span class="award-card__year">2025</span>
+                     </div>
+                  </li>
+
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/icc-kv-mariwala-award.webp")" alt="ICC K. V. Mariwala Award plaque" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">ICC &ndash; K. V. Mariwala Award for Effective Chemical Industry-Academia Partnership</h4>
+                        <p class="award-card__text">Industry&ndash;Academia Collaboration in CO<sub>2</sub> Conversion</p>
+                        <span class="award-card__year">2025</span>
+                     </div>
+                  </li>
+
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/sissta-platinum-award.webp")" alt="SISSTA Platinum Award trophy" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">SISSTA Platinum Award for Best Sugarcane Development</h4>
+                        <p class="award-card__text">Sugarcane Development Excellence</p>
+                        <span class="award-card__year">2024&ndash;25</span>
+                     </div>
+                  </li>
+
+                  <li class="award-card">
+                     <div class="award-card__media">
+                        <img src="@Url.Content("~/Assets/images/awards/placeholder.webp")" alt="Add award title" loading="lazy">
+                     </div>
+                     <div class="award-card__body">
+                        <h4 class="award-card__title">Add award title</h4>
+                        <p class="award-card__text">Add award category</p>
+                        <span class="award-card__year">Year</span>
+                     </div>
+                  </li>
+               </ul>
+
+               <button type="button" class="awards-arrow awards-arrow--next" data-aw-next aria-label="Next award">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </button>
+            </div>
+         </div>
+
+      </div>
+   </section>
+   <!-- AWARDS & ACCOLADES END -->
+
+   
+   <!-- CERTIFICATIONS -->
+   <section class="relative section-spacing bg-gray certs-outer">
+      <div class="container">
+
+         <div class="certs-head">
+            <h2 class="text-h2 certs-head__title">Certifications</h2>
+            <p class="certs-head__intro text-p">Independently verified certifications that reflect our commitment to quality, safety, sustainability and responsible growth.</p>
+         </div>
+
+         <!--
+            Each category is a .cert-card. Add or remove <li class="cert-item"> freely.
+            Up to 3 items: shown as a row.
+            More than 3:   the card turns into a slider automatically (arrows appear).
+         -->
+         <div class="certs-grid" data-certs>
+
+            <!-- ============ Sustainability & Responsible Sourcing ============ -->
+            <article class="cert-card" data-cert>
+               <div class="cert-card__head">
+                  <h3 class="cert-card__title text-base font-uniNeueBold">Sustainability &amp; Responsible Sourcing</h3>
+               </div>
+               <ul class="cert-track" data-cert-track>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/ecovadis.webp")" alt="EcoVadis Gold 2023 sustainability rating medal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">ECOVADIS Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/bonsucro.webp")" alt="Bonsucro certified logo" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">BONSUCRO Certificate</p>
+                  </li>
+               </ul>
+            </article>
+
+            <!-- ============ Quality & Food Safety ============ -->
+            <article class="cert-card" data-cert>
+               <div class="cert-card__head">
+                  <h3 class="cert-card__title text-base font-uniNeueBold">Quality &amp; Food Safety</h3>
+               </div>
+               <ul class="cert-track" data-cert-track>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/iso-9001.webp")" alt="ISO 9001:2015 certified company seal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">ISO 9001:2015 Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/fssc-22000.webp")" alt="FSSC 22000 certificate document" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">FSSC-22K Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/hccb.webp")" alt="Hindustan Coca-Cola Beverages logo" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">GFSI Compliance 2014 by Hindustan Coca-Cola Beverages Pvt Ltd</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/hccb.webp")" alt="Hindustan Coca-Cola Beverages logo" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">GFSI Compliance 2014 by Hindustan Coca-Cola Beverages Pvt Ltd</p>
+                  </li>
+               </ul>
+            </article>
+
+            <!-- ============ Environment & Safety ============ -->
+            <article class="cert-card" data-cert>
+               <div class="cert-card__head">
+                  <h3 class="cert-card__title text-base font-uniNeueBold">Environment &amp; Safety</h3>
+               </div>
+               <ul class="cert-track" data-cert-track>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/iso-14001.webp")" alt="ISO 14001 certified company seal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">RC / ISO 14001 Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/responsible-care.webp")" alt="Responsible Care logo" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">Responsible Care Logo Certificate</p>
+                  </li>
+               </ul>
+            </article>
+
+            <!-- ============ Product & Market Access ============ -->
+            <article class="cert-card" data-cert>
+               <div class="cert-card__head">
+                  <h3 class="cert-card__title text-base font-uniNeueBold">Product &amp; Market Access</h3>
+               </div>
+               <ul class="cert-track" data-cert-track>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/kosher.webp")" alt="Kosher certified seal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">KOSHER Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/halal.webp")" alt="Halal certified seal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">HALAL Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/usda-biobased.webp")" alt="USDA Certified Biobased Product label" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">US Department of Agriculture (USDA) BioPreferred Certificate</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/usda-biobased.webp")" alt="USDA Certified Biobased Product label" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">US Department of Agriculture (USDA) BioPreferred Certificate</p>
+                  </li>
+               </ul>
+            </article>
+
+            <!-- ============ Global Trade & Compliance ============ -->
+            <article class="cert-card" data-cert>
+               <div class="cert-card__head">
+                  <h3 class="cert-card__title text-base font-uniNeueBold">Global Trade &amp; Compliance</h3>
+               </div>
+               <ul class="cert-track" data-cert-track>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/aeo.webp")" alt="AEO Indian Customs logo" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">Authorised Economic Operator certified by Indian Customs</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/three-star-export-house.webp")" alt="Three Star Export House seal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">Three-Star Export House</p>
+                  </li>
+               </ul>
+            </article>
+
+            <!-- ============ Site-specific Certifications ============ -->
+            <article class="cert-card" data-cert>
+               <div class="cert-card__head">
+                  <h3 class="cert-card__title text-base font-uniNeueBold">Site-specific Certifications</h3>
+               </div>
+               <ul class="cert-track" data-cert-track>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/iscc.webp")" alt="ISCC logo" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">ISCC PLUS (Sameerwadi Facility)</p>
+                  </li>
+                  <li class="cert-item">
+                     <div class="cert-item__logo">
+                        <img src="@Url.Content("~/Assets/images/awards-certification/certifications/iscc-plus.webp")" alt="ISCC Certified Plus seal" loading="lazy">
+                     </div>
+                     <p class="cert-item__name text-14">ISCC PLUS (Sakarwadi Facility)</p>
+                  </li>
+               </ul>
+            </article>
+
+         </div>
+      </div>
+   </section>
+   <!-- CERTIFICATIONS END -->
+   
+
+@section Scripts {
+   <script src="~/Assets/js/awards-slider.js" asp-append-version="true"></script>
+
+
+}
