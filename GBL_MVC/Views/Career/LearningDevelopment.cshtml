@@ -1,113 +1,310 @@
 @using GBL_MVC.Helpers
-@using Microsoft.AspNetCore.Razor.Language
 @model GBL_BusinessLogic.Entity.CareersModel
 @{
-   ViewData["Title"] = Model?.Content?.ContTitle ?? "Learning Development";
-   Layout = "~/Views/Shared/_Layout.cshtml";
-   var content = Model?.Content;
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Learning & Development";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+
+    var growth = Model?.Empowering_Growth_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var growthIntro = growth.FirstOrDefault(x => x.IsBlock == 0);
+    var growthCards = growth.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList();
+    if (growthCards.Count == 0 && growthIntro == null)
+    {
+        growthCards = growth.OrderBy(x => x.Sequence).ToList();
+    }
+
+    var growthTitle = FirstText(growthIntro?.Title, "Empowering Growth. Enabling Excellence.");
+    var growthIntroText = FirstText(growthIntro?.Intro, growthIntro?.Content);
+    if (string.IsNullOrWhiteSpace(growthIntroText))
+    {
+        growthIntroText = "Our Learning & Development programme is designed to help employees learn, build expertise, expand perspectives, and prepare for new opportunities throughout their careers.";
+    }
+    var growthImage = FirstPath(
+        growthIntro?.ThumbnailImage, growthIntro?.ComponentThumbnail, growthIntro?.Component_LHS_thumbnail,
+        growthCards.Select(c => FirstPath(c.ThumbnailImage, c.ComponentThumbnail)).FirstOrDefault(p => !string.IsNullOrWhiteSpace(p)),
+        Url.Content("~/Assets/images/careers/ld-1.webp"));
+    var growthImageAlt = FirstText(growthIntro?.ThumbnailAltText, growthIntro?.ComponentThumbnailAltText, "Godavari employees celebrating together in an office");
+
+    var knowledge = Model?.Knowledge_Sharing_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var knowledgeItem = knowledge.OrderBy(x => x.IsBlock == 0 ? 0 : 1).ThenBy(x => x.Sequence).FirstOrDefault();
+    var knowledgeTitle = FirstText(knowledgeItem?.Title, "A Culture of Knowledge Sharing");
+    var knowledgeIntro = knowledgeItem?.Intro;
+    var knowledgeContent = knowledgeItem?.Content;
+    var knowledgeImage = FirstPath(
+        knowledgeItem?.ThumbnailImage, knowledgeItem?.ComponentThumbnail, knowledgeItem?.Component_LHS_thumbnail,
+        Url.Content("~/Assets/images/careers/ld-2.webp"));
+    var knowledgeImageAlt = FirstText(knowledgeItem?.ThumbnailAltText, knowledgeItem?.ComponentThumbnailAltText, "Colleagues sharing knowledge around a table in an office");
+
+    var horizons = Model?.Expanding_Horizons_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var horizonsIntro = horizons.FirstOrDefault(x => x.IsBlock == 0);
+    var horizonsItems = horizons.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList();
+    if (horizonsIntro == null && horizons.Count > 0 && horizonsItems.Count == 0)
+    {
+        horizonsIntro = horizons.OrderBy(x => x.Sequence).FirstOrDefault();
+    }
+    var horizonsTitle = FirstText(horizonsIntro?.Title, "Expanding Professional Horizons");
+    var horizonsLead = FirstText(horizonsIntro?.Intro, "To support lifelong learning, employees are encouraged to participate in:");
+    var horizonsImage = FirstPath(
+        horizonsIntro?.ThumbnailImage, horizonsIntro?.ComponentThumbnail, horizonsIntro?.Component_LHS_thumbnail,
+        Url.Content("~/Assets/images/careers/ld-3.webp"));
+    var horizonsImageAlt = FirstText(horizonsIntro?.ThumbnailAltText, horizonsIntro?.ComponentThumbnailAltText, "Two colleagues giving a high five outside an office building");
+    var horizonsFooter = "";
+    var horizonsHasListHtml = !string.IsNullOrWhiteSpace(horizonsIntro?.Content)
+        && horizonsIntro!.Content.IndexOf("<ul", StringComparison.OrdinalIgnoreCase) >= 0;
+    if (!horizonsHasListHtml)
+    {
+        horizonsFooter = FirstText(horizonsIntro?.Content, horizonsIntro?.HmpgIntro);
+    }
+    if (horizonsItems.Count == 0 && !horizonsHasListHtml)
+    {
+        horizonsItems = new List<GBL_BusinessLogic.Entity.ComponentModel>
+        {
+            new() { Title = "Professional certification programmes" },
+            new() { Title = "External workshops and seminars" },
+            new() { Title = "Industry conferences and forums" },
+            new() { Title = "Continuing education initiatives" },
+            new() { Title = "Skill enhancement programmes" }
+        };
+        if (string.IsNullOrWhiteSpace(horizonsFooter))
+        {
+            horizonsFooter = "These opportunities help employees stay aligned with evolving industry practices and emerging technologies.";
+        }
+    }
+
+    var philosophy = Model?.Learning_Philosophy_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var philosophyItem = philosophy.OrderBy(x => x.IsBlock == 0 ? 0 : 1).ThenBy(x => x.Sequence).FirstOrDefault();
+    var philosophyTitle = FirstText(philosophyItem?.Title, "Our Learning Philosophy");
+    var philosophyIntro = philosophyItem?.Intro;
+    var philosophyContent = philosophyItem?.Content;
+    if (string.IsNullOrWhiteSpace(philosophyIntro) && string.IsNullOrWhiteSpace(philosophyContent))
+    {
+        philosophyContent = "<p>By igniting curiosity, encouraging continuous improvement, and investing in capability building, we enable our people to reach their full potential and build rewarding careers.</p>";
+    }
+    var philosophyImage = FirstPath(
+        philosophyItem?.ThumbnailImage, philosophyItem?.ComponentThumbnail, philosophyItem?.Component_LHS_thumbnail,
+        Url.Content("~/Assets/images/careers/ld-4.webp"));
+    var philosophyImageAlt = FirstText(philosophyItem?.ThumbnailAltText, philosophyItem?.ComponentThumbnailAltText, "Colleagues working together at a table");
+    var philosophyCtaUrl = FirstText(philosophyItem?.Url, "/careers/work-with-us");
+    var philosophyCtaText = FirstText(philosophyItem?.Url_Text, "Be a part of our talent pool");
+
+    var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
 }
 
-
-
 @section head {
-   <title>@(content?.cont_window_title)</title>
-
-   <meta content="@(content?.cont_metatag)" name="keywords" />
-   <meta content="@(content?.cont_metadesc)" name="description" />
-
-   <meta name="twitter:card" content="summary" />
-   <meta name="twitter:site" content="" />
-   <meta name="twitter:title" content="@(content?.ContTitle)" />
-   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
-
-   <meta property="og:type" content="article" />
-   <meta property="og:site_name" content="Godavari Biorefineries" />
-   <meta property="og:title" content="@(content?.ContTitle)" />
-   <meta property="og:description" content="@(content?.cont_metadesc)" />
-   <meta property="og:url" content="@(content?.CanonicalUrl)" />
-   <meta property="og:image" content="@(content?.cont_meta_image)" />
-
-   <meta itemprop="name" content="Godavari Biorefineries" />
-   <meta itemprop="description" content="@(content?.cont_metadesc)" />
-   <meta itemprop="image" content="@(content?.cont_meta_image)" />
-
-   <meta property="og:type" content="website" />
-   <meta property="og:site_name" content="Godavari Biorefineries" />
-   <meta property="og:title" content="@(content?.ContTitle)" />
-   <meta property="og:description" content="@(content?.cont_metadesc)" />
-   <meta property="og:image" content="@(content?.cont_meta_image)" />
-   <meta property="og:url" content="@(content?.CanonicalUrl)" />
-
-   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+    <title>@(content?.cont_window_title)</title>
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
 }
 
 @section Styles {
-   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/learning-development.css" asp-append-version="true" />
 }
 
-
-<!-- HERO BANNER END-->
-@if (Model?.Content != null)
+@if (content != null && content.ContId > 0)
 {
-   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", content)
 }
-<!-- HERO BANNER END -->
-
-
-<!--PAGE INTRO OUTER-->
-@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
+else
 {
-   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
-      <div class="container">
-         <div class="page-intro-inner intro-lg text-center">
-            @Html.Raw(Model.Content.Cont_intro)
-         </div>
-      </div>
-   </section>
-}
-<!--PAGE INTRO OUTER END-->
-@if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
-{
-   <section class="middle-container learningBody section-spacing">
-      <div class="container middle-container-inner">
-         <div class="learningCopy">
-            @Html.Raw(Model.Content.Content)
-         </div>
-      </div>
-   </section>
-}
-
-@if (Model?.Learning_Development_List != null && Model.Learning_Development_List.Any())
-{
-   <section class="middle-container learningBody section-spacing">
-      <div class="container middle-container-inner">
-         @foreach (var item in Model.Learning_Development_List.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
-         {
-            <article class="@(item.Sequence == 1 ? "learningBand common-media-section" : "common-media-section")">
-               <div class="parallax-wrap" aria-hidden="true">
-                  <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
-               </div>
-               <div class="@(item.Sequence == 1 ? "learningBand-caption common-media-caption" : "common-media-caption")">
-                  <h2 class="text-h2">@item.Title</h2>
-                  @if (!string.IsNullOrWhiteSpace(item.Intro))
-                  {
-                     <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
-                  }
-               </div>
-            </article>
-
-            <div class="learningCopy">
-               @if (!string.IsNullOrWhiteSpace(item.Content))
-               {
-                  @Html.Raw(item.Content)
-               }
+    <section class="relative inside-banner-outer">
+        <div class="inside-banner-inner banner-animation relative">
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+                <picture>
+                    <source media="(min-width:1024px)" srcset="~/Assets/images/banners/learningdevelopment-desktop.webp">
+                    <img src="~/Assets/images/banners/learningdevelopment-desktop.webp" alt="Learning & Development"
+                         class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                         loading="eager" fetchpriority="high">
+                </picture>
+                <div class="innerbanner-overlay"></div>
             </div>
-         }
-      </div>
-   </section>
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+                <div class="container">
+                    <div class="max-w-4xl text-left">
+                        <h1 class="innerbanner-title text-h1 text-white title-animation">Learning & Development</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
+<section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+    <div class="container">
+        <div class="page-intro-inner intro-lg text-center">
+            @if (!string.IsNullOrWhiteSpace(pageIntro))
+            {
+                @Html.Raw(pageIntro)
+            }
+            else
+            {
+                <p>At Godavari Biorefineries, learning is a continuous journey. We believe that investing in our people is essential to driving innovation, building future capabilities, and creating long-term success.</p>
+            }
+        </div>
+    </div>
+</section>
 
-@section Scripts {
-  
+<section class="ld-growth section-spacing">
+    <div class="container">
+        <div class="ld-head">
+            <h2 class="text-h2">@Html.Raw(growthTitle.CleanParagraphTags())</h2>
+            <p>@Html.Raw(growthIntroText.CleanParagraphTags())</p>
+        </div>
+        <div class="ld-growth__body">
+            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                <img src="@growthImage" alt="@growthImageAlt" class="parallax-img">
+            </figure>
+            <div class="ld-growth__cards">
+                @if (growthCards.Count > 0)
+                {
+                    @foreach (var card in growthCards)
+                    {
+                        <article class="ld-card">
+                            @if (!string.IsNullOrWhiteSpace(card.Title))
+                            {
+                                <h3 class="text-h5">@Html.Raw(card.Title.CleanParagraphTags())</h3>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(card.Intro))
+                            {
+                                <p>@Html.Raw(card.Intro.CleanParagraphTags())</p>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(card.Content))
+                            {
+                                @Html.Raw(card.Content)
+                            }
+                        </article>
+                    }
+                }
+                else
+                {
+                    <article class="ld-card">
+                        <h3 class="text-h5">Building Future-Ready Talent</h3>
+                        <p>We create a structured learning roadmap aligned with evolving business priorities and industry developments. These programmes are designed to support employees at every stage of their professional journey.</p>
+                    </article>
+                    <article class="ld-card">
+                        <h3 class="text-h5">Technical Capability Enhancement</h3>
+                        <p>Employees have access to specialised technical training programmes that deepen functional expertise and strengthen professional capabilities across manufacturing, engineering, research, agriculture, and business functions.</p>
+                    </article>
+                    <article class="ld-card">
+                        <h3 class="text-h5">Leadership Development</h3>
+                        <p>We invest in developing future leaders through programmes that build strategic thinking, decision-making, collaboration, and people leadership skills.</p>
+                    </article>
+                    <article class="ld-card">
+                        <h3 class="text-h5">Cross-Functional Learning</h3>
+                        <p>Our integrated business model creates opportunities for employees to learn across functions, broaden their understanding of the value chain, and develop multidisciplinary perspectives.</p>
+                    </article>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ld-knowledge section-spacing">
+    <div class="container">
+        <div class="ld-split">
+            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                <img src="@knowledgeImage" alt="@knowledgeImageAlt" class="parallax-img">
+            </figure>
+            <div class="ld-split__copy ld-split__copy--white">
+                <h2 class="text-h2">@Html.Raw(knowledgeTitle.CleanParagraphTags())</h2>
+                @if (!string.IsNullOrWhiteSpace(knowledgeIntro))
+                {
+                    <p>@Html.Raw(knowledgeIntro.CleanParagraphTags())</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(knowledgeContent))
+                {
+                    @Html.Raw(knowledgeContent)
+                }
+                else if (string.IsNullOrWhiteSpace(knowledgeIntro))
+                {
+                    <p>Learning at Godavari Biorefineries extends beyond formal programmes.</p>
+                    <p>Experienced professionals actively contribute to capability building through mentoring, coaching, and structured knowledge-sharing initiatives. Employees are encouraged to learn from practical experiences, exchange ideas, and collaborate across teams.</p>
+                    <p>This culture of continuous learning helps strengthen both individual capabilities and organisational expertise.</p>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ld-horizons section-spacing">
+    <div class="container">
+        <div class="ld-head">
+            <h2 class="text-h2">@Html.Raw(horizonsTitle.CleanParagraphTags())</h2>
+            <p>@Html.Raw(horizonsLead.CleanParagraphTags())</p>
+        </div>
+        <div class="ld-split">
+            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                <img src="@horizonsImage" alt="@horizonsImageAlt" class="parallax-img">
+            </figure>
+            <div class="ld-split__copy ld-split__copy--gray">
+                @if (horizonsHasListHtml)
+                {
+                    @Html.Raw(horizonsIntro!.Content)
+                }
+                else if (horizonsItems.Count > 0)
+                {
+                    <ul class="list-icon">
+                        @foreach (var item in horizonsItems)
+                        {
+                            <li>@Html.Raw(FirstText(item.Title, item.Intro).CleanParagraphTags())</li>
+                        }
+                    </ul>
+                }
+                @if (!string.IsNullOrWhiteSpace(horizonsFooter))
+                {
+                    <p>@Html.Raw(horizonsFooter.CleanParagraphTags())</p>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ld-philosophy section-pb">
+    <div class="container">
+        <div class="ld-split ld-split--copy-first">
+            <div class="ld-split__copy ld-split__copy--gray">
+                <h2 class="text-h2">@Html.Raw(philosophyTitle.CleanParagraphTags())</h2>
+                @if (!string.IsNullOrWhiteSpace(philosophyIntro))
+                {
+                    <p>@Html.Raw(philosophyIntro.CleanParagraphTags())</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(philosophyContent))
+                {
+                    @Html.Raw(philosophyContent)
+                }
+                <a href="@philosophyCtaUrl" class="site-btn site-btn--outline">
+                    <span class="site-btn__label">@philosophyCtaText</span>
+                    <span class="site-btn__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                </a>
+            </div>
+            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                <img src="@philosophyImage" alt="@philosophyImageAlt" class="parallax-img">
+            </figure>
+        </div>
+    </div>
+</section>
+
+@functions {
+    private static string FirstText(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value)) return value;
+        }
+        return "";
+    }
+
+    private static string FirstPath(params string?[] values) => FirstText(values);
 }

@@ -1,0 +1,273 @@
+/* =========================================================
+   OUR VISION PAGE
+   Uses theme tokens from the main Tailwind @theme:
+   --color-primary, --color-white, --text-*, --font-uniNeue*
+========================================================= */
+
+/* ---------- Page intro ---------- */
+.page-intro-outer--vision {
+  padding-block: clamp(2.5rem, 3.25vw, 3.875rem) clamp(2.5rem, 5.15vw, 6.1875rem);
+}
+.page-intro-outer--vision .page-intro-mantra__quote p {
+  margin: 0 0 25px;
+  font-size: var(--text-intro);
+  line-height: 1.4545;
+  color: var(--color-primary);
+}
+.page-intro-outer--vision .page-intro-mantra__quote .page-intro-mantra__sanskrit {
+  margin: 0;
+  font-family: "Noto Sans Devanagari", sans-serif;
+  font-weight: 400;
+  line-height: 1.37;
+  color: var(--color-primary);
+  overflow-wrap: normal;
+}
+.page-intro-outer--vision .page-intro-mantra__quote .page-intro-mantra__english {
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+.page-intro-outer--vision .page-intro-mantra__quote .page-intro-mantra__meaning {
+  font-size: var(--text-p);
+}
+.page-intro-outer--vision .page-intro-mantra__copy p {
+  margin-bottom: 1.3em;
+  font-size: var(--text-p);
+  line-height: 1.25;
+  color: var(--color-primary);
+}
+.page-intro-outer--vision .page-intro-mantra__copy p:last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 1180px) {
+  .page-intro-outer--vision .page-intro-mantra {
+    grid-template-columns: minmax(0, 766fr) minmax(0, 905fr);
+  }
+  .page-intro-outer--vision .page-intro-mantra__quote {
+    padding-right: clamp(1.5rem, 6.3vw, 7.5rem);
+  }
+  .page-intro-outer--vision .page-intro-mantra__copy {
+    padding-left: clamp(2rem, 4.6vw, 5.5rem);
+    border-left: 1px solid #c2c2c2;
+  }
+}
+
+/* ---------- Our Guiding Principles ---------- */
+.guiding-principles {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: clamp(2.5rem, 3.15vw, 3.75rem) clamp(1.5rem, 1.75vw, 2.0625rem);
+  color: var(--color-white);
+}
+.guiding-principles.bg-parallax-section .guiding-principles__bg {
+  z-index: -2;
+}
+.guiding-principles.bg-parallax-section .parallax-img {
+  top: -15%;
+  height: 130%;
+  object-position: 50% 43%;
+}
+.guiding-principles__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.57);
+}
+.guiding-principles__head {
+  display: grid;
+  grid-template-columns: minmax(0, 850fr) minmax(0, 761fr);
+  gap: clamp(1.25rem, 3vw, 3.75rem);
+  align-items: start;
+  margin-bottom: clamp(2rem, 7.8vw, 9.375rem);
+}
+.guiding-principles__title {
+  margin: 0;
+  color: var(--color-white);
+  text-transform: capitalize;
+}
+.guiding-principles__intro {
+  margin: 0;
+  padding-top: 1rem;
+  font-size: var(--text-intro);
+  line-height: 1.4545;
+  color: var(--color-white);
+}
+.guiding-principles__panel {
+  --principle-gap: clamp(1.5rem, 2.76vw, 3.3125rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 245fr)) minmax(0, 355fr);
+  column-gap: calc(var(--principle-gap) * 2);
+  width: calc(100% - 1.25rem * 2);
+  max-width: 1627px;
+  margin: 0 auto;
+  padding: 2rem clamp(1.5rem, 4vw, 4.875rem) 2.3rem;
+  list-style: none;
+  position: relative;
+  isolation: isolate;
+  background: none;
+}
+.guiding-principles__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(23, 12, 4, 0.48);
+  -webkit-backdrop-filter: blur(3.5px);
+  backdrop-filter: blur(3.5px);
+  pointer-events: none;
+}
+.principle-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 225px;
+  text-align: center;
+}
+.principle-item + .principle-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--principle-gap) * -1);
+  width: 1px;
+  background: rgba(194, 194, 194, 0.61);
+}
+.principle-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 51px;
+  margin-bottom: 1rem;
+}
+.principle-item__icon img,
+.principle-item__icon svg {
+  display: block;
+  flex: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
+}
+.principle-item__icon svg path {
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.principle-item__title {
+  margin: 0 0 1rem;
+  font-size: var(--text-h5);
+  line-height: normal;
+  color: var(--color-white);
+}
+.principle-item p {
+  margin: 0;
+  font-size: var(--text-p);
+  line-height: normal;
+  color: var(--color-white);
+}
+.principle-item p + p {
+  margin-top: 1.3em;
+}
+
+/* ---------- Our Mission ---------- */
+.our-mission {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: clamp(2.5rem, 3.75vw, 4.5rem) clamp(9rem, 13.65vw, 16.375rem);
+  background: var(--color-white);
+}
+.our-mission__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+/* Anchored to the image's bottom edge so the landscape is not cropped;
+   extra height is only what the small parallax in our-vision.js needs. */
+.our-mission__img {
+  position: absolute;
+  left: 0;
+  top: -16%;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 120%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  opacity: 0.5;
+  will-change: transform;
+}
+.our-mission__title {
+  margin: 0 0 clamp(1.5rem, 2.1vw, 2.5rem);
+  color: var(--color-primary);
+  text-transform: capitalize;
+}
+.our-mission__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.our-mission__list li {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(40, 43, 49, 0.3);
+  font-size: var(--text-p);
+  line-height: normal;
+  color: var(--color-primary);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1279px) {
+  .guiding-principles__panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2rem;
+    width: 100%;
+  }
+  .principle-item {
+    min-height: 0;
+  }
+  .principle-item:nth-child(odd)::before {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .guiding-principles__head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .guiding-principles__intro {
+    padding-top: 0;
+  }
+  .our-mission__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .guiding-principles__panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1.5rem 1.25rem;
+  }
+  .principle-item + .principle-item {
+    padding-top: 2rem;
+  }
+  .principle-item + .principle-item::before,
+  .principle-item:nth-child(odd)::before {
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 1px;
+  }
+  .our-mission__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

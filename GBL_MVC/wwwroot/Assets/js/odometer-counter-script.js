@@ -241,7 +241,7 @@ window.PriyaOdometer = {
   },
   isDeferred(el) {
       // Only defer while the scroll expand anim is active
-      return !!(el && el.closest(".home-sustainability-section.is-sustain-anim"));
+      return !!(el && el.closest(".home-sustainability-section.is-sustain-anim, [data-counter-deferred]"));
     },
 };
 

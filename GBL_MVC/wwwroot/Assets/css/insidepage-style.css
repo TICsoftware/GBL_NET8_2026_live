@@ -130,31 +130,37 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
 
 
 
+/* Shared bulleted list for inside pages: green square bullet */
 .list-icon {
   list-style: none;
-  margin: 0.5rem 0 1.25rem;
+  margin: 1.25rem 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: 1.4375rem;
+}
+
+.list-icon:first-child {
+  margin-top: 0;
 }
 
 .list-icon li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  position: relative;
   margin: 0;
+  padding-left: 1rem;
   color: var(--color-gray-dark, #565b65);
   font-size: var(--text-p, 1rem);
   line-height: 1.45;
 }
 
-.list-icon img {
-  width: 1.35rem;
-  height: 1.35rem;
-  margin-top: 0.15rem;
-  flex: 0 0 auto;
-  object-fit: contain;
+.list-icon li::before {
+  content: "";
+  position: absolute;
+  top: 0.5em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--color-secondary, #67815a);
 }
 
 
@@ -206,4 +212,11 @@ background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 70%,rgba(
 
   .page-intro-inner{width: 100%;}
   .page-intro-inner, .middle-container .container{ max-width:min(100vw, 1100px);}
+}
+
+
+/* 150% zoom — 1920×1080 → ~1280×720 */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.5), screen and (min-width: 1025px) and (min-resolution: 144dpi) {
+.innerbanner-caption {
+    bottom: 2vw;}
 }

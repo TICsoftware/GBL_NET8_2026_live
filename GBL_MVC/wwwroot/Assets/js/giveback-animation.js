@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (slideCells.length < 2) return;
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var desktopTriggers = [];
+  var desktopAnims = [];
   var swiper = null;
   var controlsEl = null;
   var wrapperEl = null;
@@ -23,32 +23,31 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function killDesktopAnim() {
-    desktopTriggers.forEach(function (st) {
-      if (st && typeof st.kill === "function") st.kill();
+    desktopAnims.forEach(function (anim) {
+      anim.observers.forEach(function (io) { io.disconnect(); });
+      anim.tl.kill();
     });
-    desktopTriggers = [];
+    desktopAnims = [];
     if (typeof gsap !== "undefined") {
       gsap.set(cells, { clearProps: "transform,opacity,visibility" });
     }
   }
 
-  function bindGroup(items, fromX, stScroller) {
+  /* Plays once the row reaches 85% down the viewport; resets only after it has
+     dropped fully below the viewport, so it plays again on the way back down. */
+  function bindGroup(items, fromX) {
     if (!items.length) return;
 
-    var trigger = items[0];
     var tl = gsap.timeline({
-      defaults: { force3D: true, ease: "none" },
-      scrollTrigger: {
-        trigger: trigger,
-        scroller: stScroller,
-        start: "top 85%",
-        end: "top 45%",
-        scrub: 1.1,
-        invalidateOnRefresh: true,
-      },
+      paused: true,
+      defaults: { force3D: true, ease: "power2.out" },
     });
 
-    items.forEach(function (item, i) {
+    /* Lead with the cell nearest the direction of travel, so cells still
+       sliding in never pass over one that has already landed. */
+    var order = fromX < 0 ? items.slice().reverse() : items;
+
+    order.forEach(function (item, i) {
       tl.fromTo(
         item,
         { autoAlpha: 0, x: fromX },
@@ -57,27 +56,32 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     });
 
-    if (tl.scrollTrigger) desktopTriggers.push(tl.scrollTrigger);
+    /* Side margins keep the cells counted as on screen while shifted sideways. */
+    var playIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) tl.play();
+      });
+    }, { rootMargin: "0px 200px -15% 200px" });
+
+    var resetIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting && entry.boundingClientRect.top > 0) tl.pause(0);
+      });
+    }, { rootMargin: "0px 200px 0px 200px" });
+
+    playIo.observe(items[0]);
+    resetIo.observe(items[0]);
+
+    desktopAnims.push({ tl: tl, observers: [playIo, resetIo] });
   }
 
   function initDesktopAnim() {
-    if (reduceMotion || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+    if (reduceMotion || typeof gsap === "undefined" || !("IntersectionObserver" in window)) {
       return;
     }
 
-    gsap.registerPlugin(ScrollTrigger);
-
-    var firstFive = cells.slice(0, 5);
-    var lastFive = cells.slice(5);
-    var isTablet = window.matchMedia("(max-width: 992px)").matches;
-    var stScroller = isTablet ? window : document.documentElement;
-
-    bindGroup(firstFive, 160, stScroller);
-    bindGroup(lastFive, -160, stScroller);
-
-    requestAnimationFrame(function () {
-      ScrollTrigger.refresh();
-    });
+    bindGroup(cells.slice(0, 5), 160);
+    bindGroup(cells.slice(5), -160);
   }
 
   function wrapForSlider() {
@@ -196,10 +200,5 @@ document.addEventListener("DOMContentLoaded", function () {
     resizeTimer = window.setTimeout(applyMode, 120);
   });
 
-  window.addEventListener("load", function () {
-    applyMode();
-    if (!isSliderView() && typeof ScrollTrigger !== "undefined") {
-      ScrollTrigger.refresh();
-    }
-  });
+  window.addEventListener("load", applyMode);
 });

@@ -1,0 +1,202 @@
+/* =========================================================
+   BIO-BASED CHEMICALS PAGE (Business L2)
+   Uses theme tokens from the main Tailwind @theme:
+   --color-primary, --color-secondary, --color-gray,
+   --color-gray-dark, --text-*, --ease
+   The product filter reuses industries-filter.css/.js.
+========================================================= */
+
+.bbc-banner-text {
+  max-width: 1145px;
+}
+
+/* ---------- Shared ---------- */
+.bbc-title {
+  margin: 0 0 1.5rem;
+  color: var(--color-primary);
+}
+.bbc-body p {
+  margin: 0;
+  font-size: var(--text-p);
+}
+.bbc-body > * + * {
+  margin-top: 1.25rem;
+}
+.bbc-body--muted {
+  color: var(--color-gray-dark);
+}
+
+/* ---------- Intro ---------- */
+.bbc-intro {
+  padding-block: clamp(2.5rem, 3.3vw, 4rem) clamp(3rem, 6.25vw, 7.5rem);
+  background: var(--color-gray);
+}
+.bbc-intro__copy {
+  max-width: 1102px;
+  margin-inline: auto;
+  color: var(--color-gray-dark);
+}
+.bbc-intro__copy p {
+  margin: 0;
+  font-size: var(--text-p);
+}
+.bbc-intro__copy .bbc-intro__lead {
+  margin-bottom: 2rem;
+  font-size: var(--text-intro);
+}
+
+/* ---------- Strong Leadership (full-bleed image, site-wide bg parallax) ---------- */
+.bbc-leadership {
+  position: relative;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+  min-height: clamp(30rem, 37.7vw, 45.25rem);
+  padding-block: clamp(3.5rem, 6.25vw, 7.5rem);
+  overflow: hidden;
+  color: var(--color-white, #fff);
+}
+.bbc-leadership.bg-parallax-section .bbc-leadership__bg {
+  z-index: -2;
+}
+.bbc-leadership.bg-parallax-section .parallax-img {
+  top: -5%;
+  height: 110%;
+}
+.bbc-leadership__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.46) 47.063%, rgba(0, 0, 0, 0.1) 71.689%);
+}
+.bbc-leadership .container {
+  position: relative;
+  z-index: 1;
+}
+.bbc-leadership__copy {
+  max-width: 713px;
+}
+.bbc-leadership .bbc-title {
+  margin-bottom: 1.25rem;
+  color: var(--color-white, #fff);
+}
+.bbc-leadership .bbc-body > * + * {
+  margin-top: 1.375rem;
+}
+
+/* ---------- Drop-in Substitutes ---------- */
+.bbc-substitutes {
+  padding-block: clamp(3.5rem, 4.9vw, 6rem);
+  background: var(--color-white, #fff);
+}
+.bbc-split {
+  display: grid;
+  grid-template-columns: minmax(0, 959fr) minmax(0, 673fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+.bbc-split__media {
+  aspect-ratio: 959 / 642;
+}
+.bbc-title--substitutes {
+  max-width: 612px;
+}
+
+/* Soft parallax: a little taller than its box, moved by bio-based-chemicals.js */
+.bbc-parallax {
+  position: relative;
+  overflow: hidden;
+}
+.bbc-parallax img {
+  position: absolute;
+  top: -5%;
+  left: 0;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 110%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* ---------- Find Your Bio-Based Chemical ---------- */
+.bbc-find {
+  padding-block: clamp(3.5rem, 5.15vw, 6.1875rem);
+  background: var(--color-gray);
+}
+.bbc-find__card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(20rem, 19.8vw, 23.8rem);
+  padding: 2.5rem clamp(1.5rem, 4vw, 8.75rem);
+  background: var(--color-white, #fff);
+  box-shadow:
+    0 156px 62px rgba(168, 168, 168, 0.01),
+    0 88px 53px rgba(168, 168, 168, 0.05),
+    0 39px 39px rgba(168, 168, 168, 0.09),
+    0 10px 21px rgba(168, 168, 168, 0.1);
+}
+.bbc-find__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.bbc-find__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 83%;
+}
+.bbc-find__content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+.bbc-find .bbc-title {
+  margin-bottom: clamp(1.5rem, 2.1vw, 2.5rem);
+}
+.bbc-find__filter {
+  padding: 0;
+}
+.bbc-find__filter .filter-inner {
+  padding: 0.4rem 0.5rem;
+  background: var(--color-gray);
+  border: 0;
+  box-shadow: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1023px) {
+  .bbc-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .bbc-title--substitutes {
+    max-width: none;
+  }
+  .bbc-leadership__veil {
+    background: rgba(0, 0, 0, 0.55);
+  }
+  /* The photo's focal point sits on the right; fade the card so copy stays legible */
+  .bbc-find__bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+  }
+}
+
+@media (max-width: 767px) {
+  .bbc-find__card {
+    padding: 2rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bbc-parallax img {
+    top: 0;
+    height: 100%;
+    will-change: auto;
+  }
+}

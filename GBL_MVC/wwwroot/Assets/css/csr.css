@@ -1,0 +1,579 @@
+/**=====================================
+CSR PAGE
+======================================**/
+
+/* Hero — the design mirrors the banner photo. The flip sits on a wrapper
+   because inner-banner-script animates the transform of the image itself. */
+.csr-hero-flip {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(-1);
+}
+.csr-hero-flip .innerbanner-image {
+  object-position: 76% 57%;
+}
+.csr-hero-caption {
+  max-width: 75rem;
+}
+/* Keeps "Shared Progress, Brighter Futures" together on the second line */
+.csr-hero-caption .innerbanner-title {
+  max-width: 16.5em;
+}
+
+/* Shared */
+.csr-title {
+  margin: 0 0 1rem;
+  font-family: var(--font-uniNeueBold);
+  font-size: clamp(1.375rem, 1rem + 1.05vw, 1.875rem);
+  line-height: 1.25;
+  color: var(--color-primary);
+}
+.csr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2vw, 2.5rem);
+}
+
+/* Our CSR Philosophy */
+.csr-philosophy .page-intro-mantra {
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+}
+.csr-philosophy .page-intro-mantra__sanskrit {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.csr-philosophy .page-intro-mantra__english {
+  font-family: var(--font-uniNeueBold);
+  font-size: clamp(1.375rem, 1rem + 1.05vw, 1.875rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-gray-dark);
+}
+.csr-philosophy .page-intro-mantra__cite {
+  font-size: var(--text-p);
+  color: var(--color-gray-dark);
+}
+.csr-philosophy .page-intro-mantra__copy {
+  color: var(--color-gray-dark);
+}
+.csr-philosophy .page-intro-mantra__copy .csr-philosophy__lead {
+  margin-bottom: 2.5rem;
+  font-size: var(--text-22);
+  line-height: 1.45;
+}
+.csr-philosophy .page-intro-mantra__copy .csr-philosophy__body {
+  font-size: var(--text-p);
+  line-height: 1.25;
+}
+
+/* Our Approach */
+.csr-approach {
+  background: var(--color-white);
+}
+.csr-approach-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  min-height: 25.8rem;
+  padding: 1.75rem 1.5rem;
+  background: var(--color-gray);
+}
+.csr-approach-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+.csr-approach-card p {
+  max-width: 23.5rem;
+  margin: 0;
+  color: var(--color-gray-dark);
+}
+.csr-approach-card__icon {
+  flex: none;
+  width: 106.79px;
+  height: 106.79px;
+}
+.csr-impact-icon {
+  position: relative;
+}
+.csr-impact-icon img {
+  position: absolute;
+  max-width: none;
+}
+.csr-impact-icon__hands {
+  inset: 51.56% 5.75% 0 4.63%;
+  width: 89.62%;
+  height: 48.44%;
+}
+.csr-impact-icon__plant {
+  inset: 0 9.44% 40.63% 23.17%;
+  width: 67.39%;
+  height: 59.37%;
+}
+
+/* Impact in Action */
+.csr-impact {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(740px, 100vh);
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+}
+.csr-impact__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+.csr-impact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.27);
+}
+.csr-stats {
+  display: grid;
+  grid-template-columns: 1.25fr 0.95fr 1fr 0.9fr 1.15fr 1.15fr;
+  margin: 0;
+  padding: 2.625rem clamp(1.25rem, 2.5vw, 2.5rem);
+  list-style: none;
+  background: rgba(23, 12, 4, 0.48);
+  -webkit-backdrop-filter: blur(3.5px);
+  backdrop-filter: blur(3.5px);
+}
+.csr-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-inline: clamp(0.875rem, 1.2vw, 1.5rem);
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+  color: var(--color-white);
+}
+.csr-stat:first-child {
+  border-left: 0;
+}
+.csr-stat__icon {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+}
+.csr-stat strong {
+  font-family: var(--font-uniNeueBold);
+  font-size: clamp(1.375rem, 1rem + 1.05vw, 1.875rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+.csr-stat .counter-odometer {
+  display: inline-flex;
+  align-items: flex-end;
+  line-height: 1;
+  color: inherit;
+  font-size: inherit;
+}
+.csr-stat .odometer-digit,
+.csr-stat .odometer-separator,
+.csr-stat .counter-suffix {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1;
+  color: inherit;
+}
+.csr-stat .counter-suffix {
+  margin-left: 0.12em;
+}
+.csr-stat .odometer-digit,
+.csr-stat .odometer-digit-line {
+  height: 1em;
+  line-height: 1em;
+}
+.csr-stat > span {
+  font-size: var(--text-p);
+}
+
+/* Our Focus Areas */
+.csr-focus {
+  background: var(--color-white);
+}
+.csr-focus-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  height: 100%;
+  overflow: visible;
+  background: var(--color-gray);
+  --card-fill: var(--color-secondary, #67815a);
+}
+.csr-focus-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+.csr-focus-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--fill-top, 46%);
+  bottom: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.csr-focus-card.is-filled::before,
+.csr-focus-card:focus-within::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
+}
+.csr-focus-card__media {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  aspect-ratio: 532 / 362;
+}
+.csr-focus-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Crop taken from the design; the box ratio is fixed so it holds at all widths */
+.csr-focus-card__media--healthcare img {
+  position: absolute;
+  top: -17.71%;
+  left: -59.34%;
+  width: 221.21%;
+  height: 151.7%;
+  max-width: none;
+}
+.csr-focus-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+  padding: 1.25rem 2rem 4.75rem;
+}
+.csr-focus-card__body .csr-title,
+.csr-focus-card__body p {
+  position: relative;
+  z-index: 2;
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.csr-focus-card__body p {
+  margin: 0;
+  font-size: var(--text-p);
+  line-height: 1.45;
+  color: var(--color-gray-dark);
+}
+.csr-focus-card.is-filled .csr-title,
+.csr-focus-card:focus-within .csr-title,
+.csr-focus-card.is-filled p,
+.csr-focus-card:focus-within p {
+  color: #fff;
+}
+.csr-readmore {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: absolute;
+  left: 2rem;
+  bottom: 1.5rem;
+  z-index: 2;
+  margin-top: 0;
+  padding-block: 2px;
+  border-bottom: 1px solid var(--color-primary);
+  font-size: clamp(1.125rem, 1rem + 0.75vw, 1.457rem);
+  color: var(--color-primary);
+  opacity: 0;
+  transform: translateY(calc(100% + 1.25rem));
+  pointer-events: none;
+  transition: color 0.3s ease, border-color 0.3s ease, opacity 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)), transform 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.csr-focus-card:hover .csr-readmore,
+.csr-focus-card:focus-within .csr-readmore,
+.csr-focus-card.is-filled .csr-readmore {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  color: #fff;
+  border-color: #fff;
+}
+.csr-focus-card.is-filled .csr-readmore img,
+.csr-focus-card:focus-within .csr-readmore img {
+  filter: brightness(0) invert(1);
+}
+.csr-readmore img {
+  width: 15.29px;
+  height: 15.29px;
+  transition: transform 0.3s ease;
+}
+.csr-readmore:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+.csr-readmore:hover img {
+  transform: translateX(4px);
+}
+
+/* Advancing Shared Progress */
+.csr-progress {
+  background: var(--color-gray);
+}
+.csr-progress__panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 1672 / 602;
+}
+.csr-progress__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 10.5%;
+}
+.csr-progress__content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: clamp(2rem, 3.9vw, 4.65rem) clamp(1.75rem, 5.7vw, 6.8rem) 2rem clamp(1.75rem, 7.5vw, 9rem);
+}
+.csr-progress__copy {
+  flex: 0 1 48rem;
+  min-width: 0;
+}
+.csr-progress__copy p {
+  margin: 0;
+  font-size: var(--text-p);
+  line-height: 1.45;
+  color: var(--color-primary);
+}
+.csr-sdgs {
+  display: flex;
+  flex: none;
+  gap: clamp(0.5rem, 0.95vw, 1.15rem);
+  margin-top: clamp(0rem, 2.3vw, 2.75rem);
+}
+.csr-sdg {
+  position: relative;
+  overflow: hidden;
+  width: clamp(5.5rem, 8.86vw, 10.63rem);
+  aspect-ratio: 170.107 / 182;
+}
+.csr-sdg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Desktop only: the extra zoom in the design's crop of the impact photo */
+@media (min-width: 1180px) {
+  .csr-impact__bg {
+    transform: scale(1.44);
+    transform-origin: 48% 92%;
+  }
+}
+
+@media (max-width: 1179px) {
+  .csr-philosophy .page-intro-mantra {
+    grid-template-columns: 1fr;
+  }
+  .csr-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .csr-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 2rem;
+  }
+  .csr-stat:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  /* Text no longer fits over the photo: stack it above */
+  .csr-progress__panel {
+    aspect-ratio: auto;
+    overflow: visible;
+  }
+  .csr-progress__bg {
+    position: static;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .csr-progress__content {
+    padding: 0 0 1.5rem;
+  }
+  .csr-progress__panel {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 767px) {
+  .csr-progress__panel {
+    flex-direction: column;
+  }
+  .csr-progress__content {
+    padding: 1.5rem 0 0;
+  }
+  .csr-grid {
+    grid-template-columns: 1fr;
+  }
+  .csr-focus-grid.csr-focus-grid--slider {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    grid-template-columns: none;
+    padding-bottom: 1.75rem;
+  }
+  .csr-focus-grid.csr-focus-grid--slider .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+  }
+  .csr-focus-grid.csr-focus-grid--slider .csr-focus-card.swiper-slide {
+    display: flex;
+    height: auto;
+    align-self: stretch;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  .csr-focus-card__body {
+    padding: 1rem 1rem 1.15rem;
+  }
+  .csr-focus-card .csr-readmore {
+    position: static;
+    left: auto;
+    bottom: auto;
+    margin-top: auto;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .csr-focus-card .csr-readmore img {
+    filter: none;
+  }
+  .csr-focus-slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-top: 1.25rem;
+    width: 100%;
+  }
+  .csr-focus-nav {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--line, #e4e4e4);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .csr-focus-nav.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+  .csr-focus-slider-controls .csr-focus-pagination.swiper-pagination {
+    position: static;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin: 0;
+  }
+  .csr-focus-pagination .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    margin: 0 !important;
+    background: #c8c8c8;
+    opacity: 1;
+    border-radius: 50%;
+  }
+  .csr-focus-pagination .swiper-pagination-bullet-active {
+    background: var(--color-primary, #1c1918);
+  }
+  .csr-approach-card {
+    min-height: 0;
+  }
+  .csr-impact {
+    min-height: 0;
+    padding-block: 1.25rem 1.5rem;
+  }
+  .csr-impact__inner {
+    padding-inline: 0.75rem;
+  }
+  .csr-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 1.15rem 0.5rem;
+    row-gap: 1.15rem;
+  }
+  .csr-stat {
+    padding-inline: 0.65rem;
+  }
+  .csr-stat__icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0.5rem;
+  }
+  .csr-stat:nth-child(3n + 1) {
+    border-left: 1px solid rgba(255, 255, 255, 0.35);
+  }
+  .csr-stat:nth-child(odd) {
+    border-left: 0;
+  }
+  .csr-progress__content {
+    flex-direction: column;
+  }
+  .csr-progress__copy {
+    flex: none;
+  }
+  .csr-sdgs {
+    margin-top: 0;
+  }
+  .csr-sdg {
+    width: clamp(5rem, 27vw, 8rem);
+  }
+}

@@ -25,11 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var stScroller = isMobileView ? window : document.documentElement;
 
     // Balanced travel (covers overflow:hidden + height:130% CSS)
+    // data-parallax-travel sets a gentler travel for images sized with less extra height
+    const travel = parseFloat(wrap.dataset.parallaxTravel) || 12;
     gsap.fromTo(
       img,
-      { yPercent: -12 },
+      { yPercent: -travel },
       {
-        yPercent: 12,
+        yPercent: travel,
         ease: 'none',
         force3D: true,
         scrollTrigger: {

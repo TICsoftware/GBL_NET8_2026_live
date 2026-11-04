@@ -197,25 +197,84 @@
       });
     });
 
-    // Swipe / drag
+    // Swipe / drag: the track follows the pointer, then glides to the
+    // nearest slide (or back) depending on distance and flick speed.
     var startX = null;
     var startY = null;
+    var startTime = 0;
+    var dragX = 0;
+    var dragging = false;
+
+    function slideStep() {
+      var first = all[0] && all[0].querySelector('.milestone-slide__media');
+      var gap = parseFloat(window.getComputedStyle(track).columnGap) || 0;
+      return (first ? first.offsetWidth : viewport.clientWidth) + gap;
+    }
+
+    function setDrag(px) {
+      dragX = px;
+      track.style.setProperty('--ms-drag', px + 'px');
+    }
+
+    function endDrag(e) {
+      if (startX === null) return;
+      var wasDragging = dragging;
+      startX = null;
+      dragging = false;
+      if (!wasDragging) return;
+
+      if (e && viewport.hasPointerCapture && viewport.hasPointerCapture(e.pointerId)) {
+        try { viewport.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
+      }
+
+      var size = slideStep();
+      var moved = dragX;
+      var velocity = moved / Math.max(1, performance.now() - startTime); // px per ms
+      var steps = Math.round(Math.abs(moved) / size);
+      if (!steps && (Math.abs(moved) > size * 0.15 || Math.abs(velocity) > 0.35)) steps = 1;
+
+      // Re-enable the transition and clear the offset in the same frame, so the
+      // glide starts from exactly where the pointer let go.
+      root.classList.remove('is-dragging');
+      setDrag(0);
+      if (steps) moveTo(pos + (moved < 0 ? steps : -steps));
+
+      suppressClick = true;
+      setTimeout(function () { suppressClick = false; }, 50);
+    }
+
     viewport.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
       startX = e.clientX;
       startY = e.clientY;
+      startTime = performance.now();
+      dragging = false;
     });
-    viewport.addEventListener('pointerup', function (e) {
+
+    viewport.addEventListener('pointermove', function (e) {
       if (startX === null) return;
       var dx = e.clientX - startX;
       var dy = e.clientY - startY;
-      startX = null;
-      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-        suppressClick = true;
-        step(dx < 0 ? 1 : -1);
-        setTimeout(function () { suppressClick = false; }, 50);
+
+      if (!dragging) {
+        if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) { startX = null; return; } // vertical scroll
+        if (Math.abs(dx) < 6) return;
+        dragging = true;
+        startX = e.clientX; // start from here so the track doesn't jump by the threshold
+        startTime = performance.now();
+        dx = 0;
+        settle();
+        root.classList.add('is-dragging');
+        try { viewport.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone */ }
       }
+
+      var size = slideStep();
+      setDrag(Math.max(-size * 1.5, Math.min(size * 1.5, dx)));
     });
-    viewport.addEventListener('pointercancel', function () { startX = null; });
+
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+    viewport.addEventListener('lostpointercapture', endDrag);
 
     // Stop images being dragged as files on desktop
     viewport.addEventListener('dragstart', function (e) { e.preventDefault(); });

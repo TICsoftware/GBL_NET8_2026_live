@@ -1,0 +1,205 @@
+@{
+    ViewData["Title"] = "Carbon Light Circularity";
+}
+
+@section Styles {
+
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/carbon-light-circularity-banner.webp">                  
+
+                  <!-- Desktop -->
+                  <img
+                     src="~/Assets/images/banners/carbon-light-circularity-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                        Social
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Sustainability
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                             Social
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <blockquote class="page-intro-mantra__quote p-0 border-r-0">
+               <h2 class="page-intro-mantra__sanskrit text-h1">शतहस्त समाहर सहस्रहस्त संकिर</h2>
+               <p class="page-intro-mantra__english">Earn with a hundred hands, <br> Give with a thousand.</p>
+               <cite class="page-intro-mantra__cite">--Atharva Veda</cite>
+            </blockquote>
+            
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+   <section class="social-belief section-spacing">
+      <div class="container social-split">
+         <figure class="social-split__media parallax-wrap" data-parallax-travel="5">
+            <img src="@Url.Content("~/Assets/images/sustanability/image-1-1.webp")" alt="School children walking together outside their school" class="parallax-img">
+         </figure>
+         <div class="social-split__copy">
+            <p>This philosophy, espoused by our founder Karamshibhai Jethabai Somaiya, recipient of the Padma Bhushan, guides Godavari Biorefineries Ltd towards the path of social transformation.</p>
+            <p>Our Corporate Social Responsibility efforts are driven by our founder’s belief that wealth, earned diligently through righteous means, should be shared even more generously with the deserving. For, true prosperity lies not merely in the accumulation of wealth but in its judicious distribution.</p>
+            <p>We support the most underserved communities around our operations in Maharashtra and Karnataka through our initiatives in education, livelihoods and community well-being. These initiatives are based on the key principles of</p>
+         </div>
+      </div>
+   </section>
+
+   <section class="social-principles section-spacing">
+      <div class="container">
+         <div class="social-principles__grid card-list-items">
+            <article class="social-principles__card card-rise">
+               <h3 class="text-h5">Empowerment</h3>
+               <p>Providing access to education, skills and economic opportunities to individuals</p>
+            </article>
+            <article class="social-principles__card card-rise">
+               <h3 class="text-h5">Inclusivity</h3>
+               <p>Ensuring development initiatives reach economically weaker and underserved sections of society</p>
+            </article>
+            <article class="social-principles__card card-rise">
+               <h3 class="text-h5">Sustainable Impact</h3>
+               <p>Designing programmes that create lasting change in communities</p>
+            </article>
+         </div>
+      </div>
+   </section>
+
+   <section class="social-difference section-spacing">
+      <div class="container social-split social-split--copy-first">
+         <div class="social-split__copy">
+            <h2 class="text-h2">Making A Difference</h2>
+            <p>Our key initiatives include our flagship Help a Child programme. Through this, we provide scholarships and academic and career counselling support to deserving students from disadvantaged backgrounds, opening new pathways for them and their families. We also support educational infrastructure in rural schools through our Promoting Education initiative.</p>
+            <p>Our Women Skill Development and Entrepreneurship initiative provides vocational training to women in rural communities, enabling them to build sustainable livelihoods.</p>
+            <p>In addition, we provide access to essential healthcare services for the wellbeing of our Communities.</p>
+         </div>
+         <figure class="social-split__media parallax-wrap" data-parallax-travel="5">
+            <img src="@Url.Content("~/Assets/images/sustanability/image-1-2.webp")" alt="A teacher with schoolchildren in a corridor" class="parallax-img">
+         </figure>
+      </div>
+   </section>
+
+   <section class="social-impact section-spacing">
+      <div class="container">
+         <div class="social-impact__head">
+            <h2 class="text-h2">Impact</h2>
+            <a href="#" class="site-btn site-btn--outline">
+               <span class="site-btn__label">Learn more</span>
+               <span class="site-btn__arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+               </span>
+            </a>
+         </div>
+         <div class="social-impact__tiles" data-counter-deferred>
+            <div class="social-impact__row social-impact__row--offset">
+               <article class="social-impact__stat">
+                  <strong class="counter" data-target="800" data-suffix="+">800+</strong>
+                  <p>students supported annually through scholarships and educational resources</p>
+               </article>
+               <article class="social-impact__stat">
+                  <strong class="counter" data-target="171">171</strong>
+                  <p>students supported in FY2024–25 through the Help a Child initiative</p>
+               </article>
+               <figure class="social-impact__photo social-impact__photo--scholarship">
+                  <img src="@Url.Content("~/Assets/images/csr/focus-education.jpg")" alt="A student receiving a scholarship award on stage" class="social-impact__img" loading="lazy">
+                  <img src="@Url.Content("~/Assets/images/social-impact/notch-left.svg")" alt="" class="social-impact__notch social-impact__notch--left">
+               </figure>
+               <article class="social-impact__stat">
+                  <strong class="counter" data-target="8">8</strong>
+                  <p>rural schools supported in FY2024-25 to modernise core infrastructure</p>
+               </article>
+               <figure class="social-impact__photo social-impact__photo--students">
+                  <img src="@Url.Content("~/Assets/images/social-impact/photo-students.jpg")" alt="Schoolchildren carrying bags on their heads along a forest path" class="social-impact__img" loading="lazy">
+                  <img src="@Url.Content("~/Assets/images/social-impact/notch-up.svg")" alt="" class="social-impact__notch social-impact__notch--up">
+               </figure>
+            </div>
+            <div class="social-impact__row">
+               <figure class="social-impact__photo social-impact__photo--tailoring">
+                  <img src="@Url.Content("~/Assets/images/csr/focus-women.jpg")" alt="Women working together at a tailoring training centre" class="social-impact__img" loading="lazy">
+                  <img src="@Url.Content("~/Assets/images/social-impact/notch-left.svg")" alt="" class="social-impact__notch social-impact__notch--left">
+               </figure>
+               <article class="social-impact__stat">
+                  <strong class="counter" data-target="15">15</strong>
+                  <p>tailoring training centres across villages</p>
+               </article>
+               <article class="social-impact__stat">
+                  <strong class="counter" data-target="371">371</strong>
+                  <p>women trained in FY2024–25</p>
+               </article>
+               <article class="social-impact__stat social-impact__stat--wide">
+                  <strong class="counter" data-target="24" data-suffix="×7">24×7</strong>
+                  <p>Occupational Health Centre for surrounding communities</p>
+               </article>
+            </div>
+         </div>
+      </div>
+   </section>
+
+
+  
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/sustainability-intro.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/odometer-counter-script.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/social-impact-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/social-impact-counter.js" asp-append-version="true"></script>
+}
+

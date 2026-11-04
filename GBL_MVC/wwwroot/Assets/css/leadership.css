@@ -1,0 +1,509 @@
+/* =========================================================
+   LEADERSHIP PAGE
+   Uses theme tokens from the main Tailwind @theme:
+   --color-primary, --color-secondary, --color-gray,
+   --color-gray-dark, --text-*, --font-uniNeue*
+========================================================= */
+
+/* ---------- Intro ---------- */
+.leadership-intro {
+  padding-block: clamp(2.5rem, 3.25vw, 3.875rem) clamp(2.5rem, 3.6vw, 4.3125rem);
+  background: var(--color-gray);
+}
+.leadership-intro__copy {
+  max-width: 1101px;
+  margin-inline: auto;
+}
+.leadership-intro__copy p {
+  margin: 0;
+  font-size: var(--text-p);
+  line-height: 1.7778;
+  color: var(--color-primary);
+}
+.leadership-intro__copy .leadership-intro__lead {
+  margin-bottom: 2rem;
+  font-size: var(--text-intro);
+  line-height: 1.4545;
+}
+
+/* ---------- Board ---------- */
+.board {
+  padding-block: clamp(2.5rem, 4.45vw, 5.3125rem);
+  background: var(--color-white);
+}
+.board__title {
+  margin: 0 0 clamp(1rem, 1.15vw, 1.375rem);
+  color: var(--color-primary);
+}
+
+/* ---------- Chairman ---------- */
+.board-chair {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 752px;
+  margin-bottom: clamp(2.5rem, 5.15vw, 6.1875rem);
+  background: #eaeaea;
+}
+.board-chair__diagonal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+.board-chair__media {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 43.55%;
+}
+/* Taller than the box for the site-wide parallax (±12%); the offset keeps it covering the box */
+.board-chair__media .parallax-img {
+  position: relative;
+  top: -16%;
+  height: 132%;
+}
+.board-chair__content {
+  box-sizing: border-box;
+  margin-left: 46.875%;
+  padding: 69px 6.46vw 82px 0;
+}
+.board-chair__name {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-h2);
+  line-height: normal;
+  color: var(--color-primary);
+}
+.board-chair__rule {
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin: 20px 0 28px;
+  background: var(--color-secondary);
+}
+.board-chair__content p {
+  margin: 0;
+  font-size: var(--text-p);
+  color: var(--color-gray-dark);
+}
+.board-chair__content .board-chair__lead {
+  margin-bottom: 1.25rem;
+  font-size: var(--text-intro);
+  line-height: 1.4545;
+}
+.board-chair__btn {
+  margin-top: 3rem;
+}
+
+/* ---------- Directors grid ---------- */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.leader-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  height: 100%;
+  background: var(--color-gray);
+  cursor: pointer;
+  --card-fill: var(--color-secondary, #67815a);
+}
+.leader-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+.leader-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--fill-top, 80%);
+  bottom: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.leader-card.is-filled::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
+}
+.leader-card__media {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  aspect-ratio: 388 / 373;
+  background: url("../images/leadership/card-bg.webp") center / cover no-repeat;
+}
+/* Grows from the bottom edge on scroll, so the cut-out stays on the card edge */
+.leader-card__photo {
+  height: 100%;
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+.leader-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.leader-card:hover .leader-card__media img {
+  transform: scale(1.04);
+}
+.leader-card__body {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  padding: 1.125rem 1.25rem 1.5rem;
+}
+.leader-card__name,
+.leader-card__role {
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.leader-card__name {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-h5);
+  line-height: normal;
+  color: var(--color-primary);
+}
+.leader-card__role {
+  margin: 0;
+  font-size: var(--text-p);
+  line-height: normal;
+  color: var(--color-gray-dark);
+}
+.leader-card.is-filled .leader-card__name,
+.leader-card.is-filled .leader-card__role {
+  color: #fff;
+}
+
+.leader-card__open {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.leader-card__open:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+/* ---------- Profile modal ---------- */
+.leader-modal {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: clamp(0.75rem, 2vh, 1.5rem) clamp(0.75rem, 2vw, 2rem);
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+}
+.leader-modal[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.leader-modal::backdrop {
+  background: transparent;
+}
+.leader-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 14, 18, 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+}
+.leader-modal__panel {
+  position: relative;
+  display: flex;
+  /* Standard 1040×600 box. 100% keeps it inside the window at 150% scale. */
+  width: min(1040px, 100%);
+  height: min(600px, 100%);
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--color-white);
+  opacity: 1;
+  /* Parked above the viewport until open */
+  transform: translate3d(0, -100vh, 0);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.leader-modal.is-open .leader-modal__backdrop {
+  opacity: 1;
+}
+.leader-modal.is-open .leader-modal__panel {
+  transform: translate3d(0, 0, 0);
+}
+.leader-modal.is-closing .leader-modal__panel {
+  transition: none;
+}
+.leader-modal.is-closing .leader-modal__content > *,
+.leader-modal.is-closing .leader-modal__photo img {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.leader-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(40, 43, 49, 0.3);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition:
+    color 0.3s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.3s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    background-color 0.3s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.leader-modal__close:hover,
+.leader-modal__close:focus-visible {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary);
+  color: var(--color-white);
+}
+.leader-modal__close svg {
+  width: 20px;
+  height: 20px;
+}
+.leader-modal__scroll {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-rows: minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+}
+.leader-modal__media {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  background: var(--color-gray);
+}
+.leader-modal__photo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: url("../images/leadership/card-bg.webp") center / cover no-repeat;
+}
+.leader-modal__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 15%;
+  transform: scale(1.08);
+  transform-origin: 50% 100%;
+  transition: transform 0.9s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.leader-modal.is-open .leader-modal__photo img {
+  transform: none;
+}
+.leader-modal__content {
+  min-height: 0;
+  padding: clamp(1.5rem, 2.4vw, 3.5rem);
+  padding-right: clamp(1.5rem, 4.5vw, 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.leader-modal__content > * {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 0.7s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.leader-modal.is-open .leader-modal__content > * {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.12s;
+}
+.leader-modal__name {
+  margin: 0 0 0.5rem;
+  padding-right: 2.5rem;
+  font-size: var(--text-h2);
+  line-height: 1.15;
+  color: var(--color-primary);
+}
+.leader-modal__role {
+  margin: 0;
+  font-size: var(--text-p);
+  line-height: normal;
+  color: var(--color-gray-dark);
+}
+.leader-modal__rule {
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin: 20px 0 28px;
+  background: var(--color-secondary);
+}
+.leader-modal__bio p {
+  margin: 0 0 1.25rem;
+  font-size: var(--text-p);
+  line-height: 1.5;
+  color: var(--color-gray-dark);
+}
+.leader-modal__bio p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1279px) {
+  .board-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .board-chair {
+    min-height: 0;
+  }
+  .board-chair__diagonal {
+    display: none;
+  }
+  .board-chair__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 836 / 700;
+  }
+  .board-chair__content {
+    margin-left: 0;
+    padding: 2rem 1.5pc 2.5rem;
+  }
+  .board-chair__btn {
+    margin-top: 1.75rem;
+  }
+  /* Photo beside the bio, sized so the portrait stays full height
+     and the text keeps a readable column */
+  .leader-modal__panel {
+    width: 100%;
+    height: min(560px, 100%);
+    max-height: 100%;
+  }
+  .leader-modal__scroll {
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) minmax(0, 3fr);
+    grid-template-rows: minmax(0, 1fr);
+    height: 100%;
+    overflow: hidden;
+  }
+  .leader-modal__media {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+  }
+  .leader-modal__photo {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    aspect-ratio: auto;
+  }
+  .leader-modal__content {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1.5rem 1.35rem 1.5rem 1.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .board-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 1rem;
+  }
+  .leader-card__body {
+    padding: 0.875rem 0.875rem 1.125rem;
+  }
+  .leader-modal__panel {
+    width: 100%;
+    height: min(92vh, 720px);
+    max-height: 92vh;
+  }
+  .leader-modal__scroll {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .leader-modal__media {
+    flex: none;
+    height: auto;
+  }
+  .leader-modal__photo {
+    position: relative;
+    inset: auto;
+    height: 75vw;
+    aspect-ratio: auto;
+  }
+  .leader-modal__content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1.25rem 1.15rem 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-chair__media .parallax-img {
+    top: 0;
+    height: 100%;
+  }
+  .leader-card__media img {
+    transition: none;
+  }
+  .leader-modal__backdrop,
+  .leader-modal__panel,
+  .leader-modal__photo img,
+  .leader-modal__content > * {
+    transition: none;
+  }
+  .leader-modal__panel,
+  .leader-modal.is-open .leader-modal__panel,
+  .leader-modal.is-closing .leader-modal__panel {
+    animation: none;
+    transform: none;
+  }
+}

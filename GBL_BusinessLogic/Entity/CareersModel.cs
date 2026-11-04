@@ -7,14 +7,16 @@ namespace GBL_BusinessLogic.Entity
         public ContentViewModel? Content { get; set; }
         public List<ComponentGroup> Components { get; set; } = new();
 
-        
         public List<ComponentModel> Learning_Development_List { get; set; } = new();
-        
+
+        // /careers/learning-and-development — new section layout
+        public List<ComponentModel> Empowering_Growth_List { get; set; } = new();
+        public List<ComponentModel> Knowledge_Sharing_List { get; set; } = new();
+        public List<ComponentModel> Expanding_Horizons_List { get; set; } = new();
+        public List<ComponentModel> Learning_Philosophy_List { get; set; } = new();
+
         public List<ComponentModel> Why_Join_Godavari_Biorefineries_List { get; set; } = new();
         public List<ComponentModel> Life_at_Godavari_List { get; set; } = new();
         public List<ComponentModel> Career_CTA_List { get; set; } = new();
-
-        
-
     }
 }

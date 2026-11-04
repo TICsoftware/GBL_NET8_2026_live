@@ -264,24 +264,6 @@ PACKAGING / APPLICATIONS
 }
 
 
-.application-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.application-list li {
-  padding: 0.85rem 0;
-  border-bottom: 1px solid rgba(40, 43, 49, 0.12);
-  font-size: var(--text-p);
-  line-height: 1.45;
-  color: var(--color-primary, #282b31);
-}
-
-.application-list li:first-child {
- padding-top: 0;
-}
-
 @media (max-width: 1179px) {
   .packaging-application {
     flex-direction: column;

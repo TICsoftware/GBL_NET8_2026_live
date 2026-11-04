@@ -27,10 +27,17 @@ namespace GBL_MVC.Routes
                     defaults: new { controller = "Career", action = "LearningDevelopment", title = "learning-and-development" }
             );
 
+            // Static design reference (same markup as careers LD; no CMS)
+            app.MapControllerRoute(
+                    name: "learning-development-design",
+                    pattern: "learningDevelopment",
+                    defaults: new { controller = "LearningDevelopment", action = "Index" }
+            );
+
             app.MapControllerRoute(
                    name: "social",
                    pattern: "sustainability/social",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "social" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/social" }
            );
     app.MapControllerRoute(
                    name: "diversity-and-inclusion",
@@ -45,18 +52,18 @@ namespace GBL_MVC.Routes
 app.MapControllerRoute(
                    name: "circular-products",
                    pattern: "sustainability/circular-products",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "circular-products" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/circular-products" }
            );
            app.MapControllerRoute(
                    name: "regenerative-processes",
                    pattern: "sustainability/regenerative-processes",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "regenerative-processes" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/regenerative-processes" }
            );
 
                    app.MapControllerRoute(
                    name: "health-and-safety",
                    pattern: "sustainability/health-and-safety",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "health-and-safety" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
            );
             app.MapControllerRoute(
                    name: "careers",

@@ -19,23 +19,82 @@ namespace GBL_BusinessLogic.BAL
         public CareersModel GetLearningDevelopment_BAL(string pagename, int languageId, int geographyId)
         {
             var model = new CareersModel();
-            var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
+            DataSet? ds = null;
 
-            // Content
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            foreach (var name in GetLearningDevelopmentPageNames(pagename))
             {
-                model.Content = MapContent(ds.Tables[0].Rows[0]);
+                ds = GetContentComponentData_DAL(name, languageId, geographyId);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    model.Content = MapContent(ds.Tables[0].Rows[0]);
+                    if ((model.Content?.ContId ?? 0) > 0)
+                    {
+                        break;
+                    }
+                }
             }
 
-            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            if (ds != null && ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
             {
                 var groupedData = GetGroupedComponents(ds.Tables[1]);
                 model.Components = groupedData;
 
+                // Legacy / shared career inside pages (social, diversity, etc.)
                 model.Learning_Development_List = MapComponents(groupedData, 1);
+
+                // New Learning & Development layout (/careers/learning-and-development)
+                // 1 Empowering Growth (intro block + cards)
+                // 2 Knowledge Sharing
+                // 3 Expanding Professional Horizons
+                // 4 Our Learning Philosophy
+                model.Empowering_Growth_List = MapComponents(groupedData, 1);
+                model.Knowledge_Sharing_List = MapComponents(groupedData, 2);
+                model.Expanding_Horizons_List = MapComponents(groupedData, 3);
+                model.Learning_Philosophy_List = MapComponents(groupedData, 4);
             }
 
             return model;
+        }
+
+        private static IEnumerable<string> GetLearningDevelopmentPageNames(string? pagename)
+        {
+            var requested = (pagename ?? "").Trim().TrimStart('/');
+            var names = new List<string>();
+
+            void Add(string? value)
+            {
+                var name = (value ?? "").Trim().TrimStart('/');
+                if (string.IsNullOrWhiteSpace(name)) return;
+                if (!names.Exists(x => x.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    names.Add(name);
+                }
+            }
+
+            Add(requested);
+
+            var last = requested.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "";
+            Add(last);
+            if (!string.IsNullOrWhiteSpace(last))
+            {
+                Add("careers/" + last);
+                Add("sustainability/" + last);
+            }
+
+            // Only for the Learning & Development page — do not bleed into wellbeing/social/etc.
+            var isLearningDevelopment = last.Equals("learning-and-development", StringComparison.OrdinalIgnoreCase)
+                || last.Equals("learning-development", StringComparison.OrdinalIgnoreCase)
+                || requested.IndexOf("learning-and-development", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (isLearningDevelopment)
+            {
+                Add("learning-and-development");
+                Add("careers/learning-and-development");
+                Add("learning-development");
+                Add("LearningDevelopment");
+            }
+
+            return names;
         }
 
 

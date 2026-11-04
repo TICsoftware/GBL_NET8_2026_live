@@ -191,7 +191,8 @@
 .milestones-track {
   display: flex;
   gap: var(--ms-gap);
-  transform: translateX(calc((var(--ms-img-w) + var(--ms-gap)) * var(--ms-index, 0) * -1));
+  /* --ms-drag: live finger/mouse offset while swiping (milestones-slider.js) */
+  transform: translateX(calc((var(--ms-img-w) + var(--ms-gap)) * var(--ms-index, 0) * -1 + var(--ms-drag, 0px)));
   transition: transform var(--ms-speed) var(--ease);
   will-change: transform;
 }
@@ -548,7 +549,7 @@
   background: linear-gradient(90deg, var(--ms-start) 0%, var(--ms-mid) 55%, var(--ms-end) 100%);
   list-style: none;
   pointer-events: none;
-  transition: width .45s ease, top .3s ease;
+  transition: width var(--ms-slide-time, .9s) var(--ms-ease-slide, ease), top .3s ease;
 }
 
 /* =========================================================
@@ -566,6 +567,21 @@
   transition-duration: var(--ms-slide-time) !important;
   transition-timing-function: var(--ms-ease-slide) !important;
   will-change: transform;
+}
+
+/* The white panel opens/closes inside the moving track, so it must share the
+   track's exact timing — otherwise the slides lurch ahead and then drift back. */
+.milestone-slide__content {
+  transition: width var(--ms-slide-time) var(--ms-ease-slide);
+}
+
+/* While swiping, the track follows the pointer 1:1 */
+.milestones.is-dragging .milestones-track {
+  transition: none !important;
+}
+.milestones.is-dragging .milestones-viewport {
+  cursor: grabbing;
+  user-select: none;
 }
 
 /* Slides fade/scale slightly as they move in and out of focus */

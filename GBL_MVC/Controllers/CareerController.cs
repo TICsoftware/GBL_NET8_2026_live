@@ -47,13 +47,38 @@ public class CareerController : Controller
     {
         try
         {
-            var data = _bal.GetLearningDevelopment_BAL(title, 1, 1);
-            return View(data);
+            var pageName = string.IsNullOrWhiteSpace(title)
+                ? "learning-and-development"
+                : title.Trim().TrimStart('/');
+
+            var data = _bal.GetLearningDevelopment_BAL(pageName, 1, 1);
+
+            var slug = pageName.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? pageName;
+
+            if (slug.Equals("learning-and-development", StringComparison.OrdinalIgnoreCase)
+                || slug.Equals("learning-development", StringComparison.OrdinalIgnoreCase))
+            {
+                return View("LearningDevelopment", data);
+            }
+
+            if (slug.Equals("wellbeing-and-benefits", StringComparison.OrdinalIgnoreCase)
+                || slug.Equals("wellbeing", StringComparison.OrdinalIgnoreCase))
+            {
+                return View("WellbeingAndBenefits", data);
+            }
+
+            if (IsSustainabilityAlternateSplitPage(slug))
+            {
+                return View("SustainabilityAlternateSplit", data);
+            }
+
+            // Other shared career inside pages keep the legacy layout.
+            return View("LearningDevelopmentLegacy", data);
         }
         catch (Exception ex)
         {
             FileLogger.LogError("/LearningDevelopment :", ex);
-            return View(new CareersModel());
+            return View("LearningDevelopmentLegacy", new CareersModel());
         }
         finally
         {
@@ -176,6 +201,15 @@ public class CareerController : Controller
                 message = "Something went wrong while submitting your enquiry."
             });
         }
+    }
+
+    private static bool IsSustainabilityAlternateSplitPage(string slug)
+    {
+        return slug.Equals("regenerative-processes", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("regenerative-process", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("health-and-safety", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("circular-products", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("social", StringComparison.OrdinalIgnoreCase);
     }
 
     private string GetClientIpAddress()

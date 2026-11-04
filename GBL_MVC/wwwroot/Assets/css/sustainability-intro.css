@@ -675,79 +675,280 @@
 
 
 
-.social-middle__copy p,
-.social-middle__note {
-  margin: 0 0 1.15rem;
-  color: var(--color-primary, #282b31);
-  font-size: var(--text-p, 1rem);
-  line-height: 1.55;
+.social-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 6rem);
+  align-items: center;
 }
 
-.social-middle__note {
-  margin-bottom: 0;
+.social-split--copy-first {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 6vw, 7.5rem);
 }
 
-.social-middle__media {
-  margin: 1.5rem 0;
-  position: relative;
+.social-split__media {
+  aspect-ratio: 1.655;
+  margin: 0;
   overflow: hidden;
-  height: 405px;
 }
 
-.social-middle__media .parallax-img {
+.social-split--copy-first .social-split__media {
+  aspect-ratio: 1.466;
+}
+
+/* Small extra height keeps the zoom low; matches data-parallax-travel="5" */
+.social-split__media .parallax-img {
   position: absolute;
+  top: -5.6%;
   left: 0;
-  top: -15%;
   width: 100%;
-  height: 130%;
-  max-height: none;
-  object-fit: cover;
-  object-position: center;
+  height: 111.2%;
+  max-width: none;
 }
 
-
-
-
-.social-middle__item + .social-middle__item {
-  margin-top: 1.75rem;
+@media (prefers-reduced-motion: reduce) {
+  .social-split__media .parallax-img {
+    top: 0;
+    height: 100%;
+  }
 }
 
-.social-middle__item h3 {
-  margin: 0 0 0.35rem;
-  color: var(--color-primary, #282b31);
-  font-weight: 700;
-}
-
-.social-middle__item p {
-  margin: 0;
-  color: var(--color-primary, #282b31);
-}
-
-.social-impact-list {
-  list-style: none;
-  margin: 0.5rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
-}
-
-.social-impact-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin: 0;
+.social-split__copy p {
+  margin: 0 0 1.5rem;
   color: var(--color-gray-dark, #565b65);
   font-size: var(--text-p, 1rem);
   line-height: 1.45;
 }
 
-.social-impact-list img {
-  width: 1.35rem;
-  height: 1.35rem;
-  margin-top: 0.15rem;
-  flex: 0 0 auto;
-  object-fit: contain;
+.social-split__copy p:last-child {
+  margin-bottom: 0;
+}
+
+.social-split__copy .text-h2 {
+  margin: 0 0 2.5rem;
+}
+
+/* Opening paragraph is the small one here; the rest step up to intro size */
+.social-belief .social-split__copy p {
+  color: var(--color-primary, #282b31);
+}
+
+.social-belief .social-split__copy p:first-child {
+  margin-bottom: 2.25rem;
+}
+
+.social-belief .social-split__copy p:not(:first-child),
+.social-difference .social-split__copy p {
+  font-size: var(--text-p, 1.375rem);
+}
+
+.social-belief.section-spacing {
+  padding-bottom: 0;
+}
+
+.social-principles.section-spacing {
+  padding-top: clamp(2rem, 3.4vw, 4rem);
+}
+
+.social-difference {
+  background: var(--color-gray, #f4f4f4);
+}
+
+.social-principles__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.social-principles__card {
+  min-height: 11.25rem;
+  margin: 0;
+  padding: 1.5rem 2.5rem 1.75rem;
+  background: var(--color-gray, #f4f4f4);
+}
+
+.social-principles__card h3 {
+  margin: 0 0 0.75rem;
+  color: var(--color-primary, #282b31);
+}
+
+.social-principles__card p {
+  margin: 0;
+  color: var(--color-gray-dark, #565b65);
+  font-size: var(--text-p, 1rem);
+  line-height: 1.5;
+}
+
+
+
+/* Tiles slide in sideways (social-impact-animation.js); keep that off the page width */
+.social-impact {
+  overflow-x: clip;
+}
+
+.social-impact__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.social-impact__head .text-h2 {
+  margin: 0;
+}
+
+/* Two staggered rows; widths are the design's tile sizes out of its 1672px row */
+.social-impact__row {
+  display: flex;
+  align-items: stretch;
+}
+
+.social-impact__row--offset {
+  margin-left: 7.177%;
+}
+
+.social-impact__stat,
+.social-impact__photo {
+  flex: 0 0 15.79%;
+  min-width: 0;
+  margin: 0;
+  min-height: 16.375rem;
+}
+
+.social-impact__stat {
+  padding: clamp(1.5rem, 3.7vw, 4.4375rem) clamp(0.875rem, 1.4vw, 1.6875rem) 1.25rem;
+  background: var(--color-white, #fff);
+  border: 1px solid rgba(86, 91, 101, 0.18);
+}
+
+.social-impact__stat strong {
+  display: block;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-uniNeueBold);
+  font-size: clamp(1.375rem, 1rem + 1.05vw, 1.875rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-primary, #282b31);
+}
+
+.social-impact__stat .counter-odometer {
+  display: inline-flex;
+  align-items: flex-end;
+  line-height: 1;
+}
+
+.social-impact__stat .counter-suffix {
+  margin-left: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1;
+  color: inherit;
+}
+
+.social-impact__stat p {
+  margin: 0;
+  color: var(--color-gray-dark, #565b65);
+  font-size: var(--text-p, 1rem);
+  line-height: 1.25;
+}
+
+.social-impact__photo {
+  position: relative;
+  overflow: hidden;
+}
+
+.social-impact__photo--students {
+  flex-basis: 28.11%;
+}
+
+.social-impact__photo--tailoring {
+  flex-basis: 43.66%;
+}
+
+.social-impact__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* The design's tighter crop of this photo */
+.social-impact__photo--students .social-impact__img {
+  object-position: 100% 50%;
+  transform: scale(1.2512);
+  transform-origin: 60% 75.5%;
+}
+
+/* The offset row is narrower, so its percentages are scaled up to keep the same tile sizes */
+.social-impact__row--offset > .social-impact__stat,
+.social-impact__row--offset > .social-impact__photo {
+  flex-basis: 17.01%;
+}
+
+.social-impact__row--offset > .social-impact__photo--students {
+  flex-basis: 30.28%;
+}
+
+.social-impact__notch {
+  position: absolute;
+  z-index: 1;
+}
+
+.social-impact__notch--left {
+  top: 71%;
+  right: 0;
+  width: 22px;
+  height: 36px;
+}
+
+.social-impact__notch--up {
+  bottom: 0;
+  left: 51.2%;
+  width: 36px;
+  height: 20px;
+}
+
+@media (max-width: 991px) {
+  .social-split,
+  .social-split--copy-first,
+  .social-principles__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* The stagger needs width: fall back to a two-column grid without notches */
+  .social-impact__tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .social-impact__row,
+  .social-impact__row--offset {
+    display: contents;
+  }
+
+  .social-impact__stat,
+  .social-impact__photo {
+    min-height: 13rem;
+  }
+
+  .social-impact__photo--scholarship,
+  .social-impact__photo--tailoring,
+  .social-impact__stat--wide {
+    grid-column: 1 / -1;
+  }
+
+  .social-impact__stat--wide {
+    min-height: 0;
+  }
+
+  .social-impact__notch {
+    display: none;
+  }
 }
 
 /* Awards, Certifications & Reports */

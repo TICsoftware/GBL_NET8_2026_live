@@ -1,0 +1,170 @@
+/* =========================================================
+   BUSINESS LANDING PAGE
+   Uses theme tokens from the main Tailwind @theme:
+   --color-primary, --color-gray, --color-gray-dark,
+   --text-*, --ease
+========================================================= */
+
+.business-banner-text {
+  max-width: 1160px;
+}
+
+/* ---------- Shared ---------- */
+.business-section {
+  padding-block: clamp(3.5rem, 6.25vw, 7.5rem);
+}
+.business-section--white {
+  background: var(--color-white, #fff);
+}
+.business-section--gray {
+  background: var(--color-gray);
+}
+.business-section--dark {
+  background: #101e2b;
+  color: var(--color-white, #fff);
+}
+
+.business-title {
+  max-width: 776px;
+  margin: 0 0 1.5rem;
+  color: var(--color-primary);
+}
+.business-title--chemicals {
+  max-width: 703px;
+}
+.business-title--biofuels {
+  max-width: 588px;
+}
+.business-section--dark .business-title {
+  color: var(--color-white, #fff);
+}
+
+.business-body {
+  max-width: 776px;
+}
+.business-body p {
+  margin: 0;
+  font-size: var(--text-p);
+}
+.business-body p + p {
+  margin-top: 1.25rem;
+}
+.business-body--muted p {
+  color: var(--color-gray-dark);
+}
+.business-body--muted .business-body__lead {
+  color: var(--color-primary);
+}
+
+.business-btn {
+  margin-top: 1.5rem;
+}
+
+/* ---------- Intro ---------- */
+.business-intro {
+  padding-block: clamp(2.5rem, 5.2vw, 6.25rem) clamp(3rem, 6.25vw, 7.5rem);
+  background: var(--color-gray);
+}
+.business-intro__lead {
+  max-width: 1113px;
+  margin: 0 auto;
+  font-size: var(--text-intro);
+  line-height: 1.4545;
+  color: var(--color-primary);
+}
+
+/* ---------- Split rows ---------- */
+.business-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem;
+  align-items: start;
+}
+.business-split--center {
+  align-items: center;
+}
+.business-split__copy {
+  min-width: 0;
+}
+
+/* Media boxes keep the design's frame ratios (816px column) */
+.business-media--chemicals {
+  aspect-ratio: 816 / 680;
+}
+.business-media--wide {
+  aspect-ratio: 816 / 363;
+}
+.business-media--small {
+  aspect-ratio: 398 / 260;
+}
+.business-media--sugar {
+  aspect-ratio: 816 / 377;
+}
+.business-media--sugar-small {
+  aspect-ratio: 398 / 269;
+}
+.business-media--jivana {
+  aspect-ratio: 816 / 700;
+}
+.business-media--jivana img {
+  object-position: 72% 50%;
+}
+
+.business-collage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.business-collage__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+/* Soft parallax: a little taller than its box, moved by business.js */
+.business-parallax {
+  position: relative;
+  overflow: hidden;
+}
+.business-parallax img {
+  position: absolute;
+  top: -5%;
+  left: 0;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 110%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1023px) {
+  .business-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  /* Image first on every stacked row, whichever side it sits on at desktop */
+  .business-split__media {
+    order: -1;
+  }
+  .business-title,
+  .business-body {
+    max-width: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .business-collage,
+  .business-collage__row {
+    gap: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-parallax img {
+    top: 0;
+    height: 100%;
+    will-change: auto;
+  }
+}

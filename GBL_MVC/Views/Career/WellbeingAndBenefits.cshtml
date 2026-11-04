@@ -1,0 +1,203 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.CareersModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Wellbeing and Benefits";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+    var sections = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+    var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
+}
+
+@section head {
+    <title>@(content?.cont_window_title)</title>
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/learning-development.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/wellbeing-benefits.css" asp-append-version="true" />
+}
+
+@if (content != null && content.ContId > 0)
+{
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", content)
+}
+
+@if (!string.IsNullOrWhiteSpace(pageIntro))
+{
+    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+        <div class="container">
+            <div class="page-intro-inner intro-lg text-center">
+                @Html.Raw(pageIntro)
+            </div>
+        </div>
+    </section>
+}
+else if (!string.IsNullOrWhiteSpace(content?.Content))
+{
+    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+        <div class="container">
+            <div class="page-intro-inner intro-lg text-center">
+                @Html.Raw(content.Content)
+            </div>
+        </div>
+    </section>
+}
+
+@if (sections.Count > 0)
+{
+    @for (var i = 0; i < sections.Count; i++)
+    {
+        var item = sections[i];
+        var imageLeft = i % 2 == 0;
+        var image = FirstPath(item.ThumbnailImage, item.ComponentThumbnail, item.Component_LHS_thumbnail);
+        var imageAlt = FirstText(item.ThumbnailAltText, item.ComponentThumbnailAltText, item.Title);
+        var lead = item.Intro;
+        var body = item.Content;
+        var hasListBody = !string.IsNullOrWhiteSpace(body)
+            && body.IndexOf("<ul", StringComparison.OrdinalIgnoreCase) >= 0;
+
+        if (imageLeft)
+        {
+            @* LD Knowledge pattern: image left, white text card right *@
+            <section class="ld-knowledge wb-split-section section-spacing">
+                <div class="container">
+                    <div class="ld-split">
+                        <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
+                            @if (!string.IsNullOrWhiteSpace(image))
+                            {
+                                <img src="@image" alt="@imageAlt" class="parallax-img">
+                            }
+                        </figure>
+                        <div class="ld-split__copy ld-split__copy--white">
+                            @if (!string.IsNullOrWhiteSpace(item.Title))
+                            {
+                                <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(lead))
+                            {
+                                <p>@Html.Raw(lead.CleanParagraphTags())</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(body))
+                            {
+                                @Html.Raw(body)
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.Url))
+                            {
+                                <a href="@item.Url" class="site-btn site-btn--outline">
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+        else if (hasListBody || !string.IsNullOrWhiteSpace(lead))
+        {
+            @* LD Horizons pattern: title/intro head, image left, gray content card right *@
+            <section class="ld-horizons wb-split-section section-spacing">
+                <div class="container">
+                    <div class="ld-head">
+                        @if (!string.IsNullOrWhiteSpace(item.Title))
+                        {
+                            <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
+                        }
+                        else
+                        {
+                            <div></div>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(lead))
+                        {
+                            <p>@Html.Raw(lead.CleanParagraphTags())</p>
+                        }
+                    </div>
+                    <div class="ld-split">
+                        <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
+                            @if (!string.IsNullOrWhiteSpace(image))
+                            {
+                                <img src="@image" alt="@imageAlt" class="parallax-img">
+                            }
+                        </figure>
+                        <div class="ld-split__copy ld-split__copy--gray">
+                            @if (!string.IsNullOrWhiteSpace(body))
+                            {
+                                @Html.Raw(body)
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+        else
+        {
+            @* LD Philosophy pattern: gray copy left, image right *@
+            <section class="ld-philosophy wb-split-section section-spacing">
+                <div class="container">
+                    <div class="ld-split ld-split--copy-first">
+                        <div class="ld-split__copy ld-split__copy--gray">
+                            @if (!string.IsNullOrWhiteSpace(item.Title))
+                            {
+                                <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(lead))
+                            {
+                                <p>@Html.Raw(lead.CleanParagraphTags())</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(body))
+                            {
+                                @Html.Raw(body)
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.Url))
+                            {
+                                <a href="@item.Url" class="site-btn site-btn--outline">
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                        <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
+                            @if (!string.IsNullOrWhiteSpace(image))
+                            {
+                                <img src="@image" alt="@imageAlt" class="parallax-img">
+                            }
+                        </figure>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+}
+
+@functions {
+    private static string FirstText(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value)) return value;
+        }
+        return "";
+    }
+
+    private static string FirstPath(params string?[] values) => FirstText(values);
+}
