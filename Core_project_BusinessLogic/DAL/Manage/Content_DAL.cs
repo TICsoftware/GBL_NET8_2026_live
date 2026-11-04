@@ -641,7 +641,7 @@ public class Content_DAL : DBHelper
         DataTable dt = new();
         try
         {
-            dt = GetDataSet("Set_publish_content", "@cont_id", cont_id.ToString(), "@user_id", user_id.ToString()).Tables[0];
+            dt = GetDataSet("Set_publish_content", "@cont_id", cont_id.ToString(), "@userid", user_id.ToString()).Tables[0];
             return dt;
         }
         catch
