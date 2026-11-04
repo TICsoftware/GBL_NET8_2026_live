@@ -1576,6 +1576,13 @@
   .align-top {
     vertical-align: top;
   }
+  .font-uniNeueBold {
+    font-family: var(--font-uniNeueBold);
+  }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
   .text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
@@ -1595,6 +1602,9 @@
   }
   .text-h5 {
     font-size: var(--text-h5);
+  }
+  .text-p {
+    font-size: var(--text-p);
   }
   .text-small {
     font-size: var(--text-small);
@@ -1936,6 +1946,11 @@
   .lg\:mt-\[153px\] {
     @media (width >= 64rem) {
       margin-top: 153px;
+    }
+  }
+  .lg\:block {
+    @media (width >= 64rem) {
+      display: block;
     }
   }
   .lg\:grid {
