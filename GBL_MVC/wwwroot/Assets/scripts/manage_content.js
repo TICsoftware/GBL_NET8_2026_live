@@ -821,6 +821,20 @@ window.Load_Edit_context_details = function (isrefresh, _templateid, _language_i
         );
     });
 
+    
+     $(document).on("change", "#formchkallart", function () {
+        $("#divDisplayArticles .formchkart").prop("checked", this.checked);
+    });
+
+    $(document).on("change", "#divDisplayArticles .formchkart", function () {
+        var $boxes = $("#divDisplayArticles .formchkart");
+        $("#formchkallart").prop(
+            "checked",
+            $boxes.length > 0 && $boxes.length === $boxes.filter(":checked").length
+        );
+    });
+
+
     $(document).on("click", "#btnactivate, #btndeactivate", function (e) {
         e.preventDefault();
         var $btn = $(this);

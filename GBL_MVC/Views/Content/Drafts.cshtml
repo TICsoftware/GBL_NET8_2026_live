@@ -113,7 +113,7 @@
                             <input type="submit" class="btn btn-primary mb-3" value="Search" /> 
                         </div>
                     </div>
-                    <div class="row">
+                    <div id="divDisplaySections"  class="row">
                         <h2>Sections</h2>  
                           <input type="hidden" id="page_no_sect" name="page_no_sect" value="" />              
                             @if (Model.sections_list != null)
@@ -122,7 +122,7 @@
                                 <table class="table table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th></th>
+                                            <th><input type="checkbox"  id="formchkall" /></th>
                                             <th>Title</th>
                                             <th>Parent title</th>
                                             <th>Language</th>
@@ -178,7 +178,7 @@
                                 </p>
                             }
                     </div>
-                    <div class="row">
+                    <div id="divDisplayArticles"   class="row">
                         <h2>Articles</h2>    
                          <input type="hidden" id="page_no_art" name="page_no_art" value="" />            
                         @if (Model.articles_list != null)
@@ -186,6 +186,7 @@
                             <table class="table table-bordered">
                                 <thead class="table-dark">
                                     <tr>
+                                        <th><input type="checkbox"  id="formchkallart" /></th>
                                         <th>Title</th>
                                         <th>Parent title</th>
                                         <th>Language</th>
@@ -202,6 +203,7 @@
                                     {
                                         encrypt_cont_id=Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString());
                                         <tr class="js-pagination-article-item">
+                                            <td><input type="checkbox" value="@encrypt_cont_id" name="formchkart" /> </td> 
                                             <td>@item.Title</td>
                                             <td>@item.Parent_title</td>
                                             <td>@(item.Language)</td>
