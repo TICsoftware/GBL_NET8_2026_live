@@ -17,6 +17,10 @@
     2  What's New: press-release / media-coverage tagged to this section
     3  Corporate-governance children (Policies, Code of Conduct, Committees)
     4  Investor Contact components (context_details of the 'investors contact' child, e.g. cont_id = 476)
+    5  Shareholder Information subsections
+         SELECT * FROM content WHERE cont_id = 478
+         SELECT * FROM content WHERE cont_parent_id = 478
+         SELECT * FROM content WHERE cont_parent_id = 120
 
   Example:
     EXEC dbo.Get_Investor_Relations_Home
@@ -29,9 +33,10 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.Get_Investor_Relations_Home
 (
-    @ContentId      INT,
-    @PressParentId  INT = 3,
-    @MediaParentId  INT = 7
+    @ContentId                 INT,
+    @PressParentId             INT = 3,
+    @MediaParentId             INT = 7,
+    @ShareholderExtraParentId  INT = 120
 )
 AS
 BEGIN
@@ -81,6 +86,32 @@ BEGIN
             ISNULL(c.cont_sequence, 999999),
             c.cont_id
     );
+
+    DECLARE @ShareholderId INT =
+    (
+        SELECT TOP 1 c.cont_id
+        FROM content c
+        WHERE
+            c.cont_status = 2
+            AND (
+                c.cont_id = 478
+                OR (
+                    c.cont_parent_id = @ContentId
+                    AND (
+                        LOWER(REPLACE(ISNULL(c.cont_pagename, N''), N' ', N'')) LIKE N'%shareholder%information%'
+                        OR LOWER(REPLACE(ISNULL(c.cont_title, N''), N' ', N'')) LIKE N'%shareholder%information%'
+                        OR LOWER(REPLACE(ISNULL(c.cont_hmpg_title, N''), N' ', N'')) LIKE N'%shareholder%information%'
+                    )
+                )
+            )
+        ORDER BY
+            CASE WHEN c.cont_id = 478 THEN 0 WHEN c.cont_parent_id = @ContentId THEN 1 ELSE 2 END,
+            ISNULL(c.cont_sequence, 999999),
+            c.cont_id
+    );
+
+    IF @ShareholderExtraParentId IS NULL OR @ShareholderExtraParentId < 1
+        SET @ShareholderExtraParentId = 120;
 
     /* ==========================================
        0. Section children of investor-relations
@@ -350,5 +381,58 @@ BEGIN
         @ContactId IS NOT NULL
         AND cd.cont_id = @ContactId
         AND cd.context_group_id IS NOT NULL;
+
+    /* ==========================================
+       5. Shareholder Information subsections
+          SELECT * FROM content WHERE cont_parent_id = 478
+          SELECT * FROM content WHERE cont_parent_id = 120
+       ========================================== */
+    SELECT
+        c.cont_id,
+        c.cont_parent_id,
+        c.cont_title,
+        c.cont_hmpg_title,
+        c.cont_pagename,
+        c.language_master_id,
+        c.Geography_ID,
+        c.cont_intro,
+        c.cont_hmpg_intro,
+        c.content,
+        c.cont_displaydate,
+        c.content_type_ID,
+        c.Masthead_image_Media_id,
+        m1.file_path AS masthead_image_path,
+        c.Masthead_alt_text,
+        c.Mobile_Masthead_image_Media_id,
+        m2.file_path AS mobile_masthead_image_path,
+        c.Template_Master_ID,
+        c.Hmpg_thumbnail_Media_id,
+        m3.file_path AS Hmpg_thumbnail,
+        c.Hmpg_thumbnail_alt_text,
+        dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
+        c.cont_external_url,
+        CAST(NULL AS NVARCHAR(MAX)) AS MediafilePath,
+        c.cont_sequence,
+        c.tag_master_selected_id,
+        CAST(NULL AS NVARCHAR(MAX)) AS TagNames,
+        c.Cont_Publication,
+        c.cont_search_url
+    FROM content c
+    LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
+    LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
+    LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+    WHERE
+        c.cont_status = 2
+        AND (
+            (@ShareholderId IS NOT NULL AND c.cont_parent_id = @ShareholderId)
+            OR c.cont_parent_id = @ShareholderExtraParentId
+        )
+        AND c.cont_id <> ISNULL(@ShareholderId, 0)
+        AND c.cont_id <> @ShareholderExtraParentId
+        AND LOWER(REPLACE(ISNULL(c.cont_title, N''), N' ', N'')) NOT LIKE N'%investor%contact%'
+        AND LOWER(REPLACE(ISNULL(c.cont_pagename, N''), N' ', N'')) NOT LIKE N'%investor%contact%'
+    ORDER BY
+        ISNULL(c.cont_sequence, 999999),
+        c.cont_id;
 END
 GO

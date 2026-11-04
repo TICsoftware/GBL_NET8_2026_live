@@ -83,9 +83,9 @@ namespace GBL_BusinessLogic.BAL
                 ? Config_Application_Website.MapArticleList(homeDs.Tables[3])
                 : new List<ArticleModel>();
 
-            BindShareholderImage(model);
+            BindShareholderImage(model, sections);
             BindGovernanceBackground(model, sections);
-            model.ShareholderLinks = BuildShareholderLinks(sections);
+            model.ShareholderLinks = BuildShareholderLinks(sections, nested, homeDs);
             model.GovernanceLinks = BuildGovernanceLinks(cgChildren, sections, nested);
 
             MapAnnualReport(model, sections, nested);
@@ -320,15 +320,18 @@ namespace GBL_BusinessLogic.BAL
             }
         }
 
-        private static void BindShareholderImage(InvestorRelationsModel model)
+        private static void BindShareholderImage(InvestorRelationsModel model, List<ArticleModel> sections)
         {
+            var section = FindShareholderSection(sections);
             model.ShareholderImage = FirstNonEmpty(
-                model.Content?.Hmpg_thumbnail,
-                model.Content?.BackgroundImage,
+                section?.ThumbnailImage,
+                section?.BackgroundImage,
+                section?.MastheadImage,
                 DefaultShareholderImage);
             model.ShareholderImageAlt = FirstNonEmpty(
-                model.Content?.Hmpg_thumbnail_alt_text,
-                model.Content?.Background_image_Alt_text,
+                section?.ThumbnailAltText,
+                section?.BackgroundAltText,
+                section?.MastheadAltText,
                 "Shareholders reviewing company documents together");
         }
 
@@ -412,23 +415,81 @@ namespace GBL_BusinessLogic.BAL
             }
         }
 
-        private static List<InvestorLinkModel> BuildShareholderLinks(List<ArticleModel> sections)
+        private static List<InvestorLinkModel> BuildShareholderLinks(
+            List<ArticleModel> sections,
+            List<ArticleModel> nested,
+            DataSet? homeDs)
         {
-            var links = new List<InvestorLinkModel>();
-            foreach (var item in ShareholderOrder)
+            var children = new List<ArticleModel>();
+            if (homeDs != null && homeDs.Tables.Count > 5 && homeDs.Tables[5].Rows.Count > 0)
             {
-                var match = sections.FirstOrDefault(s => MatchesSection(s, item.Slugs, item.Display));
-                if (match == null) continue;
-
-                links.Add(new InvestorLinkModel
-                {
-                    Title = FirstNonEmpty(match.Title, item.Display),
-                    Url = item.Url,
-                    UrlTarget = "_self"
-                });
+                children = Config_Application_Website.MapArticleList(homeDs.Tables[5]);
             }
 
-            return links;
+            if (children.Count == 0)
+            {
+                var section = FindShareholderSection(sections);
+                children = nested
+                    .Where(a =>
+                        (section != null && a.ContParentId == section.ContId)
+                        || a.ContParentId == 120
+                        || a.ContParentId == 478)
+                    .ToList();
+            }
+
+            return children
+                .Where(a => !string.IsNullOrWhiteSpace(a.Title) && !IsInvestorContact(a))
+                .GroupBy(a => a.ContId)
+                .Select(g => g.First())
+                .OrderBy(a => a.Sequence)
+                .ThenBy(a => a.Title, StringComparer.OrdinalIgnoreCase)
+                .Select(a => new InvestorLinkModel
+                {
+                    Title = a.Title ?? "",
+                    Url = ShareholderSectionUrl(a),
+                    UrlTarget = "_self"
+                })
+                .ToList();
+        }
+
+        private static ArticleModel? FindShareholderSection(List<ArticleModel> sections)
+        {
+            return FindSection(sections,
+                "shareholder-information",
+                "shareholding-information",
+                "shareholderinformation",
+                "shareholdinginformation");
+        }
+
+        private static bool IsInvestorContact(ArticleModel item)
+        {
+            var hay = ((item.PageName ?? "") + " " + (item.Title ?? "")).Replace(" ", "").Replace("-", "");
+            return hay.IndexOf("investorcontact", StringComparison.OrdinalIgnoreCase) >= 0
+                || hay.IndexOf("investorscontact", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static string ShareholderSectionUrl(ArticleModel item)
+        {
+            var slug = LastSegment(item.PageName);
+            var known = ShareholderOrder.FirstOrDefault(x =>
+                x.Slugs.Any(s => slug.Equals(s, StringComparison.OrdinalIgnoreCase)
+                    || MatchesSection(item, x.Slugs, x.Display)));
+            if (!string.IsNullOrWhiteSpace(known.Url))
+            {
+                return known.Url;
+            }
+
+            var url = item.Url ?? "";
+            if (!string.IsNullOrWhiteSpace(url)
+                && !url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                && url.IndexOf("/uploads/", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                return url.StartsWith("/") || url.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ? url
+                    : "/" + url.TrimStart('/');
+            }
+
+            return string.IsNullOrWhiteSpace(slug) ? "#" : "/investor-relations/" + slug;
         }
 
         private static List<InvestorLinkModel> BuildGovernanceLinks(
