@@ -763,16 +763,53 @@ public class ContentController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Drafts(string page_no, CMS_pages Model, IFormCollection form, string action)
-    {
+    public IActionResult Drafts(string page_no, CMS_pages Model, IFormCollection form, string Command)
+      {
         if (TempData["alert_message"] != null)
         {
             ViewBag.alert_message = TempData["alert_message"];
         }
-
+        int cont_id = 0, status = 0;
+        string alert_msg = "", title = "";
         using ContentManager objBal = new(objconfig);
         try
         {
+            if (Command == "Publish")
+            {
+                var selectedValues = form["formchk"];
+
+                foreach (var value in selectedValues)
+                {
+                    title = "";
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        cont_id = Convert.ToInt32(CryptoEngine.Decrypt(value));
+                        status = objBal.Publish_Content_BAL(cont_id, 2, out title);
+                        if (status == 0)
+                        {
+                            alert_msg = alert_msg + "Pagename given for '" + title + "' is already exists with inactive status.\n";
+                        }
+                        if (status == 1)
+                        {
+                            alert_msg = alert_msg + "Pagename given for '" + title + "' is already exists.\n";
+                        }
+                        else
+                        {
+                            alert_msg = alert_msg + title + "' is published succeessfully.\n";
+                        }
+
+                    }
+                }
+                if (String.IsNullOrWhiteSpace(alert_msg))
+                {
+                    ViewBag.alert_message = "Selected content(s) are published succeessfully";
+                }
+                else
+                {
+                    ViewBag.alert_message = alert_msg;
+                }
+
+            }
             Drafts_load(Model, objBal);
         }
         catch (Exception ex)
