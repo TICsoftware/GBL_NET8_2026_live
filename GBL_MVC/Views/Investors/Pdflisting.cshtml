@@ -13,6 +13,7 @@
     {
         selectedYearKey = fyStart + "-" + (fyStart + 1);
     }
+    var sectionTitle = content?.ContTitle ?? "Documents";
 }
 
 @section head {
@@ -52,32 +53,33 @@
     @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
 
-@if (years.Count > 0)
-{
-    <div class="fh-year-filter cg-year-filter">
-        <div class="container">
-            <label class="fh-year-filter__label" for="investor-year">Filter by year</label>
-            <div class="cselect">
-                <select id="investor-year" name="year" class="cselect-native" data-investor-year>
-                    @foreach (var year in years)
-                    {
-                        if (year.Value == selectedYear)
-                        {
-                            <option value="@year.Value" selected>@year.Text</option>
-                        }
-                        else
-                        {
-                            <option value="@year.Value">@year.Text</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
-    </div>
-}
-
 <section class="cg-docs section-spacing">
     <div class="container">
+        <div class="cg-docs__head">
+            <h2 class="text-h2 title-animation">@sectionTitle</h2>
+            @if (years.Count > 0)
+            {
+                <div class="cg-year-filter">
+                    <label class="fh-year-filter__label" for="investor-year">Filter by year</label>
+                    <div class="cselect">
+                        <select id="investor-year" name="year" class="cselect-native" data-investor-year>
+                            @foreach (var year in years)
+                            {
+                                if (year.Value == selectedYear)
+                                {
+                                    <option value="@year.Value" selected>@year.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@year.Value">@year.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+        </div>
+
         <p class="fh-year-filter__empty" data-investor-empty @(totalCount == 0 ? null : "hidden")>No documents found.</p>
 
         @{

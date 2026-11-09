@@ -17,7 +17,10 @@ namespace Core_project_BusinessLogic.BAL
 
         public Industry_Public_Page GetIndex(string pageName, int languageId, Industry_Public_Filter filter)
         {
-            var page = _dal.GetIndex(NormalizePageName(pageName), languageId, filter ?? new Industry_Public_Filter());
+            // Filter dropdowns (Industry / Application / Category) are bound for redirect to /products.
+            // Industry cards remain an unfiltered portfolio listing unless explicit ids are passed.
+            filter ??= new Industry_Public_Filter();
+            var page = _dal.GetIndex(NormalizePageName(pageName), languageId, filter);
             foreach (var item in page.Industries)
                 item.Intro = ToPlainText(item.Intro);
             return page;

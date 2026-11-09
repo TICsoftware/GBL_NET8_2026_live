@@ -132,7 +132,8 @@ namespace GBL_BusinessLogic.BAL
         /// <summary>
         /// /sustainability/governance — banner + child subsections as PDF lists
         /// (default: Key Governance Policies / key-governance-policies).
-        /// Uses the same child/PDF SPs as investor corporate-governance.
+        /// No year dropdown. PDFs come from Get_Sustainability_Governance_Articles_List
+        /// (not Get_Investor_Pdf_Articles_List used by investor pages).
         /// </summary>
         public SustainabilityModel GetGovernance_BAL(string pagename, int languageId, int geographyId)
         {
@@ -146,7 +147,41 @@ namespace GBL_BusinessLogic.BAL
 
             model.Content = cg.Content;
             model.Sections = cg.Sections ?? new List<GovernanceSectionModel>();
+
+            foreach (var section in model.Sections)
+            {
+                section.ShowYearFilter = false;
+                section.SelectedYear = "";
+                section.Years = new List<DropdownModel>();
+                section.Articles = LoadGovernanceArticlesByDateDesc(section.ContId);
+            }
+
             return model;
+        }
+
+        private List<ArticleModel> LoadGovernanceArticlesByDateDesc(int contentId)
+        {
+            if (contentId <= 0)
+                return new List<ArticleModel>();
+
+            try
+            {
+                var ds = Get_Sustainability_Governance_Articles_DAL(
+                    contentId,
+                    1,
+                    CorporateGovernance_BAL.PdfPageSize);
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    return Config_Application_Website.MapArticleList(ds.Tables[0]);
+                }
+            }
+            catch
+            {
+                // SP may not be deployed yet for this environment.
+            }
+
+            return new List<ArticleModel>();
         }
 
     }

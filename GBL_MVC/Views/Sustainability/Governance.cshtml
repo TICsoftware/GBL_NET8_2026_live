@@ -84,11 +84,7 @@
             var tab = sections[i];
             var muted = i % 2 == 1;
             var titleId = tab.Anchor + "-title";
-            var matchingCount = tab.Articles.Count(a =>
-            {
-                if (!tab.ShowYearFilter || string.IsNullOrWhiteSpace(tab.SelectedYear)) return true;
-                return CorporateGovernance_BAL.FinancialYearKey(a) == tab.SelectedYear;
-            });
+            var matchingCount = tab.Articles.Count;
 
             <section class="cg-docs@(muted ? " cg-docs--muted" : "") section-spacing"
                      id="@tab.Anchor"
@@ -97,44 +93,16 @@
                     <h2 id="@titleId" class="text-h2 title-animation">@tab.Title</h2>
                 </div>
 
-                @if (tab.ShowYearFilter)
-                {
-                    <div class="fh-year-filter cg-year-filter">
-                        <div class="container">
-                            <label class="fh-year-filter__label" for="cg-year-@tab.Anchor">Filter by year</label>
-                            <div class="cselect">
-                                <select id="cg-year-@tab.Anchor"
-                                        name="year"
-                                        class="cselect-native"
-                                        data-cg-year
-                                        data-cg-year-target="#@tab.Anchor">
-                                    @foreach (var year in tab.Years)
-                                    {
-                                        if (year.Value == tab.SelectedYear)
-                                        {
-                                            <option value="@year.Value" selected>@year.Text</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@year.Value">@year.Text</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                }
-
                 <div class="container">
                     <p class="fh-year-filter__empty" data-cg-empty @(tab.Articles.Count == 0 ? null : "hidden")>No documents found.</p>
                     @{
                         ViewData["PdfVisibleCount"] = pageSize;
-                        ViewData["PdfYear"] = tab.ShowYearFilter ? tab.SelectedYear : null;
+                        ViewData["PdfYear"] = null;
                     }
                     <ul class="cg-docs__grid card-list-items"
                         data-cg-docs-grid
                         data-page-size="@pageSize"
-                        data-cg-year-value="@(tab.ShowYearFilter ? tab.SelectedYear : "")">
+                        data-cg-year-value="">
                         @await Html.PartialAsync("~/Views/Investors/_investor_pdf_list.cshtml", tab.Articles)
                     </ul>
                     @{

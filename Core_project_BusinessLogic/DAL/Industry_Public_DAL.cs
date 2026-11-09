@@ -14,15 +14,24 @@ namespace Core_project_BusinessLogic.DAL
 
         public Industry_Public_Page GetIndex(string pageName, int languageId, Industry_Public_Filter filter)
         {
-            SqlParameter[] p = BuildFilterParams(pageName, languageId, filter);
-            DataSet ds = GetDataSet("Industry_Public_GetIndex", p);
-            var page = new Industry_Public_Page
+            // Always load the full industry portfolio for /industries.
+            // Industry/Application/Category dropdown values redirect to /products with matching query params.
+            filter ??= new Industry_Public_Filter();
+            var listFilter = new Industry_Public_Filter
             {
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize,
-                IndustryId = filter.IndustryId,
-                ApplicationId = filter.ApplicationId,
-                CategoryId = filter.CategoryId
+                LanguageId = filter.LanguageId
+            };
+            SqlParameter[] p = BuildFilterParams(pageName, languageId, listFilter);
+            DataSet ds = GetDataSet("Industry_Public_GetIndex", p);
+            var page = new Industry_Public_Page
+            {
+                PageNumber = listFilter.PageNumber,
+                PageSize = listFilter.PageSize,
+                IndustryId = null,
+                ApplicationId = null,
+                CategoryId = null
             };
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
