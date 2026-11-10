@@ -7,6 +7,7 @@ namespace GBL_BusinessLogic.Entity
 {
     public class ComponentModel
     {
+        public int cont_id{get;set;}
         public string GroupId { get; set; }
 
         public string Title { get; set; }
