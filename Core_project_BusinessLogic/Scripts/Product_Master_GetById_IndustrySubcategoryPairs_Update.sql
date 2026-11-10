@@ -1,5 +1,5 @@
 -- Updated SP only: Product_Master_GetById
--- Adds industry + subcategory pair result set for Product Master grid load.
+-- Loads new pairs (IndustryId set) and legacy pairs (IndustryId NULL).
 CREATE OR ALTER PROCEDURE dbo.Product_Master_GetById
     @ID INT
 AS
@@ -69,20 +69,44 @@ BEGIN
     WHERE m.ProductId = @ID
     ORDER BY m.DisplayOrder, m.product_certificate_MappingID;
 
-    SELECT DISTINCT
-        ism.IndustryId,
+    SELECT
+        psm.IndustryId,
         im.IndustryName,
         psm.Category_Master_Id AS SubcategoryId,
         c.SubcategoryName
     FROM dbo.product_subcategory_Mapping psm
-    INNER JOIN dbo.Industry_Subcategory_Mapping ism
-        ON ism.Category_Master_Id = psm.Category_Master_Id
-    INNER JOIN dbo.product_Industry_Mapping pim
-        ON pim.ProductId = psm.ProductId
-       AND pim.IndustryId = ism.IndustryId
-    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = ism.IndustryId
+    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = psm.IndustryId
     LEFT JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = psm.Category_Master_Id
     WHERE psm.ProductId = @ID
-    ORDER BY im.IndustryName, c.SubcategoryName;
+      AND psm.IndustryId IS NOT NULL
+      AND psm.Category_Master_Id IS NOT NULL
+
+    UNION
+
+    SELECT
+        pim.IndustryId,
+        im.IndustryName,
+        psm.Category_Master_Id AS SubcategoryId,
+        c.SubcategoryName
+    FROM dbo.product_subcategory_Mapping psm
+    INNER JOIN dbo.product_Industry_Mapping pim
+        ON pim.ProductId = psm.ProductId
+    LEFT JOIN dbo.Industry_Subcategory_Mapping ism
+        ON ism.IndustryId = pim.IndustryId
+       AND ism.Category_Master_Id = psm.Category_Master_Id
+    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = pim.IndustryId
+    LEFT JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = psm.Category_Master_Id
+    WHERE psm.ProductId = @ID
+      AND psm.IndustryId IS NULL
+      AND psm.Category_Master_Id IS NOT NULL
+      AND (
+            ism.IndustrySubcategoryId IS NOT NULL
+            OR (
+                SELECT COUNT(1)
+                FROM dbo.product_Industry_Mapping x
+                WHERE x.ProductId = psm.ProductId
+            ) = 1
+          )
+    ORDER BY IndustryName, SubcategoryName;
 END
 GO

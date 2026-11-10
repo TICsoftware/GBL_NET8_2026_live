@@ -135,6 +135,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@ApplicationIds", ToCsv(m.ApplicationIds)),
                 new("@SubcategoryIds", ToCsv(m.SubcategoryIds)),
                 new("@PackagingIds", ToCsv(m.PackagingIds)),
+                new("@IndustrySubcategoryPairs", ToPairsCsv(m.IndustrySubcategoryPairs)),
                 new("@Create_UserId", userId.HasValue ? userId.Value : DBNull.Value)
             };
             SQLInsert_Update_Delete_Data("Product_Master_SaveMappings", p);
@@ -306,6 +307,8 @@ namespace Core_project_BusinessLogic.DAL
                 return list;
 
             var remaining = new HashSet<int>(subcategoryIds.Where(id => id > 0));
+
+            // Prefer real industry↔subcategory links.
             foreach (var industryId in industryIds.Where(id => id > 0))
             {
                 if (remaining.Count == 0) break;
@@ -321,6 +324,22 @@ namespace Core_project_BusinessLogic.DAL
                     remaining.Remove(item.Id);
                 }
             }
+
+            // Legacy 1 industry + N subcategories with no mapping row: still show in edit grid.
+            if (remaining.Count > 0 && industryIds.Count == 1)
+            {
+                var industryId = industryIds[0];
+                foreach (var subcategoryId in remaining.ToList())
+                {
+                    list.Add(new ProductIndustrySubcategoryPair
+                    {
+                        IndustryId = industryId,
+                        SubcategoryId = subcategoryId
+                    });
+                    remaining.Remove(subcategoryId);
+                }
+            }
+
             return list;
         }
 
@@ -338,6 +357,20 @@ namespace Core_project_BusinessLogic.DAL
 
         private static object ToCsv(List<int>? ids) =>
             ids == null || ids.Count == 0 ? DBNull.Value : string.Join(",", ids);
+
+        private static object ToPairsCsv(List<ProductIndustrySubcategoryPair>? pairs)
+        {
+            if (pairs == null || pairs.Count == 0)
+                return DBNull.Value;
+
+            var values = pairs
+                .Where(p => p != null && p.IndustryId > 0 && p.SubcategoryId > 0)
+                .Select(p => p.IndustryId + ":" + p.SubcategoryId)
+                .Distinct()
+                .ToList();
+
+            return values.Count == 0 ? DBNull.Value : string.Join(",", values);
+        }
 
         private static string? ColStr(DataRow r, string col) =>
             r.Table.Columns.Contains(col) && r[col] != DBNull.Value ? r[col].ToString() : null;

@@ -98,6 +98,7 @@ BEGIN
     (
         product_subcategory_MappingID INT IDENTITY(1,1) NOT NULL,
         ProductId INT NOT NULL,
+        IndustryId INT NULL,
         Category_Master_Id INT NOT NULL,
         DisplayOrder INT NOT NULL CONSTRAINT DF_product_subcategory_Mapping_DisplayOrder DEFAULT (0),
         Create_UserId INT NULL,
@@ -107,6 +108,10 @@ BEGIN
         CONSTRAINT PK_product_subcategory_Mapping PRIMARY KEY CLUSTERED (product_subcategory_MappingID ASC)
     );
 END
+GO
+
+IF COL_LENGTH('dbo.product_subcategory_Mapping', 'IndustryId') IS NULL
+    ALTER TABLE dbo.product_subcategory_Mapping ADD IndustryId INT NULL;
 GO
 
 IF OBJECT_ID(N'dbo.product_packaging_Mapping', N'U') IS NULL
@@ -263,22 +268,46 @@ BEGIN
     WHERE m.ProductId = @ID
     ORDER BY m.DisplayOrder, m.product_certificate_MappingID;
 
-    -- Industry + subcategory pairs reconstructed from tagged mappings.
-    SELECT DISTINCT
-        ism.IndustryId,
+    -- New rows (IndustryId stored) + legacy rows (IndustryId NULL) reconstructed.
+    SELECT
+        psm.IndustryId,
         im.IndustryName,
         psm.Category_Master_Id AS SubcategoryId,
         c.SubcategoryName
     FROM dbo.product_subcategory_Mapping psm
-    INNER JOIN dbo.Industry_Subcategory_Mapping ism
-        ON ism.Category_Master_Id = psm.Category_Master_Id
-    INNER JOIN dbo.product_Industry_Mapping pim
-        ON pim.ProductId = psm.ProductId
-       AND pim.IndustryId = ism.IndustryId
-    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = ism.IndustryId
+    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = psm.IndustryId
     LEFT JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = psm.Category_Master_Id
     WHERE psm.ProductId = @ID
-    ORDER BY im.IndustryName, c.SubcategoryName;
+      AND psm.IndustryId IS NOT NULL
+      AND psm.Category_Master_Id IS NOT NULL
+
+    UNION
+
+    SELECT
+        pim.IndustryId,
+        im.IndustryName,
+        psm.Category_Master_Id AS SubcategoryId,
+        c.SubcategoryName
+    FROM dbo.product_subcategory_Mapping psm
+    INNER JOIN dbo.product_Industry_Mapping pim
+        ON pim.ProductId = psm.ProductId
+    LEFT JOIN dbo.Industry_Subcategory_Mapping ism
+        ON ism.IndustryId = pim.IndustryId
+       AND ism.Category_Master_Id = psm.Category_Master_Id
+    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = pim.IndustryId
+    LEFT JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = psm.Category_Master_Id
+    WHERE psm.ProductId = @ID
+      AND psm.IndustryId IS NULL
+      AND psm.Category_Master_Id IS NOT NULL
+      AND (
+            ism.IndustrySubcategoryId IS NOT NULL
+            OR (
+                SELECT COUNT(1)
+                FROM dbo.product_Industry_Mapping x
+                WHERE x.ProductId = psm.ProductId
+            ) = 1
+          )
+    ORDER BY IndustryName, SubcategoryName;
 END
 GO
 
@@ -436,6 +465,7 @@ CREATE OR ALTER PROCEDURE dbo.Product_Master_SaveMappings
     @ApplicationIds NVARCHAR(MAX) = NULL,
     @SubcategoryIds NVARCHAR(MAX) = NULL,
     @PackagingIds NVARCHAR(MAX) = NULL,
+    @IndustrySubcategoryPairs NVARCHAR(MAX) = NULL, -- format: IndustryId:SubcategoryId,...
     @Create_UserId INT = NULL
 AS
 BEGIN
@@ -443,25 +473,33 @@ BEGIN
 
     DECLARE @Industries TABLE (IndustryId INT NOT NULL PRIMARY KEY);
     DECLARE @Applications TABLE (ApplicationId INT NOT NULL PRIMARY KEY);
-    DECLARE @Subcategories TABLE (Category_Master_Id INT NOT NULL PRIMARY KEY);
     DECLARE @Packaging TABLE (product_packaging_MasterId INT NOT NULL PRIMARY KEY);
+    DECLARE @Pairs TABLE
+    (
+        IndustryId INT NOT NULL,
+        SubcategoryId INT NOT NULL,
+        PRIMARY KEY (IndustryId, SubcategoryId)
+    );
 
-    IF @IndustryIds IS NOT NULL AND LTRIM(RTRIM(@IndustryIds)) <> N''
-        INSERT INTO @Industries (IndustryId)
-        SELECT DISTINCT TRY_CAST(value AS INT)
-        FROM STRING_SPLIT(@IndustryIds, ',')
-        WHERE TRY_CAST(value AS INT) IS NOT NULL;
+    IF @IndustrySubcategoryPairs IS NOT NULL AND LTRIM(RTRIM(@IndustrySubcategoryPairs)) <> N''
+    BEGIN
+        INSERT INTO @Pairs (IndustryId, SubcategoryId)
+        SELECT DISTINCT
+            TRY_CAST(LEFT(LTRIM(RTRIM(value)), CHARINDEX(':', LTRIM(RTRIM(value))) - 1) AS INT),
+            TRY_CAST(SUBSTRING(LTRIM(RTRIM(value)), CHARINDEX(':', LTRIM(RTRIM(value))) + 1, 50) AS INT)
+        FROM STRING_SPLIT(@IndustrySubcategoryPairs, ',')
+        WHERE CHARINDEX(':', LTRIM(RTRIM(value))) > 1
+          AND TRY_CAST(LEFT(LTRIM(RTRIM(value)), CHARINDEX(':', LTRIM(RTRIM(value))) - 1) AS INT) IS NOT NULL
+          AND TRY_CAST(SUBSTRING(LTRIM(RTRIM(value)), CHARINDEX(':', LTRIM(RTRIM(value))) + 1, 50) AS INT) IS NOT NULL;
+    END
+
+    INSERT INTO @Industries (IndustryId)
+    SELECT DISTINCT IndustryId FROM @Pairs;
 
     IF @ApplicationIds IS NOT NULL AND LTRIM(RTRIM(@ApplicationIds)) <> N''
         INSERT INTO @Applications (ApplicationId)
         SELECT DISTINCT TRY_CAST(value AS INT)
         FROM STRING_SPLIT(@ApplicationIds, ',')
-        WHERE TRY_CAST(value AS INT) IS NOT NULL;
-
-    IF @SubcategoryIds IS NOT NULL AND LTRIM(RTRIM(@SubcategoryIds)) <> N''
-        INSERT INTO @Subcategories (Category_Master_Id)
-        SELECT DISTINCT TRY_CAST(value AS INT)
-        FROM STRING_SPLIT(@SubcategoryIds, ',')
         WHERE TRY_CAST(value AS INT) IS NOT NULL;
 
     IF @PackagingIds IS NOT NULL AND LTRIM(RTRIM(@PackagingIds)) <> N''
@@ -492,12 +530,20 @@ BEGIN
         FROM @Applications a
         LEFT JOIN dbo.Application_Master am ON am.ApplicationId = a.ApplicationId;
 
-        INSERT INTO dbo.product_subcategory_Mapping (ProductId, Category_Master_Id, DisplayOrder, Create_UserId, CreatedDate)
-        SELECT @ProductId, s.Category_Master_Id,
-               ROW_NUMBER() OVER (ORDER BY ISNULL(cm.SubcategoryName, N''), s.Category_Master_Id),
-               @Create_UserId, SYSUTCDATETIME()
-        FROM @Subcategories s
-        LEFT JOIN dbo.Industry_Subcategory_Master cm ON cm.SubcategoryId = s.Category_Master_Id;
+        INSERT INTO dbo.product_subcategory_Mapping
+        (
+            ProductId, IndustryId, Category_Master_Id, DisplayOrder, Create_UserId, CreatedDate
+        )
+        SELECT
+            @ProductId,
+            p.IndustryId,
+            p.SubcategoryId,
+            ROW_NUMBER() OVER (ORDER BY ISNULL(im.IndustryName, N''), ISNULL(cm.SubcategoryName, N''), p.IndustryId, p.SubcategoryId),
+            @Create_UserId,
+            SYSUTCDATETIME()
+        FROM @Pairs p
+        LEFT JOIN dbo.Industry_Master im ON im.IndustryId = p.IndustryId
+        LEFT JOIN dbo.Industry_Subcategory_Master cm ON cm.SubcategoryId = p.SubcategoryId;
 
         INSERT INTO dbo.product_packaging_Mapping (ProductId, product_packaging_MasterId, DisplayOrder, Create_UserId, CreatedDate)
         SELECT @ProductId, pk.product_packaging_MasterId,

@@ -366,6 +366,9 @@ async function loadPairSubcategories() {
     const subcategorySel = getPairSubcategorySelect();
     if (!industrySel || !subcategorySel) return;
 
+    industrySel.multiple = false;
+    subcategorySel.multiple = false;
+
     const industryId = parseInt(industrySel.value || "0", 10);
     subcategorySel.innerHTML = "";
     subcategorySel.appendChild(new Option("Select subcategory", ""));
@@ -375,9 +378,15 @@ async function loadPairSubcategories() {
     if (!res.ok) return;
     const items = await res.json();
     (items || []).forEach((item) => {
-        const id = item.id ?? item.Id;
+        const id = parseInt(item.id ?? item.Id ?? 0, 10);
         const name = item.name ?? item.Name;
-        subcategorySel.appendChild(new Option(name, id));
+        if (!id) return;
+        // Hide subcategories already paired with this industry.
+        const alreadyAdded = industrySubcategoryPairs.some(
+            (p) => p.IndustryId === industryId && p.SubcategoryId === id
+        );
+        if (alreadyAdded) return;
+        subcategorySel.appendChild(new Option(name, String(id)));
     });
 }
 
@@ -386,8 +395,13 @@ function addIndustrySubcategoryPair() {
     const subcategorySel = getPairSubcategorySelect();
     if (!industrySel || !subcategorySel) return;
 
-    const industryId = parseInt(industrySel.value || "0", 10);
-    const subcategoryId = parseInt(subcategorySel.value || "0", 10);
+    industrySel.multiple = false;
+    subcategorySel.multiple = false;
+
+    const industryOpt = industrySel.options[industrySel.selectedIndex];
+    const subcategoryOpt = subcategorySel.options[subcategorySel.selectedIndex];
+    const industryId = parseInt(industryOpt && industryOpt.value ? industryOpt.value : "0", 10);
+    const subcategoryId = parseInt(subcategoryOpt && subcategoryOpt.value ? subcategoryOpt.value : "0", 10);
     if (!industryId || !subcategoryId) {
         alert("Select both industry and subcategory.");
         return;
@@ -401,24 +415,26 @@ function addIndustrySubcategoryPair() {
         return;
     }
 
-    const industryName = industrySel.options[industrySel.selectedIndex]?.text || "";
-    const subcategoryName = subcategorySel.options[subcategorySel.selectedIndex]?.text || "";
     industrySubcategoryPairs.push({
         IndustryId: industryId,
-        IndustryName: industryName,
+        IndustryName: (industryOpt.text || "").trim(),
         SubcategoryId: subcategoryId,
-        SubcategoryName: subcategoryName
+        SubcategoryName: (subcategoryOpt.text || "").trim()
     });
     renderIndustrySubcategoryGrid();
     subcategorySel.value = "";
+    loadPairSubcategories();
 }
 
 function setIndustrySubcategoryPairs(pairs) {
     industrySubcategoryPairs = [];
-    (pairs || []).forEach((item) => {
+    (Array.isArray(pairs) ? pairs : []).forEach((item) => {
         const industryId = parseInt(item.IndustryId ?? item.industryId ?? 0, 10);
         const subcategoryId = parseInt(item.SubcategoryId ?? item.subcategoryId ?? 0, 10);
         if (!industryId || !subcategoryId) return;
+        if (industrySubcategoryPairs.some((p) => p.IndustryId === industryId && p.SubcategoryId === subcategoryId)) {
+            return;
+        }
         industrySubcategoryPairs.push({
             IndustryId: industryId,
             IndustryName: item.IndustryName ?? item.industryName ?? "",
@@ -430,12 +446,14 @@ function setIndustrySubcategoryPairs(pairs) {
 }
 
 function collectIndustrySubcategoryPayload() {
-    const pairs = industrySubcategoryPairs.map((p) => ({
-        IndustryId: p.IndustryId,
-        IndustryName: p.IndustryName,
-        SubcategoryId: p.SubcategoryId,
-        SubcategoryName: p.SubcategoryName
-    }));
+    const pairs = industrySubcategoryPairs
+        .filter((p) => p && p.IndustryId > 0 && p.SubcategoryId > 0)
+        .map((p) => ({
+            IndustryId: p.IndustryId,
+            IndustryName: p.IndustryName,
+            SubcategoryId: p.SubcategoryId,
+            SubcategoryName: p.SubcategoryName
+        }));
     return {
         IndustrySubcategoryPairs: pairs,
         IndustryIds: [...new Set(pairs.map((p) => p.IndustryId))],
@@ -464,9 +482,10 @@ function bindIndustrySubcategoryPairs() {
         const btn = e.target && e.target.closest ? e.target.closest(".js-remove-industry-subcategory") : null;
         if (!btn) return;
         const index = parseInt(btn.getAttribute("data-index") || "-1", 10);
-        if (Number.isNaN(index) || index < 0) return;
+        if (Number.isNaN(index) || index < 0 || index >= industrySubcategoryPairs.length) return;
         industrySubcategoryPairs.splice(index, 1);
         renderIndustrySubcategoryGrid();
+        loadPairSubcategories();
     });
 }
 
