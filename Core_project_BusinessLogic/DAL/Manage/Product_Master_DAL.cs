@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.Entity;
@@ -43,6 +44,9 @@ namespace Core_project_BusinessLogic.DAL
             entity.SubcategoryIds = ReadIdList(ds, 3);
             entity.PackagingIds = ReadIdList(ds, 4);
             entity.Certificates = ReadCertificates(ds, 5);
+            entity.IndustrySubcategoryPairs = ReadIndustrySubcategoryPairs(ds, 6);
+            if (entity.IndustrySubcategoryPairs.Count == 0)
+                entity.IndustrySubcategoryPairs = BuildPairsFallback(entity.IndustryIds, entity.SubcategoryIds);
             return entity;
         }
 
@@ -271,6 +275,51 @@ namespace Core_project_BusinessLogic.DAL
                     Url = ColStr(r, "Certificate_Url"),
                     DisplayOrder = ColInt(r, "DisplayOrder") ?? 0
                 });
+            }
+            return list;
+        }
+
+        private static List<ProductIndustrySubcategoryPair> ReadIndustrySubcategoryPairs(DataSet ds, int tableIndex)
+        {
+            var list = new List<ProductIndustrySubcategoryPair>();
+            if (ds.Tables.Count <= tableIndex) return list;
+            foreach (DataRow r in ds.Tables[tableIndex].Rows)
+            {
+                var industryId = ColInt(r, "IndustryId") ?? 0;
+                var subcategoryId = ColInt(r, "SubcategoryId") ?? 0;
+                if (industryId <= 0 || subcategoryId <= 0) continue;
+                list.Add(new ProductIndustrySubcategoryPair
+                {
+                    IndustryId = industryId,
+                    IndustryName = ColStr(r, "IndustryName"),
+                    SubcategoryId = subcategoryId,
+                    SubcategoryName = ColStr(r, "SubcategoryName")
+                });
+            }
+            return list;
+        }
+
+        private List<ProductIndustrySubcategoryPair> BuildPairsFallback(List<int> industryIds, List<int> subcategoryIds)
+        {
+            var list = new List<ProductIndustrySubcategoryPair>();
+            if (industryIds == null || industryIds.Count == 0 || subcategoryIds == null || subcategoryIds.Count == 0)
+                return list;
+
+            var remaining = new HashSet<int>(subcategoryIds.Where(id => id > 0));
+            foreach (var industryId in industryIds.Where(id => id > 0))
+            {
+                if (remaining.Count == 0) break;
+                foreach (var item in GetSubcategoriesByIndustries(new List<int> { industryId }))
+                {
+                    if (!remaining.Contains(item.Id)) continue;
+                    list.Add(new ProductIndustrySubcategoryPair
+                    {
+                        IndustryId = industryId,
+                        SubcategoryId = item.Id,
+                        SubcategoryName = item.Name
+                    });
+                    remaining.Remove(item.Id);
+                }
             }
             return list;
         }

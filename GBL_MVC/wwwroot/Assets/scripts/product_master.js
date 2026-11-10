@@ -314,35 +314,133 @@ function setEditorData(textareaId, html) {
     }
 }
 
-async function loadSubcategories(keepSelectedIds) {
-    const industryIds = getSelectValues(document.getElementById("selectedIndustries"));
-    const available = document.getElementById("availableSubcategories");
-    const selected = document.getElementById("selectedSubcategories");
-    if (!available || !selected) return;
+let industrySubcategoryPairs = [];
 
-    const preserve = keepSelectedIds && keepSelectedIds.length
-        ? keepSelectedIds
-        : getSelectValues(selected);
+function getPairIndustrySelect() {
+    return document.getElementById("pairIndustryId");
+}
 
-    available.innerHTML = "";
-    selected.innerHTML = "";
+function getPairSubcategorySelect() {
+    return document.getElementById("pairSubcategoryId");
+}
 
-    if (industryIds.length === 0) return;
+function resetPairSelectors() {
+    const industrySel = getPairIndustrySelect();
+    const subcategorySel = getPairSubcategorySelect();
+    if (industrySel) industrySel.value = "";
+    if (subcategorySel) {
+        subcategorySel.innerHTML = "";
+        subcategorySel.appendChild(new Option("Select subcategory", ""));
+    }
+}
 
-    const res = await fetch("/Product_Master/GetSubcategories?industryIds=" + industryIds.join(","));
+function renderIndustrySubcategoryGrid() {
+    const tbody = document.querySelector("#industrySubcategoryGrid tbody");
+    const empty = document.getElementById("industrySubcategoryEmpty");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+    industrySubcategoryPairs.forEach((pair, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML =
+            "<td>" + escapeHtml(pair.IndustryName || "") + "</td>" +
+            "<td>" + escapeHtml(pair.SubcategoryName || "") + "</td>" +
+            '<td><button type="button" class="btn btn-sm btn-outline-danger js-remove-industry-subcategory" data-index="' + index + '">Remove</button></td>';
+        tbody.appendChild(tr);
+    });
+
+    if (empty) empty.classList.toggle("d-none", industrySubcategoryPairs.length > 0);
+}
+
+function escapeHtml(value) {
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+async function loadPairSubcategories() {
+    const industrySel = getPairIndustrySelect();
+    const subcategorySel = getPairSubcategorySelect();
+    if (!industrySel || !subcategorySel) return;
+
+    const industryId = parseInt(industrySel.value || "0", 10);
+    subcategorySel.innerHTML = "";
+    subcategorySel.appendChild(new Option("Select subcategory", ""));
+    if (!industryId) return;
+
+    const res = await fetch("/Product_Master/GetSubcategories?industryIds=" + industryId);
     if (!res.ok) return;
     const items = await res.json();
-    const preserveSet = new Set((preserve || []).map((n) => String(n)));
-
     (items || []).forEach((item) => {
         const id = item.id ?? item.Id;
         const name = item.name ?? item.Name;
-        const opt = new Option(name, id);
-        if (preserveSet.has(String(id))) selected.appendChild(opt);
-        else available.appendChild(opt);
+        subcategorySel.appendChild(new Option(name, id));
     });
-    sortSelectOptions(available);
-    sortSelectOptions(selected);
+}
+
+function addIndustrySubcategoryPair() {
+    const industrySel = getPairIndustrySelect();
+    const subcategorySel = getPairSubcategorySelect();
+    if (!industrySel || !subcategorySel) return;
+
+    const industryId = parseInt(industrySel.value || "0", 10);
+    const subcategoryId = parseInt(subcategorySel.value || "0", 10);
+    if (!industryId || !subcategoryId) {
+        alert("Select both industry and subcategory.");
+        return;
+    }
+
+    const exists = industrySubcategoryPairs.some(
+        (p) => p.IndustryId === industryId && p.SubcategoryId === subcategoryId
+    );
+    if (exists) {
+        alert("This industry and subcategory pair is already added.");
+        return;
+    }
+
+    const industryName = industrySel.options[industrySel.selectedIndex]?.text || "";
+    const subcategoryName = subcategorySel.options[subcategorySel.selectedIndex]?.text || "";
+    industrySubcategoryPairs.push({
+        IndustryId: industryId,
+        IndustryName: industryName,
+        SubcategoryId: subcategoryId,
+        SubcategoryName: subcategoryName
+    });
+    renderIndustrySubcategoryGrid();
+    subcategorySel.value = "";
+}
+
+function setIndustrySubcategoryPairs(pairs) {
+    industrySubcategoryPairs = [];
+    (pairs || []).forEach((item) => {
+        const industryId = parseInt(item.IndustryId ?? item.industryId ?? 0, 10);
+        const subcategoryId = parseInt(item.SubcategoryId ?? item.subcategoryId ?? 0, 10);
+        if (!industryId || !subcategoryId) return;
+        industrySubcategoryPairs.push({
+            IndustryId: industryId,
+            IndustryName: item.IndustryName ?? item.industryName ?? "",
+            SubcategoryId: subcategoryId,
+            SubcategoryName: item.SubcategoryName ?? item.subcategoryName ?? ""
+        });
+    });
+    renderIndustrySubcategoryGrid();
+}
+
+function collectIndustrySubcategoryPayload() {
+    const pairs = industrySubcategoryPairs.map((p) => ({
+        IndustryId: p.IndustryId,
+        IndustryName: p.IndustryName,
+        SubcategoryId: p.SubcategoryId,
+        SubcategoryName: p.SubcategoryName
+    }));
+    return {
+        IndustrySubcategoryPairs: pairs,
+        IndustryIds: [...new Set(pairs.map((p) => p.IndustryId))],
+        SubcategoryIds: [...new Set(pairs.map((p) => p.SubcategoryId))]
+    };
 }
 
 function bindListboxes() {
@@ -351,12 +449,24 @@ function bindListboxes() {
             const from = document.querySelector(btn.getAttribute("data-from"));
             const to = document.querySelector(btn.getAttribute("data-to"));
             moveSelectedOptions(from, to);
-            const fromId = btn.getAttribute("data-from") || "";
-            const toId = btn.getAttribute("data-to") || "";
-            if (fromId.indexOf("Industries") >= 0 || toId.indexOf("Industries") >= 0) {
-                loadSubcategories();
-            }
         });
+    });
+}
+
+function bindIndustrySubcategoryPairs() {
+    document.getElementById("pairIndustryId")?.addEventListener("change", function () {
+        loadPairSubcategories();
+    });
+    document.getElementById("btnAddIndustrySubcategoryPair")?.addEventListener("click", function () {
+        addIndustrySubcategoryPair();
+    });
+    document.querySelector("#industrySubcategoryGrid")?.addEventListener("click", function (e) {
+        const btn = e.target && e.target.closest ? e.target.closest(".js-remove-industry-subcategory") : null;
+        if (!btn) return;
+        const index = parseInt(btn.getAttribute("data-index") || "-1", 10);
+        if (Number.isNaN(index) || index < 0) return;
+        industrySubcategoryPairs.splice(index, 1);
+        renderIndustrySubcategoryGrid();
     });
 }
 
@@ -504,11 +614,10 @@ function resetProductForm() {
     setFieldError(document.getElementById("productThumbnailImageAlt"), document.getElementById("productThumbnailImageAltError"), "");
     setFieldError(document.getElementById("productCertificationImageAlt"), document.getElementById("productCertificationImageAltError"), "");
     setFieldError(document.getElementById("productSeq"), document.getElementById("productSeqError"), "");
-    resetListboxPair("availableIndustries", "selectedIndustries");
     resetListboxPair("availableApplications", "selectedApplications");
     resetListboxPair("availablePackaging", "selectedPackaging");
-    document.getElementById("availableSubcategories").innerHTML = "";
-    document.getElementById("selectedSubcategories").innerHTML = "";
+    resetPairSelectors();
+    setIndustrySubcategoryPairs([]);
 }
 
 function validateProductForm() {
@@ -572,10 +681,9 @@ function buildProductPayload(status) {
         Main_Application: document.getElementById("productMainApplication").value || "",
         Certificates: collectCertificates(),
         Status: saveStatus,
-        IndustryIds: getSelectValues(document.getElementById("selectedIndustries")),
         ApplicationIds: getSelectValues(document.getElementById("selectedApplications")),
-        SubcategoryIds: getSelectValues(document.getElementById("selectedSubcategories")),
-        PackagingIds: getSelectValues(document.getElementById("selectedPackaging"))
+        PackagingIds: getSelectValues(document.getElementById("selectedPackaging")),
+        ...collectIndustrySubcategoryPayload()
     };
 }
 
@@ -617,10 +725,9 @@ async function openProductModal(editId) {
             certificates.forEach((cert) => addCertificateRow(cert));
         }
 
-        moveIdsToSelected("availableIndustries", "selectedIndustries", pickArray(data, "industryIds", "IndustryIds"));
         moveIdsToSelected("availableApplications", "selectedApplications", pickArray(data, "applicationIds", "ApplicationIds"));
         moveIdsToSelected("availablePackaging", "selectedPackaging", pickArray(data, "packagingIds", "PackagingIds"));
-        await loadSubcategories(pickArray(data, "subcategoryIds", "SubcategoryIds"));
+        setIndustrySubcategoryPairs(pickValue(data, "industrySubcategoryPairs", "IndustrySubcategoryPairs") || []);
 
         if (typeof window.initCkEditors === "function") {
             window.initCkEditors(modalEl);
@@ -644,6 +751,7 @@ async function openProductModal(editId) {
 document.addEventListener("DOMContentLoaded", function () {
     bindProductMediaPreviewFix();
     bindListboxes();
+    bindIndustrySubcategoryPairs();
     bindTextBoxGuards(document);
 
     document.querySelector(".js-open-modal")?.addEventListener("click", function () {
