@@ -73,6 +73,7 @@ namespace GBL_BusinessLogic.BAL
             return table.AsEnumerable()
                 .GroupBy(x => new
                 {
+                    cont_id= Convert.ToInt32(x["cont_id"]),
                     GroupId = x.Field<Guid>("context_group_id").ToString(),
                     Sequence = Convert.ToInt32(x["component_sequence"]),
                     IsBlock = Convert.ToInt32(x["is_block"])
@@ -83,6 +84,7 @@ namespace GBL_BusinessLogic.BAL
 
                     Fields = group.Select(row => new ComponentField
                     {
+                        cont_id = row.Field<int>("cont_id"),
                         GroupId = group.Key.GroupId,
                         FieldName = row.Field<string>("field_name") ?? "",
                         FieldKey = row.Field<string>("name_key") ?? "",
@@ -128,6 +130,7 @@ namespace GBL_BusinessLogic.BAL
                 return new ComponentModel
                 {
                     GroupId = group.GroupId,
+                    cont_id = group.cont_id,
                     Title = Config_Application_Website.GetValue(dict, "Title", "Component Title"),
                     Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro"),
                     HmpgIntro = Config_Application_Website.GetValue(dict, "Landing intro", "Component Landing intro"),

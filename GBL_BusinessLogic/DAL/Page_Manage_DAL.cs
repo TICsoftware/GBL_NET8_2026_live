@@ -209,5 +209,16 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("GetCountryMaster").Tables[0];
         }
 
+        public DataSet GetSubSectionFirstComponentData_DAL(int ContentId, int LanguageID)
+        {
+             SqlParameter[] sqlParams =
+            {
+                new ("@ContentId",ContentId.ToString()),
+                new ("@LanguageID", LanguageID >0 ? LanguageID : null),               
+            };
+
+            return GetDataSet("sp_GetSubSectionFirstComponentData", sqlParams);
+        }
+
     }
 }

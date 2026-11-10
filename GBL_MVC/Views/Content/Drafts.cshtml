@@ -203,7 +203,7 @@
                                     {
                                         encrypt_cont_id=Core_project_BusinessLogic.CryptoEngine.Encrypt(item.Id.ToString());
                                         <tr class="js-pagination-article-item">
-                                            <td><input type="checkbox" value="@encrypt_cont_id" name="formchkart" /> </td> 
+                                            <td><input type="checkbox" value="@encrypt_cont_id" name="formchk" class="formchkart" /> </td> 
                                             <td>@item.Title</td>
                                             <td>@item.Parent_title</td>
                                             <td>@(item.Language)</td>

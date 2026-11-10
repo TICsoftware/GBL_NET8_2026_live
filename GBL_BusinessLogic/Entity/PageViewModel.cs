@@ -15,6 +15,7 @@ namespace GBL_BusinessLogic.Entity
 
     public class ComponentGroup
     {
+        public int cont_id {get;set;}
         public string GroupId { get; set; }
         public int Sequence { get; set; }
         public List<ComponentField> Fields { get; set; } = new List<ComponentField>();
@@ -22,6 +23,7 @@ namespace GBL_BusinessLogic.Entity
 
     public class ComponentField
     {
+        public int cont_id {get;set;}
         public string GroupId { get; set; }   // ADD THIS
         public string FieldName { get; set; }
         public string FieldKey { get; set; }
