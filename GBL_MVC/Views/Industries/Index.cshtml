@@ -1,4 +1,5 @@
 @model Core_project_BusinessLogic.Entity.Industry_Public_Page
+@using Core_project_BusinessLogic
 @{
     var content = Model.Content ?? new Core_project_BusinessLogic.Entity.Industry_Public_Content();
     var title = string.IsNullOrWhiteSpace(content.Title) ? "Industries we serve" : content.Title;
@@ -98,7 +99,7 @@
                      Refine by Filters
                   </button>
                   <div class="filter-mobile-backdrop" data-close-industry-filter></div>
-                  <form class="filter-inner" id="industry-filter" action="#" method="get">
+                  <form class="filter-inner" id="industry-filter" action="/products" method="get">
                      <div class="filter-mobile-sheet-head">
                         <h2 class="filter-mobile-sheet-head__title">Set Filters</h2>
                         <button type="button" class="filter-mobile-close" data-close-industry-filter aria-label="Close filters">&times;</button>
@@ -110,7 +111,7 @@
                            <option value="">Industry</option>
                            @foreach (var item in Model.IndustryFilters)
                            {
-                               <option value="@item.Id" selected="@(Model.IndustryId == item.Id)">@item.Name</option>
+                               <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
                            }
                         </select>
                      </div>
@@ -121,18 +122,18 @@
                            <option value="">Application</option>
                            @foreach (var item in Model.ApplicationFilters)
                            {
-                               <option value="@item.Id" selected="@(Model.ApplicationId == item.Id)">@item.Name</option>
+                               <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
                            }
                         </select>
                      </div>
 
                      <div class="cselect">
                         <label class="cselect-sr" for="filter-product-categories">Product Categories</label>
-                        <select id="filter-product-categories" name="productCategories" class="cselect-native">
+                        <select id="filter-product-categories" name="category" class="cselect-native">
                            <option value="">Product Categories</option>
                            @foreach (var item in Model.CategoryFilters)
                            {
-                               <option value="@item.Id" selected="@(Model.CategoryId == item.Id)">@item.Name</option>
+                               <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
                            }
                         </select>
                      </div>

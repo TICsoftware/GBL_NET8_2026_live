@@ -112,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
     setFilterOpen(false);
   });
 
-<<<<<<< HEAD
   var filterOuter = (form && form.closest(".filter-outer")) || document.querySelector(".filter-outer");
   var openBtn = filterOuter && filterOuter.querySelector("[data-open-industry-filter]");
 
@@ -143,6 +142,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function buildProductsUrl() {
+    if (!form) return "/products";
+    var params = new URLSearchParams();
+    var industry = form.industry ? String(form.industry.value || "").trim() : "";
+    var application = form.application ? String(form.application.value || "").trim() : "";
+    var category = form.category ? String(form.category.value || "").trim() : "";
+
+    if (industry && industry !== "0") params.append("industry", industry);
+    if (application && application !== "0") params.append("application", application);
+    if (category && category !== "0") params.append("category", category);
+
+    var query = params.toString();
+    return query ? "/products?" + query : "/products";
+  }
+
+  function goToProducts() {
+    window.location.href = buildProductsUrl();
+  }
+
   if (filterOuter) {
     if (openBtn) {
       openBtn.addEventListener("click", function () {
@@ -168,62 +186,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var applyBtn = form.querySelector("[data-apply-industry-filter]");
     if (applyBtn) {
       applyBtn.addEventListener("click", function () {
-        form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-        setFilterOpen(false);
+        goToProducts();
       });
     }
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      form.dispatchEvent(
-        new CustomEvent("industryfilter:apply", {
-          bubbles: true,
-          detail: {
-            industry: form.industry ? form.industry.value : "",
-            application: form.application ? form.application.value : "",
-            productCategories: form.productCategories ? form.productCategories.value : "",
-            product: form.product ? form.product.value : ""
-          }
-        })
-      );
-      setFilterOpen(false);
+      goToProducts();
     });
   }
-=======
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    form.dispatchEvent(
-      new CustomEvent("industryfilter:apply", {
-        bubbles: true,
-        detail: {
-          industry: form.industry.value,
-          application: form.application.value,
-          productCategories: form.productCategories.value
-        }
-      })
-    );
-    closeFilterSheet();
-  });
-
-  var filterOuter = form.closest(".filter-outer");
-
-  function closeFilterSheet() {
-    if (!filterOuter) return;
-    filterOuter.classList.remove("is-filter-open");
-    var trigger = filterOuter.querySelector("[data-open-industry-filter]");
-    if (trigger) trigger.setAttribute("aria-expanded", "false");
-  }
-
-  function openFilterSheet() {
-    if (!filterOuter) return;
-    filterOuter.classList.add("is-filter-open");
-    var trigger = filterOuter.querySelector("[data-open-industry-filter]");
-    if (trigger) trigger.setAttribute("aria-expanded", "true");
-  }
-
-  document.querySelector("[data-open-industry-filter]")?.addEventListener("click", openFilterSheet);
-  document.querySelectorAll("[data-close-industry-filter]").forEach(function (btn) {
-    btn.addEventListener("click", closeFilterSheet);
-  });
->>>>>>> 6abade370c1087fffe907c23684b263354f378c9
 });

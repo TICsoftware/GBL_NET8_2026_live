@@ -76,38 +76,35 @@
                      id="@tab.Anchor"
                      aria-labelledby="@titleId">
                 <div class="container">
-                    <h2 id="@titleId" class="text-h2 title-animation">@tab.Title</h2>
-                </div>
-
-                @if (tab.ShowYearFilter)
-                {
-                    <div class="fh-year-filter cg-year-filter">
-                        <div class="container">
-                            <label class="fh-year-filter__label" for="cg-year-@tab.Anchor">Filter by year</label>
-                            <div class="cselect">
-                                <select id="cg-year-@tab.Anchor"
-                                        name="year"
-                                        class="cselect-native"
-                                        data-cg-year
-                                        data-cg-year-target="#@tab.Anchor">
-                                    @foreach (var year in tab.Years)
-                                    {
-                                        if (year.Value == tab.SelectedYear)
+                    <div class="cg-docs__head">
+                        <h2 id="@titleId" class="text-h2 title-animation">@tab.Title</h2>
+                        @if (tab.ShowYearFilter)
+                        {
+                            <div class="cg-year-filter">
+                                <label class="fh-year-filter__label" for="cg-year-@tab.Anchor">Filter by year</label>
+                                <div class="cselect">
+                                    <select id="cg-year-@tab.Anchor"
+                                            name="year"
+                                            class="cselect-native"
+                                            data-cg-year
+                                            data-cg-year-target="#@tab.Anchor">
+                                        @foreach (var year in tab.Years)
                                         {
-                                            <option value="@year.Value" selected>@year.Text</option>
+                                            if (year.Value == tab.SelectedYear)
+                                            {
+                                                <option value="@year.Value" selected>@year.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@year.Value">@year.Text</option>
+                                            }
                                         }
-                                        else
-                                        {
-                                            <option value="@year.Value">@year.Text</option>
-                                        }
-                                    }
-                                </select>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
-                }
 
-                <div class="container">
                     @if (tab.IsCommitteeSection)
                     {
                         @await Html.PartialAsync("_cg_committees", tab.Committees)

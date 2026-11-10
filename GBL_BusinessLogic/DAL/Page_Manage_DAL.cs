@@ -132,6 +132,22 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Investor_Pdf_Articles_List", sqlParams);
         }
 
+        /// <summary>
+        /// /sustainability/governance only — no year filter; date DESC.
+        /// Investor PDF pages continue to use Get_Investor_Pdf_page_wise_DAL.
+        /// </summary>
+        public DataSet Get_Sustainability_Governance_Articles_DAL(int contentId, int page = 1, int pageSize = 500)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@ContentId", contentId),
+                new SqlParameter("@PageNumber", page),
+                new SqlParameter("@PageSize", pageSize)
+            };
+
+            return GetDataSet("Get_Sustainability_Governance_Articles_List", sqlParams);
+        }
+
         public DataSet Get_Annual_Reports_page_wise_DAL(int contentId, int page, int pageSize)
         {
             SqlParameter[] sqlParams =

@@ -262,6 +262,23 @@ BEGIN
     LEFT JOIN dbo.media md ON md.ID = m.Certificate_media_id
     WHERE m.ProductId = @ID
     ORDER BY m.DisplayOrder, m.product_certificate_MappingID;
+
+    -- Industry + subcategory pairs reconstructed from tagged mappings.
+    SELECT DISTINCT
+        ism.IndustryId,
+        im.IndustryName,
+        psm.Category_Master_Id AS SubcategoryId,
+        c.SubcategoryName
+    FROM dbo.product_subcategory_Mapping psm
+    INNER JOIN dbo.Industry_Subcategory_Mapping ism
+        ON ism.Category_Master_Id = psm.Category_Master_Id
+    INNER JOIN dbo.product_Industry_Mapping pim
+        ON pim.ProductId = psm.ProductId
+       AND pim.IndustryId = ism.IndustryId
+    LEFT JOIN dbo.Industry_Master im ON im.IndustryId = ism.IndustryId
+    LEFT JOIN dbo.Industry_Subcategory_Master c ON c.SubcategoryId = psm.Category_Master_Id
+    WHERE psm.ProductId = @ID
+    ORDER BY im.IndustryName, c.SubcategoryName;
 END
 GO
 

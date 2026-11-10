@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.DAL;
@@ -58,6 +59,7 @@ namespace Core_project_BusinessLogic.BAL
                 throw new Exception("This page name already exists.");
 
             ValidateCertificates(entity.Certificates);
+            NormalizeIndustrySubcategoryPairs(entity);
 
             if (entity.Status != 1 && entity.Status != 2)
                 entity.Status = 1;
@@ -99,6 +101,19 @@ namespace Core_project_BusinessLogic.BAL
                 if (!titlePattern.IsMatch(title))
                     throw new Exception(Product_Master_Entity.TextBoxPatternMessage);
             }
+        }
+
+        private static void NormalizeIndustrySubcategoryPairs(Product_Master_Entity entity)
+        {
+            var pairs = (entity.IndustrySubcategoryPairs ?? new List<ProductIndustrySubcategoryPair>())
+                .Where(p => p != null && p.IndustryId > 0 && p.SubcategoryId > 0)
+                .GroupBy(p => p.IndustryId + ":" + p.SubcategoryId)
+                .Select(g => g.First())
+                .ToList();
+
+            entity.IndustrySubcategoryPairs = pairs;
+            entity.IndustryIds = pairs.Select(p => p.IndustryId).Distinct().ToList();
+            entity.SubcategoryIds = pairs.Select(p => p.SubcategoryId).Distinct().ToList();
         }
 
         public void ChangeStatus(int id, int status, int? updateUserId) =>

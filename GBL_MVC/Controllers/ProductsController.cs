@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Core_project_BusinessLogic;
 using Core_project_BusinessLogic.BAL;
 using Core_project_BusinessLogic.Entity;
 using GBL_MVC;
@@ -21,11 +22,19 @@ public class ProductsController : Controller
         _bal = new Product_Public_BAL(configuration);
     }
 
-    public IActionResult Index(int[]? industry, int[]? application, int[]? category)
+    /// <summary>
+    /// Products listing. Filter query params from /industries (and deep links) use encrypted ids:
+    /// ?industry=...&amp;application=...&amp;category=...
+    /// </summary>
+    public IActionResult Index(string[]? industry, string[]? application, string[]? category)
     {
         try
         {
-            var filter = BuildFilter(industry, application, category, 1);
+            var filter = BuildFilter(
+                DecryptIds(industry),
+                DecryptIds(application),
+                DecryptIds(category),
+                1);
             var model = _bal.GetIndex("products", 1, filter);
             return View(model);
         }
@@ -117,6 +126,40 @@ public class ProductsController : Controller
             PageSize = DefaultPageSize,
             LanguageId = 1
         };
+    }
+
+    private static int[] DecryptIds(string[]? values)
+    {
+        if (values == null || values.Length == 0)
+            return Array.Empty<int>();
+
+        var list = new List<int>();
+        foreach (var raw in values)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+                continue;
+
+            var value = raw.Trim();
+            try
+            {
+                var plain = CryptoEngine.Decrypt(value);
+                if (int.TryParse(plain, out var encryptedId) && encryptedId > 0)
+                {
+                    if (!list.Contains(encryptedId))
+                        list.Add(encryptedId);
+                    continue;
+                }
+            }
+            catch
+            {
+                // Fall through to plain int parsing for backward compatibility.
+            }
+
+            if (int.TryParse(value, out var plainId) && plainId > 0 && !list.Contains(plainId))
+                list.Add(plainId);
+        }
+
+        return list.ToArray();
     }
 
     private static string? JoinIds(int[]? ids)
