@@ -73,18 +73,19 @@ namespace GBL_BusinessLogic.BAL
             return table.AsEnumerable()
                 .GroupBy(x => new
                 {
-                    cont_id= Convert.ToInt32(x["cont_id"]),
+                    cont_id = Convert.ToInt32(x["cont_id"]),
                     GroupId = x.Field<Guid>("context_group_id").ToString(),
                     Sequence = Convert.ToInt32(x["component_sequence"]),
                     IsBlock = Convert.ToInt32(x["is_block"])
                 })
                 .Select(group => new ComponentGroup
                 {
+                    cont_id = group.Key.cont_id,
                     GroupId = group.Key.GroupId,
-
+                    Sequence = group.Key.Sequence,
                     Fields = group.Select(row => new ComponentField
                     {
-                        cont_id = row.Field<int>("cont_id"),
+                        cont_id = group.Key.cont_id,
                         GroupId = group.Key.GroupId,
                         FieldName = row.Field<string>("field_name") ?? "",
                         FieldKey = row.Field<string>("name_key") ?? "",
@@ -96,7 +97,6 @@ namespace GBL_BusinessLogic.BAL
                         sequence = group.Key.Sequence,
                         IsBlock = group.Key.IsBlock
                     }).ToList()
-
                 }).OrderBy(x => x.Fields.First().sequence).ToList();
         }
 
