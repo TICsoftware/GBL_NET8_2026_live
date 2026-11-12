@@ -72,28 +72,18 @@
             }
         </div>
 
-        @if (showResults && (resultItems.Count > 0 || !string.IsNullOrWhiteSpace(item.HmpgIntro)))
-        {
+        
             <div class="rc-results">
-                @if (resultItems.Count > 0)
+               @if (!string.IsNullOrWhiteSpace(item.Component_LHS_intro))
                 {
-                    <ul class="list-icon rc-results__list">
-                        @foreach (var result in resultItems)
-                        {
-                            var text = !string.IsNullOrWhiteSpace(result.Title) ? result.Title : result.Intro;
-                            if (string.IsNullOrWhiteSpace(text))
-                            {
-                                continue;
-                            }
-                            <li>@Html.Raw(text.CleanParagraphTags())</li>
-                        }
-                    </ul>
-                }
-                @if (!string.IsNullOrWhiteSpace(item.HmpgIntro))
+               @Html.Raw(item.Component_LHS_intro)
+                       
+               }
+                @if (!string.IsNullOrWhiteSpace(item.Component_RHS_intro))
                 {
-                    <p class="rc-results__statement">@Html.Raw(item.HmpgIntro.CleanParagraphTags())</p>
+                 @Html.Raw(item.Component_RHS_intro)
                 }
             </div>
-        }
+       
     </div>
 </section>
