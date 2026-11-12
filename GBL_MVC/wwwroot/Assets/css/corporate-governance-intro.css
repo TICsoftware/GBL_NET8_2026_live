@@ -22,6 +22,38 @@
   margin-bottom: 0;
 }
 
+.governance-copy .list-icon,
+.governance-copy ul {
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.25rem auto;
+  padding: 0;
+  text-align: left;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4375rem;
+}
+
+.governance-copy .list-icon li,
+.governance-copy ul li {
+  position: relative;
+  margin: 0;
+  padding-left: 1rem;
+  color: var(--color-primary, #282b31);
+}
+
+.governance-copy .list-icon li::before,
+.governance-copy ul li::before {
+  content: "";
+  position: absolute;
+  top: 0.5em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--color-secondary, #67815a);
+}
+
 @media all and (max-width: 1179px) {
   .governance-copy {
     max-width: min(100vw, 1100px);
