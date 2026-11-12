@@ -434,7 +434,9 @@
   padding: 1.25rem 1.25rem 5.25rem;
 }
 
+.turningCommitment-card__body h2,
 .turningCommitment-card__body h3,
+.carbonCircularity-card__body h2,
 .carbonCircularity-card__body h3 {
   position: relative;
   z-index: 2;
@@ -453,10 +455,14 @@
   transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
+.turningCommitment-cards-outer .swiper-slide.is-filled h2,
+.turningCommitment-cards-outer .swiper-slide:focus-within h2,
 .turningCommitment-cards-outer .swiper-slide.is-filled h3,
 .turningCommitment-cards-outer .swiper-slide:focus-within h3,
 .turningCommitment-cards-outer .swiper-slide.is-filled p,
 .turningCommitment-cards-outer .swiper-slide:focus-within p,
+.carbonCircularity-cards .swiper-slide.is-filled h2,
+.carbonCircularity-cards .swiper-slide:focus-within h2,
 .carbonCircularity-cards .swiper-slide.is-filled h3,
 .carbonCircularity-cards .swiper-slide:focus-within h3,
 .carbonCircularity-cards .swiper-slide.is-filled p,
@@ -511,8 +517,10 @@
 @media (prefers-reduced-motion: reduce) {
   .turningCommitment-cards-outer .swiper-slide::before,
   .carbonCircularity-cards .swiper-slide::before,
+  .turningCommitment-card__body h2,
   .turningCommitment-card__body h3,
   .turningCommitment-card__body p,
+  .carbonCircularity-card__body h2,
   .carbonCircularity-card__body h3,
   .carbonCircularity-card__body p {
     transition: none;
