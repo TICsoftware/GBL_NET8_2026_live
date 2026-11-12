@@ -1,3 +1,33 @@
+.page-intro-outer + .governance-copy-outer {
+  padding-top: 0;
+  padding-bottom: clamp(2.5rem, 5vw, 5rem);
+}
+
+.governance-copy {
+  max-width: min(75vw, 1100px);
+  width: 100%;
+  margin-inline: auto;
+  text-align: center;
+  color: var(--color-primary, #282b31);
+}
+
+.governance-copy p,
+.governance-copy li {
+  font-size: var(--text-p);
+  line-height: 1.55;
+  color: inherit;
+}
+
+.governance-copy p:last-child {
+  margin-bottom: 0;
+}
+
+@media all and (max-width: 1179px) {
+  .governance-copy {
+    max-width: min(100vw, 1100px);
+  }
+}
+
 .cg-jump {
   position: sticky;
   top: var(--header-h, 88px);

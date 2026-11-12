@@ -11,6 +11,52 @@
     var intro = !string.IsNullOrWhiteSpace(content?.Cont_intro)
         ? content.Cont_intro
         : content?.Cont_hmpg_intro;
+    var introLead = intro;
+    var introBody = string.Empty;
+
+    if (!string.IsNullOrWhiteSpace(intro))
+    {
+        var paragraphMatches = System.Text.RegularExpressions.Regex.Matches(
+            intro,
+            @"<p\b[^>]*>.*?</p>",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
+
+        var filledParagraphs = new List<System.Text.RegularExpressions.Match>();
+        foreach (System.Text.RegularExpressions.Match match in paragraphMatches)
+        {
+            var text = System.Text.RegularExpressions.Regex.Replace(match.Value, "<.*?>", string.Empty);
+            text = System.Net.WebUtility.HtmlDecode(text).Replace('\u00a0', ' ').Trim();
+            if (text.Length > 0)
+            {
+                filledParagraphs.Add(match);
+            }
+        }
+
+        if (filledParagraphs.Count > 2)
+        {
+            var second = filledParagraphs[1];
+            var splitAt = second.Index + second.Length;
+            introLead = intro.Substring(0, splitAt).Trim();
+            introBody = intro.Substring(splitAt).Trim();
+
+            var wrapper = System.Text.RegularExpressions.Regex.Match(
+                intro,
+                @"^\s*<(div|section|article)\b[^>]*>",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (wrapper.Success)
+            {
+                var closeTag = "</" + wrapper.Groups[1].Value + ">";
+                if (introBody.EndsWith(closeTag, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    introBody = introBody.Substring(0, introBody.Length - closeTag.Length).Trim();
+                    if (!introLead.EndsWith(closeTag, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        introLead += closeTag;
+                    }
+                }
+            }
+        }
+    }
 }
 
 @section head {
@@ -41,12 +87,23 @@
     @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
 
-@if (!string.IsNullOrWhiteSpace(intro))
+@if (!string.IsNullOrWhiteSpace(introLead))
 {
     <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
         <div class="container">
             <div class="page-intro-inner intro-lg text-center">
-                @Html.Raw(intro)
+                @Html.Raw(introLead)
+            </div>
+        </div>
+    </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(introBody))
+{
+    <section class="governance-copy-outer bg-gray">
+        <div class="container">
+            <div class="governance-copy">
+                @Html.Raw(introBody)
             </div>
         </div>
     </section>

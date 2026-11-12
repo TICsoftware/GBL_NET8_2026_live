@@ -22,8 +22,14 @@ LEARNING & DEVELOPMENT PAGE
 }
 
 .ld-media {
-  position: relative;
-  min-height: 26rem;
+  position: sticky;
+  top: calc(var(--header-h, 88px) + 0.75rem);
+  align-self: start;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 32rem;
+  min-height: 0;
   margin: 0;
   overflow: hidden;
 }
@@ -35,6 +41,7 @@ LEARNING & DEVELOPMENT PAGE
   width: 100%;
   height: 111.2%;
   max-width: none;
+  object-fit: cover;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -138,7 +145,10 @@ LEARNING & DEVELOPMENT PAGE
     grid-template-columns: 1fr;
   }
   .ld-media {
+    position: relative;
+    top: auto;
     min-height: 0;
+    max-height: none;
     aspect-ratio: 16 / 10;
   }
   .ld-split--copy-first .ld-media {
@@ -149,5 +159,23 @@ LEARNING & DEVELOPMENT PAGE
 @media (max-width: 767px) {
   .ld-growth__cards {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 125% zoom — 1920×1080 → ~1536×864 */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.25),
+  screen and (min-width: 1025px) and (min-resolution: 120dpi) {
+  .ld-media {
+    max-height: min(28rem, calc(100vh - var(--header-h, 88px) - 2.5rem));
+    top: calc(var(--header-h, 88px) + 0.75rem);
+  }
+}
+
+/* 150% zoom — 1920×1080 → ~1280×720 */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.5),
+  screen and (min-width: 1025px) and (min-resolution: 144dpi) {
+  .ld-media {
+    max-height: min(22rem, calc(100vh - var(--header-h, 88px) - 2rem));
+    top: calc(var(--header-h, 88px) + 0.5rem);
   }
 }
