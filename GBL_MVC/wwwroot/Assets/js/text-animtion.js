@@ -203,10 +203,17 @@
         stagger: STAGGER_IN,
       });
 
+      var isMobile = window.matchMedia("(max-width: 992px)").matches;
+      var stScroller = isMobile ? window : document.documentElement;
+
       ScrollTrigger.create({
         trigger: el,
+        scroller: stScroller,
         start: "top 78%",
         onEnter: function () {
+          tl.timeScale(1).play();
+        },
+        onEnterBack: function () {
           tl.timeScale(1).play();
         },
         onLeaveBack: function () {

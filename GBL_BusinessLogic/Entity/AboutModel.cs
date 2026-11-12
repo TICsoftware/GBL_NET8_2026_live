@@ -27,6 +27,10 @@ namespace GBL_BusinessLogic.Entity
         public List<ComponentModel> Founding_Family_List { get; set; } = new();
         public List<ComponentModel> Milestones_List { get; set; } = new();
 
+        // Leadership / Board of Directors
+        public List<ComponentModel> Board_Of_Directors_List { get; set; } = new();
+        public List<ComponentModel> Leadership_List { get; set; } = new();
+
         //Financial Information
         public List<ArticleModel> Section_List { get; set; } = new();
         public List<ArticleModel> SectionArticles_List { get; set; } = new();

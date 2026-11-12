@@ -46,7 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!swiper) return 1;
     var spv = swiper.params.slidesPerView;
     if (typeof spv !== "number") return 1;
-    return Math.max(1, Math.ceil(spv));
+    return Math.max(1, Math.ceil(spv + 0.01));
+  }
+
+  function isTouchSlider() {
+    return window.matchMedia("(max-width: 1023px)").matches;
   }
 
   function visibleCards() {
@@ -132,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function animateIncomingSlides() {
-    if (!swiper || !sectionInView) return;
+    if (!swiper) return;
 
     window.clearTimeout(slideAnimTimer);
     slideAnimTimer = window.setTimeout(function () {
@@ -140,11 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
       var incoming = now.filter(function (card) {
         return lastVisibleCards.indexOf(card) === -1;
       });
+      var touch = isTouchSlider();
       var outgoing = lastVisibleCards.filter(function (card) {
         return now.indexOf(card) === -1;
       });
 
-      if (hasGsap && outgoing.length) {
+      if (hasGsap && outgoing.length && !touch) {
         gsap.set(outgoing, { autoAlpha: 0, y: 140 });
       }
 
@@ -185,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
     swiper.on("resize", measureHeights);
     swiper.on("slideChange", function () {
       if (isDesktopHover()) closeExpand();
+      if (!lastVisibleCards.length) return;
       animateIncomingSlides();
     });
 
@@ -192,9 +198,21 @@ document.addEventListener("DOMContentLoaded", function () {
     measureHeights();
   }
 
+  function setSectionInView(on) {
+    if (on === sectionInView) return;
+    sectionInView = on;
+    if (on) return;
+    scrollLocked = false;
+    window.clearTimeout(scrollIdleTimer);
+    cards.forEach(function (card) {
+      setCardReady(card, false);
+    });
+    closeExpand(true);
+  }
+
   function playEnter() {
     if (sectionInView) return;
-    sectionInView = true;
+    setSectionInView(true);
     createSlider();
 
     window.requestAnimationFrame(function () {
@@ -216,13 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function playExit() {
     if (!sectionInView) return;
-    sectionInView = false;
-    scrollLocked = false;
-    window.clearTimeout(scrollIdleTimer);
-    cards.forEach(function (card) {
-      setCardReady(card, false);
-    });
-    closeExpand(true);
+    setSectionInView(false);
     if (!hasGsap || reduceMotion) return;
 
     gsap.to(cards, {
@@ -237,12 +249,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function watchViewport() {
+    createSlider();
+
     if (reduceMotion) {
-      createSlider();
       if (hasGsap) gsap.set(cards, { autoAlpha: 1, y: 0 });
       cards.forEach(function (card) {
         setCardReady(card, true);
       });
+      lastVisibleCards = visibleCards();
       return;
     }
 
@@ -252,17 +266,52 @@ document.addEventListener("DOMContentLoaded", function () {
       var isMobile = window.matchMedia("(max-width: 992px)").matches;
       var stScroller = isMobile ? window : document.documentElement;
 
-      ScrollTrigger.create({
-        trigger: sliderWrap,
-        scroller: stScroller,
-        start: "top 88%",
-        end: "bottom 12%",
-        invalidateOnRefresh: true,
-        onEnter: playEnter,
-        onEnterBack: playEnter,
-        onLeave: playExit,
-        onLeaveBack: playExit,
+      var tl = gsap.timeline({
+        defaults: { force3D: true, ease: "none" },
+        scrollTrigger: {
+          trigger: sliderWrap,
+          scroller: stScroller,
+          start: "top 90%",
+          end: "top 42%",
+          scrub: 1.15,
+          invalidateOnRefresh: true,
+          onEnter: function () {
+            setSectionInView(true);
+          },
+          onEnterBack: function () {
+            setSectionInView(true);
+          },
+          onLeave: function () {
+            setSectionInView(false);
+          },
+          onLeaveBack: function () {
+            setSectionInView(false);
+          },
+        },
       });
+
+      cards.forEach(function (card, i) {
+        tl.fromTo(
+          card,
+          { autoAlpha: 0, y: 140 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 1,
+            immediateRender: true,
+            onUpdate: function () {
+              if (this.progress() < 0.8 || isCardReady(card)) return;
+              setCardReady(card, true);
+            },
+            onComplete: function () {
+              setCardReady(card, true);
+            },
+          },
+          i * 0.12
+        );
+      });
+
+      lastVisibleCards = cards.slice();
 
       window.requestAnimationFrame(function () {
         ScrollTrigger.refresh();
@@ -274,7 +323,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (!("IntersectionObserver" in window)) {
-      createSlider();
       playEnter();
       return;
     }
@@ -691,119 +739,3 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  var explore = document.querySelector(".translating-explore");
-  if (!explore) return;
-
-  var openSelect = null;
-
-  function closeSelect(wrap) {
-    if (!wrap) return;
-    wrap.classList.remove("is-open");
-    var list = wrap.querySelector(".translating-select__list");
-    var trigger = wrap.querySelector(".translating-select__trigger");
-    if (list) list.hidden = true;
-    if (trigger) trigger.setAttribute("aria-expanded", "false");
-    if (openSelect === wrap) openSelect = null;
-  }
-
-  function openSelectMenu(wrap) {
-    if (openSelect && openSelect !== wrap) closeSelect(openSelect);
-    wrap.classList.add("is-open");
-    var list = wrap.querySelector(".translating-select__list");
-    var trigger = wrap.querySelector(".translating-select__trigger");
-    if (list) list.hidden = false;
-    if (trigger) trigger.setAttribute("aria-expanded", "true");
-    openSelect = wrap;
-  }
-
-  explore.querySelectorAll(".translating-select").forEach(function (wrap, index) {
-    var native = wrap.querySelector(".translating-select__control");
-    if (!native) return;
-
-    var listId = (native.id || "translating-select") + "-list";
-    var trigger = document.createElement("button");
-    trigger.type = "button";
-    trigger.className = "translating-select__trigger";
-    trigger.setAttribute("aria-haspopup", "listbox");
-    trigger.setAttribute("aria-expanded", "false");
-    trigger.setAttribute("aria-controls", listId);
-
-    var valueEl = document.createElement("span");
-    valueEl.className = "translating-select__value";
-    valueEl.textContent = native.options[native.selectedIndex]
-      ? native.options[native.selectedIndex].text
-      : "";
-
-    var chevron = document.createElement("span");
-    chevron.className = "translating-select__chevron";
-    chevron.setAttribute("aria-hidden", "true");
-
-    trigger.appendChild(valueEl);
-    trigger.appendChild(chevron);
-
-    var list = document.createElement("ul");
-    list.className = "translating-select__list";
-    list.id = listId;
-    list.setAttribute("role", "listbox");
-    list.hidden = true;
-
-    Array.prototype.forEach.call(native.options, function (option, optionIndex) {
-      var item = document.createElement("li");
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "translating-select__option";
-      btn.setAttribute("role", "option");
-      btn.setAttribute("data-value", option.value);
-      btn.textContent = option.text;
-      if (optionIndex === native.selectedIndex) {
-        btn.setAttribute("aria-selected", "true");
-        btn.classList.add("is-active");
-      }
-      btn.addEventListener("click", function () {
-        native.value = option.value;
-        native.dispatchEvent(new Event("change", { bubbles: true }));
-        valueEl.textContent = option.text;
-        list.querySelectorAll(".translating-select__option").forEach(function (el) {
-          el.classList.toggle("is-active", el === btn);
-          el.setAttribute("aria-selected", el === btn ? "true" : "false");
-        });
-        closeSelect(wrap);
-        trigger.focus();
-      });
-      item.appendChild(btn);
-      list.appendChild(item);
-    });
-
-    native.setAttribute("tabindex", "-1");
-    native.setAttribute("aria-hidden", "true");
-    wrap.classList.add("is-enhanced");
-    wrap.appendChild(trigger);
-    wrap.appendChild(list);
-
-    trigger.addEventListener("click", function () {
-      if (wrap.classList.contains("is-open")) closeSelect(wrap);
-      else openSelectMenu(wrap);
-    });
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!openSelect) return;
-    if (!openSelect.contains(event.target)) closeSelect(openSelect);
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && openSelect) {
-      var trigger = openSelect.querySelector(".translating-select__trigger");
-      closeSelect(openSelect);
-      if (trigger) trigger.focus();
-    }
-  });
-
-  var form = explore.querySelector(".translating-explore__filters");
-  if (form) {
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-    });
-  }
-});

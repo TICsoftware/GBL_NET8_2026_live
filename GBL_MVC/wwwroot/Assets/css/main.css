@@ -132,7 +132,7 @@ body {
 h1, h2, h3, h4, h5 {
   font-family: var(--font-uniNeueBold);
   color: var(--color-primary);
-  line-height: 1.25;
+  line-height: 1.125 !important;
   margin-bottom: 1rem;
 }
 

@@ -33,6 +33,30 @@ namespace GBL_BusinessLogic.BAL
             return model;
         }
 
+        public AboutModel GetLeadershipPage_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new AboutModel();
+            var pageName = string.IsNullOrWhiteSpace(pagename) ? "leadership" : pagename.Trim();
+            var ds = GetLeadershipPageData_DAL(pageName, languageId, geographyId);
+
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
+
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                var groupedData = GetGroupedComponents(ds.Tables[1]);
+                model.Components = groupedData;
+
+                // component_sequence 1 = Board of Directors (featured), 2 = BOD leadership list
+                model.Board_Of_Directors_List = MapComponents(groupedData, 1);
+                model.Leadership_List = MapComponents(groupedData, 2);
+            }
+
+            return model;
+        }
+
         public AboutModel GetAboutUs_BAL(string pagename, int languageId, int geographyId)
         {
             var model = new AboutModel();

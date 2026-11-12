@@ -1,0 +1,240 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.AboutModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Leadership";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+
+    var boardSection = Model?.Board_Of_Directors_List?.FirstOrDefault(x => x.IsBlock == 0);
+    var boardItems = (Model?.Board_Of_Directors_List?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList()
+        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
+    if (!boardItems.Any() && Model?.Board_Of_Directors_List?.Any() == true)
+    {
+        boardItems = Model.Board_Of_Directors_List.OrderBy(x => x.Sequence).ToList();
+    }
+    var chair = boardItems.FirstOrDefault();
+
+    var leadershipItems = (Model?.Leadership_List?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList()
+        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
+    if (!leadershipItems.Any() && Model?.Leadership_List?.Any() == true)
+    {
+        leadershipItems = Model.Leadership_List.OrderBy(x => x.Sequence).ToList();
+    }
+
+    string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? "";
+
+    string JoinHtml(params string?[] parts)
+    {
+        return string.Join("", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+    }
+}
+
+@section head {
+   <title>@(content?.cont_window_title ?? ViewData["Title"])</title>
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/leadership.css" asp-append-version="true" />
+}
+
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+else
+{
+   <section class="relative inside-banner-outer">
+      <div class="inside-banner-inner banner-animation relative">
+         <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+            <picture>
+               <source media="(min-width:1024px)" srcset="~/Assets/images/banners/leadership-banner.webp">
+               <img src="~/Assets/images/banners/leadership-banner.webp" alt="Leadership"
+                    class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                    loading="eager" fetchpriority="high">
+            </picture>
+            <div class="innerbanner-overlay"></div>
+         </div>
+         <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+            <div class="container">
+               <div class="max-w-4xl text-left">
+                  <h1 class="innerbanner-title text-h1 text-white title-animation">Leadership</h1>
+                  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                     <ol class="flex items-center gap-2 text-sm">
+                        <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>
+                        <li class="text-white/60">/</li>
+                        <li class="text-white">Leadership</li>
+                     </ol>
+                  </nav>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
+{
+   <section class="leadership-intro" aria-label="Introduction">
+      <div class="container">
+         <div class="leadership-intro__copy page-intro-inner">
+            @Html.Raw(Model.Content.Cont_intro)
+         </div>
+      </div>
+   </section>
+}
+else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
+{
+   <section class="leadership-intro" aria-label="Introduction">
+      <div class="container">
+         <div class="leadership-intro__copy page-intro-inner">
+            @Html.Raw(Model.Content.Content)
+         </div>
+      </div>
+   </section>
+}
+
+@if (chair != null || leadershipItems.Any())
+{
+   var sectionTitle = FirstNonEmpty(boardSection?.Title, boardSection?.DisplayTitle, "Our Board of Directors");
+
+   <section class="board" aria-labelledby="board-title">
+      <div class="container">
+         <h2 id="board-title" class="text-h2 title-animation board__title">@Html.Raw(sectionTitle.CleanParagraphTags())</h2>
+      </div>
+
+      @if (chair != null)
+      {
+         var chairName = chair.Title?.CleanParagraphTags() ?? "";
+         var chairRole = FirstNonEmpty(chair.Section_title, chair.Designation, chair.Component_Designation).CleanParagraphTags();
+         var chairImg = FirstNonEmpty(chair.ThumbnailImage, chair.ComponentThumbnail);
+         var chairAlt = FirstNonEmpty(chair.ThumbnailAltText, chair.ComponentThumbnailAltText, chairName);
+         var chairLead = chair.Intro;
+         var chairBody = chair.Content;
+         var chairModalBio = FirstNonEmpty(
+            JoinHtml(chair.Intro, chair.Content, chair.Popup_Content),
+            chair.Popup_Content,
+            JoinHtml(chair.Intro, chair.Content));
+
+         <div class="board-chair" data-leader>
+            <img src="~/Assets/images/leadership/diagonal-tint.svg" alt="" class="board-chair__diagonal" aria-hidden="true">
+            <img src="~/Assets/images/leadership/diagonal-white.svg" alt="" class="board-chair__diagonal" aria-hidden="true">
+            <div class="board-chair__media parallax-wrap">
+               @if (!string.IsNullOrWhiteSpace(chairImg))
+               {
+                  <img src="@chairImg" alt="@chairAlt" class="parallax-img" data-leader-photo loading="lazy">
+               }
+            </div>
+            <div class="board-chair__content">
+               @if (!string.IsNullOrWhiteSpace(chairName))
+               {
+                  <h3 class="board-chair__name" data-leader-name>@Html.Raw(chairName)</h3>
+               }
+               @if (!string.IsNullOrWhiteSpace(chairRole))
+               {
+                  <p class="board-chair__role" data-leader-role>@Html.Raw(chairRole)</p>
+               }
+               <span class="board-chair__rule" aria-hidden="true"></span>
+               @if (!string.IsNullOrWhiteSpace(chairLead))
+               {
+                  <div class="board-chair__lead">@Html.Raw(chairLead)</div>
+               }
+               @if (!string.IsNullOrWhiteSpace(chairBody))
+               {
+                  @Html.Raw(chairBody)
+               }
+               <button type="button" class="site-btn site-btn--outline board-chair__btn" data-leader-open aria-haspopup="dialog">
+                  <span class="site-btn__label">View Profile</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+               </button>
+               @if (!string.IsNullOrWhiteSpace(chairModalBio))
+               {
+                  <div class="leader-bio" data-leader-bio hidden>
+                     @Html.Raw(chairModalBio)
+                  </div>
+               }
+            </div>
+         </div>
+      }
+
+      @if (leadershipItems.Any())
+      {
+         <div class="container">
+            <ul class="board-grid">
+               @foreach (var item in leadershipItems)
+               {
+                  var name = item.Title?.CleanParagraphTags() ?? "";
+                  var role = FirstNonEmpty(item.Designation, item.Section_title, item.Component_Designation).CleanParagraphTags();
+                  var img = FirstNonEmpty(item.ThumbnailImage, item.ComponentThumbnail);
+                  var alt = FirstNonEmpty(item.ThumbnailAltText, item.ComponentThumbnailAltText, name);
+                  var bio = FirstNonEmpty(item.Popup_Content, item.Content, item.Intro);
+
+                  <li class="leader-card" data-leader>
+                     <div class="leader-card__media">
+                        <div class="leader-card__photo">
+                           @if (!string.IsNullOrWhiteSpace(img))
+                           {
+                              <img src="@img" alt="@alt" data-leader-photo width="776" height="746" loading="lazy">
+                           }
+                        </div>
+                     </div>
+                     <div class="leader-card__body">
+                        @if (!string.IsNullOrWhiteSpace(name))
+                        {
+                           <h3 class="leader-card__name">
+                              <button type="button" class="leader-card__open" data-leader-open aria-haspopup="dialog" data-leader-name>@Html.Raw(name)</button>
+                           </h3>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(role))
+                        {
+                           <p class="leader-card__role" data-leader-role>@Html.Raw(role)</p>
+                        }
+                     </div>
+                     @if (!string.IsNullOrWhiteSpace(bio))
+                     {
+                        <div class="leader-bio" data-leader-bio hidden>
+                           @Html.Raw(bio)
+                        </div>
+                     }
+                  </li>
+               }
+            </ul>
+         </div>
+      }
+   </section>
+}
+
+<dialog class="leader-modal" id="leader-modal" aria-labelledby="leader-modal-name">
+   <div class="leader-modal__backdrop" data-leader-close></div>
+   <div class="leader-modal__panel">
+      <button type="button" class="leader-modal__close" data-leader-close aria-label="Close profile">
+         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+      </button>
+      <div class="leader-modal__scroll" data-lenis-prevent tabindex="-1" autofocus>
+         <div class="leader-modal__media">
+            <div class="leader-modal__photo">
+               <img src="" alt="" data-leader-modal-photo>
+            </div>
+         </div>
+         <div class="leader-modal__content">
+            <h2 class="leader-modal__name" id="leader-modal-name" data-leader-modal-name></h2>
+            <p class="leader-modal__role" data-leader-modal-role></p>
+            <span class="leader-modal__rule" aria-hidden="true"></span>
+            <div class="leader-modal__bio" data-leader-modal-bio></div>
+         </div>
+      </div>
+   </div>
+</dialog>
+
+@section Scripts {
+   <script src="~/Assets/js/leadership.js" asp-append-version="true"></script>
+}

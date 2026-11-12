@@ -51,4 +51,23 @@ public class AboutUsController : Controller
             _bal.Dispose();
         }
     }
+
+    public IActionResult Leadership(string title)
+    {
+        try
+        {
+            var pageName = string.IsNullOrWhiteSpace(title) ? "leadership" : title;
+            var data = _bal.GetLeadershipPage_BAL(pageName, 1, 1);
+            return View("~/Views/Leadership/Index.cshtml", data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/Leadership :", ex);
+            return View("~/Views/Leadership/Index.cshtml", new AboutModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
 }
