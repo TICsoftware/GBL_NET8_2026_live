@@ -7,7 +7,7 @@
   max-width: min(75vw, 1100px);
   width: 100%;
   margin-inline: auto;
-  text-align: center;
+  text-align: left;
   color: var(--color-primary, #282b31);
 }
 
@@ -15,6 +15,7 @@
 .governance-copy li {
   font-size: var(--text-p);
   line-height: 1.55;
+  text-align: left;
   color: inherit;
 }
 
@@ -24,15 +25,15 @@
 
 .governance-copy .list-icon,
 .governance-copy ul {
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
-  margin: 1.25rem auto;
+  margin: 1.25rem 0;
   padding: 0;
   text-align: left;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1.4375rem;
+  gap: 0.85rem;
 }
 
 .governance-copy .list-icon li,
