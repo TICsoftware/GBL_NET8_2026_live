@@ -23,6 +23,10 @@ namespace GBL_BusinessLogic.Entity
         public List<ComponentModel> Legacy_Built_One_Year_At_A_Time_List { get; set; } = new();
         public List<ComponentModel> Ready_To_Build_With_Priya_Cement_List { get; set; } = new();
 
+        // Our Legacy
+        public List<ComponentModel> Founding_Family_List { get; set; } = new();
+        public List<ComponentModel> Milestones_List { get; set; } = new();
+
         //Financial Information
         public List<ArticleModel> Section_List { get; set; } = new();
         public List<ArticleModel> SectionArticles_List { get; set; } = new();
