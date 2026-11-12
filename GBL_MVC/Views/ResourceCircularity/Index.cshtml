@@ -6,8 +6,11 @@
     var content = Model?.Content;
     var circularEnergy = Model?.Circular_Energy_Model_List?.FirstOrDefault(x => x.IsBlock == 0)
         ?? Model?.Circular_Energy_Model_List?.FirstOrDefault();
-    var fossil = Model?.Fossil_Fuels_List?.FirstOrDefault(x => x.IsBlock == 0)
+    var energyStatement = Model?.Fossil_Fuels_List?.FirstOrDefault(x => x.IsBlock == 0)
         ?? Model?.Fossil_Fuels_List?.FirstOrDefault();
+    var hasCharts = (Model?.Energy_Chart_World_List?.Any() == true)
+        || (Model?.Energy_Chart_India_List?.Any() == true)
+        || (Model?.Energy_Chart_Gbl_List?.Any() == true);
 }
 
 @section head {
@@ -25,14 +28,11 @@
    <link rel="stylesheet" href="~/Assets/css/resource-circularity.css" asp-append-version="true" />
 }
 
-<!-- HERO BANNER -->
 @if (Model?.Content != null)
 {
    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
-<!-- HERO BANNER END -->
 
-<!--PAGE INTRO OUTER-->
 @if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
 {
    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
@@ -53,93 +53,140 @@ else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
       </div>
    </section>
 }
-<!--PAGE INTRO OUTER END-->
 
-<section class="middle-container learningBody section-spacing">
-   <div class="container middle-container-inner">
-
-      @if (Model?.Infographic_List != null && Model.Infographic_List.Any())
-      {
+@if (Model?.Infographic_List != null && Model.Infographic_List.Any())
+{
+   <section class="middle-container learningBody section-spacing">
+      <div class="container middle-container-inner">
          @await Html.PartialAsync("~/Views/CommonComponent/_rc_infographic.cshtml", Model.Infographic_List)
-      }
+      </div>
+   </section>
+}
 
-      @if (circularEnergy != null
-           || (Model?.Energy_Chart_World_List?.Any() == true)
-           || (Model?.Energy_Chart_India_List?.Any() == true)
-           || (Model?.Energy_Chart_Gbl_List?.Any() == true)
-           || fossil != null
-           || (Model?.Low_Emission_Operations_List?.Any() == true)
-           || (Model?.Conserving_Water_List?.Any() == true))
-      {
-         <section class="rc-energy section-spacing" aria-labelledby="rc-energy-title">
-            @if (!string.IsNullOrWhiteSpace(circularEnergy?.Title))
-            {
-               <h2 id="rc-energy-title" class="rc-energy__title text-h2">@Html.Raw(circularEnergy.Title.CleanParagraphTags())</h2>
-            }
-            @if (!string.IsNullOrWhiteSpace(circularEnergy?.Intro))
-            {
-               <div class="rc-energy__copy">
-                  @Html.Raw(circularEnergy.Intro)
-               </div>
-            }
-
-            @if ((Model?.Energy_Chart_World_List?.Any() == true)
-                 || (Model?.Energy_Chart_India_List?.Any() == true)
-                 || (Model?.Energy_Chart_Gbl_List?.Any() == true))
-            {
-               <div class="rc-energy__charts">
-                  @if (Model?.Energy_Chart_World_List?.Any() == true)
+@if (circularEnergy != null || hasCharts)
+{
+   <section class="rc-energy section-spacing" aria-labelledby="rc-energy-title">
+      <div class="container">
+         @if (circularEnergy != null)
+         {
+            <div class="rc-energy__intro">
+               <div class="rc-energy__lead">
+                  @if (!string.IsNullOrWhiteSpace(circularEnergy.Title))
                   {
-                     ViewData["ChartKey"] = "world";
-                     ViewData["DataStart"] = "56";
-                     @await Html.PartialAsync("~/Views/CommonComponent/_rc_energy_chart.cshtml", Model.Energy_Chart_World_List)
+                     <h2 id="rc-energy-title" class="text-h2">@Html.Raw(circularEnergy.Title.CleanParagraphTags())</h2>
                   }
-                  @if (Model?.Energy_Chart_India_List?.Any() == true)
+                  @if (!string.IsNullOrWhiteSpace(circularEnergy.Intro) || !string.IsNullOrWhiteSpace(circularEnergy.HmpgIntro))
                   {
-                     ViewData["ChartKey"] = "india";
-                     ViewData["DataStart"] = "-18";
-                     @await Html.PartialAsync("~/Views/CommonComponent/_rc_energy_chart.cshtml", Model.Energy_Chart_India_List)
-                  }
-                  @if (Model?.Energy_Chart_Gbl_List?.Any() == true)
-                  {
-                     ViewData["ChartKey"] = "gbl";
-                     ViewData["DataStart"] = "292";
-                     @await Html.PartialAsync("~/Views/CommonComponent/_rc_energy_chart.cshtml", Model.Energy_Chart_Gbl_List)
+                     var lead = !string.IsNullOrWhiteSpace(circularEnergy.HmpgIntro)
+                        ? circularEnergy.HmpgIntro
+                        : circularEnergy.Intro;
+                     <p>@Html.Raw(lead.CleanParagraphTags())</p>
                   }
                </div>
-            }
-
-            <div class="rc-energy__follow">
-               @if (fossil != null)
+               @if (!string.IsNullOrWhiteSpace(circularEnergy.Content)
+                    || (!string.IsNullOrWhiteSpace(circularEnergy.Intro) && !string.IsNullOrWhiteSpace(circularEnergy.HmpgIntro)))
                {
-                  <div class="rc-energy__split">
-                     @if (!string.IsNullOrWhiteSpace(fossil.Title))
+                  <div class="rc-energy__copy">
+                     @if (!string.IsNullOrWhiteSpace(circularEnergy.Content))
                      {
-                        <p class="rc-energy__aside">@Html.Raw(fossil.Title.CleanParagraphTags())</p>
+                        @Html.Raw(circularEnergy.Content)
                      }
-                     @if (!string.IsNullOrWhiteSpace(fossil.Intro))
+                     else
                      {
-                        <div class="rc-energy__follow-copy">
-                           @Html.Raw(fossil.Intro)
-                        </div>
+                        @Html.Raw(circularEnergy.Intro)
                      }
                   </div>
                }
+            </div>
+         }
 
-               @if (Model?.Low_Emission_Operations_List != null && Model.Low_Emission_Operations_List.Any())
+         @if (hasCharts)
+         {
+            <div class="rc-energy__charts">
+               @if (Model?.Energy_Chart_World_List?.Any() == true)
                {
-                  @await Html.PartialAsync("~/Views/CommonComponent/_rc_media_content.cshtml", Model.Low_Emission_Operations_List)
+                  ViewData["ChartKey"] = "world";
+                  ViewData["DataStart"] = "56";
+                  @await Html.PartialAsync("~/Views/CommonComponent/_rc_energy_chart.cshtml", Model.Energy_Chart_World_List)
                }
-
-               @if (Model?.Conserving_Water_List != null && Model.Conserving_Water_List.Any())
+               @if (Model?.Energy_Chart_India_List?.Any() == true)
                {
-                  @await Html.PartialAsync("~/Views/CommonComponent/_rc_media_content.cshtml", Model.Conserving_Water_List)
+                  ViewData["ChartKey"] = "india";
+                  ViewData["DataStart"] = "-18";
+                  @await Html.PartialAsync("~/Views/CommonComponent/_rc_energy_chart.cshtml", Model.Energy_Chart_India_List)
+               }
+               @if (Model?.Energy_Chart_Gbl_List?.Any() == true)
+               {
+                  ViewData["ChartKey"] = "gbl";
+                  ViewData["DataStart"] = "292";
+                  @await Html.PartialAsync("~/Views/CommonComponent/_rc_energy_chart.cshtml", Model.Energy_Chart_Gbl_List)
                }
             </div>
-         </section>
+         }
+      </div>
+   </section>
+}
+
+@if (energyStatement != null)
+{
+   var statementBg = !string.IsNullOrWhiteSpace(energyStatement.Componentbackground)
+      ? energyStatement.Componentbackground
+      : (!string.IsNullOrWhiteSpace(energyStatement.ComponentThumbnail)
+         ? energyStatement.ComponentThumbnail
+         : energyStatement.ThumbnailImage);
+   <section class="rc-statement section-spacing">
+      @if (!string.IsNullOrWhiteSpace(statementBg))
+      {
+         <img src="@statementBg" alt="" class="rc-statement__bg" loading="lazy">
       }
-   </div>
-</section>
+      <div class="container rc-statement__inner">
+         @if (!string.IsNullOrWhiteSpace(energyStatement.Title))
+         {
+            <p class="rc-statement__title">@Html.Raw(energyStatement.Title.CleanParagraphTags())</p>
+         }
+         @if (!string.IsNullOrWhiteSpace(energyStatement.Content) || !string.IsNullOrWhiteSpace(energyStatement.Intro))
+         {
+            <div class="rc-statement__copy">
+               @if (!string.IsNullOrWhiteSpace(energyStatement.Content))
+               {
+                  @Html.Raw(energyStatement.Content)
+               }
+               else
+               {
+                  @Html.Raw(energyStatement.Intro)
+               }
+            </div>
+         }
+      </div>
+   </section>
+}
+
+@if (Model?.Low_Emission_Operations_List != null && Model.Low_Emission_Operations_List.Any())
+{
+   ViewData["RcGray"] = false;
+   ViewData["RcCopyFirst"] = false;
+   ViewData["RcMediaMod"] = "rc-panel__media--emission";
+   ViewData["RcShowResults"] = false;
+   @await Html.PartialAsync("~/Views/CommonComponent/_rc_block.cshtml", Model.Low_Emission_Operations_List)
+}
+
+@if (Model?.Conserving_Water_List != null && Model.Conserving_Water_List.Any())
+{
+   ViewData["RcGray"] = true;
+   ViewData["RcCopyFirst"] = true;
+   ViewData["RcMediaMod"] = "rc-panel__media--water";
+   ViewData["RcShowResults"] = true;
+   @await Html.PartialAsync("~/Views/CommonComponent/_rc_block.cshtml", Model.Conserving_Water_List)
+}
+
+@if (Model?.Near_Zero_Waste_List != null && Model.Near_Zero_Waste_List.Any())
+{
+   ViewData["RcGray"] = false;
+   ViewData["RcCopyFirst"] = false;
+   ViewData["RcMediaMod"] = "rc-panel__media--waste";
+   ViewData["RcShowResults"] = false;
+   @await Html.PartialAsync("~/Views/CommonComponent/_rc_block.cshtml", Model.Near_Zero_Waste_List)
+}
 
 @section Scripts {
    <script src="~/Assets/js/resource-circularity.js" asp-append-version="true"></script>

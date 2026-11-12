@@ -33,6 +33,7 @@ namespace GBL_BusinessLogic.BAL
                 model.Fossil_Fuels_List = MapComponents(groupedData, 6);
                 model.Low_Emission_Operations_List = MapComponents(groupedData, 7);
                 model.Conserving_Water_List = MapComponents(groupedData, 8);
+                model.Near_Zero_Waste_List = MapComponents(groupedData, 9);
             }
 
             return model;

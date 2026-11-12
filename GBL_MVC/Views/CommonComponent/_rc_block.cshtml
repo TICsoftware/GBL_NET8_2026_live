@@ -1,0 +1,99 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model List<ComponentModel>
+@{
+    var item = Model?.FirstOrDefault(x => x.IsBlock == 0) ?? Model?.FirstOrDefault();
+    if (item == null)
+    {
+        return;
+    }
+
+    var gray = ViewData["RcGray"] as bool? == true;
+    var copyFirst = ViewData["RcCopyFirst"] as bool? == true;
+    var mediaMod = ViewData["RcMediaMod"] as string ?? "";
+    var showResults = ViewData["RcShowResults"] as bool? == true;
+    var resultItems = Model?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList()
+        ?? new List<ComponentModel>();
+
+    var img = !string.IsNullOrWhiteSpace(item.ComponentThumbnail)
+        ? item.ComponentThumbnail
+        : item.ThumbnailImage;
+    var alt = !string.IsNullOrWhiteSpace(item.ComponentThumbnailAltText)
+        ? item.ComponentThumbnailAltText
+        : (!string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.ThumbnailAltText : item.Title);
+}
+
+<section class="rc-block@(gray ? " rc-block--gray" : "") section-spacing">
+    <div class="container">
+        @if (!string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(item.Intro))
+        {
+            <div class="rc-head">
+                @if (!string.IsNullOrWhiteSpace(item.Title))
+                {
+                    <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
+                }
+                @if (!string.IsNullOrWhiteSpace(item.Intro))
+                {
+                    <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                }
+            </div>
+        }
+
+        <div class="rc-panel@(copyFirst ? " rc-panel--copy-first" : "")">
+            @if (copyFirst)
+            {
+                @if (!string.IsNullOrWhiteSpace(item.Content))
+                {
+                    <div class="rc-panel__copy">
+                        @Html.Raw(item.Content)
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(img))
+                {
+                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap" data-parallax-travel="5">
+                        <img src="@img" alt="@alt" class="parallax-img" loading="lazy">
+                    </figure>
+                }
+            }
+            else
+            {
+                @if (!string.IsNullOrWhiteSpace(img))
+                {
+                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap" data-parallax-travel="5">
+                        <img src="@img" alt="@alt" class="parallax-img" loading="lazy">
+                    </figure>
+                }
+                @if (!string.IsNullOrWhiteSpace(item.Content))
+                {
+                    <div class="rc-panel__copy">
+                        @Html.Raw(item.Content)
+                    </div>
+                }
+            }
+        </div>
+
+        @if (showResults && (resultItems.Count > 0 || !string.IsNullOrWhiteSpace(item.HmpgIntro)))
+        {
+            <div class="rc-results">
+                @if (resultItems.Count > 0)
+                {
+                    <ul class="list-icon rc-results__list">
+                        @foreach (var result in resultItems)
+                        {
+                            var text = !string.IsNullOrWhiteSpace(result.Title) ? result.Title : result.Intro;
+                            if (string.IsNullOrWhiteSpace(text))
+                            {
+                                continue;
+                            }
+                            <li>@Html.Raw(text.CleanParagraphTags())</li>
+                        }
+                    </ul>
+                }
+                @if (!string.IsNullOrWhiteSpace(item.HmpgIntro))
+                {
+                    <p class="rc-results__statement">@Html.Raw(item.HmpgIntro.CleanParagraphTags())</p>
+                }
+            </div>
+        }
+    </div>
+</section>
