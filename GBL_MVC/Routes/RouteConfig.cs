@@ -16,7 +16,13 @@ namespace GBL_MVC.Routes
             app.MapControllerRoute(
                     name: "aboutus",
                     pattern: "about-us",
-                    defaults: new { controller = "About", action = "AboutUs", title = "about-us" }
+                    defaults: new { controller = "AboutUs", action = "AboutUs", title = "about-us" }
+                );
+
+            app.MapControllerRoute(
+                    name: "our-legacy",
+                    pattern: "/about-us/our-legacy",
+                    defaults: new { controller = "AboutUs", action = "OurLegacy", title = "our-legacy" }
                 );
 
 
