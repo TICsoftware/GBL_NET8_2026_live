@@ -112,11 +112,14 @@ namespace Core_project_BusinessLogic.DAL
             if (filter.PageNumber < 1) filter.PageNumber = 1;
             if (filter.PageSize < 1) filter.PageSize = 6;
             if (filter.LanguageId < 1) filter.LanguageId = 1;
+            // Pair filter requires both industry and subcategory (tab selection).
+            if (filter.IndustryId <= 0 || filter.CategoryId <= 0)
+                return (new List<Industry_Inside_Product>(), 0);
 
             SqlParameter[] p =
             {
                 new("@IndustryId", filter.IndustryId),
-                new("@CategoryId", filter.CategoryId > 0 ? filter.CategoryId : DBNull.Value),
+                new("@CategoryId", filter.CategoryId),
                 new("@Page", filter.PageNumber),
                 new("@PageSize", filter.PageSize),
                 new("@LanguageId", filter.LanguageId)

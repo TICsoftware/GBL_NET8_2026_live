@@ -1952,11 +1952,6 @@
       margin-top: 153px;
     }
   }
-  .lg\:block {
-    @media (width >= 64rem) {
-      display: block;
-    }
-  }
   .lg\:grid {
     @media (width >= 64rem) {
       display: grid;

@@ -44,7 +44,12 @@ namespace Core_project_BusinessLogic.BAL
 
         public (List<Industry_Inside_Product> Data, int Total) GetInsideProducts(Industry_Inside_Filter filter)
         {
-            var result = _dal.GetInsideProducts(filter ?? new Industry_Inside_Filter());
+            filter ??= new Industry_Inside_Filter();
+            // SP filters by exact industry + subcategory pair; both ids are required for tab AJAX.
+            if (filter.IndustryId <= 0 || filter.CategoryId <= 0)
+                return (new List<Industry_Inside_Product>(), 0);
+
+            var result = _dal.GetInsideProducts(filter);
             foreach (var item in result.Data)
                 item.Intro = ToPlainText(item.Intro);
             return result;
