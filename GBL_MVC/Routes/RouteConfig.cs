@@ -105,8 +105,8 @@ app.MapControllerRoute(
 
   app.MapControllerRoute(
                    name: "Subsidiaries",
-                   pattern: "about-us/subsidiaries",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/subsidiaries" }
+                   pattern: "about-us/our-subsidiaries",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-subsidiaries" }
            );
 
 
