@@ -73,16 +73,19 @@ namespace GBL_BusinessLogic.BAL
             return table.AsEnumerable()
                 .GroupBy(x => new
                 {
+                    cont_id = Convert.ToInt32(x["cont_id"]),
                     GroupId = x.Field<Guid>("context_group_id").ToString(),
                     Sequence = Convert.ToInt32(x["component_sequence"]),
                     IsBlock = Convert.ToInt32(x["is_block"])
                 })
                 .Select(group => new ComponentGroup
                 {
+                    cont_id = group.Key.cont_id,
                     GroupId = group.Key.GroupId,
-
+                    Sequence = group.Key.Sequence,
                     Fields = group.Select(row => new ComponentField
                     {
+                        cont_id = group.Key.cont_id,
                         GroupId = group.Key.GroupId,
                         FieldName = row.Field<string>("field_name") ?? "",
                         FieldKey = row.Field<string>("name_key") ?? "",
@@ -94,7 +97,6 @@ namespace GBL_BusinessLogic.BAL
                         sequence = group.Key.Sequence,
                         IsBlock = group.Key.IsBlock
                     }).ToList()
-
                 }).OrderBy(x => x.Fields.First().sequence).ToList();
         }
 
@@ -128,6 +130,7 @@ namespace GBL_BusinessLogic.BAL
                 return new ComponentModel
                 {
                     GroupId = group.GroupId,
+                    cont_id = group.cont_id,
                     Title = Config_Application_Website.GetValue(dict, "Title", "Component Title"),
                     Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro"),
                     HmpgIntro = Config_Application_Website.GetValue(dict, "Landing intro", "Component Landing intro"),
@@ -160,6 +163,8 @@ namespace GBL_BusinessLogic.BAL
                     Component_Button_Title2 = Config_Application_Website.GetValue(dict, "component button title 2", "Component Button Title 2"),
                     Component_right_image = Config_Application_Website.GetPath(group, "Component right image"),
                     Component_Right_image_alt = Config_Application_Website.GetValue(dict, "Component Right image alt"),
+                    Component_RHS_intro = Config_Application_Website.GetValue(dict, "Component RHS intro", "component RHS intro", "RHS intro"),
+                    Component_LHS_intro = Config_Application_Website.GetValue(dict, "Component LHS intro", "component LHS intro", "LHS intro"),
                     Component_Designation = Config_Application_Website.GetValue(dict, "component designation"),
                     Component_Designation2 = Config_Application_Website.GetValue(dict, "Component designation 2"),
                     Designation = Config_Application_Website.GetValue(dict, "Designation"),

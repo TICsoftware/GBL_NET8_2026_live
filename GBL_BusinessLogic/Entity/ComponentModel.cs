@@ -7,6 +7,7 @@ namespace GBL_BusinessLogic.Entity
 {
     public class ComponentModel
     {
+        public int cont_id{get;set;}
         public string GroupId { get; set; }
 
         public string Title { get; set; }
@@ -61,6 +62,8 @@ namespace GBL_BusinessLogic.Entity
 
         public string Component_right_image { get; set; }
         public string Component_Right_image_alt { get; set; }
+        public string Component_RHS_intro { get; set; }
+        public string Component_LHS_intro { get; set; }
         public string Component_Designation { get; set; }
         public string Component_Designation2 { get; set; }
         public string Designation { get; set; }
@@ -75,7 +78,7 @@ namespace GBL_BusinessLogic.Entity
         public string bg_class { get; set; }
         public string year { get; set; }
 
-        // Resource Circularity / chart fields
+            // Resource Circularity / chart fields
         public string DataKey { get; set; }
         public string DataValue { get; set; }
         public string DataDraw { get; set; }
@@ -115,6 +118,7 @@ namespace GBL_BusinessLogic.Entity
         public string Tag_list { get; set; }
         public string Publication { get; set; }
         public string Search_url { get; set; }
+        public string BreadcrumbTitle { get; set; }
     }
 
 }

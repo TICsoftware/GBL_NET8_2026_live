@@ -65,12 +65,21 @@ namespace Core_project_BusinessLogic.Entity
         public List<int> ApplicationIds { get; set; } = new();
         public List<int> SubcategoryIds { get; set; } = new();
         public List<int> PackagingIds { get; set; } = new();
+        public List<ProductIndustrySubcategoryPair> IndustrySubcategoryPairs { get; set; } = new();
         public List<Product_Certificate_Entity> Certificates { get; set; } = new();
 
         public string? SearchText { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public int TotalRecords { get; set; }
+    }
+
+    public class ProductIndustrySubcategoryPair
+    {
+        public int IndustryId { get; set; }
+        public string? IndustryName { get; set; }
+        public int SubcategoryId { get; set; }
+        public string? SubcategoryName { get; set; }
     }
 
     public class Product_Certificate_Entity

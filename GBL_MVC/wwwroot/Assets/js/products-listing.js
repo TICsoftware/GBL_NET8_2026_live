@@ -252,7 +252,26 @@
 
     $loadMore.on("click", loadMore);
 
+    function openSelectedDropdown() {
+      var order = ["category", "application", "industry"];
+      var opened = false;
+      for (var i = 0; i < order.length; i++) {
+        var name = order[i];
+        var $wrap = $root.find('.pf-dropdown[data-filter-group="' + name + '"]');
+        if ($wrap.find("input[type='checkbox']:checked").length) {
+          openMenu($wrap);
+          opened = true;
+          break;
+        }
+      }
+      if (opened && window.matchMedia("(max-width: 1079px)").matches) {
+        $root.addClass("is-mobile-filter-open");
+        $("[data-open-mobile-filter]").attr("aria-expanded", "true");
+      }
+    }
+
     renderChips();
     updateDropdownState();
+    openSelectedDropdown();
   });
 })(jQuery);

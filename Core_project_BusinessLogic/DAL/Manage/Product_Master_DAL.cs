@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Core_project_BusinessLogic.Entity;
@@ -43,6 +44,9 @@ namespace Core_project_BusinessLogic.DAL
             entity.SubcategoryIds = ReadIdList(ds, 3);
             entity.PackagingIds = ReadIdList(ds, 4);
             entity.Certificates = ReadCertificates(ds, 5);
+            entity.IndustrySubcategoryPairs = ReadIndustrySubcategoryPairs(ds, 6);
+            if (entity.IndustrySubcategoryPairs.Count == 0)
+                entity.IndustrySubcategoryPairs = BuildPairsFallback(entity.IndustryIds, entity.SubcategoryIds);
             return entity;
         }
 
@@ -131,6 +135,7 @@ namespace Core_project_BusinessLogic.DAL
                 new("@ApplicationIds", ToCsv(m.ApplicationIds)),
                 new("@SubcategoryIds", ToCsv(m.SubcategoryIds)),
                 new("@PackagingIds", ToCsv(m.PackagingIds)),
+                new("@IndustrySubcategoryPairs", ToPairsCsv(m.IndustrySubcategoryPairs)),
                 new("@Create_UserId", userId.HasValue ? userId.Value : DBNull.Value)
             };
             SQLInsert_Update_Delete_Data("Product_Master_SaveMappings", p);
@@ -275,6 +280,69 @@ namespace Core_project_BusinessLogic.DAL
             return list;
         }
 
+        private static List<ProductIndustrySubcategoryPair> ReadIndustrySubcategoryPairs(DataSet ds, int tableIndex)
+        {
+            var list = new List<ProductIndustrySubcategoryPair>();
+            if (ds.Tables.Count <= tableIndex) return list;
+            foreach (DataRow r in ds.Tables[tableIndex].Rows)
+            {
+                var industryId = ColInt(r, "IndustryId") ?? 0;
+                var subcategoryId = ColInt(r, "SubcategoryId") ?? 0;
+                if (industryId <= 0 || subcategoryId <= 0) continue;
+                list.Add(new ProductIndustrySubcategoryPair
+                {
+                    IndustryId = industryId,
+                    IndustryName = ColStr(r, "IndustryName"),
+                    SubcategoryId = subcategoryId,
+                    SubcategoryName = ColStr(r, "SubcategoryName")
+                });
+            }
+            return list;
+        }
+
+        private List<ProductIndustrySubcategoryPair> BuildPairsFallback(List<int> industryIds, List<int> subcategoryIds)
+        {
+            var list = new List<ProductIndustrySubcategoryPair>();
+            if (industryIds == null || industryIds.Count == 0 || subcategoryIds == null || subcategoryIds.Count == 0)
+                return list;
+
+            var remaining = new HashSet<int>(subcategoryIds.Where(id => id > 0));
+
+            // Prefer real industry↔subcategory links.
+            foreach (var industryId in industryIds.Where(id => id > 0))
+            {
+                if (remaining.Count == 0) break;
+                foreach (var item in GetSubcategoriesByIndustries(new List<int> { industryId }))
+                {
+                    if (!remaining.Contains(item.Id)) continue;
+                    list.Add(new ProductIndustrySubcategoryPair
+                    {
+                        IndustryId = industryId,
+                        SubcategoryId = item.Id,
+                        SubcategoryName = item.Name
+                    });
+                    remaining.Remove(item.Id);
+                }
+            }
+
+            // Legacy 1 industry + N subcategories with no mapping row: still show in edit grid.
+            if (remaining.Count > 0 && industryIds.Count == 1)
+            {
+                var industryId = industryIds[0];
+                foreach (var subcategoryId in remaining.ToList())
+                {
+                    list.Add(new ProductIndustrySubcategoryPair
+                    {
+                        IndustryId = industryId,
+                        SubcategoryId = subcategoryId
+                    });
+                    remaining.Remove(subcategoryId);
+                }
+            }
+
+            return list;
+        }
+
         private static List<int> ReadIdList(DataSet ds, int tableIndex)
         {
             var list = new List<int>();
@@ -289,6 +357,20 @@ namespace Core_project_BusinessLogic.DAL
 
         private static object ToCsv(List<int>? ids) =>
             ids == null || ids.Count == 0 ? DBNull.Value : string.Join(",", ids);
+
+        private static object ToPairsCsv(List<ProductIndustrySubcategoryPair>? pairs)
+        {
+            if (pairs == null || pairs.Count == 0)
+                return DBNull.Value;
+
+            var values = pairs
+                .Where(p => p != null && p.IndustryId > 0 && p.SubcategoryId > 0)
+                .Select(p => p.IndustryId + ":" + p.SubcategoryId)
+                .Distinct()
+                .ToList();
+
+            return values.Count == 0 ? DBNull.Value : string.Join(",", values);
+        }
 
         private static string? ColStr(DataRow r, string col) =>
             r.Table.Columns.Contains(col) && r[col] != DBNull.Value ? r[col].ToString() : null;

@@ -2,12 +2,10 @@
  * Philosophy & Guiding Principles — scroll animation
  *
  * Desktop (1024px+):
- *   1. Image sits in a box under the title/copy (dark type on white).
- *   2. On scroll it travels, then expands to full screen.
- *   3. Type stays black until the photo sits under the copy, then inverts to white.
- *   4. Infographic cards then travel in at different speeds.
- *
- * Mobile / reduced motion: skip the pin sequence; show image + infographic static.
+ *   1. Title + intro stay on screen; intro words fill on scroll.
+ *   2. Keep scrolling → image starts scaling up.
+ *   3. After the image is 60% of the way to full viewport,
+ *      the infographic travels in with the remaining scroll.
  */
 document.addEventListener("DOMContentLoaded", function () {
   var section = document.querySelector(".ourPhilosophy");
@@ -22,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var infographic = section.querySelector("[data-philosophy-infographic]");
   if (!track || !sticky || !frame || !copy || !infographic) return;
 
+  var introParagraph = copy.querySelector(".section-intro__content p");
   var cardTl = infographic.querySelector('.philosophy-card[data-principle="tl"]');
   var cardTr = infographic.querySelector('.philosophy-card[data-principle="tr"]');
   var cardBl = infographic.querySelector('.philosophy-card[data-principle="bl"]');
@@ -31,7 +30,35 @@ document.addEventListener("DOMContentLoaded", function () {
   var titleEl = copy.querySelector(".text-h2");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hasGsap = typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined";
-  var START_Y = 120;
+  var START_Y = 0;
+  var FRAME_MIN_H = 480;
+  var FILL_FROM = "#cccccc";
+  var FILL_TO = "#282b31";
+
+  function wrapIntroWords(el) {
+    if (!el || el.dataset.introFill === "ready") return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      var text = node.nodeValue;
+      if (!text || !text.trim()) return;
+      var frag = document.createDocumentFragment();
+      text.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          frag.appendChild(document.createTextNode(part));
+          return;
+        }
+        var span = document.createElement("span");
+        span.className = "intro-fill-word";
+        span.textContent = part;
+        frag.appendChild(span);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    el.dataset.introFill = "ready";
+  }
 
   function boxedRect() {
     var stickyRect = sticky.getBoundingClientRect();
@@ -39,8 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var stickyH = sticky.offsetHeight;
     var width = copy.offsetWidth;
     var left = Math.max(0, copyRect.left - stickyRect.left);
-    var top = Math.max(0, copyRect.bottom - stickyRect.top + 20);
-    var height = Math.max(220, stickyH - top - START_Y - 16);
+    var top = Math.max(0, copyRect.bottom - stickyRect.top + 8);
+    var height = Math.max(FRAME_MIN_H, stickyH - top - 16);
     return { left: left, top: top, width: width, height: height };
   }
 
@@ -59,33 +86,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /**
-   * Black while the photo is still below the headline/copy.
-   * Invert to white only when the image edge has reached the text row.
-   */
-  function imageIsUnderCopy() {
-    var fr = frame.getBoundingClientRect();
-    var intro = copy.querySelector(".section-intro") || copy;
-    var cr = intro.getBoundingClientRect();
-    return fr.top <= cr.top + 8;
-  }
-
-  function syncTypeColor() {
-    var invert = imageIsUnderCopy();
-    var words = copy.querySelectorAll(".intro-fill-word");
-    section.classList.toggle("is-on-media", invert);
-    if (invert) {
-      if (titleEl) gsap.set(titleEl, { color: "#fff" });
-      if (words.length) gsap.set(words, { color: "#fff" });
-    } else {
-      if (titleEl) gsap.set(titleEl, { clearProps: "color" });
-      if (words.length) gsap.set(words, { clearProps: "color" });
-    }
+  function ninetyRect() {
+    var vw = sticky.offsetWidth;
+    var vh = sticky.offsetHeight;
+    var width = vw * 0.9;
+    var height = vh * 0.9;
+    return {
+      left: (vw - width) / 2,
+      top: (vh - height) / 2,
+      width: width,
+      height: height,
+    };
   }
 
   if (!hasGsap || reduceMotion) {
+    wrapIntroWords(introParagraph);
     if (hasGsap) {
       gsap.set(frame, { left: 0, top: 0, width: "100%", height: "100%", y: 0 });
+      var staticWords = copy.querySelectorAll(".intro-fill-word");
+      if (staticWords.length) gsap.set(staticWords, { color: FILL_TO });
     } else {
       frame.style.left = "0";
       frame.style.top = "0";
@@ -106,59 +125,109 @@ document.addEventListener("DOMContentLoaded", function () {
   var stScroller = isMobileView ? window : document.documentElement;
 
   mm.add("(min-width: 1024px)", function () {
+    wrapIntroWords(introParagraph);
+    var fillWords = copy.querySelectorAll(".intro-fill-word");
+
     var startBox = boxedRect();
     applyBox(startBox, travelY(startBox));
-    if (frameImg) gsap.set(frameImg, { scale: 1.16, transformOrigin: "50% 50%" });
+    if (frameImg) gsap.set(frameImg, { scale: 1, transformOrigin: "50% 50%" });
     gsap.set(veil, { opacity: 0 });
-    gsap.set(infographic, { autoAlpha: 0 });
-    if (hubInner) gsap.set(hubInner, { scale: 0.68, autoAlpha: 0 });
-    if (cardTl) gsap.set(cardTl, { autoAlpha: 0, x: -120, y: -90 });
-    if (cardTr) gsap.set(cardTr, { autoAlpha: 0, x: 140, y: -70 });
-    if (cardBl) gsap.set(cardBl, { autoAlpha: 0, x: -110, y: 120 });
-    if (cardBr) gsap.set(cardBr, { autoAlpha: 0, x: 130, y: 100 });
+    gsap.set(copy, { y: 0, autoAlpha: 1 });
+    gsap.set(infographic, {
+      top: "50%",
+      xPercent: -50,
+      yPercent: -50,
+      y: "110vh",
+      autoAlpha: 1,
+    });
+    if (hubInner) gsap.set(hubInner, { scale: 1, autoAlpha: 1 });
+    cards.forEach(function (card) {
+      gsap.set(card, { autoAlpha: 1, x: 0, y: 0 });
+    });
+    if (fillWords.length) gsap.set(fillWords, { color: FILL_FROM });
     section.classList.remove("is-on-media");
 
-    var EXPAND_AT = 0.12;
-    var FULL_AT = 0.4;
+    var fillTween = null;
+    var introBlock = copy.querySelector(".section-intro") || copy;
+    if (fillWords.length) {
+      fillTween = gsap.to(fillWords, {
+        color: FILL_TO,
+        stagger: 0.05,
+        ease: "none",
+        immediateRender: false,
+        scrollTrigger: {
+          id: "philosophy-intro-fill",
+          trigger: introBlock,
+          scroller: stScroller,
+          start: "top 88%",
+          end: "top 28%",
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+        },
+      });
+    }
+
+    var FRAME_DONE = 0.34;
+    var INFOGRAPHIC_START = 0.4;
+
+    function headerOffset() {
+      var header = document.querySelector(".site-header");
+      return header ? Math.round(header.getBoundingClientRect().height) : 0;
+    }
 
     var tl = gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
         trigger: track,
         scroller: stScroller,
-        start: "top 70%",
-        end: "bottom 20%",
-        scrub: 0.45,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.9,
         invalidateOnRefresh: true,
       },
-      onUpdate: syncTypeColor,
     });
 
-    tl.to(frame, { y: 0, duration: EXPAND_AT }, 0)
+    tl.to(frame, { y: 0, duration: 0.05 }, 0)
       .to(
         frame,
         {
           left: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-          duration: 0.28,
+          top: headerOffset,
+          width: function () {
+            return sticky.offsetWidth;
+          },
+          height: function () {
+            return Math.max(0, sticky.offsetHeight - headerOffset());
+          },
+          duration: FRAME_DONE,
         },
-        EXPAND_AT
+        0
       )
-      .to(frameImg, { scale: 1, duration: 0.28 }, EXPAND_AT)
-      .to(veil, { opacity: 0.55, duration: 0.28 }, EXPAND_AT)
-      .to(infographic, { autoAlpha: 1, duration: 0.2 }, FULL_AT);
-
-    if (cardTl) tl.to(cardTl, { autoAlpha: 1, x: 0, y: 0, duration: 0.22 }, FULL_AT);
-    if (cardBl) tl.to(cardBl, { autoAlpha: 1, x: 0, y: 0, duration: 0.28 }, FULL_AT + 0.02);
-    if (hubInner) tl.to(hubInner, { autoAlpha: 1, scale: 1, duration: 0.16 }, FULL_AT + 0.04);
-    if (cardTr) tl.to(cardTr, { autoAlpha: 1, x: 0, y: 0, duration: 0.18 }, FULL_AT + 0.06);
-    if (cardBr) tl.to(cardBr, { autoAlpha: 1, x: 0, y: 0, duration: 0.22 }, FULL_AT + 0.08);
-    tl.to({}, { duration: 0.16 });
+      .to(frameImg, { scale: 1, duration: FRAME_DONE }, 0)
+      .to(
+        copy,
+        {
+          y: function () {
+            return -(copy.offsetHeight + 48);
+          },
+          duration: FRAME_DONE,
+        },
+        0
+      )
+      .to(
+        veil,
+        { opacity: 0.45, duration: 1 - INFOGRAPHIC_START, ease: "power1.in" },
+        INFOGRAPHIC_START
+      )
+      .to(
+        infographic,
+        { y: 0, duration: 1 - INFOGRAPHIC_START, ease: "power1.out" },
+        INFOGRAPHIC_START
+      );
 
     var onRefresh = function () {
-      if (tl.scrollTrigger && tl.scrollTrigger.progress < 0.02) {
+      if (!tl.scrollTrigger) return;
+      if (tl.scrollTrigger.progress < 0.02) {
         var box = boxedRect();
         applyBox(box, travelY(box));
       }
@@ -170,9 +239,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     return function () {
       ScrollTrigger.removeEventListener("refresh", onRefresh);
+      if (fillTween) {
+        if (fillTween.scrollTrigger) fillTween.scrollTrigger.kill();
+        fillTween.kill();
+      }
       if (tl.scrollTrigger) tl.scrollTrigger.kill();
       tl.kill();
-      gsap.set([frame, frameImg, veil, infographic, hubInner, titleEl].concat(cards), { clearProps: "all" });
+      gsap.set([frame, frameImg, veil, infographic, hubInner, titleEl, copy].concat(cards), { clearProps: "all" });
       gsap.set(copy.querySelectorAll(".intro-fill-word"), { clearProps: "color" });
       section.classList.remove("is-on-media");
     };
@@ -183,9 +256,48 @@ document.addEventListener("DOMContentLoaded", function () {
     if (frameImg) frameImg.removeAttribute("style");
     infographic.style.opacity = "1";
     infographic.style.visibility = "visible";
-    if (veil) veil.style.opacity = "0.42";
+    if (veil) veil.style.opacity = "0";
     section.classList.remove("is-on-media");
+
+    var cardScroller = window.matchMedia("(max-width: 992px)").matches
+      ? window
+      : document.documentElement;
+    var cardTweens = [];
+
+    cards.forEach(function (card) {
+      gsap.set(card, { transformOrigin: "50% 50%" });
+      var tween = gsap.fromTo(
+        card,
+        { scale: 1.18, autoAlpha: 0.35 },
+        {
+          scale: 1,
+          autoAlpha: 1,
+          ease: "none",
+          force3D: true,
+          immediateRender: true,
+          scrollTrigger: {
+            trigger: card,
+            scroller: cardScroller,
+            start: "top 92%",
+            end: "top 62%",
+            scrub: 0.9,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
+      cardTweens.push(tween);
+    });
+
+    requestAnimationFrame(function () {
+      ScrollTrigger.refresh();
+    });
+
     return function () {
+      cardTweens.forEach(function (tween) {
+        if (tween.scrollTrigger) tween.scrollTrigger.kill();
+        tween.kill();
+      });
+      gsap.set(cards, { clearProps: "transform,opacity,visibility" });
       infographic.removeAttribute("style");
     };
   });

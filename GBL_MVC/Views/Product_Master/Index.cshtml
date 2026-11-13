@@ -302,44 +302,42 @@
                     </div>
 
                     <hr />
-                    <h6>Industries</h6>
-                    <p class="text-muted small">Select industries. Subcategories below update from industry tagging.</p>
-                    <div class="row icm-tagging-panel">
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label" for="availableIndustries">Available Industries</label>
-                            <select id="availableIndustries" class="form-select icm-listbox" multiple size="8">
+                    <h6>Industries &amp; Subcategories</h6>
+                    <p class="text-muted small">Select one industry and one subcategory, then Add. Repeat for more pairs. Main Save writes them to the mapping tables.</p>
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-5">
+                            <label class="form-label" for="pairIndustryId">Industry</label>
+                            <select id="pairIndustryId" class="form-select">
+                                <option value="">Select industry</option>
                                 @foreach (var item in industries)
                                 {
                                     <option value="@item.Id">@item.Name</option>
                                 }
                             </select>
                         </div>
-                        <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
-                            <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableIndustries" data-to="#selectedIndustries">&gt;&gt;</button>
-                            <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedIndustries" data-to="#availableIndustries">&lt;&lt;</button>
+                        <div class="col-md-5">
+                            <label class="form-label" for="pairSubcategoryId">Subcategory</label>
+                            <select id="pairSubcategoryId" class="form-select">
+                                <option value="">Select subcategory</option>
+                            </select>
                         </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label" for="selectedIndustries">Selected Industries</label>
-                            <select id="selectedIndustries" class="form-select icm-listbox" multiple size="8"></select>
-                        </div>
-                    </div>
-
-                    <h6>Subcategories</h6>
-                    <p class="text-muted small">Shown from Industry / Category tagging for the selected industries.</p>
-                    <div class="row icm-tagging-panel">
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label" for="availableSubcategories">Available Subcategories</label>
-                            <select id="availableSubcategories" class="form-select icm-listbox" multiple size="8"></select>
-                        </div>
-                        <div class="col-md-2 mb-3 d-flex flex-column align-items-center justify-content-center gap-2 icm-listbox-actions">
-                            <button type="button" class="btn btn-outline-primary w-100 js-move-right" data-from="#availableSubcategories" data-to="#selectedSubcategories">&gt;&gt;</button>
-                            <button type="button" class="btn btn-outline-secondary w-100 js-move-left" data-from="#selectedSubcategories" data-to="#availableSubcategories">&lt;&lt;</button>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label" for="selectedSubcategories">Selected Subcategories</label>
-                            <select id="selectedSubcategories" class="form-select icm-listbox" multiple size="8"></select>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-outline-primary w-100" id="btnAddIndustrySubcategoryPair">Add</button>
                         </div>
                     </div>
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered table-sm align-middle" id="industrySubcategoryGrid">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Industry</th>
+                                    <th>Subcategory</th>
+                                    <th style="width:90px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <p class="text-muted small" id="industrySubcategoryEmpty">No industry-subcategory pairs added.</p>
 
                     <h6>Applications</h6>
                     <div class="row icm-tagging-panel">

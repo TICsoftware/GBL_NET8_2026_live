@@ -30,5 +30,8 @@ namespace GBL_BusinessLogic.Entity
 
         /// <summary>component_sequence 8 — Conserving water saving lives</summary>
         public List<ComponentModel> Conserving_Water_List { get; set; } = new();
+
+        /// <summary>component_sequence 9 — Near-zero waste to landfill</summary>
+        public List<ComponentModel> Near_Zero_Waste_List { get; set; } = new();
     }
 }

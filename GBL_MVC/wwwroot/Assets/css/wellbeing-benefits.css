@@ -2,7 +2,7 @@
 
 .wb-split-section .ld-media--empty {
   background: #e8e8e8;
-  min-height: 26rem;
+  min-height: 0;
 }
 
 .wb-split-section .ld-split__copy .list-icon {

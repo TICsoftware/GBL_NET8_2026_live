@@ -17,6 +17,35 @@ $(function () {
     let loading = false;
     let requestId = 0;
 
+    function initCardFill(root) {
+        const scope = root || document;
+        scope.querySelectorAll(".cg-doc").forEach(function (card) {
+            if (card.dataset.cgFillBound === "1") return;
+            card.dataset.cgFillBound = "1";
+
+            function placeFill(e) {
+                var rect = card.getBoundingClientRect();
+                var x = e ? e.clientX - rect.left : rect.width / 2;
+                var y = e ? e.clientY - rect.top : rect.height / 2;
+                x = Math.min(Math.max(x, 0), rect.width);
+                y = Math.min(Math.max(y, 0), rect.height);
+                var radius = Math.ceil(Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y))) + 16;
+                card.style.setProperty("--hx", x + "px");
+                card.style.setProperty("--hy", y + "px");
+                card.style.setProperty("--hr", radius + "px");
+            }
+
+            placeFill(null);
+            card.addEventListener("mouseenter", function (e) {
+                placeFill(e);
+                card.classList.add("is-filled");
+            });
+            card.addEventListener("mouseleave", function () {
+                card.classList.remove("is-filled");
+            });
+        });
+    }
+
     function updateButton() {
         const loadedCount = $grid.children("li").length;
 
@@ -62,6 +91,7 @@ $(function () {
                 $grid.attr("data-total-count", totalCount);
                 $grid.attr("data-year", year);
 
+                initCardFill($grid[0]);
                 updateButton();
             },
             error: function (xhr) {
@@ -89,6 +119,7 @@ $(function () {
     });
 
     initSelects(document.querySelector(".cg-year-filter") || document);
+    initCardFill($grid[0]);
     updateButton();
 
     function initSelects(root) {

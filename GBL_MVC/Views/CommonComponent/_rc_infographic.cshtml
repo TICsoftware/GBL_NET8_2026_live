@@ -23,11 +23,11 @@
 @foreach (var item in Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
 {
     var seq = item.Sequence > 0 ? item.Sequence : 1;
-    var lines = (item.Intro ?? "")
-        .Replace("\r\n", "\n")
-        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var introHtml = item.Intro ?? "";
     var img = !string.IsNullOrWhiteSpace(item.ThumbnailImage) ? item.ThumbnailImage : item.ComponentThumbnail;
     var alt = !string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.ThumbnailAltText : item.Title;
+    var hasListMarkup = introHtml.IndexOf("<ul", StringComparison.OrdinalIgnoreCase) >= 0
+        || introHtml.IndexOf("<li", StringComparison.OrdinalIgnoreCase) >= 0;
 
     <article class="ld-step @StepClass(seq)">
         @if (TitleFirst(seq) && !string.IsNullOrWhiteSpace(item.Title))
@@ -39,14 +39,34 @@
             {
                 <img src="@img" alt="@alt">
             }
-            @if (lines.Length > 0)
+            @if (!string.IsNullOrWhiteSpace(introHtml))
             {
-               
-                    @foreach (var line in lines)
+                if (hasListMarkup)
+                {
+                    if (introHtml.IndexOf("ld-step__copy", StringComparison.OrdinalIgnoreCase) >= 0
+                        || introHtml.IndexOf("<ul", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                       @Html.Raw(line)
+                        @Html.Raw(introHtml)
                     }
-              
+                    else
+                    {
+                        <ul class="ld-step__copy">
+                            @Html.Raw(introHtml)
+                        </ul>
+                    }
+                }
+                else
+                {
+                    var lines = introHtml
+                        .Replace("\r\n", "\n")
+                        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    <ul class="ld-step__copy">
+                        @foreach (var line in lines)
+                        {
+                            <li>@Html.Raw(line.CleanParagraphTags())</li>
+                        }
+                    </ul>
+                }
             }
         </div>
         @if (!TitleFirst(seq) && !string.IsNullOrWhiteSpace(item.Title))

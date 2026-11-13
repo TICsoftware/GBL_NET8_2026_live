@@ -1,0 +1,225 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.AboutModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Our Vision";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+
+    // Component 1 — Guiding Principles (matches Index-html.cshtml)
+    var principlesSection = Model?.Guiding_Principles_List?.FirstOrDefault(x => x.IsBlock == 0);
+    var principleItems = (Model?.Guiding_Principles_List?.Where(x => x.IsBlock == 1)
+            .OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList()
+        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
+    if (!principleItems.Any() && Model?.Guiding_Principles_List?.Any() == true)
+    {
+        principleItems = Model.Guiding_Principles_List.OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList();
+    }
+
+    // Component 2 — Our Mission
+    var missionSection = Model?.Our_Mission_List?.FirstOrDefault(x => x.IsBlock == 0);
+    var missionItems = (Model?.Our_Mission_List?.Where(x => x.IsBlock == 1)
+            .OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList()
+        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
+    if (!missionItems.Any() && Model?.Our_Mission_List?.Any() == true)
+    {
+        missionItems = Model.Our_Mission_List.OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList();
+    }
+
+    string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? "";
+
+    var introHtml = FirstNonEmpty(content?.Cont_intro, content?.Content);
+    var introHasMantraMarkup = !string.IsNullOrWhiteSpace(introHtml)
+        && (introHtml.Contains("page-intro-mantra__quote", StringComparison.OrdinalIgnoreCase)
+            || introHtml.Contains("page-intro-mantra__copy", StringComparison.OrdinalIgnoreCase)
+            || introHtml.Contains("page-intro-mantra", StringComparison.OrdinalIgnoreCase));
+}
+
+@section head {
+   <title>@(content?.cont_window_title ?? ViewData["Title"])</title>
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/our-vision.css" asp-append-version="true" />
+}
+
+@* HERO — same structure as Index-html.cshtml *@
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+else
+{
+   <section class="relative inside-banner-outer">
+      <div class="inside-banner-inner banner-animation relative">
+         <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+            <picture>
+               <source media="(min-width:1024px)" srcset="~/Assets/images/banners/sustainability-banner.webp">
+               <img src="~/Assets/images/banners/sustainability-banner.webp" alt="Our Vision"
+                    class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                    loading="eager" fetchpriority="high">
+            </picture>
+            <div class="innerbanner-overlay"></div>
+         </div>
+         <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+            <div class="container">
+               <div class="max-w-4xl text-left">
+                  <h1 class="innerbanner-title text-h1 text-white title-animation">Our Vision</h1>
+                  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                     <ol class="flex items-center gap-2 text-sm">
+                        <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>
+                        <li class="text-white/60">/</li>
+                        <li><a href="/about-us" class="text-white/70 hover:text-white transition">About Us</a></li>
+                        <li class="text-white/60">/</li>
+                        <li class="text-white">Our Vision &amp; Mission</li>
+                     </ol>
+                  </nav>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+}
+
+@* PAGE INTRO — Cont_intro should hold quote (LHS) + copy (RHS) *@
+@if (!string.IsNullOrWhiteSpace(introHtml))
+{
+   <section class="page-intro-outer page-intro-outer--mantra page-intro-outer--vision" aria-label="Our operating principle">
+      <div class="container">
+         @if (introHasMantraMarkup)
+         {
+            @Html.Raw(introHtml)
+         }
+         else
+         {
+            <div class="page-intro-mantra">
+               @Html.Raw(introHtml)
+            </div>
+         }
+      </div>
+   </section>
+}
+
+@* COMPONENT 1 — Our Guiding Principles *@
+@if (principlesSection != null || principleItems.Any())
+{
+   var principlesTitle = FirstNonEmpty(
+       principlesSection?.BlockDisplayTitle,
+       principlesSection?.DisplayTitle,
+       principlesSection?.Title,
+       "Our Guiding Principles");
+   var principlesIntro = FirstNonEmpty(principlesSection?.Intro, principlesSection?.HmpgIntro, principlesSection?.Content);
+   var principlesBg = FirstNonEmpty(
+       principlesSection?.Componentbackground,
+       principlesSection?.ThumbnailImage,
+       Url.Content("~/Assets/images/our-vision/guiding-principles-bg.webp"));
+
+   <section class="guiding-principles bg-parallax-section" aria-labelledby="guiding-principles-title">
+      <div class="parallax-wrap guiding-principles__bg" aria-hidden="true">
+         <img src="@principlesBg" alt="" class="parallax-img" loading="lazy">
+      </div>
+      <div class="guiding-principles__veil" aria-hidden="true"></div>
+
+      <div class="container guiding-principles__inner">
+         <div class="guiding-principles__head">
+            <h2 id="guiding-principles-title" class="text-h2 title-animation guiding-principles__title">
+               @Html.Raw(principlesTitle.CleanParagraphTags())
+            </h2>
+            @if (!string.IsNullOrWhiteSpace(principlesIntro))
+            {
+               <div class="guiding-principles__intro">@Html.Raw(principlesIntro)</div>
+            }
+         </div>
+
+         @if (principleItems.Any())
+         {
+            <ul class="guiding-principles__panel card-list-items">
+               @foreach (var item in principleItems)
+               {
+                  var title = item.Title?.CleanParagraphTags() ?? "";
+                  var text = FirstNonEmpty(item.Intro, item.Content, item.HmpgIntro);
+                  var icon = FirstNonEmpty(
+                      item.Icon_Image,
+                      item.Component_Icon_Image,
+                      item.ThumbnailImage,
+                      item.ComponentThumbnail);
+
+                  <li class="principle-item card-rise">
+                     @if (!string.IsNullOrWhiteSpace(icon))
+                     {
+                        <span class="principle-item__icon">
+                           <img src="@icon" alt="" width="48" height="48">
+                        </span>
+                     }
+                     @if (!string.IsNullOrWhiteSpace(title))
+                     {
+                        <h3 class="principle-item__title">@Html.Raw(title)</h3>
+                     }
+                     @if (!string.IsNullOrWhiteSpace(text))
+                     {
+                        @Html.Raw(text)
+                     }
+                  </li>
+               }
+            </ul>
+         }
+      </div>
+   </section>
+}
+
+@* COMPONENT 2 — Our Mission *@
+@if (missionSection != null || missionItems.Any())
+{
+   var missionTitle = FirstNonEmpty(
+       missionSection?.Title,
+       missionSection?.DisplayTitle,
+       missionSection?.BlockDisplayTitle,
+       "Our Mission");
+   var missionBg = FirstNonEmpty(
+       missionSection?.Componentbackground,
+       missionSection?.ThumbnailImage,
+       Url.Content("~/Assets/images/our-vision/our-mission-bg.webp"));
+
+   <section class="our-mission" aria-labelledby="our-mission-title">
+      <div class="our-mission__bg" aria-hidden="true">
+         <img src="@missionBg" alt="" class="our-mission__img" loading="lazy">
+      </div>
+
+      <div class="container our-mission__inner">
+         <h2 id="our-mission-title" class="text-h2 title-animation our-mission__title">
+            @Html.Raw(missionTitle.CleanParagraphTags())
+         </h2>
+
+         @if (missionItems.Any())
+         {
+            <ul class="our-mission__list card-list-items">
+               @foreach (var item in missionItems)
+               {
+                  var text = FirstNonEmpty(item.Title, item.Intro, item.Content);
+                  if (string.IsNullOrWhiteSpace(text))
+                  {
+                     continue;
+                  }
+                  <li class="card-rise">@Html.Raw(text.CleanParagraphTags())</li>
+               }
+            </ul>
+         }
+      </div>
+   </section>
+}
+
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/our-vision.js" asp-append-version="true"></script>
+}

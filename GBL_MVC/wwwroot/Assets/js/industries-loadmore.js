@@ -4,24 +4,7 @@
 
   const list = document.getElementById("industryList");
   const loadMoreBtn = document.getElementById("btnLoadMoreIndustries");
-  const form = document.getElementById("industry-filter");
   if (!list) return;
-
-  function getValue(name) {
-    if (!form) return null;
-    const field = form.elements[name];
-    const val = field ? field.value : "";
-    return !val || val === "0" ? null : val;
-  }
-
-  function getFilters() {
-    return {
-      IndustryId: getValue("industry"),
-      ApplicationId: getValue("application"),
-      CategoryId: getValue("productCategories"),
-      PageSize: PAGE_SIZE
-    };
-  }
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (ch) {
@@ -67,16 +50,6 @@
     loadMoreBtn.style.display = (currentPage * PAGE_SIZE) < total ? "" : "none";
   }
 
-  function renderList(items, total) {
-    if (!items || !items.length) {
-      list.innerHTML = '<p class="js-industry-empty">No industries found</p>';
-      toggleLoadMore(0, 1);
-      return;
-    }
-    list.innerHTML = items.map(buildCard).join("");
-    toggleLoadMore(total || 0, 1);
-  }
-
   function postJson(url, payload) {
     const body = new URLSearchParams();
     Object.keys(payload).forEach(function (key) {
@@ -91,29 +64,12 @@
     }).then(function (res) { return res.json(); });
   }
 
-  function loadIndustries() {
-    page = 1;
-    const payload = Object.assign({ PageNumber: 1 }, getFilters());
-    postJson("/Industries/LoadIndustries", payload)
-      .then(function (res) {
-        if (!res || !res.success) {
-          list.innerHTML = '<p class="js-industry-empty">No industries found</p>';
-          toggleLoadMore(0, 1);
-          return;
-        }
-        renderList(res.items || [], res.total || 0);
-        list.setAttribute("data-page", "1");
-        list.setAttribute("data-total", String(res.total || 0));
-      })
-      .catch(function () {
-        list.innerHTML = '<p class="js-industry-empty">Error loading industries</p>';
-        toggleLoadMore(0, 1);
-      });
-  }
-
   function loadMore() {
     page += 1;
-    const payload = Object.assign({ PageNumber: page }, getFilters());
+    const payload = {
+      PageNumber: page,
+      PageSize: PAGE_SIZE
+    };
     postJson("/Industries/LoadMore", payload)
       .then(function (res) {
         const items = res && res.items ? res.items : [];
@@ -132,35 +88,10 @@
       });
   }
 
-  function resetCustomSelects() {
-    if (!form) return;
-    form.querySelectorAll(".cselect").forEach(function (wrap) {
-      const native = wrap.querySelector(".cselect-native");
-      const valueEl = wrap.querySelector(".cselect-value");
-      if (!native) return;
-      native.selectedIndex = 0;
-      if (valueEl) valueEl.textContent = native.options[0] ? native.options[0].text : "";
-      wrap.querySelectorAll(".cselect-option").forEach(function (el, index) {
-        const selected = index === 0;
-        el.classList.toggle("is-active", selected);
-        el.setAttribute("aria-selected", selected ? "true" : "false");
-      });
-    });
-  }
-
-  document.addEventListener("industryfilter:apply", function () {
-    loadIndustries();
-  });
-
-  document.querySelector("[data-apply-industry-filter]")?.addEventListener("click", function () {
-    if (form) form.requestSubmit();
-  });
-
-  document.querySelector("[data-clear-industry-filter]")?.addEventListener("click", function () {
-    if (form) form.reset();
-    resetCustomSelects();
-    loadIndustries();
-  });
+  const initialTotal = parseInt(list.getAttribute("data-total") || "0", 10);
+  const initialPage = parseInt(list.getAttribute("data-page") || "1", 10);
+  page = initialPage > 0 ? initialPage : 1;
+  toggleLoadMore(initialTotal, page);
 
   loadMoreBtn?.addEventListener("click", function () {
     loadMore();

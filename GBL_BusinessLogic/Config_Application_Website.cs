@@ -256,9 +256,8 @@ namespace GBL_BusinessLogic
                     Sequence = table.Columns.Contains("cont_sequence") && row["cont_sequence"] != DBNull.Value
                         ? Convert.ToInt32(row["cont_sequence"])
                         : 0,
-                    Content = row["content"]?.ToString(),
-
-
+                    Content = row["content"]?.ToString(),       
+                    BreadcrumbTitle = Convert.ToString(row["cont_breadcrumb_title"])
                 })
                 .ToList();
         }

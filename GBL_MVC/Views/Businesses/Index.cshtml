@@ -1,0 +1,146 @@
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.BusinessModel
+@{
+   ViewData["Title"] = Model?.Content?.ContTitle ?? "Businessess";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   var content = Model?.Content;
+}
+
+
+@section head {
+   <title>@(content?.cont_window_title)</title>
+
+   <meta content="@(content?.cont_metatag)" name="keywords" />
+   <meta content="@(content?.cont_metadesc)" name="description" />
+
+   <meta name="twitter:card" content="summary" />
+   <meta name="twitter:site" content="" />
+   <meta name="twitter:title" content="@(content?.ContTitle)" />
+   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+   <meta property="og:type" content="article" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+   <meta itemprop="name" content="Godavari Biorefineries" />
+   <meta itemprop="description" content="@(content?.cont_metadesc)" />
+   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+   <meta property="og:type" content="website" />
+   <meta property="og:site_name" content="Godavari Biorefineries" />
+   <meta property="og:title" content="@(content?.ContTitle)" />
+   <meta property="og:description" content="@(content?.cont_metadesc)" />
+   <meta property="og:image" content="@(content?.cont_meta_image)" />
+   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/business.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER -->
+@if (Model?.Content != null)
+{
+   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END-->
+
+<!--PAGE INTRO OUTER-->
+@if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
+{
+   <section class="business-intro" aria-label="Introduction">
+      <div class="container">
+         <div class="page-intro-inner">
+            <p class="business-intro__lead">@Html.Raw(content.Cont_intro)</p>
+         </div>
+      </div>
+   </section>
+}
+<!--PAGE INTRO OUTER END-->
+@if (Model?.Section_List != null && Model.Section_List.Any())
+{
+   string business_class = "";
+   int incr = 0;
+   foreach (var item in Model.Section_List)
+   {
+      var itemcomponent = Model.Subsections_Components.Where(m => m.cont_id == item.ContId).ToList();
+      var itemfirstcomponent = itemcomponent.FirstOrDefault(); 
+      if (incr % 2 == 0)
+      {
+         business_class = "reverse";
+      }
+      else
+      {
+         business_class = "";
+      }
+      incr++;
+      
+      <section class="business-section @(itemfirstcomponent?.bg_class ?? "business-section--white") section-spacing"
+               aria-labelledby="@item.PageName">
+         <div class="container">
+            <div class="business-split @business_class">
+               @if (itemcomponent != null && itemcomponent.Count > 0)
+               {
+                  @if (itemcomponent.Count == 1)
+                  {
+                     <div class="business-split__media business-media business-media--full business-parallax">
+                        <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
+                     </div>
+                  }
+                  else
+                  {
+                     <div class="business-split__media business-collage">
+                        <div class="business-media business-media--wide business-parallax">
+                           <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
+                        </div>
+                        <div class="business-collage__row">
+                        @foreach (var component in itemcomponent.Skip(1))
+                        {
+                           <div class="business-media business-media--small business-parallax">
+                              <img src="@component.ThumbnailImage" alt="@component.ThumbnailAltText" loading="lazy" />
+                           </div>
+                        } 
+                        </div>
+                     </div>
+                  }
+               }
+               <div class="business-split__copy card-rise">
+                  @if(!string.IsNullOrWhiteSpace(item?.BreadcrumbTitle))
+                  {
+                     <span class="addon-section-title">@item.BreadcrumbTitle.Trim()</span> 
+                  }
+                  <h2 id="@item.PageName" class="text-h2 title-animation business-title business-title--chemicals">
+                     @Html.Raw(item.Title)</h2>
+                     <div class="business-body business-body--muted">
+                        @Html.Raw(string.IsNullOrWhiteSpace(item.HmpgIntro) ? item.Intro : item.HmpgIntro)
+                     </div>
+                     <a href="@(string.IsNullOrWhiteSpace(item.Url) ? item.ExternalUrl : item.Url)" target="@item.UrlTarget"
+                        class="site-btn site-btn--outline business-btn">
+                        <span class="site-btn__label">Know more</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none">
+                              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                           </svg>
+                        </span>
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </section>
+      
+     
+
+      }
+   }  
+
+   @section Scripts {
+      <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+      <script src="~/Assets/js/business.js" asp-append-version="true"></script>
+   }

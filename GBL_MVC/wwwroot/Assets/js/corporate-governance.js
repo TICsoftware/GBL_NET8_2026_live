@@ -1,6 +1,5 @@
 /**
- * Corporate governance — sticky section nav, with the tab for the section
- * currently under the bar marked active while scrolling.
+ * Corporate governance — sticky section nav, year filter, load more, cselect.
  */
 (function () {
   function initCardFill() {
@@ -32,55 +31,180 @@
     bind(".cg-doc");
   }
 
-  function bindYearFilter(select, grid, empty) {
-    if (!select || !grid) return;
-    var items = grid.querySelectorAll("[data-year]");
+  function initSelects(root) {
+    if (!root) return;
+    root.querySelectorAll(".cselect").forEach(function (wrap) {
+      var native = wrap.querySelector(".cselect-native");
+      if (!native || wrap.dataset.cselectReady === "1") return;
+      wrap.dataset.cselectReady = "1";
 
-    function apply() {
-      var year = select.value;
-      var visible = 0;
-      items.forEach(function (item) {
-        var years = (item.getAttribute("data-year") || "").split(/\s*,\s*/);
-        var show = years.indexOf(year) !== -1;
-        item.hidden = !show;
-        if (show) {
-          visible += 1;
-          if (typeof gsap !== "undefined") {
-            gsap.set(item, { clearProps: "transform,opacity,visibility" });
-          }
+      var listId = (native.id || "cselect") + "-menu";
+      var trigger = document.createElement("button");
+      trigger.type = "button";
+      trigger.className = "cselect-trigger";
+      trigger.setAttribute("aria-haspopup", "listbox");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.setAttribute("aria-controls", listId);
+
+      var valueEl = document.createElement("span");
+      valueEl.className = "cselect-value";
+      valueEl.textContent = native.options[native.selectedIndex]
+        ? native.options[native.selectedIndex].text
+        : "";
+
+      var chevron = document.createElement("span");
+      chevron.className = "cselect-chevron";
+      chevron.setAttribute("aria-hidden", "true");
+      trigger.appendChild(valueEl);
+      trigger.appendChild(chevron);
+
+      var menu = document.createElement("ul");
+      menu.className = "cselect-menu";
+      menu.id = listId;
+      menu.setAttribute("role", "listbox");
+      menu.hidden = true;
+
+      Array.prototype.forEach.call(native.options, function (option, optionIndex) {
+        var item = document.createElement("li");
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cselect-option";
+        btn.setAttribute("role", "option");
+        btn.setAttribute("data-value", option.value);
+        btn.textContent = option.text;
+        if (optionIndex === native.selectedIndex) {
+          btn.setAttribute("aria-selected", "true");
+          btn.classList.add("is-active");
         }
+        btn.addEventListener("click", function () {
+          native.value = option.value;
+          native.dispatchEvent(new Event("change", { bubbles: true }));
+          valueEl.textContent = option.text;
+          menu.querySelectorAll(".cselect-option").forEach(function (el) {
+            var selected = el === btn;
+            el.classList.toggle("is-active", selected);
+            el.setAttribute("aria-selected", selected ? "true" : "false");
+          });
+          closeSelect(wrap);
+          trigger.focus();
+        });
+        item.appendChild(btn);
+        menu.appendChild(item);
       });
-      if (empty) empty.hidden = visible > 0;
-      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+
+      native.setAttribute("tabindex", "-1");
+      native.setAttribute("aria-hidden", "true");
+      wrap.classList.add("is-enhanced");
+      wrap.appendChild(trigger);
+      wrap.appendChild(menu);
+
+      trigger.addEventListener("click", function () {
+        if (wrap.classList.contains("is-open")) closeSelect(wrap);
+        else openSelect(wrap);
+      });
+    });
+
+    var openMenu = null;
+
+    function closeSelect(wrap) {
+      if (!wrap) return;
+      wrap.classList.remove("is-open");
+      var menu = wrap.querySelector(".cselect-menu");
+      var trigger = wrap.querySelector(".cselect-trigger");
+      if (menu) menu.hidden = true;
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+      if (openMenu === wrap) openMenu = null;
     }
 
-    select.addEventListener("change", apply);
-    apply();
-  }
-
-  function initYearFilter() {
-    var sections = document.querySelectorAll("[data-year-section]");
-    if (sections.length) {
-      sections.forEach(function (section) {
-        bindYearFilter(
-          section.querySelector("[data-year-filter]"),
-          section.querySelector(".cg-docs__grid, .cg-committees"),
-          section.querySelector(".fh-year-filter__empty")
-        );
-      });
-      return;
+    function openSelect(wrap) {
+      if (openMenu && openMenu !== wrap) closeSelect(openMenu);
+      wrap.classList.add("is-open");
+      var menu = wrap.querySelector(".cselect-menu");
+      var trigger = wrap.querySelector(".cselect-trigger");
+      if (menu) menu.hidden = false;
+      if (trigger) trigger.setAttribute("aria-expanded", "true");
+      openMenu = wrap;
     }
 
-    bindYearFilter(
-      document.getElementById("fh-year"),
-      document.querySelector(".cg-docs__grid"),
-      document.querySelector(".fh-year-filter__empty")
-    );
+    document.addEventListener("click", function (event) {
+      if (!openMenu) return;
+      if (!openMenu.contains(event.target)) closeSelect(openMenu);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && openMenu) {
+        var trigger = openMenu.querySelector(".cselect-trigger");
+        closeSelect(openMenu);
+        if (trigger) trigger.focus();
+      }
+    });
   }
 
-  function init() {
-    initYearFilter();
-    initCardFill();
+  function initDocGrids(root) {
+    if (!root) return;
+    root.querySelectorAll("[data-cg-docs-grid]").forEach(function (grid) {
+      var size = parseInt(grid.getAttribute("data-page-size") || "12", 10);
+      var section = grid.closest(".cg-docs");
+      var wrap = section && section.querySelector("[data-cg-load-more-wrap]");
+      var btn = wrap && wrap.querySelector("[data-cg-load-more]");
+      var empty = section && section.querySelector("[data-cg-empty]");
+      var yearSelect = section && section.querySelector("[data-cg-year]");
+      var cards = Array.prototype.slice.call(grid.children);
+      var shown = size;
+
+      function selectedYear() {
+        if (yearSelect && yearSelect.value) return yearSelect.value;
+        return grid.getAttribute("data-cg-year-value") || "";
+      }
+
+      function matchingCards() {
+        var year = selectedYear();
+        var match = cards.filter(function (card) {
+          var cardYear = card.getAttribute("data-year") || "";
+          return !year || !cardYear || cardYear === year;
+        });
+        if (year && match.length === 0) {
+          return cards;
+        }
+        return match;
+      }
+
+      function apply() {
+        var year = selectedYear();
+        grid.setAttribute("data-cg-year-value", year);
+        var match = matchingCards();
+        cards.forEach(function (card) {
+          card.hidden = true;
+        });
+        match.forEach(function (card, index) {
+          card.hidden = index >= shown;
+        });
+        if (empty) empty.hidden = match.length > 0;
+        if (wrap) wrap.hidden = shown >= match.length;
+        if (typeof ScrollTrigger !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      }
+
+      apply();
+
+      if (yearSelect) {
+        yearSelect.addEventListener("change", function () {
+          shown = size;
+          apply();
+        });
+      }
+
+      if (btn) {
+        btn.addEventListener("click", function () {
+          shown += size;
+          apply();
+        });
+      }
+    });
+  }
+
+  function initJumpNav() {
     var bar = document.querySelector(".cg-jump");
     var sentinel = document.querySelector(".cg-jump-sentinel");
     var sections = Array.prototype.map.call(document.querySelectorAll(".cg-jump__btn"), function (link) {
@@ -88,6 +212,8 @@
       var section = id ? document.getElementById(id) : null;
       return section ? { link: link, section: section } : null;
     }).filter(Boolean);
+
+    if (!sections.length) return;
 
     if (bar && sentinel && "IntersectionObserver" in window) {
       var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 88;
@@ -104,8 +230,6 @@
     var mobileQuery = window.matchMedia("(max-width: 640px)");
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var activeSection = null;
-
-    if (!sections.length) return;
 
     function centerLink(link) {
       if (!nav) return;
@@ -205,6 +329,14 @@
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     update();
+  }
+
+  function init() {
+    var page = document.querySelector(".cg-page") || document;
+    initSelects(page);
+    initDocGrids(page);
+    initCardFill();
+    initJumpNav();
   }
 
   if (document.readyState === "loading") {

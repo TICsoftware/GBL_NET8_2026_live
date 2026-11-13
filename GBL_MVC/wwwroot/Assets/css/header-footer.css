@@ -1494,4 +1494,118 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 
 }
 
+.cookie-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1.35rem;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  width: min(58rem, calc(100% - 2.5rem));
+  margin-inline: auto;
+  padding: 1.15rem 1.35rem 1.15rem 1.6rem;
+  background: var(--color-primary, #282b31);
+  color: #FFF;
+  border-radius: 1.15rem;
+  box-shadow: 0 10px 32px rgba(40, 43, 49, 0.16);
+}
+
+.cookie-bar[hidden] {
+  display: none;
+}
+
+.cookie-bar__text {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  font-weight: 400;
+  text-align: left;
+}
+
+.cookie-bar__text a {
+  color: #d8e25c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: inherit;
+}
+
+.cookie-bar__text a:hover,
+.cookie-bar__text a:focus-visible {
+  color: var(--color-secondary, #67815a);
+}
+
+.cookie-bar__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.cookie-bar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.35rem;
+  padding: 0.4rem 1.15rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cookie-bar__btn--accept {
+  background: var(--color-primary, #282b31);
+  border-color: var(--color-primary, #282b31);
+  color: #fff;
+}
+
+.cookie-bar__btn--accept:hover,
+.cookie-bar__btn--accept:focus-visible {
+  background: #111318;
+  border-color: #111318;
+  color: #fff;
+}
+
+.cookie-bar__btn--close {
+  background: #fff;
+  border-color: #d5d7dc;
+  color: var(--color-primary, #282b31);
+}
+
+.cookie-bar__btn--close:hover,
+.cookie-bar__btn--close:focus-visible {
+  border-color: var(--color-primary, #282b31);
+  color: var(--color-primary, #282b31);
+}
+
+.cookie-bar__btn:focus-visible {
+  outline: 2px solid var(--color-primary, #282b31);
+  outline-offset: 2px;
+}
+
+body:has(.cookie-bar:not([hidden])) .back-to-top {
+  bottom: 6.5rem;
+}
+
+@media (max-width: 767px) {
+  .cookie-bar {
+    bottom: 0.85rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+    width: calc(100% - 1.25rem);
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .cookie-bar__actions {
+    justify-content: flex-end;
+  }
+}
+
 

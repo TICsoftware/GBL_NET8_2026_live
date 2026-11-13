@@ -14,15 +14,24 @@ namespace Core_project_BusinessLogic.DAL
 
         public Industry_Public_Page GetIndex(string pageName, int languageId, Industry_Public_Filter filter)
         {
-            SqlParameter[] p = BuildFilterParams(pageName, languageId, filter);
-            DataSet ds = GetDataSet("Industry_Public_GetIndex", p);
-            var page = new Industry_Public_Page
+            // Always load the full industry portfolio for /industries.
+            // Industry/Application/Category dropdown values redirect to /products with matching query params.
+            filter ??= new Industry_Public_Filter();
+            var listFilter = new Industry_Public_Filter
             {
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize,
-                IndustryId = filter.IndustryId,
-                ApplicationId = filter.ApplicationId,
-                CategoryId = filter.CategoryId
+                LanguageId = filter.LanguageId
+            };
+            SqlParameter[] p = BuildFilterParams(pageName, languageId, listFilter);
+            DataSet ds = GetDataSet("Industry_Public_GetIndex", p);
+            var page = new Industry_Public_Page
+            {
+                PageNumber = listFilter.PageNumber,
+                PageSize = listFilter.PageSize,
+                IndustryId = null,
+                ApplicationId = null,
+                CategoryId = null
             };
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -103,11 +112,14 @@ namespace Core_project_BusinessLogic.DAL
             if (filter.PageNumber < 1) filter.PageNumber = 1;
             if (filter.PageSize < 1) filter.PageSize = 6;
             if (filter.LanguageId < 1) filter.LanguageId = 1;
+            // Pair filter requires both industry and subcategory (tab selection).
+            if (filter.IndustryId <= 0 || filter.CategoryId <= 0)
+                return (new List<Industry_Inside_Product>(), 0);
 
             SqlParameter[] p =
             {
                 new("@IndustryId", filter.IndustryId),
-                new("@CategoryId", filter.CategoryId > 0 ? filter.CategoryId : DBNull.Value),
+                new("@CategoryId", filter.CategoryId),
                 new("@Page", filter.PageNumber),
                 new("@PageSize", filter.PageSize),
                 new("@LanguageId", filter.LanguageId)

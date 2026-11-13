@@ -48,6 +48,20 @@ namespace GBL_MVC.Controllers
                 filter.PageNumber = 1;
                 if (filter.PageSize < 1) filter.PageSize = DefaultPageSize;
                 filter.LanguageId = 1;
+
+                // Only load products for the selected industry + subcategory pair.
+                if (filter.IndustryId <= 0 || filter.CategoryId <= 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        items = Array.Empty<object>(),
+                        total = 0,
+                        page = 1,
+                        pageSize = filter.PageSize
+                    });
+                }
+
                 var data = _bal.GetInsideProducts(filter);
                 return Json(new
                 {
@@ -74,6 +88,19 @@ namespace GBL_MVC.Controllers
                 if (filter.PageNumber < 1) filter.PageNumber = 1;
                 if (filter.PageSize < 1) filter.PageSize = DefaultPageSize;
                 filter.LanguageId = 1;
+
+                if (filter.IndustryId <= 0 || filter.CategoryId <= 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        items = Array.Empty<object>(),
+                        total = 0,
+                        page = filter.PageNumber,
+                        pageSize = filter.PageSize
+                    });
+                }
+
                 var data = _bal.GetInsideProducts(filter);
                 return Json(new
                 {
