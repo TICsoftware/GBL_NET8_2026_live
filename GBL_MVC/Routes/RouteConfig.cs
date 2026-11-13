@@ -12,6 +12,11 @@ namespace GBL_MVC.Routes
             // ✅ Custom routes first
 
 
+            app.MapControllerRoute(
+                name: "businesses-inside",
+                pattern: "Businesses/{title?}",
+                defaults: new { controller = "Businesses", action = "Inside", title = "{title?}" }
+            );
 
             app.MapControllerRoute(
                     name: "aboutus",
@@ -57,60 +62,32 @@ namespace GBL_MVC.Routes
                    pattern: "sustainability/social",
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/social" }
            );
-    app.MapControllerRoute(
-                   name: "diversity-and-inclusion",
-                   pattern: "careers/diversity-and-inclusion",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "careers/diversity-and-inclusion" }
-           );
- app.MapControllerRoute(
-                   name: "wellbeing-and-benefits",
-                   pattern: "careers/wellbeing-and-benefits",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "wellbeing-and-benefits" }
-           );
-app.MapControllerRoute(
-                   name: "circular-products",
-                   pattern: "sustainability/circular-products",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/circular-products" }
-           );
-           app.MapControllerRoute(
-                   name: "regenerative-processes",
-                   pattern: "sustainability/regenerative-processes",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/regenerative-processes" }
-           );
+            app.MapControllerRoute(
+                           name: "diversity-and-inclusion",
+                           pattern: "careers/diversity-and-inclusion",
+                           defaults: new { controller = "Career", action = "LearningDevelopment", title = "careers/diversity-and-inclusion" }
+                   );
+            app.MapControllerRoute(
+                              name: "wellbeing-and-benefits",
+                              pattern: "careers/wellbeing-and-benefits",
+                              defaults: new { controller = "Career", action = "LearningDevelopment", title = "wellbeing-and-benefits" }
+                      );
+            app.MapControllerRoute(
+                               name: "circular-products",
+                               pattern: "sustainability/circular-products",
+                               defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/circular-products" }
+                       );
+            app.MapControllerRoute(
+                    name: "regenerative-processes",
+                    pattern: "sustainability/regenerative-processes",
+                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/regenerative-processes" }
+            );
 
                    app.MapControllerRoute(
                    name: "health-and-safety",
                    pattern: "sustainability/health-and-safety",
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
            );
-  app.MapControllerRoute(
-                   name: "Our Strategy",
-                   pattern: "about-us/our-strategy",
-                   defaults: new { controller = "Career", action = "OurStrategy", title = "about-us/our-strategy" }
-           );
-
-  app.MapControllerRoute(
-                   name: "Manufacturing",
-                   pattern: "about-us/manufacturing",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/manufacturing" }
-           );
-
-
-  app.MapControllerRoute(
-                   name: "Quality-Safety",
-                   pattern: "about-us/quality-and-safety",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/quality-and-safety" }
-           );
-
-
-  app.MapControllerRoute(
-                   name: "Subsidiaries",
-                   pattern: "about-us/our-subsidiaries",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-subsidiaries" }
-           );
-
-
-
             app.MapControllerRoute(
                    name: "careers",
                    pattern: "careers",
@@ -200,26 +177,26 @@ app.MapControllerRoute(
                     title = "shareholding-pattern"
                 }
             );
-   app.MapControllerRoute(
-                name: "investor-disclosures",
-                pattern: "investor-relations/disclosures",
-                defaults: new
-                {
-                    controller = "Investors",
-                    action = "Pdflisting",
-                    title = "disclosures"
-                }
-            );
- app.MapControllerRoute(
-                name: "postal-ballot",
-                pattern: "investor-relations/postal-ballot",
-                defaults: new
-                {
-                    controller = "Investors",
-                    action = "Pdflisting",
-                    title = "postal-ballot"
-                }
-            );
+            app.MapControllerRoute(
+                         name: "investor-disclosures",
+                         pattern: "investor-relations/disclosures",
+                         defaults: new
+                         {
+                             controller = "Investors",
+                             action = "Pdflisting",
+                             title = "disclosures"
+                         }
+                     );
+            app.MapControllerRoute(
+                           name: "postal-ballot",
+                           pattern: "investor-relations/postal-ballot",
+                           defaults: new
+                           {
+                               controller = "Investors",
+                               action = "Pdflisting",
+                               title = "postal-ballot"
+                           }
+                       );
 
             app.MapControllerRoute(
                 name: "investor-subsidiaries",
@@ -333,7 +310,7 @@ app.MapControllerRoute(
                 }
             );
 
-                 
+
 
             app.MapControllerRoute(
                name: "media-coverage",
