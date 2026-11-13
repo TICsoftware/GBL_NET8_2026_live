@@ -83,6 +83,34 @@ app.MapControllerRoute(
                    pattern: "sustainability/health-and-safety",
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
            );
+  app.MapControllerRoute(
+                   name: "Our Strategy",
+                   pattern: "about-us/our-strategy",
+                   defaults: new { controller = "Career", action = "OurStrategy", title = "about-us/our-strategy" }
+           );
+
+  app.MapControllerRoute(
+                   name: "Manufacturing",
+                   pattern: "about-us/manufacturing",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/manufacturing" }
+           );
+
+
+  app.MapControllerRoute(
+                   name: "Quality-Safety",
+                   pattern: "about-us/quality-and-safety",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/quality-and-safety" }
+           );
+
+
+  app.MapControllerRoute(
+                   name: "Subsidiaries",
+                   pattern: "about-us/subsidiaries",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/subsidiaries" }
+           );
+
+
+
             app.MapControllerRoute(
                    name: "careers",
                    pattern: "careers",

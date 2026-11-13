@@ -4,18 +4,22 @@
   CMS page name: our-vision
   Route: /about-us/our-vision
 
-  Components (component_sequence):
+  Page details (result set 1):
+    cont_title          = Content title          → banner H1 "Our Vision"
+    cont_hmpg_title     = Landing page Title     → Sanskrit (माता भूमिः…)
+    cont_hmpg_intro     = Landing intro          → LHS quote block
+    cont_intro          = page intro             → RHS copy column
+    BreadcrumPath / masthead_image_path          → banner
+
+  Components (result set 2 — component_sequence):
     1 = Our Guiding Principles
-        IsBlock 0: Component Title / Display title, Intro, Component Background image
-        IsBlock 1: Title, Intro/Content, Thumbnail Image (icon), Sequence
+        IsBlock 0: Component Title, Component Intro, Component Background image
+        IsBlock 1: Title, Intro, Thumbnail Image (+ alt), Sequence
     2 = Our Mission
-        IsBlock 0: Title (Our Mission), Component Background image
-        IsBlock 1: Title (each mission line), Sequence
+        IsBlock 0: Title / Component Title, Component Background image
+        IsBlock 1: Title only (mission list lines), Sequence
 
-  Page Cont_intro = vision mantra two-column HTML
-    (page-intro-mantra__quote + page-intro-mantra__copy)
-
-  Run this, then check result set 2 for component_sequence / is_block / field_name.
+  Run smoke test below and verify sequences 1 and 2.
 */
 
 CREATE OR ALTER PROCEDURE dbo.sp_GetVisionPageData
