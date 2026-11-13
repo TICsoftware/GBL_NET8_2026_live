@@ -78,7 +78,7 @@ namespace GBL_BusinessLogic.Entity
         public string bg_class { get; set; }
         public string year { get; set; }
 
-        // Resource Circularity / chart fields
+            // Resource Circularity / chart fields
         public string DataKey { get; set; }
         public string DataValue { get; set; }
         public string DataDraw { get; set; }
