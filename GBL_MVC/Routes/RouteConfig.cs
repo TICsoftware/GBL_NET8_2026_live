@@ -36,6 +36,12 @@ namespace GBL_MVC.Routes
                     defaults: new { controller = "AboutUs", action = "Leadership", title = "leadership" }
                 );
 
+            app.MapControllerRoute(
+                    name: "our-vision",
+                    pattern: "about-us/our-vision",
+                    defaults: new { controller = "AboutUs", action = "OurVision", title = "our-vision" }
+                );
+
 
 
             app.MapControllerRoute(
@@ -77,11 +83,11 @@ namespace GBL_MVC.Routes
                     defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/regenerative-processes" }
             );
 
-            app.MapControllerRoute(
-            name: "health-and-safety",
-            pattern: "sustainability/health-and-safety",
-            defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
-    );
+                   app.MapControllerRoute(
+                   name: "health-and-safety",
+                   pattern: "sustainability/health-and-safety",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
+           );
             app.MapControllerRoute(
                    name: "careers",
                    pattern: "careers",

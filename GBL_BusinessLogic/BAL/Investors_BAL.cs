@@ -20,16 +20,23 @@ namespace GBL_BusinessLogic.BAL
         {
             if (pageSize < 1) pageSize = DefaultPageSize;
 
+            InvestorsModel? fallback = null;
+
             foreach (var pageName in GetPdfListingPageNames(pagename))
             {
                 var model = LoadPdfListing(pageName, languageId, geographyId, pageSize);
-                if ((model.Content?.ContId ?? 0) > 0 || (model.SectionArticles_List?.Count ?? 0) > 0)
+                if ((model.SectionArticles_List?.Count ?? 0) > 0)
                 {
                     return model;
                 }
+
+                if (fallback == null && (model.Content?.ContId ?? 0) > 0)
+                {
+                    fallback = model;
+                }
             }
 
-            return new InvestorsModel();
+            return fallback ?? new InvestorsModel();
         }
 
         private InvestorsModel LoadPdfListing(string pageName, int languageId, int geographyId, int pageSize)
@@ -55,6 +62,19 @@ namespace GBL_BusinessLogic.BAL
                 model.TotalCount = pageData.TotalCount;
                 model.Year_List = pageData.Year_List;
                 model.SelectedYear = pageData.SelectedYear;
+
+                // Nested section folders (PDFs under child pages) — same pattern as corporate-governance.
+                if ((model.SectionArticles_List?.Count ?? 0) == 0)
+                {
+                    var nested = LoadNestedPdfArticles(contentId, pageSize);
+                    if (nested.SectionArticles_List.Count > 0)
+                    {
+                        model.SectionArticles_List = nested.SectionArticles_List;
+                        model.TotalCount = nested.TotalCount;
+                        model.Year_List = nested.Year_List;
+                        model.SelectedYear = nested.SelectedYear;
+                    }
+                }
             }
             else if (ds.Tables.Count > 2 && ds.Tables[2].Rows.Count > 0)
             {
@@ -70,6 +90,56 @@ namespace GBL_BusinessLogic.BAL
                 }
                 model.TotalCount = articles.Count;
                 model.SectionArticles_List = articles.Take(pageSize).ToList();
+            }
+
+            return model;
+        }
+
+        private InvestorsModel LoadNestedPdfArticles(int parentId, int pageSize)
+        {
+            var model = new InvestorsModel();
+            if (parentId <= 0) return model;
+
+            try
+            {
+                var childDs = Get_Investor_Section_Children_DAL(parentId);
+                if (childDs == null || childDs.Tables.Count == 0 || childDs.Tables[0].Rows.Count == 0)
+                {
+                    return model;
+                }
+
+                var all = new List<ArticleModel>();
+                foreach (DataRow row in childDs.Tables[0].Rows)
+                {
+                    var childId = 0;
+                    if (childDs.Tables[0].Columns.Contains("cont_id") && row["cont_id"] != DBNull.Value)
+                        childId = Convert.ToInt32(row["cont_id"]);
+                    if (childId <= 0 || childId == parentId) continue;
+
+                    var pageData = GetPdfListing_page_wise_BAL(childId, 1, pageSize, null);
+                    if (pageData.SectionArticles_List?.Count > 0)
+                    {
+                        all.AddRange(pageData.SectionArticles_List);
+                    }
+                }
+
+                all = OrderPdfArticlesByDisplayDate(all);
+                model.Year_List = BuildYearList(all);
+                model.SelectedYear = model.Year_List.FirstOrDefault()?.Value ?? "";
+                if (!string.IsNullOrWhiteSpace(model.SelectedYear))
+                {
+                    var filtered = all
+                        .Where(a => CorporateGovernance_BAL.FinancialYearKey(a).StartsWith(model.SelectedYear + "-"))
+                        .ToList();
+                    if (filtered.Count > 0) all = filtered;
+                }
+
+                model.TotalCount = all.Count;
+                model.SectionArticles_List = all.Take(pageSize).ToList();
+            }
+            catch
+            {
+                // Optional SP / nested layout.
             }
 
             return model;
@@ -195,11 +265,20 @@ namespace GBL_BusinessLogic.BAL
                 yield break;
             }
 
-            yield return requested;
-
+            // Prefer full IR path first so a short slug does not bind the wrong CMS page.
             if (!requested.StartsWith("investor-relations/", StringComparison.OrdinalIgnoreCase))
             {
                 yield return "investor-relations/" + requested;
+            }
+
+            yield return requested;
+
+            var last = requested.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "";
+            if (!string.IsNullOrWhiteSpace(last)
+                && !last.Equals(requested, StringComparison.OrdinalIgnoreCase))
+            {
+                yield return "investor-relations/" + last;
+                yield return last;
             }
         }
 

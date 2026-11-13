@@ -10,9 +10,9 @@
 }
 
 /* ---------- Shared ---------- */
-.business-section {
+/* .business-section {
   padding-block: clamp(3.5rem, 6.25vw, 7.5rem);
-}
+} */
 .business-section--white {
   background: var(--color-white, #fff);
 }
@@ -80,6 +80,12 @@
   gap: 2.5rem;
   align-items: start;
 }
+/* Copy is second in the markup; pull it into the first column */
+.business-split.reverse .business-split__copy {
+  order: -1;
+}
+
+
 .business-split--center {
   align-items: center;
 }
@@ -88,27 +94,27 @@
 }
 
 /* Media boxes keep the design's frame ratios (816px column) */
-.business-media--chemicals {
-  aspect-ratio: 816 / 680;
+.business-media.business-media--full{
+  aspect-ratio: 816 / 540;
 }
-.business-media--wide {
+.business-media.business-media--wide {
   aspect-ratio: 816 / 363;
 }
-.business-media--small {
+.business-media.business-media--small {
   aspect-ratio: 398 / 260;
 }
-.business-media--sugar {
+/* .business-media--sugar {
   aspect-ratio: 816 / 377;
 }
 .business-media--sugar-small {
   aspect-ratio: 398 / 269;
-}
-.business-media--jivana {
+} */
+/* .business-media--jivana {
   aspect-ratio: 816 / 700;
 }
 .business-media--jivana img {
   object-position: 72% 50%;
-}
+} */
 
 .business-collage {
   display: flex;

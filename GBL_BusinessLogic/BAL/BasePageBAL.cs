@@ -131,8 +131,8 @@ namespace GBL_BusinessLogic.BAL
                 {
                     GroupId = group.GroupId,
                     cont_id = group.cont_id,
-                    Title = Config_Application_Website.GetValue(dict, "Title", "Component Title"),
-                    Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro"),
+                    Title = Config_Application_Website.GetValue(dict, "Title", "Component Title", "component title"),
+                    Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro", "component intro", "Component intro"),
                     HmpgIntro = Config_Application_Website.GetValue(dict, "Landing intro", "Component Landing intro"),
                     DisplayTitle = Config_Application_Website.GetValue(dict, "Component Display title"),
                     BlockDisplayTitle = Config_Application_Website.GetValue(dict, "Display title"),

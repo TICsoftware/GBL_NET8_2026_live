@@ -8,12 +8,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var img = section.querySelector(".page-intro-mantra__img");
   var quote = section.querySelector(".page-intro-mantra__quote");
+  var title = section.querySelector(".page-intro-mantra__sanskrit");
   var copy = section.querySelector(".page-intro-mantra__copy");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isMobile = window.matchMedia("(max-width: 992px)").matches;
   var stScroller = isMobile ? window : document.documentElement;
-  var FILL_FROM = "#4a4e55";
-  var FILL_TO = "#4a4e55";
+  var COPY_FROM = "#B2B2B2";
+  var COPY_TO = "#282B31";
+  var TITLE_FROM = "#efefef";
+  var TITLE_TO = "#212121";
 
   function wrapWords(el) {
     if (!el || el.dataset.introFill === "ready") return;
@@ -41,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined" || reduceMotion) {
+    if (title) wrapWords(title);
     if (copy) wrapWords(copy);
     return;
   }
@@ -88,29 +92,108 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  var isPhone = window.matchMedia("(max-width: 767px)").matches;
-
-  if (copy) {
-    wrapWords(copy);
-    var words = copy.querySelectorAll(".page-intro-fill-word");
-    if (words.length && !isPhone) {
-      gsap.set(words, { color: FILL_FROM });
-      gsap.to(words, {
-        color: FILL_TO,
-        stagger: 0.05,
+  if (title) {
+    wrapWords(title);
+    var titleWords = title.querySelectorAll(".page-intro-fill-word");
+    if (titleWords.length) {
+      gsap.set(titleWords, { color: TITLE_FROM });
+      gsap.to(titleWords, {
+        color: TITLE_TO,
+        stagger: 0.06,
         ease: "none",
         immediateRender: false,
+        overwrite: "auto",
         scrollTrigger: {
-          trigger: copy,
+          trigger: quote || title,
           scroller: stScroller,
           start: "top 82%",
-          end: "bottom 46%",
+          end: "bottom 48%",
           scrub: 1.15,
           invalidateOnRefresh: true,
         },
       });
     }
   }
+
+  if (copy) {
+    wrapWords(copy);
+    var words = copy.querySelectorAll(".page-intro-fill-word");
+    if (words.length) {
+      gsap.set(words, { color: COPY_FROM });
+      gsap.to(words, {
+        color: COPY_TO,
+        stagger: 0.06,
+        ease: "none",
+        immediateRender: false,
+        overwrite: "auto",
+        scrollTrigger: {
+          trigger: copy,
+          scroller: stScroller,
+          start: "top 82%",
+          end: "bottom 48%",
+          scrub: 1.15,
+          invalidateOnRefresh: true,
+        },
+      });
+    }
+  }
+});
+document.addEventListener("DOMContentLoaded", function () {
+  var titles = document.querySelectorAll(".page-intro-inner .page-intro-mantra__sanskrit");
+  if (!titles.length) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+
+  var stScroller = window.matchMedia("(max-width: 992px)").matches
+    ? window
+    : document.documentElement;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  titles.forEach(function (title) {
+    if (title.dataset.introFill === "ready") return;
+    var walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      var text = node.nodeValue;
+      if (!text || !text.trim()) return;
+      var frag = document.createDocumentFragment();
+      text.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          frag.appendChild(document.createTextNode(part));
+          return;
+        }
+        var span = document.createElement("span");
+        span.className = "page-intro-fill-word";
+        span.textContent = part;
+        frag.appendChild(span);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    title.dataset.introFill = "ready";
+
+    var words = title.querySelectorAll(".page-intro-fill-word");
+    if (!words.length) return;
+    var trigger = title.closest(".page-intro-inner") || title;
+    gsap.set(words, { color: "#efefef" });
+    gsap.to(words, {
+      color: "#212121",
+      stagger: 0.06,
+      ease: "none",
+      immediateRender: false,
+      overwrite: "auto",
+      scrollTrigger: {
+        trigger: trigger,
+        scroller: stScroller,
+        start: "top 82%",
+        end: "bottom 48%",
+        scrub: 1.15,
+        invalidateOnRefresh: true,
+      },
+    });
+  });
 });
 document.addEventListener("DOMContentLoaded", function () {
   var el = document.querySelector(".turningCommitment-cards-outer, .carbonCircularity-cards");

@@ -69,7 +69,7 @@
 --text-small: 0.875rem;                                     /* 14px fixed, no scaling needed */
 --text-button: clamp(0.875rem, 0.65rem + 0.26vw, 1rem);   /* 16px → 16px */
 --text-intro: clamp(1.125rem, 1rem + 0.75vw, 1.375rem); /* 18px → 22px */
---text-22: clamp(1.125rem, 1rem + 0.75vw, 1.375rem); /* 18px → 22px */
+--text-22: 1.375rem; /* 22px on desktop */
 --text-base: 1rem;   
  
 /* ── Brand Colors ── */
@@ -207,9 +207,16 @@ Common
   .container-fluid{padding-left: 1.5pc; padding-right: 1.5pc;}
 }
 
+/* Laptop widths, and 125%/150% zoom on a desktop, through to mobile */
+@media (max-width: 1599px) {
+  :root {
+    --text-22: 1.25rem; /* 20px */
+  }
+}
+
 @media (max-width: 767px) {
   :root {
-    --text-p: 0.875rem;    
+    --text-p: 1rem;    
     --text-h1:32px;
   }
 }

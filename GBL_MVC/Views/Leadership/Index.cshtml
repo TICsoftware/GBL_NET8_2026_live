@@ -6,19 +6,35 @@
     var content = Model?.Content;
 
     var boardSection = Model?.Board_Of_Directors_List?.FirstOrDefault(x => x.IsBlock == 0);
-    var boardItems = (Model?.Board_Of_Directors_List?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList()
+    var boardItems = (Model?.Board_Of_Directors_List?.Where(x => x.IsBlock == 1)
+            .OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList()
         ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
     if (!boardItems.Any() && Model?.Board_Of_Directors_List?.Any() == true)
     {
-        boardItems = Model.Board_Of_Directors_List.OrderBy(x => x.Sequence).ToList();
+        boardItems = Model.Board_Of_Directors_List.OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList();
     }
-    var chair = boardItems.FirstOrDefault();
+    // Featured chair: prefers Block section Title / Intro / Content (Samir-style block)
+    var chair = boardItems.FirstOrDefault(x =>
+            !string.IsNullOrWhiteSpace(x.Section_title)
+            || !string.IsNullOrWhiteSpace(x.Intro)
+            || !string.IsNullOrWhiteSpace(x.Content))
+        ?? boardItems.FirstOrDefault();
 
-    var leadershipItems = (Model?.Leadership_List?.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence).ToList()
+    var leadershipItems = (Model?.Leadership_List?.Where(x => x.IsBlock == 1)
+            .OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList()
         ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
     if (!leadershipItems.Any() && Model?.Leadership_List?.Any() == true)
     {
-        leadershipItems = Model.Leadership_List.OrderBy(x => x.Sequence).ToList();
+        leadershipItems = Model.Leadership_List.OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList();
+    }
+    // Fallback: if seq-2 list empty, use remaining seq-1 blocks after the chair
+    if (!leadershipItems.Any() && boardItems.Count > 1 && chair != null)
+    {
+        leadershipItems = boardItems
+            .Where(x => x.GroupId != chair.GroupId)
+            .OrderBy(x => x.Sequence)
+            .ThenBy(x => x.Title)
+            .ToList();
     }
 
     string FirstNonEmpty(params string?[] values) =>

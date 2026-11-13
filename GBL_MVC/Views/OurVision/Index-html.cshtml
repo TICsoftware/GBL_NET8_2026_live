@@ -1,0 +1,184 @@
+@{
+    ViewData["Title"] = "Sustainability";
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/our-vision.css" asp-append-version="true" />
+}
+
+    <!-- HERO BANNER END-->
+   <section class="relative inside-banner-outer">
+         <div class="inside-banner-inner banner-animation relative">
+            <!-- Banner -->
+            <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
+               <!-- Parallax Image -->
+               <picture>
+                  <!-- Desktop -->
+                  <source media="(min-width:1024px)"
+                     srcset="~/Assets/images/banners/sustainability-banner.webp">                  
+
+                  <!-- Desktop -->
+                  <img
+                     src="~/Assets/images/banners/sustainability-banner.webp"
+                     alt=""
+                     class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                     loading="eager"
+                     fetchpriority="high">
+               </picture>
+               <!-- Keep Existing Overlay -->
+               <div class="innerbanner-overlay"></div>
+            </div>
+            <!-- Content -->
+           
+           <!--Breadcrumb-->
+            <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
+               <div class="container">
+                  <div class="max-w-4xl text-left">
+                     <h1 class="innerbanner-title text-h1 text-white title-animation">
+                        Our Vision
+                     </h1>
+
+                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 text-sm">
+                           <li>
+                              <a href="/" class="text-white/70 hover:text-white transition">
+                                 Home
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li>
+                              <a href="/about-us" class="text-white/70 hover:text-white transition">
+                                 About Us
+                              </a>
+                           </li>
+
+                           <li class="text-white/60">/</li>
+
+                           <li class="text-white">
+                                Our Vision & Mission
+                           </li>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>  
+         </div>
+   </section>
+    <!-- HERO BANNER END -->
+
+   <!--PAGE INTRO OUTER-->
+   <section class="page-intro-outer page-intro-outer--mantra page-intro-outer--vision" aria-label="Our operating principle">
+      @* <div class="page-intro-mantra__media" aria-hidden="true">
+         <img src="@Url.Content("~/Assets/images/sustanability/Sustainability-img.webp")" alt="" class="page-intro-mantra__img">
+         <div class="page-intro-mantra__veil"></div>
+      </div> *@
+      <div class="container">
+         <div class="page-intro-mantra">
+            <blockquote class="page-intro-mantra__quote">
+               <p>Our vision of Creating a Beautiful World with innovation at the core, unified by growth, sustainability and inclusion is inspired by the Bhumi Sukta in the Atharva Veda, which states:</p>
+               <h2 class="page-intro-mantra__sanskrit text-h1">माता भूमिः पुत्रोहं पृथिव्याः</h2>
+               <p class="page-intro-mantra__english">(Mata bhumih, putro aham prithivyah)</p>
+               <p class="page-intro-mantra__meaning">The Earth is my mother and we are her children</p>
+            </blockquote>
+
+            <div class="page-intro-mantra__copy">
+               <p>Our Vision, like this verse, enshrines our respect for Mother Earth and our sense of responsibility towards it. It drives our determination to build a sustainable and inclusive future where planetary care and progress are a unified path, a world where scientific innovation, business growth and environmental and social responsibility can advance together.</p>
+
+               <p>Our Vision is rooted in a simple truth: Everything in nature is connected. The sun nourishes the soil. The soil sustains the farmer. The farmer cultivates the renewable resources that become the foundation of our bio-based solutions. This interconnected ecosystem reminds us that progress is most meaningful when it strengthens every link in the value chain — from the field to the factory, from innovation to industry, and from communities to future generations.</p>
+
+               <p>Creating a Beautiful World therefore shapes the way we do business, how we innovate, how we partner, how we use resources, how we empower our people and how we create lasting value for all. Guided by this Vision, we are building an organisation where growth is shared, sustainability is designed into every solution, innovation is purposeful, and trust is earned through inclusivity, integrity and discipline.</p>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+
+   <!--Our Guiding Principles-->
+   <section class="guiding-principles bg-parallax-section" aria-labelledby="guiding-principles-title">
+      <div class="parallax-wrap guiding-principles__bg" aria-hidden="true">
+         <img src="~/Assets/images/our-vision/guiding-principles-bg.webp" alt="" class="parallax-img" loading="lazy">
+      </div>
+      <div class="guiding-principles__veil" aria-hidden="true"></div>
+
+      <div class="container guiding-principles__inner">
+         <div class="guiding-principles__head">
+            <h2 id="guiding-principles-title" class="text-h2 title-animation guiding-principles__title">Our Guiding Principles</h2>
+            <p class="guiding-principles__intro">Our Vision of Creating a Beautiful World underpins the way we think, innovate and grow. Shaping this Vision are our four guiding principles that power every decision we make, every relationship we build, and every solution we create.</p>
+         </div>
+
+         <ul class="guiding-principles__panel card-list-items">
+            <li class="principle-item card-rise">
+               <span class="principle-item__icon">
+                  <img src="~/Assets/images/our-vision/icon-innovation.svg" alt="" width="48" height="48">
+               </span>
+               <h3 class="principle-item__title">Innovation at the Core</h3>
+               <p>Where high-performance solutions and planetary health thrive together</p>
+            </li>
+            <li class="principle-item card-rise">
+               <span class="principle-item__icon">
+                  <img src="~/Assets/images/our-vision/icon-sustainability.svg" alt="" width="48" height="48">
+               </span>
+               <h3 class="principle-item__title">Sustainability by Design</h3>
+               <p>Circular systems that keep resources in motion and respect nature</p>
+            </li>
+            <li class="principle-item card-rise">
+               <span class="principle-item__icon">
+                  <img src="~/Assets/images/our-vision/icon-growth.svg" alt="" width="40" height="41">
+               </span>
+               <h3 class="principle-item__title">Shared Future Growth</h3>
+               <p>Co-creation with farmers and customers to fuel shared prosperity and soil vitality</p>
+            </li>
+            <li class="principle-item card-rise">
+               <span class="principle-item__icon">
+                  <img src="~/Assets/images/our-vision/icon-value.svg" alt="" width="51" height="51">
+               </span>
+               <h3 class="principle-item__title">Creating Value for All</h3>
+               <p>The investors, customers, farmers, the company and the community thrive together</p>
+               <p>Everything we do begins with the sun, the soil and the small farmer.</p>
+            </li>
+         </ul>
+      </div>
+   </section>
+   <!--Our Guiding Principles END-->
+
+
+   <!--Our Mission-->
+   <section class="our-mission" aria-labelledby="our-mission-title">
+      <div class="our-mission__bg" aria-hidden="true">
+         <img src="~/Assets/images/our-vision/our-mission-bg.webp" alt="" class="our-mission__img" loading="lazy">
+      </div>
+
+      <div class="container our-mission__inner">
+         <h2 id="our-mission-title" class="text-h2 title-animation our-mission__title">Our Mission</h2>
+
+         <ul class="our-mission__list card-list-items">
+            <li class="card-rise">To be the leading integrated producer of foods, biofuels, biochemicals and bio-materials from renewable resources</li>
+            <li class="card-rise">To use research, innovation and co-creation as the basis of development</li>
+            <li class="card-rise">To continuously add value to the biomass that the company processes, make new products and enter new markets in order to derive maximum value from feedstock</li>
+            <li class="card-rise">To work on different biomass that provide similar or superior potential</li>
+            <li class="card-rise">To understand customer needs and develop well-established relationships and co-create solutions and materials for their needs</li>
+            <li class="card-rise">To participate in and contribute to the development of the community in which the company operates.</li>
+            <li class="card-rise">To be a place where individuals aspire to and can make a difference</li>
+            <li class="card-rise">To work on the triple bottom line: Social, environmental and financial with innovation running through all that we do</li>
+            <li class="card-rise">To work with our farmers to co-create solutions that improve soil health and productivity that enable environmental and financial sustainability over the short and long term for all stakeholders</li>
+         </ul>
+      </div>
+   </section>
+   <!--Our Mission End-->
+
+  
+
+  
+
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/our-vision.js" asp-append-version="true"></script>
+}
+

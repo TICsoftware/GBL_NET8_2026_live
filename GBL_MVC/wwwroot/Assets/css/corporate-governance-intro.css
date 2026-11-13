@@ -1,7 +1,3 @@
-.page-intro-outer + .governance-copy-outer {
-  padding-top: 0;
-  padding-bottom: clamp(2.5rem, 5vw, 5rem);
-}
 
 .governance-copy {
   max-width: min(75vw, 1100px);
