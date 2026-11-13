@@ -15,7 +15,7 @@ namespace GBL_MVC.Routes
             app.MapControllerRoute(
                 name: "businesses-inside",
                 pattern: "Businesses/{title?}",
-                defaults: new { controller = "Businesses", action = "Inside", title = "{title?}" }
+                defaults: new { controller = "Businesses", action = "Inside" }
             );
 
             app.MapControllerRoute(
