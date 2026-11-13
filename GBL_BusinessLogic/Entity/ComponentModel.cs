@@ -118,6 +118,7 @@ namespace GBL_BusinessLogic.Entity
         public string Tag_list { get; set; }
         public string Publication { get; set; }
         public string Search_url { get; set; }
+        public string BreadcrumbTitle { get; set; }
     }
 
 }

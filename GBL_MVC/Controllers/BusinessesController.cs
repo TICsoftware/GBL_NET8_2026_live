@@ -47,4 +47,22 @@ public class BusinessesController : Controller
         }
     }
 
+    public IActionResult Inside(string title)
+    {
+         try
+        {
+             var data = "";
+             return View(data);
+        }
+         catch (Exception ex)
+        {
+            FileLogger.LogError("/Businesses :", ex);
+            return View(new SustainabilityModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
 }

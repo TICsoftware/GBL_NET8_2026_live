@@ -81,7 +81,7 @@
       }
       incr++;
       
-      <section class="business-section @(itemfirstcomponent?.bg_class ?? "business-section--white")"
+      <section class="business-section @(itemfirstcomponent?.bg_class ?? "business-section--white") section-spacing"
                aria-labelledby="@item.PageName">
          <div class="container">
             <div class="business-split @business_class">
@@ -89,7 +89,7 @@
                {
                   @if (itemcomponent.Count == 1)
                   {
-                     <div class="business-split__media business-media business-media--chemicals business-parallax">
+                     <div class="business-split__media business-media business-media--full business-parallax">
                         <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
                      </div>
                   }
@@ -111,6 +111,10 @@
                   }
                }
                <div class="business-split__copy card-rise">
+                  @if(!string.IsNullOrWhiteSpace(item?.BreadcrumbTitle))
+                  {
+                     <span class="addon-section-title">@item.BreadcrumbTitle.Trim()</span> 
+                  }
                   <h2 id="@item.PageName" class="text-h2 title-animation business-title business-title--chemicals">
                      @Html.Raw(item.Title)</h2>
                      <div class="business-body business-body--muted">
