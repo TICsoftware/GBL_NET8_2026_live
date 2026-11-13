@@ -8,11 +8,6 @@
     var pageSize = GBL_BusinessLogic.BAL.Investors_BAL.DefaultPageSize;
     var years = Model?.Year_List ?? new List<GBL_BusinessLogic.Entity.DropdownModel>();
     var selectedYear = Model?.SelectedYear ?? "";
-    var selectedYearKey = "";
-    if (int.TryParse(selectedYear, out var fyStart))
-    {
-        selectedYearKey = fyStart + "-" + (fyStart + 1);
-    }
     var sectionTitle = content?.ContTitle ?? "Documents";
 }
 
@@ -82,9 +77,7 @@
 
         <p class="fh-year-filter__empty" data-investor-empty @(totalCount == 0 ? null : "hidden")>No documents found.</p>
 
-        @{
-            ViewData["PdfYear"] = string.IsNullOrWhiteSpace(selectedYearKey) ? null : selectedYearKey;
-        }
+        @* Server already filters by FY via Get_Investor_Pdf_Articles_List — do not re-hide in the partial. *@
         <ul id="DivContent"
             class="cg-docs__grid card-list-items"
             data-investor-grid
@@ -95,9 +88,6 @@
             data-load-url="@Url.Action("LoadPdfs", "Investors")">
             @await Html.PartialAsync("_investor_pdf_list", Model?.SectionArticles_List ?? new List<GBL_BusinessLogic.Entity.ArticleModel>())
         </ul>
-        @{
-            ViewData.Remove("PdfYear");
-        }
 
         <div class="news-load-more" data-investor-load-more-wrap hidden>
             <button type="button" class="site-btn site-btn--fill" data-investor-load-more>
