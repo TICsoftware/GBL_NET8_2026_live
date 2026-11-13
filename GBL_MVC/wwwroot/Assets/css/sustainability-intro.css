@@ -75,6 +75,10 @@
   text-align: left;
   max-width: none;
   width: auto;
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-h, 88px) + 1.5rem);
+  z-index: 1;
 }
 
 .page-intro-mantra__sanskrit {
@@ -83,7 +87,7 @@
   font-size: var(--text-h1);
   font-weight: 700;
   line-height: 1.35;
-  color: #1c1c1c;
+  color: #212121;
   overflow-wrap: anywhere;
 }
 
@@ -115,17 +119,28 @@
 .page-intro-mantra__copy p {
   margin: 0 0 1.15rem;
   color: inherit;
-  font-size: var(--text-22, 1.375rem);
+  font-size: var(--text-p);
   line-height: 1.55;
+}
+
+.page-intro-mantra__copy > p:first-of-type {
+  font-size: var(--text-22, 1.375rem);
 }
 
 .page-intro-mantra__copy p:last-child {
   margin-bottom: 0;
 }
 
+.page-intro-outer--mantra .page-intro-mantra__sanskrit,
+.page-intro-outer--mantra .page-intro-mantra__sanskrit .page-intro-fill-word,
+.page-intro-inner .page-intro-mantra__sanskrit,
+.page-intro-inner .page-intro-mantra__sanskrit .page-intro-fill-word {
+  color: #efefef;
+}
+
 .page-intro-mantra__copy .page-intro-fill-word {
   display: inline;
-  color: #4a4e55;
+  color: #b2b2b2;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -135,8 +150,15 @@
     will-change: auto;
   }
 
+  .page-intro-outer--mantra .page-intro-mantra__sanskrit,
+  .page-intro-outer--mantra .page-intro-mantra__sanskrit .page-intro-fill-word,
+  .page-intro-inner .page-intro-mantra__sanskrit,
+  .page-intro-inner .page-intro-mantra__sanskrit .page-intro-fill-word {
+    color: #212121;
+  }
+
   .page-intro-mantra__copy .page-intro-fill-word {
-    color: #4a4e55;
+    color: #282b31;
   }
 }
 
@@ -156,6 +178,7 @@
     padding-bottom: 0;
     border-right: 0;
     border-bottom: 0;
+    position: static;
   }
 
   .page-intro-mantra__copy {
@@ -168,7 +191,7 @@
   }
 
   .page-intro-mantra__copy .page-intro-fill-word {
-    color: #4a4e55;
+    color: #b2b2b2;
   }
 
   .page-intro-outer--mantra::after {
@@ -240,27 +263,33 @@
 .CreatingTowards-media {
   grid-area: media;
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.82fr) minmax(0, 0.82fr);
-  gap:2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(280px, 1fr);
+  gap: 1.5rem;
   align-items: stretch;
+  align-self: stretch;
+  height: 100%;
   min-height: 100%;
   min-width: 0;
+  max-height: 450px;
 }
 
 .CreatingTowards-media__item {
   margin: 0;
   overflow: hidden;
-  height: 100%;
-  min-height: 280px;
   position: relative;
+  height: auto;
+  min-height: 0;
+  align-self: stretch;
 }
 
 .CreatingTowards-media__item .parallax-img {
   position: absolute;
   left: 0;
-  top: 0;
+  top: -15%;
   width: 100%;
-  height: 105%;
+  height: 130%;
+  max-width: none;
   min-height: 0;
   object-fit: cover;
   object-position: center;
@@ -278,13 +307,16 @@
 
   .CreatingTowards-media {
     gap: 0.75rem;
+    grid-template-rows: auto;
+    height: auto;
     min-height: 0;
   }
 
   .CreatingTowards-media__item {
     min-width: 0;
-    min-height: 220px;
+    min-height: 0;
     height: min(34vw, 300px);
+    align-self: stretch;
   }
 }
 
@@ -434,7 +466,9 @@
   padding: 1.25rem 1.25rem 5.25rem;
 }
 
+.turningCommitment-card__body h2,
 .turningCommitment-card__body h3,
+.carbonCircularity-card__body h2,
 .carbonCircularity-card__body h3 {
   position: relative;
   z-index: 2;
@@ -453,10 +487,14 @@
   transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
+.turningCommitment-cards-outer .swiper-slide.is-filled h2,
+.turningCommitment-cards-outer .swiper-slide:focus-within h2,
 .turningCommitment-cards-outer .swiper-slide.is-filled h3,
 .turningCommitment-cards-outer .swiper-slide:focus-within h3,
 .turningCommitment-cards-outer .swiper-slide.is-filled p,
 .turningCommitment-cards-outer .swiper-slide:focus-within p,
+.carbonCircularity-cards .swiper-slide.is-filled h2,
+.carbonCircularity-cards .swiper-slide:focus-within h2,
 .carbonCircularity-cards .swiper-slide.is-filled h3,
 .carbonCircularity-cards .swiper-slide:focus-within h3,
 .carbonCircularity-cards .swiper-slide.is-filled p,
@@ -511,8 +549,10 @@
 @media (prefers-reduced-motion: reduce) {
   .turningCommitment-cards-outer .swiper-slide::before,
   .carbonCircularity-cards .swiper-slide::before,
+  .turningCommitment-card__body h2,
   .turningCommitment-card__body h3,
   .turningCommitment-card__body p,
+  .carbonCircularity-card__body h2,
   .carbonCircularity-card__body h3,
   .carbonCircularity-card__body p {
     transition: none;
@@ -960,7 +1000,7 @@
 }
 
 .AwardsCertifications-tile {
-  min-height: 360px;
+  min-height: 460px;
 }
 
 .AwardsCertifications-tile--media {
@@ -971,9 +1011,9 @@
 .AwardsCertifications-tile--media .parallax-img {
   position: absolute;
   left: 0;
-  top: -15%;
+  top: -5%;
   width: 100%;
-  height: 130%;
+  height: 110%;
   object-fit: cover;
   object-position: center;
 }

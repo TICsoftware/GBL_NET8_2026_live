@@ -40,8 +40,11 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 
 .page-intro-inner{ max-width:min(75vw, 1100px); margin: 0 auto; width: 100%; text-align:left;}
 .page-intro-inner p{
-  font-size: var(--text-intro);
+  font-size: var(--text-p);
   color: #B2B2B2;
+}
+.page-intro-inner > p:first-of-type{
+  font-size: var(--text-22, 1.375rem);
 }
 .page-intro-inner .page-intro-fill-word{
   display: inline;
