@@ -31,6 +31,12 @@ namespace GBL_MVC.Routes
                     defaults: new { controller = "AboutUs", action = "Leadership", title = "leadership" }
                 );
 
+            app.MapControllerRoute(
+                    name: "our-vision",
+                    pattern: "about-us/our-vision",
+                    defaults: new { controller = "AboutUs", action = "OurVision", title = "our-vision" }
+                );
+
 
 
             app.MapControllerRoute(

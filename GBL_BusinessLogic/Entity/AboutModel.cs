@@ -31,6 +31,10 @@ namespace GBL_BusinessLogic.Entity
         public List<ComponentModel> Board_Of_Directors_List { get; set; } = new();
         public List<ComponentModel> Leadership_List { get; set; } = new();
 
+        // Our Vision
+        public List<ComponentModel> Guiding_Principles_List { get; set; } = new();
+        public List<ComponentModel> Our_Mission_List { get; set; } = new();
+
         //Financial Information
         public List<ArticleModel> Section_List { get; set; } = new();
         public List<ArticleModel> SectionArticles_List { get; set; } = new();

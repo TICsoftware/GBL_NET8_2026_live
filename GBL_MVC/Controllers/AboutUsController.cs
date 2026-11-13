@@ -70,4 +70,23 @@ public class AboutUsController : Controller
             _bal.Dispose();
         }
     }
+
+    public IActionResult OurVision(string title)
+    {
+        try
+        {
+            var pageName = string.IsNullOrWhiteSpace(title) ? "our-vision" : title;
+            var data = _bal.GetVisionPage_BAL(pageName, 1, 1);
+            return View("~/Views/OurVision/Index.cshtml", data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/OurVision :", ex);
+            return View("~/Views/OurVision/Index.cshtml", new AboutModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
 }

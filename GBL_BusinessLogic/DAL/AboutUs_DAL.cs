@@ -33,5 +33,17 @@ namespace GBL_BusinessLogic.DAL
 
             return GetDataSet("sp_GetLeadershipPageData", sqlParams);
         }
+
+        public new DataSet GetVisionPageData_DAL(string pagename, int LanguageID, int GeographyID)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new ("@pagename", string.IsNullOrWhiteSpace(pagename) ? null : pagename.Trim()),
+                new ("@LanguageID", LanguageID > 0 ? LanguageID : null),
+                new ("@GeographyID", GeographyID > 0 ? GeographyID : null),
+            };
+
+            return GetDataSet("sp_GetVisionPageData", sqlParams);
+        }
     }
 }

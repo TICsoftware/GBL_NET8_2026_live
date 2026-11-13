@@ -98,6 +98,32 @@ namespace GBL_BusinessLogic.BAL
                 .ToList();
         }
 
+        public AboutModel GetVisionPage_BAL(string pagename, int languageId, int geographyId)
+        {
+            var model = new AboutModel();
+            var pageName = string.IsNullOrWhiteSpace(pagename) ? "our-vision" : pagename.Trim();
+            var ds = GetVisionPageData_DAL(pageName, languageId, geographyId);
+
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
+
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                var groupedData = GetGroupedComponents(ds.Tables[1]);
+                model.Components = groupedData;
+
+                // Matches Index-html.cshtml:
+                //   1 = Our Guiding Principles (section + principle cards)
+                //   2 = Our Mission (section + mission list)
+                model.Guiding_Principles_List = MapComponents(groupedData, 1);
+                model.Our_Mission_List = MapComponents(groupedData, 2);
+            }
+
+            return model;
+        }
+
         public AboutModel GetAboutUs_BAL(string pagename, int languageId, int geographyId)
         {
             var model = new AboutModel();
