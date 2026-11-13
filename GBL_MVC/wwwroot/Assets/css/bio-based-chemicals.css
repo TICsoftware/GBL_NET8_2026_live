@@ -15,10 +15,7 @@
   margin: 0 0 1.5rem;
   color: var(--color-primary);
 }
-.bbc-body p {
-  margin: 0;
-  font-size: var(--text-p);
-}
+
 .bbc-body > * + * {
   margin-top: 1.25rem;
 }
@@ -85,13 +82,13 @@
 }
 
 /* ---------- Drop-in Substitutes ---------- */
-.bbc-substitutes {
-  padding-block: clamp(3.5rem, 4.9vw, 6rem);
+.bbc-substitutes { 
   background: var(--color-white, #fff);
 }
 .bbc-split {
   display: grid;
-  grid-template-columns: minmax(0, 959fr) minmax(0, 673fr);
+  
+  grid-template-columns: repeat(2, minmax(0, 1fr))   ;
   gap: 2.5rem;
   align-items: start;
 }
@@ -101,6 +98,9 @@
 .bbc-title--substitutes {
   max-width: 612px;
 }
+
+.bbc-split.reverse .bbc-split__copy{ order : -1; }
+.bbc-split__copy{min-width: 0;}
 
 /* Soft parallax: a little taller than its box, moved by bio-based-chemicals.js */
 .bbc-parallax {
@@ -119,9 +119,17 @@
   will-change: transform;
 }
 
+/* Image stays in view while the copy column scrolls, then releases at the row end */
+@media (min-width: 1024px) {
+  .bbc-split__media.bbc-parallax {
+    position: sticky;
+    top: calc(var(--header-h, 88px) + 1.5rem);
+    align-self: start;
+  }
+}
+
 /* ---------- Find Your Bio-Based Chemical ---------- */
 .bbc-find {
-  padding-block: clamp(3.5rem, 5.15vw, 6.1875rem);
   background: var(--color-gray);
 }
 .bbc-find__card {

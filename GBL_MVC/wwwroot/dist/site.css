@@ -1583,10 +1583,6 @@
   .font-uniNeueBold {
     font-family: var(--font-uniNeueBold);
   }
-  .text-base {
-    font-size: var(--text-base);
-    line-height: var(--tw-leading, var(--text-base--line-height));
-  }
   .text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
