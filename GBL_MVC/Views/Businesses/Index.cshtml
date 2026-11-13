@@ -44,20 +44,20 @@
    <link rel="stylesheet" href="~/Assets/css/business.css" asp-append-version="true" />
 }
 
-<!-- HERO BANNER END-->
+<!-- HERO BANNER -->
 @if (Model?.Content != null)
 {
    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
-
+<!-- HERO BANNER END-->
 
 <!--PAGE INTRO OUTER-->
-@if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
+@if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
 {
    <section class="business-intro" aria-label="Introduction">
       <div class="container">
          <div class="page-intro-inner">
-            <p class="business-intro__lead">@Html.Raw(Model.Content.Cont_intro)</p>
+            <p class="business-intro__lead">@Html.Raw(content.Cont_intro)</p>
          </div>
       </div>
    </section>
