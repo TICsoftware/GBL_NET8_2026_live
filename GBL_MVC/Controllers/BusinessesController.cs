@@ -39,7 +39,7 @@ public class BusinessesController : Controller
         catch (Exception ex)
         {
             FileLogger.LogError("/Businesses :", ex);
-            return View(new SustainabilityModel());
+            return View(new BusinessModel());
         }
         finally
         {
@@ -57,7 +57,7 @@ public class BusinessesController : Controller
         catch (Exception ex)
         {
             FileLogger.LogError("/Businesses/Inside:", ex);
-            return View(new SustainabilityModel());
+            return View(new BusinessModel());
         }
         finally
         {
