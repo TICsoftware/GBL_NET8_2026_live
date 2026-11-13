@@ -74,7 +74,7 @@
     --text-small: 0.875rem;
     --text-button: clamp(0.875rem, 0.65rem + 0.26vw, 1rem);
     --text-intro: clamp(1.125rem, 1rem + 0.75vw, 1.375rem);
-    --text-22: clamp(1.125rem, 1rem + 0.75vw, 1.375rem);
+    --text-22: 1.375rem;
     --color-primary: #282B31;
     --color-secondary: #67815A;
     --color-gray: #F4F4F4;
@@ -2057,9 +2057,14 @@ body {
     padding-right: 1.5pc;
   }
 }
+@media (max-width: 1599px) {
+  :root {
+    --text-22: 1.25rem;
+  }
+}
 @media (max-width: 767px) {
   :root {
-    --text-p: 0.875rem;
+    --text-p: 1rem;
     --text-h1: 32px;
   }
 }
