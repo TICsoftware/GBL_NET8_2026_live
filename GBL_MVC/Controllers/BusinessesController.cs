@@ -33,7 +33,7 @@ public class BusinessesController : Controller
             {
                 title = "Businesses";
             }
-            var data = _bal.GetInsideBusiness_BAL(title, 1, 1);
+            var data = _bal.GetBusiness_BAL(title, 1, 1);
             return View(data);
         }
         catch (Exception ex)
