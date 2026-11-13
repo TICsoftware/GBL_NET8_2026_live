@@ -44,177 +44,103 @@
    <link rel="stylesheet" href="~/Assets/css/business.css" asp-append-version="true" />
 }
 
-   <!-- HERO BANNER END-->
+<!-- HERO BANNER -->
 @if (Model?.Content != null)
 {
    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
+<!-- HERO BANNER END-->
 
-
-   <!--PAGE INTRO OUTER-->
-   @if (!string.IsNullOrWhiteSpace(Model?.Content?.Cont_intro))
+<!--PAGE INTRO OUTER-->
+@if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
 {
    <section class="business-intro" aria-label="Introduction">
       <div class="container">
          <div class="page-intro-inner">
-            <p class="business-intro__lead">@Html.Raw(Model.Content.Cont_intro)</p>
+            <p class="business-intro__lead">@Html.Raw(content.Cont_intro)</p>
          </div>
       </div>
    </section>
-   }
-   <!--PAGE INTRO OUTER END-->
+}
+<!--PAGE INTRO OUTER END-->
 @if (Model?.Section_List != null && Model.Section_List.Any())
 {
-   foreach(var item in Model.Section_List)
+   string business_class = "";
+   int incr = 0;
+   foreach (var item in Model.Section_List)
    {
-      var itemcomponenet = Model.Subsections_Components ;
-      <section class="business-section business-section--white" aria-labelledby="business-chemicals-title">
+      var itemcomponent = Model.Subsections_Components.Where(m => m.cont_id == item.ContId).ToList();
+      var itemfirstcomponent = itemcomponent.FirstOrDefault(); 
+      if (incr % 2 == 0)
+      {
+         business_class = "reverse";
+      }
+      else
+      {
+         business_class = "";
+      }
+      incr++;
+      
+      <section class="business-section @(itemfirstcomponent?.bg_class ?? "business-section--white") section-spacing"
+               aria-labelledby="@item.PageName">
          <div class="container">
-            <div class="business-split business-split--center">
+            <div class="business-split @business_class">
+               @if (itemcomponent != null && itemcomponent.Count > 0)
+               {
+                  @if (itemcomponent.Count == 1)
+                  {
+                     <div class="business-split__media business-media business-media--full business-parallax">
+                        <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
+                     </div>
+                  }
+                  else
+                  {
+                     <div class="business-split__media business-collage">
+                        <div class="business-media business-media--wide business-parallax">
+                           <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
+                        </div>
+                        <div class="business-collage__row">
+                        @foreach (var component in itemcomponent.Skip(1))
+                        {
+                           <div class="business-media business-media--small business-parallax">
+                              <img src="@component.ThumbnailImage" alt="@component.ThumbnailAltText" loading="lazy" />
+                           </div>
+                        } 
+                        </div>
+                     </div>
+                  }
+               }
                <div class="business-split__copy card-rise">
-                  <h2 id="business-chemicals-title" class="text-h2 title-animation business-title business-title--chemicals">Largest Bio-Based Chemicals Producer in India</h2>
-                  <div class="business-body business-body--muted">
-                     <p>Our diversified portfolio of bio-based chemicals made from agricultural feedstock enables companies to reduce their carbon footprint and meet the growing demand for environment-friendly products. We co-create green drop-in substitutes and green substitutes with enhanced properties in partnership with our customers in varied sectors from personal care and cosmetics to paints and coatings, from pharmaceuticals to food and beverages.</p>
-                     <p>Our ability to combine innovation with manufacturing at scale is evident from the fact that we are the world’s largest manufacturer of the perfumery intermediate, 3-Methyl-3-Penten-2-One (MPO). We are also one of only two manufacturers globally to produce 1,3 Butylene Glycol from an agricultural feedstock, and the only manufacturer in India of Bio Ethyl Acetate and Ethyl Vinyl Ether.</p>
+                  @if(!string.IsNullOrWhiteSpace(item?.BreadcrumbTitle))
+                  {
+                     <span class="addon-section-title">@item.BreadcrumbTitle.Trim()</span> 
+                  }
+                  <h2 id="@item.PageName" class="text-h2 title-animation business-title business-title--chemicals">
+                     @Html.Raw(item.Title)</h2>
+                     <div class="business-body business-body--muted">
+                        @Html.Raw(string.IsNullOrWhiteSpace(item.HmpgIntro) ? item.Intro : item.HmpgIntro)
+                     </div>
+                     <a href="@(string.IsNullOrWhiteSpace(item.Url) ? item.ExternalUrl : item.Url)" target="@item.UrlTarget"
+                        class="site-btn site-btn--outline business-btn">
+                        <span class="site-btn__label">Know more</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                           <svg viewBox="0 0 24 24" fill="none">
+                              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                           </svg>
+                        </span>
+                     </a>
                   </div>
-                  <a href="#" class="site-btn site-btn--outline business-btn">
-                     <span class="site-btn__label">Know more</span>
-                     <span class="site-btn__arrow" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                     </span>
-                  </a>
-               </div>
-               <div class="business-split__media business-media business-media--chemicals business-parallax">
-                  <img src="~/Assets/images/business/bio-based-chemicals.webp" alt="Bio-based chemicals manufacturing plant" width="1280" height="1024" loading="lazy">
                </div>
             </div>
-         </div>
-      </section>
-   }   
-}
-<!--Bio-based chemicals-->
-   <section class="business-section business-section--white" aria-labelledby="business-chemicals-title">
-      <div class="container">
-         <div class="business-split business-split--center">
-            <div class="business-split__copy card-rise">
-               <h2 id="business-chemicals-title" class="text-h2 title-animation business-title business-title--chemicals">Largest Bio-Based Chemicals Producer in India</h2>
-               <div class="business-body business-body--muted">
-                  <p>Our diversified portfolio of bio-based chemicals made from agricultural feedstock enables companies to reduce their carbon footprint and meet the growing demand for environment-friendly products. We co-create green drop-in substitutes and green substitutes with enhanced properties in partnership with our customers in varied sectors from personal care and cosmetics to paints and coatings, from pharmaceuticals to food and beverages.</p>
-                  <p>Our ability to combine innovation with manufacturing at scale is evident from the fact that we are the world’s largest manufacturer of the perfumery intermediate, 3-Methyl-3-Penten-2-One (MPO). We are also one of only two manufacturers globally to produce 1,3 Butylene Glycol from an agricultural feedstock, and the only manufacturer in India of Bio Ethyl Acetate and Ethyl Vinyl Ether.</p>
-               </div>
-               <a href="#" class="site-btn site-btn--outline business-btn">
-                  <span class="site-btn__label">Know more</span>
-                  <span class="site-btn__arrow" aria-hidden="true">
-                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-               </a>
-            </div>
-            <div class="business-split__media business-media business-media--chemicals business-parallax">
-               <img src="~/Assets/images/business/bio-based-chemicals.webp" alt="Bio-based chemicals manufacturing plant" width="1280" height="1024" loading="lazy">
-            </div>
-         </div>
-      </div>
-   </section>
-   <!--Bio-based chemicals END-->
+         </section>
+      
+     
 
-   <!--Biofuels & Bio-energy-->
-   <section class="business-section business-section--dark" aria-labelledby="business-biofuels-title">
-      <div class="container">
-         <div class="business-split">
-            <div class="business-split__media business-collage">
-               <div class="business-media business-media--wide business-parallax">
-                  <img src="~/Assets/images/business/biofuels-1.webp" alt="Ethanol distillery and storage tanks" width="1536" height="864" loading="lazy">
-               </div>
-               <div class="business-collage__row">
-                  <div class="business-media business-media--small business-parallax">
-                     <img src="~/Assets/images/business/biofuels-2.webp" alt="Harvested sugarcane feedstock" width="1280" height="960" loading="lazy">
-                  </div>
-                  <div class="business-media business-media--small business-parallax">
-                     <img src="~/Assets/images/business/biofuels-3.webp" alt="Vehicle being refuelled with blended biofuel" width="2048" height="1366" loading="lazy">
-                  </div>
-               </div>
-            </div>
-            <div class="business-split__copy card-rise">
-               <h2 id="business-biofuels-title" class="text-h2 title-animation business-title business-title--biofuels">Enabling India’s Energy Security With Biofuels</h2>
-               <div class="business-body">
-                  <p>Godavari Biorefineries is committed to enhancing India’s energy security. The company pioneered the manufacture of ethanol from sugarcane in the 1960s. It is one of the country’s largest producers of ethanol and a key contributor to the Government of India’s Ethanol Blending Programme today.</p>
-                  <p>In a global first, Godavari has also begun the pilot production of a clean cooking fuel, Dimethyl Ether (DME) using a breakthrough single-step catalytic conversion process developed in partnership with ICT Mumbai. This process converts industrial carbon dioxide emissions into DME using green hydrogen, reinforcing the company’s commitment to circularity. As an LPG fuel substitute and clean energy carrier, DME has the potential to reduce India’s dependence on crude imports.</p>
-                  <p>In addition, we generate electricity for our operations and supply surplus power to the grid through our cogeneration power plant.</p>
-               </div>
-               <a href="#" class="site-btn site-btn--outline-white business-btn">
-                  <span class="site-btn__label">Know more</span>
-                  <span class="site-btn__arrow" aria-hidden="true">
-                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-               </a>
-            </div>
-         </div>
-      </div>
-   </section>
-   <!--Biofuels & Bio-energy END-->
+      }
+   }  
 
-   <!--Sugar-->
-   <section class="business-section business-section--gray" aria-labelledby="business-sugar-title">
-      <div class="container">
-         <div class="business-split">
-            <div class="business-split__copy card-rise">
-               <h2 id="business-sugar-title" class="text-h2 title-animation business-title">Sugar Producer for Nearly a Century</h2>
-               <div class="business-body business-body--muted">
-                  <p class="business-body__lead">Godavari has been spreading sweetness in the lives of people for nearly 100 years now. What began as a small sugar factory in 1939 grew to become a leading sugar player within a few years. The company continues to maintain its position as one of the country’s largest sugar producers and exporters. Our plantation white and refined sugars are used by leading confectioners and beverage makers worldwide. Our Jivana brand offers a range of premium-quality, chemical-free classic white and brown sugar to retail consumers.</p>
-                  <p>Our close association with farmers on regenerative and modern farming practices ensures that we source the highest quality sugarcane, which is traceable for sustainability. Our manufacturing operations are certified for the highest international and Indian quality standards, including the Bonsucro standard on sustainable sugarcane farming and supply chain.</p>
-               </div>
-               <a href="#" class="site-btn site-btn--outline business-btn">
-                  <span class="site-btn__label">Know more</span>
-                  <span class="site-btn__arrow" aria-hidden="true">
-                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-               </a>
-            </div>
-            <div class="business-split__media business-collage">
-               <div class="business-media business-media--sugar business-parallax">
-                  <img src="~/Assets/images/business/sugar-1.webp" alt="Sugar processing equipment at the factory" width="1536" height="864" loading="lazy">
-               </div>
-               <div class="business-collage__row">
-                  <div class="business-media business-media--sugar-small business-parallax">
-                     <img src="~/Assets/images/business/sugar-2.webp" alt="Freshly harvested sugarcane" width="1280" height="960" loading="lazy">
-                  </div>
-                  <div class="business-media business-media--sugar-small business-parallax">
-                     <img src="~/Assets/images/business/sugar-3.webp" alt="Refined white sugar" width="1280" height="960" loading="lazy">
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   <!--Sugar END-->
-
-   <!--Jivana-->
-   <section class="business-section business-section--white" aria-labelledby="business-jivana-title">
-      <div class="container">
-         <div class="business-split">
-            <div class="business-split__media business-media business-media--jivana business-parallax">
-               <img src="~/Assets/images/business/jivana.webp" alt="Jivana range of chemical-free sugar, jaggery and spices" width="2048" height="1023" loading="lazy">
-            </div>
-            <div class="business-split__copy card-rise">
-               <h2 id="business-jivana-title" class="text-h2 title-animation business-title">Jivana: Chemical-Free Foods that Nourish Life</h2>
-               <div class="business-body business-body--muted">
-                  <p class="business-body__lead">Our consumer brand, Jivana, offers a carefully curated range of pure, chemical-free cooking ingredients for flavourful cooking and healthy living. Guided by our philosophy of Purity in Food, Purity in Life, our products are crafted with the highest standards of purity and taste.</p>
-                  <p>Our range of traditional sweeteners and essential spices are sourced from the finest farms and processed with innovative techniques to preserve their natural goodness. Our success in winning the trust of our customers is evident from the fact that the Jivana brand crossed Rs 100 crore in revenues in FY2025-26.</p>
-                  <p>All our Jivana products are responsibly grown in partnership with farmers and processed under stringent quality and hygiene standards, ensuring traceability and sustainability.</p>
-               </div>
-               <a href="#" class="site-btn site-btn--outline business-btn">
-                  <span class="site-btn__label">Know more</span>
-                  <span class="site-btn__arrow" aria-hidden="true">
-                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-               </a>
-            </div>
-         </div>
-      </div>
-   </section>
-   <!--Jivana END-->
-
-@section Scripts {
-   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
-   <script src="~/Assets/js/business.js" asp-append-version="true"></script>
-}
+   @section Scripts {
+      <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+      <script src="~/Assets/js/business.js" asp-append-version="true"></script>
+   }

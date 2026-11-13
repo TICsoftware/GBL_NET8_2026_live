@@ -59,7 +59,8 @@ namespace GBL_BusinessLogic.BAL
                     Hmpg_thumbnail = row.Field<string>("Hmpg_thumbnail") ?? "",
                     Hmpg_thumbnail_alt_text = row.Field<string>("Hmpg_thumbnail_alt_text") ?? "",
                     CanonicalUrl = Config_Application_Website.GetMetaUrl(baseurl, canUrl),
-                    cont_meta_image = Config_Application_Website.GetMetaUrl(baseurl, Image)
+                    cont_meta_image = Config_Application_Website.GetMetaUrl(baseurl, Image),
+                    BreadcrumbTitle = Convert.ToString(row["cont_breadcrumb_title"]) ?? "",
                 };
 
 

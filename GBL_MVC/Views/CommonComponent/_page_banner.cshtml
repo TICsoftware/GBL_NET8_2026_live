@@ -36,6 +36,10 @@
                 <div class="max-w-4xl text-left  ">
                     @if (!string.IsNullOrWhiteSpace(title))
                     {
+                        if(!string.IsNullOrWhiteSpace(Model?.BreadcrumbTitle))
+                        {
+                          <span class="addon-section-title">@Model.BreadcrumbTitle.Trim()</span> 
+                        }
                         <h1 class="innerbanner-title text-h1 text-white">
                             @Html.Raw(title.CleanParagraphTags())
                         </h1>

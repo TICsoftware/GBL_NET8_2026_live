@@ -15,6 +15,8 @@ public class BusinessesController : Controller
 {
     private readonly ILogger<BusinessesController> _logger;
     private readonly Business_BAL _bal;
+
+    private readonly Page_Manage_BAL _Pagebal;
     private readonly PartialViewRenderer _partialViewRenderer;
 
 
@@ -22,6 +24,7 @@ public class BusinessesController : Controller
     {
         _logger = logger;
         _bal = new Business_BAL(configuration);
+        _Pagebal = new Page_Manage_BAL(configuration);
         _partialViewRenderer = partialViewRenderer;
     }
 
@@ -29,9 +32,9 @@ public class BusinessesController : Controller
     {
         try
         {
-            if(string.IsNullOrWhiteSpace(title))
+            if (string.IsNullOrWhiteSpace(title))
             {
-                title ="Businesses";
+                title = "Businesses";
             }
             var data = _bal.GetBusiness_BAL(title, 1, 1);
             return View(data);
@@ -44,6 +47,24 @@ public class BusinessesController : Controller
         finally
         {
             _bal.Dispose();
+        }
+    }
+
+    public IActionResult Inside(string title)
+    {
+        try
+        {
+            var data = _Pagebal.GetPageData_BAL(title, 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/Businesses/Inside:", ex);
+            return View(new SustainabilityModel());
+        }
+        finally
+        {
+            _Pagebal.Dispose();
         }
     }
 
