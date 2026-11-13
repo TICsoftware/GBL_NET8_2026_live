@@ -41,7 +41,7 @@
 
   .wb-split-section .ld-media {
     position: sticky;
-    top: calc(var(--header-h, 88px) + 1.25rem);
+    top: calc(var(--header-h, 88px) );
     align-self: start;
     z-index: 1;
     height: min(560px, calc(100vh - var(--header-h, 88px) - 2.5rem));
