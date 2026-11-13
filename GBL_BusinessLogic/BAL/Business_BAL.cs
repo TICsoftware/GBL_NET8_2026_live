@@ -56,7 +56,12 @@ namespace GBL_BusinessLogic.BAL
             }
             if (ds.Tables.Count >= 2 && ds.Tables[1].Rows.Count > 0)
             {
+                ComponentModel objModel=new();
                 var groupedData = GetGroupedComponents(ds.Tables[1]);
+                foreach(var item in groupedData.Where( m => m.Sequence > 1))
+                {
+
+                }
                 model.Subsections_Components = MapComponents(groupedData, 1);
             } 
             return model;
