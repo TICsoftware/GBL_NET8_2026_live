@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 
-namespace Core_project_BusinessLogic
+namespace GBL_BusinessLogic
 {
     public static class CryptoEngine
     {
