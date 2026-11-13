@@ -57,9 +57,8 @@ public class InvestorsController : Controller
 
             var result = _bal.GetPdfListing_page_wise_BAL(contentId, pageNumber, pageSize, year);
 
-            ViewData["PdfYear"] = year.HasValue && year.Value > 0
-                ? year.Value + "-" + (year.Value + 1)
-                : null;
+            // FY is applied in the SP; keep partial unfiltered so title/date FY mismatch cannot hide rows.
+            ViewData["PdfYear"] = null;
 
             var html = await _partialViewRenderer.RenderPartialToStringAsync(
                 this,

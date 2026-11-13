@@ -214,7 +214,9 @@ public class CareerController : Controller
             || slug.Equals("diversity", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("quality-and-safety", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("quality-safety", StringComparison.OrdinalIgnoreCase)
-            || slug.Equals("manufacturing", StringComparison.OrdinalIgnoreCase);
+            || slug.Equals("manufacturing", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("our-subsidiaries", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("subsidiaries", StringComparison.OrdinalIgnoreCase);
     }
 
     private string GetClientIpAddress()
