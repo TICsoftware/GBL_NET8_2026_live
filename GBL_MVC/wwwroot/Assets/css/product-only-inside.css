@@ -412,6 +412,10 @@ with certificates stacked under it, so the panel does not stretch.
   min-width: 0;
 }
 
+.technical-Safety-outer .technical-safety-grid:not(:has(.tech-overview-col)) .sds-col {
+  grid-column: 1;
+}
+
 .technical-safety-grid .tech-overview-meta {
   list-style: none;
   display: flex;
@@ -673,6 +677,10 @@ a.product-cert-item:hover {
 
   .technical-Safety-outer .sds-col {
     margin-top: 1.75rem;
+  }
+
+  .technical-Safety-outer .technical-safety-grid:not(:has(.tech-overview-col)) .sds-col {
+    margin-top: 0;
   }
 }
 
