@@ -214,5 +214,28 @@ namespace GBL_BusinessLogic.BAL
 
             return "";
         }
+
+        /// <summary>
+        /// Builds a separate ComponentModel list for every distinct component_sequence.
+        /// </summary>
+        public Dictionary<int, List<ComponentModel>> MapComponentsBySequence(List<ComponentGroup> groupedData)
+        {
+            var result = new Dictionary<int, List<ComponentModel>>();
+            if (groupedData == null || groupedData.Count == 0)
+                return result;
+
+            foreach (var seq in groupedData.Select(g => g.Sequence).Distinct().OrderBy(s => s))
+            {
+                var list = MapComponents(groupedData, seq);
+                foreach (var item in list)
+                {
+                    if (item.Sequence <= 0)
+                        item.Sequence = seq;
+                }
+                result[seq] = list;
+            }
+
+            return result;
+        }
     }
 }
