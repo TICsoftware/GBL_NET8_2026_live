@@ -36,19 +36,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.querySelectorAll(".section-intro__content p").forEach(function (paragraph, index) {
     if (paragraph.dataset.introFill === "ready") return;
+
+    var philosophyDesktop =
+      paragraph.closest(".ourPhilosophy") &&
+      window.matchMedia("(min-width: 1024px)").matches;
+
     wrapWords(paragraph);
     paragraph.dataset.introFill = "ready";
 
     var words = paragraph.querySelectorAll(".intro-fill-word");
     if (!words.length) return;
 
-    var fillTo = paragraph.closest(".white-copy") ? "#fff" : FILL_TO;
-    gsap.set(words, { color: FILL_FROM });
+    var isWhite = !!paragraph.closest(".white-copy, .text-white");
+    var fillFrom = isWhite ? "#f4f4f4" : FILL_FROM;
+    var fillTo = isWhite ? "#ffffff" : FILL_TO;
+    gsap.set(words, { color: fillFrom });
 
     if (reduceMotion) {
       gsap.set(words, { color: fillTo });
       return;
     }
+
+    /* Desktop philosophy pin owns this fill via philosophy-principles.js */
+    if (philosophyDesktop) return;
 
     gsap.to(words, {
       color: fillTo,

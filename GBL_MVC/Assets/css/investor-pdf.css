@@ -1,0 +1,30 @@
+.cg-doc__title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cg-doc__icon {
+  background-color: transparent !important;
+  background-image: url("../images/investors/pdf-icon.svg") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 37px 37px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+.cg-doc:hover .cg-doc__icon,
+.cg-doc:focus-visible .cg-doc__icon {
+  background-color: transparent !important;
+  filter: brightness(0) invert(1);
+}
+
+.cg-docs .news-load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.cg-docs .news-load-more[hidden] {
+  display: none;
+}

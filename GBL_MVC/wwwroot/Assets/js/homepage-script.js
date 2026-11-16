@@ -302,4 +302,72 @@ document.addEventListener("DOMContentLoaded", () => {
     bindBeliefTravel();
   }
 
+/* ---------------------------------------
+   06. From Soil to Your Table — product images travel in
+--------------------------------------- */
+  (function bindSoilTableTravel() {
+    var section = document.querySelector(".fromSoiltable");
+    if (!section) return;
+    var imgLeft = section.querySelector(".fromSoiltable-image-1");
+    var imgRight = section.querySelector(".fromSoiltable-image-2");
+    var imgMain = section.querySelector(".fromSoiltable-image--packs")
+      || section.querySelector(".fromSoiltable-image:not(.fromSoiltable-image-1):not(.fromSoiltable-image-2)");
+    if (!imgLeft || !imgRight) return;
+
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    var isMobile = window.matchMedia("(max-width: 992px)").matches;
+    var stScroller = isMobile ? window : document.documentElement;
+
+    function travel() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      return {
+        x: Math.round(isMobile ? w * 0.48 : w * 0.08),
+        y: Math.round(isMobile ? h * 0.16 : h * 0.15),
+      };
+    }
+
+    var tl = gsap.timeline({
+      defaults: { ease: "none", force3D: true, overwrite: "auto" },
+      scrollTrigger: {
+        id: "soil-table-images",
+        trigger: section,
+        scroller: stScroller,
+        start: "top 88%",
+        end: "bottom 28%",
+        scrub: 1.6,
+        invalidateOnRefresh: true,
+        anticipatePin: 0,
+        fastScrollEnd: false,
+      },
+    });
+
+    tl.fromTo(
+      imgLeft,
+      { x: function () { return -travel().x; } },
+      { x: 0, duration: 1, immediateRender: true },
+      0
+    );
+    tl.fromTo(
+      imgRight,
+      { x: function () { return travel().x; } },
+      { x: 0, duration: 1, immediateRender: true },
+      0
+    );
+    if (imgMain) {
+      tl.fromTo(
+        imgMain,
+        { y: function () { return -travel().y; } },
+        { y: 0, duration: 1, immediateRender: true },
+        0
+      );
+    }
+  })();
+
 });

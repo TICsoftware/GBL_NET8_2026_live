@@ -1,0 +1,50 @@
+/* =====================================================================
+   Homepage intro loader (counter + rising image stack + expanding cover)
+   Markup: Views/Shared/_Layout_home_page.cshtml   Script: js/page-loader.js
+   ===================================================================== */
+html.gbl-lock, html.gbl-lock body{overflow:hidden}
+
+#gbl-loader{
+  --gl-ink:#2F4A2A;                         /* deep sage for the counter */
+  --gl-gap:2rem;
+  position:fixed;inset:0;z-index:99999;
+  color:var(--gl-ink);
+  /* sage dots: fine halftone dot screen (echoes the logo) over a soft sage gradient */
+  background-color:#F4F5EF;
+  background-image:
+    radial-gradient(rgba(103,129,90,.22) 1.3px, transparent 1.8px),
+    linear-gradient(180deg, #F4F5EF 0%, #E7EDDF 100%);
+  background-size:16px 16px, 100% 100%;
+  font-family:var(--font-uniNeue, 'uni_neueregular', sans-serif);
+  overflow:hidden;pointer-events:none;
+  transition:opacity .5s cubic-bezier(.25,.46,.45,.94), visibility .5s;
+}
+#gbl-loader.gbl-done{opacity:0;visibility:hidden}
+
+/* 3-column stage */
+.gl-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gl-gap);padding:0 var(--gl-gap)}
+.gl-counter{display:flex;align-items:baseline;gap:.6rem;padding-top:var(--gl-gap);will-change:transform}
+.gl-count{font-size:clamp(4.5rem,9.4vw,11.25rem);line-height:.85;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.gl-total{font-size:clamp(1rem,1.4vw,1.5rem)}
+.gl-stack{display:flex;flex-direction:column;gap:var(--gl-gap)}
+.gl-item{position:relative;width:100%;aspect-ratio:16/9;will-change:transform,opacity}
+.gl-item-inner{position:absolute;inset:0;overflow:hidden}
+.gl-item-image{position:absolute;inset:0;transform:scale(1.2)}
+.gl-item-image img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* the hero image that grows to full screen */
+.gl-cover{position:absolute;inset:0;overflow:hidden;will-change:transform,clip-path}
+.gl-cover img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;will-change:transform}
+
+/* simple mode (phones / reduced motion): plain sage-dot curtain */
+#gbl-loader.gl-simple .gl-grid,
+#gbl-loader.gl-simple .gl-cover{display:none}
+
+@media (max-width:1199px){ #gbl-loader{--gl-gap:1.5rem} }
+
+/* logo scene: halftone sun rising behind sugarcane, dotted ground (from the GBL logo) */
+.gl-scene{position:absolute;right:-2vw;bottom:0;height:94vh;aspect-ratio:1394/1480;overflow:hidden}
+.gl-sun,.gl-cane{position:absolute;inset:0;width:100%;height:100%;will-change:transform}
+.gl-ground{position:absolute;left:0;right:0;bottom:0;height:16vh;
+  background:url(../images/loader/loader-ground.svg) left bottom/auto 100% repeat-x;opacity:.9}
+#gbl-loader.gl-simple .gl-scene{display:none}

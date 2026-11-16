@@ -171,15 +171,23 @@ document.addEventListener("DOMContentLoaded", function () {
     swiper = swiper || heroSwiper;
     if (!banner || !swiper || !swiper.slides) return;
     if (!window.matchMedia("(max-width: 767px)").matches) {
-      banner.style.height = "";
+      banner.style.removeProperty("height");
       return;
     }
     var slide = swiper.slides[swiper.activeIndex];
-    var content = slide && slide.querySelector(".hero-slide__content");
+    if (!slide) return;
+    var content = slide.querySelector(".hero-slide__content");
     if (!content) return;
+    // content's padding-top already reserves the media height (see
+    // .hero-slide__content padding-top in hero-banner.css), so its own
+    // scrollHeight is already the full slide height needed.
     var nextHeight = Math.ceil(content.scrollHeight);
-    if (nextHeight < 1) return;
-    banner.style.height = nextHeight + "px";
+    if (nextHeight < 1) {
+      banner.style.removeProperty("height");
+      return;
+    }
+    var minCss = parseFloat(window.getComputedStyle(banner).minHeight) || 0;
+    banner.style.height = Math.max(nextHeight, minCss) + "px";
   }
 
   function scheduleHeroMobileHeight(swiper) {
@@ -562,6 +570,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }, this);
 
+        var swiper = this;
         if (window.GBLTextAnim) {
           var firstCaption = slideCaption(this.slides[this.activeIndex]);
           if (firstCaption) {
@@ -570,10 +579,12 @@ document.addEventListener("DOMContentLoaded", function () {
               stagger: 0.1,
               ease: "power4.out",
             });
+            window.setTimeout(function () {
+              scheduleHeroMobileHeight(swiper);
+            }, 200);
           }
         }
 
-        var swiper = this;
         bindHeroVideos(swiper);
         heroReady = true;
         requestAnimationFrame(function () {
@@ -643,9 +654,6 @@ document.addEventListener("DOMContentLoaded", function () {
       dragging = true;
       locked = false;
       heroEl.classList.add("is-swiping");
-      if (heroEl.setPointerCapture) {
-        try { heroEl.setPointerCapture(pointerId); } catch (err) {}
-      }
     }
 
     function onPointerMove(event) {
@@ -669,6 +677,9 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         locked = true;
+        if (heroEl.setPointerCapture && pointerId != null) {
+          try { heroEl.setPointerCapture(pointerId); } catch (err) {}
+        }
         if (heroSwiper.autoplay) {
           if (heroSwiper.autoplay.pause) heroSwiper.autoplay.pause();
         }
@@ -784,29 +795,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function isOverHeroCopy(event) {
-      if (event.target.closest(".hero-thumbs-wrap, .hero-slide__content, .hero-slide__caption, .hero-slide__cta, a, button:not(.hero-nav)")) {
-        return true;
-      }
+      if (event.target.closest(".hero-thumbs-wrap")) return true;
 
       var slide = banner.querySelector(".swiper-slide-active");
       if (!slide) return false;
+      var cta = slide.querySelector(".hero-slide__cta");
+      if (!cta) return false;
 
-      var copy = slide.querySelectorAll(".hero-slide__caption, .hero-slide__cta");
-      var pad = 36;
-      var x = event.clientX;
-      var y = event.clientY;
-      for (var i = 0; i < copy.length; i++) {
-        var box = copy[i].getBoundingClientRect();
-        if (
-          x >= box.left - pad &&
-          x <= box.right + pad &&
-          y >= box.top - pad &&
-          y <= box.bottom + pad
-        ) {
-          return true;
-        }
-      }
-      return false;
+      var box = cta.getBoundingClientRect();
+      var pad = 10;
+      return (
+        event.clientX >= box.left - pad &&
+        event.clientX <= box.right + pad &&
+        event.clientY >= box.top - pad &&
+        event.clientY <= box.bottom + pad
+      );
     }
 
     banner.addEventListener("mousemove", function (event) {
@@ -907,11 +910,18 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateHeroOnScroll() {
     scrollTick = false;
     var progress = heroScrollProgress();
-    if (!reduceMotion && bannerEl) {
+    var isHeroMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (!reduceMotion && bannerEl && !isHeroMobile) {
       var scale = 1 - progress * (1 - SCALE_MIN);
       bannerEl.style.transform = scale >= 0.999 ? "none" : "scale(" + scale + ")";
+    } else if (bannerEl) {
+      bannerEl.style.transform = "none";
     }
-    syncHeroCaption(progress);
+    if (isHeroMobile) {
+      syncHeroCaption(0);
+    } else {
+      syncHeroCaption(progress);
+    }
     syncHeroAutoplay();
   }
 
@@ -921,11 +931,27 @@ document.addEventListener("DOMContentLoaded", function () {
     requestAnimationFrame(updateHeroOnScroll);
   }
 
-  window.addEventListener("scroll", onHeroScroll, { passive: true });
-  window.addEventListener("resize", function () {
+  function syncHeroAfterResize() {
+    if (heroSwiper && typeof heroSwiper.update === "function") heroSwiper.update();
+    revealActiveMedia(heroSwiper);
+    var active = heroSwiper && heroSwiper.slides ? heroSwiper.slides[heroSwiper.activeIndex] : null;
+    var cap = slideCaption(active);
+    if (cap && window.GBLTextAnim && typeof window.GBLTextAnim.show === "function") {
+      window.GBLTextAnim.show(cap);
+    }
+    if (bannerEl && window.matchMedia("(max-width: 767px)").matches) {
+      bannerEl.style.transform = "none";
+    }
     onHeroScroll();
     scheduleHeroMobileHeight();
+  }
+
+  window.addEventListener("scroll", onHeroScroll, { passive: true });
+  window.addEventListener("resize", syncHeroAfterResize);
+  window.addEventListener("gbl:after-resize", syncHeroAfterResize);
+  window.addEventListener("load", function () {
+    scheduleHeroMobileHeight();
+    window.setTimeout(scheduleHeroMobileHeight, 700);
   });
-  window.addEventListener("load", scheduleHeroMobileHeight);
   updateHeroOnScroll();
 });
