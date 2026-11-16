@@ -4,54 +4,34 @@
     ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
-    var all = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
+
+    @* Bind Component Title + Component Intro only; skip empty / duplicate titles *@
+    var sections = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
+        .Where(x => HasText(x.Title) || HasText(x.Intro))
         .OrderBy(x => x.Sequence)
         .ThenBy(x => x.IsBlock)
         .ToList();
 
-    var componentHeaders = all.Where(x => x.IsBlock == 0).ToList();
-    var blocks = all
-        .Where(x => x.IsBlock == 1)
-        .Where(x =>
-            HasText(x.Title)
-            || HasText(x.Intro)
-            || !string.IsNullOrWhiteSpace(FirstPath(x.ThumbnailImage, x.ComponentThumbnail, x.Component_LHS_thumbnail)))
-        .ToList();
-
-    // Fallback: pages that only use isblock=0 components (no blocks)
-    var renderItems = blocks.Count > 0
-        ? blocks
-        : componentHeaders
-            .Where(x =>
-                HasText(x.Title)
-                || HasText(x.Intro)
-                || !string.IsNullOrWhiteSpace(FirstPath(x.ThumbnailImage, x.ComponentThumbnail, x.Component_LHS_thumbnail)))
-            .ToList();
-
-    // isblock=0 header: show title+intro only when different from first isblock=1 title
-    GBL_BusinessLogic.Entity.ComponentModel? header = componentHeaders.FirstOrDefault();
-    var showComponentHeader = false;
-    if (header != null && blocks.Count > 0)
+    // Drop consecutive duplicates (e.g. Sameerwadi title twice from block + parent)
+    var uniqueSections = new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    string? lastTitleKey = null;
+    foreach (var s in sections)
     {
-        var headerTitleKey = NormalizeKey(header.Title);
-        var firstBlockTitleKey = NormalizeKey(blocks[0].Title);
-        showComponentHeader = HasText(header.Title) || HasText(header.Intro);
-        if (!string.IsNullOrEmpty(headerTitleKey)
-            && !string.IsNullOrEmpty(firstBlockTitleKey)
-            && headerTitleKey == firstBlockTitleKey)
-        {
-            showComponentHeader = false; // same title as first block — hide component title
-        }
+        var key = NormalizeKey(s.Title);
+        if (!string.IsNullOrEmpty(key) && key == lastTitleKey) continue;
+        uniqueSections.Add(s);
+        if (!string.IsNullOrEmpty(key)) lastTitleKey = key;
     }
+    sections = uniqueSections;
 
     var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
+    // Hide page intro when it only repeats the page / first component title
     if (HasText(pageIntro))
     {
         var introKey = NormalizeKey(pageIntro);
         var pageTitleKey = NormalizeKey(FirstText(content?.ContHmpgTitle, content?.ContTitle));
-        var firstItemKey = renderItems.Count > 0 ? NormalizeKey(renderItems[0].Title) : "";
-        var headerKey = header != null ? NormalizeKey(header.Title) : "";
-        if (introKey == pageTitleKey || introKey == firstItemKey || introKey == headerKey)
+        var firstCompKey = sections.Count > 0 ? NormalizeKey(sections[0].Title) : "";
+        if (introKey == pageTitleKey || introKey == firstCompKey)
         {
             pageIntro = "";
         }
@@ -98,39 +78,19 @@
     </section>
 }
 
-@* isblock=0 — Component Title | Component Intro (hidden when same as first isblock=1 title) *@
-@if (showComponentHeader && header != null)
-{
-    <section class="left-right-section left-right-white section-spacing">
-        <div class="container">
-            <div class="ld-head">
-                @if (HasText(header.Title))
-                {
-                    <h2 class="text-h2">@Html.Raw(header.Title.CleanParagraphTags())</h2>
-                }
-                else
-                {
-                    <div></div>
-                }
-                @if (HasText(header.Intro))
-                {
-                    <p>@Html.Raw(header.Intro.CleanParagraphTags())</p>
-                }
-            </div>
-        </div>
-    </section>
-}
-
-@* isblock=1 — all blocks: title, intro, thumbnail (alternate gray / white, L/R image) *@
-@foreach (var item in renderItems)
+@foreach (var item in sections)
 {
     var image = FirstPath(item.ThumbnailImage, item.ComponentThumbnail, item.Component_LHS_thumbnail);
     var imageAlt = FirstText(item.ThumbnailAltText, item.ComponentThumbnailAltText, item.Title);
+
+    @* Only Component Title + Component Intro *@
     var title = item.Title;
     var intro = item.Intro;
     var hasTitle = HasText(title);
-    var hasIntro = HasText(intro);
+    var hasIntro = HasText(intro) && NormalizeKey(intro) != NormalizeKey(title);
     var hasImage = !string.IsNullOrWhiteSpace(image);
+
+    @* Content only if it is real body text — not a repeat of Component Title *@
     var body = item.Content;
     if (HasText(body) && NormalizeKey(body) == NormalizeKey(title))
     {
@@ -138,7 +98,7 @@
     }
     var hasBody = HasText(body) || !string.IsNullOrWhiteSpace(item.Url);
 
-    if (!hasTitle && !hasIntro && !hasImage && !hasBody) { continue; }
+    if (!hasTitle && !hasIntro) { continue; }
 
     var isGray = sectionIndex % 2 == 0;
     var sectionTone = isGray ? "left-right-gray" : "left-right-white";
@@ -148,23 +108,20 @@
 
     <section class="left-right-section @sectionTone wb-split-section section-spacing">
         <div class="container">
-            @if (hasTitle || hasIntro)
-            {
-                <div class="ld-head">
-                    @if (hasTitle)
-                    {
-                        <h2 class="text-h2">@Html.Raw(title.CleanParagraphTags())</h2>
-                    }
-                    else
-                    {
-                        <div></div>
-                    }
-                    @if (hasIntro)
-                    {
-                        <p>@Html.Raw(intro.CleanParagraphTags())</p>
-                    }
-                </div>
-            }
+            <div class="ld-head">
+                @if (hasTitle)
+                {
+                    <h2 class="text-h2">@Html.Raw(title.CleanParagraphTags())</h2>
+                }
+                else
+                {
+                    <div></div>
+                }
+                @if (hasIntro)
+                {
+                    <p>@Html.Raw(intro.CleanParagraphTags())</p>
+                }
+            </div>
 
             @if (hasImage || hasBody)
             {
@@ -195,12 +152,6 @@
                                 }
                             </div>
                         }
-                        else if (hasIntro && !hasTitle)
-                        {
-                            <div class="ld-split__copy @copyTone">
-                                <p>@Html.Raw(intro.CleanParagraphTags())</p>
-                            </div>
-                        }
                     }
                     else
                     {
@@ -220,12 +171,6 @@
                                         </span>
                                     </a>
                                 }
-                            </div>
-                        }
-                        else if (hasIntro && !hasTitle)
-                        {
-                            <div class="ld-split__copy @copyTone">
-                                <p>@Html.Raw(intro.CleanParagraphTags())</p>
                             </div>
                         }
                         @if (hasImage)
