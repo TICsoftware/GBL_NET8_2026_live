@@ -351,4 +351,19 @@ Mobile: below 1180px
   .industry-product-grid {
     grid-template-columns: 1fr;
   }
+
+.industry-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .industry-tabs::-webkit-scrollbar { display: none; }
+
+  .industry-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 0.625rem 1rem;
+    font-size: 0.9375rem;
+  }
+
 }
