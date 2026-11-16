@@ -16,6 +16,7 @@ namespace GBL_BusinessLogic.BAL
 
         public BusinessModel GetBusiness_BAL(string pagename, int languageId, int geographyId)
         {
+            Dictionary<int, List<ComponentModel>> Component_Lists = [];
             var model = new BusinessModel();
             var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
 
@@ -32,8 +33,8 @@ namespace GBL_BusinessLogic.BAL
                     if (ds_subsection.Tables.Count >= 2 && ds_subsection.Tables[1].Rows.Count > 0)
                     {
                         var groupedData = GetGroupedComponents(ds_subsection.Tables[1]);
-                        model.Component_Lists = MapComponentsBySequence(groupedData);
-                        model.Subsections_Components = model.Component_Lists.TryGetValue(1, out var seq1)
+                        Component_Lists = MapComponentsBySequence(groupedData);
+                        model.Subsections_Components = Component_Lists.TryGetValue(1, out var seq1)
                             ? seq1
                             : MapComponents(groupedData, 1);
                     }
@@ -45,6 +46,7 @@ namespace GBL_BusinessLogic.BAL
 
         public BusinessModel GetInsideBusiness_BAL(string pagename, int languageId, int geographyId)
         {
+
             var model = new BusinessModel();
             var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
 
@@ -64,16 +66,20 @@ namespace GBL_BusinessLogic.BAL
                     .SelectMany(kv => kv.Value)
                     .ToList();
             }
+            Dictionary<int, List<ComponentModel>> dictionary_Componentists = [];
+            var ds_parent_component = GetParentComponentData_DAL(pagename, languageId, geographyId);
+            if (ds_parent_component.Tables.Count >= 2 && ds_parent_component.Tables[0].Rows.Count > 0)
+            {
+                var groupedData = GetGroupedComponents(ds_parent_component.Tables[1]);
+                dictionary_Componentists = MapComponentsBySequence(groupedData);
+                model.Subsections_Components = dictionary_Componentists.TryGetValue(1, out var seq1)
+                    ? seq1
+                    : MapComponents(groupedData, 1);
 
+            }
             return model;
         }
 
-        public List<ComponentModel> Get_Business_Page_Component(string pagename, int languageId, int geographyId)
-        {
-            
-        }
 
-        
-       
     }
 }
