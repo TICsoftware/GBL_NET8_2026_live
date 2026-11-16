@@ -264,6 +264,7 @@ namespace GBL_BusinessLogic.BAL
 
                 child.ContId = content.ContId;
                 child.Title = FirstNonEmpty(content.ContHmpgTitle, content.ContTitle, title);
+                child.Intro = FirstNonEmpty(content.Cont_intro, content.Cont_hmpg_intro, child.Intro);
                 child.PageName = FirstNonEmpty(content.PageName, name);
                 break;
             }
@@ -296,11 +297,19 @@ namespace GBL_BusinessLogic.BAL
                 committees = LoadCommittees(new[] { child.PageName }, languageId, geographyId);
             }
 
+            // Prefer intro already on the child; else load from the section page content row.
+            var intro = FirstNonEmpty(child.Intro, child.HmpgIntro);
+            if (string.IsNullOrWhiteSpace(intro) && child.ContId > 0)
+            {
+                intro = LoadSectionIntro(child.ContId, pageNames, languageId, geographyId);
+            }
+
             var years = BuildYearList(articles);
             var section = new GovernanceSectionModel
             {
                 ContId = child.ContId,
                 Title = FirstNonEmpty(child.Title, child.PageName, "Section"),
+                Intro = intro ?? "",
                 PageName = child.PageName ?? "",
                 Anchor = UniqueAnchor(preferredAnchor ?? child.PageName, child.ContId, usedAnchors),
                 Articles = articles,
@@ -310,6 +319,37 @@ namespace GBL_BusinessLogic.BAL
             };
 
             return section;
+        }
+
+        private string LoadSectionIntro(
+            int contId,
+            IEnumerable<string> pageNames,
+            int languageId,
+            int geographyId)
+        {
+            foreach (var name in pageNames)
+            {
+                try
+                {
+                    var ds = GetContentComponentData_DAL(name, languageId, geographyId);
+                    if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                        continue;
+
+                    var content = MapContent(ds.Tables[0].Rows[0]);
+                    if (content.ContId != contId && contId > 0)
+                        continue;
+
+                    var intro = FirstNonEmpty(content.Cont_intro, content.Cont_hmpg_intro);
+                    if (!string.IsNullOrWhiteSpace(intro))
+                        return intro;
+                }
+                catch
+                {
+                    // ignore missing page
+                }
+            }
+
+            return "";
         }
 
         private void AttachParentArticlesIfTabsEmpty(int parentId, DataSet? parentDs, List<GovernanceSectionModel> sections)
@@ -456,6 +496,9 @@ namespace GBL_BusinessLogic.BAL
                     {
                         ContId = contId,
                         Title = StripHtml(title),
+                        Intro = FirstNonEmpty(
+                            GetColumn(row, "cont_intro"),
+                            GetColumn(row, "cont_hmpg_intro")),
                         PageName = GetColumn(row, "cont_pagename"),
                         DisplayDate = displayDate,
                         Sequence = sequence
