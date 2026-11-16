@@ -54,7 +54,7 @@ Title left | copy + CTA right
 .section-intro {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(1.5rem, 4vw, 4rem);
+  /* gap: clamp(1.5rem, 4vw, 4rem); */
   align-items: start;
   justify-content: space-between;
 }
