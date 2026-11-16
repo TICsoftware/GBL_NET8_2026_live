@@ -68,6 +68,11 @@ namespace GBL_BusinessLogic.BAL
             return model;
         }
 
+        public List<ComponentModel> Get_Business_Page_Component(string pagename, int languageId, int geographyId)
+        {
+            
+        }
+
         
        
     }
