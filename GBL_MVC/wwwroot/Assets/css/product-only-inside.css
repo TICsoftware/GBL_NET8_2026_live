@@ -704,3 +704,121 @@ a.product-cert-item:hover {
   }
 }
 
+/* ---------- Enquire Now popup (same open/close motion as the leadership profile) ---------- */
+.enquiry-modal {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: clamp(0.75rem, 2vh, 1.5rem) clamp(0.75rem, 2vw, 2rem);
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+}
+.enquiry-modal[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.enquiry-modal::backdrop {
+  background: transparent;
+}
+.enquiry-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 14, 18, 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+}
+.enquiry-modal__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(1040px, 100%);
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--color-white);
+  transform: translate3d(0, -100vh, 0);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.enquiry-modal.is-open .enquiry-modal__backdrop {
+  opacity: 1;
+}
+.enquiry-modal.is-open .enquiry-modal__panel {
+  transform: translate3d(0, 0, 0);
+}
+.enquiry-modal.is-closing .enquiry-modal__panel {
+  transition: none;
+}
+.enquiry-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(40, 43, 49, 0.3);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition:
+    color 0.3s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.3s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    background-color 0.3s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.enquiry-modal__close:hover,
+.enquiry-modal__close:focus-visible {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary);
+  color: var(--color-white);
+}
+.enquiry-modal__close svg {
+  width: 20px;
+  height: 20px;
+}
+.enquiry-modal__scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1.5rem, 2.4vw, 2.75rem);
+  padding-right: clamp(3.5rem, 5vw, 4.5rem);
+}
+.enquiry-modal__scroll .contact-query__title {
+  padding-right: 0.5rem;
+}
+.enquiry-modal .contact-form-card {
+  padding: clamp(1.25rem, 2.5vw, 2.25rem);
+}
+
+@media (max-width: 767px) {
+  .enquiry-modal__scroll {
+    padding: 1.25rem 1.15rem 1.5rem;
+    padding-top: 3.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enquiry-modal__backdrop,
+  .enquiry-modal__panel {
+    transition: none;
+  }
+  .enquiry-modal__panel,
+  .enquiry-modal.is-open .enquiry-modal__panel,
+  .enquiry-modal.is-closing .enquiry-modal__panel {
+    transform: none;
+  }
+}
+

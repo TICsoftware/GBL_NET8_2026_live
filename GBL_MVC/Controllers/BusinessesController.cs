@@ -14,17 +14,14 @@ namespace GBL_MVC.Controllers;
 public class BusinessesController : Controller
 {
     private readonly ILogger<BusinessesController> _logger;
-    private readonly Business_BAL _bal;
-
-    private readonly Page_Manage_BAL _Pagebal;
+    private readonly Business_BAL _bal; 
     private readonly PartialViewRenderer _partialViewRenderer;
 
 
     public BusinessesController(ILogger<BusinessesController> logger, IConfiguration configuration, PartialViewRenderer partialViewRenderer)
     {
         _logger = logger;
-        _bal = new Business_BAL(configuration);
-        _Pagebal = new Page_Manage_BAL(configuration);
+        _bal = new Business_BAL(configuration); 
         _partialViewRenderer = partialViewRenderer;
     }
 
@@ -42,7 +39,7 @@ public class BusinessesController : Controller
         catch (Exception ex)
         {
             FileLogger.LogError("/Businesses :", ex);
-            return View(new SustainabilityModel());
+            return View(new BusinessModel());
         }
         finally
         {
@@ -54,17 +51,17 @@ public class BusinessesController : Controller
     {
         try
         {
-            var data = _Pagebal.GetPageData_BAL(title, 1, 1);
+            var data = _bal.GetInsideBusiness_BAL(title, 1, 1);
             return View(data);
         }
         catch (Exception ex)
         {
             FileLogger.LogError("/Businesses/Inside:", ex);
-            return View(new SustainabilityModel());
+            return View(new BusinessModel());
         }
         finally
         {
-            _Pagebal.Dispose();
+            _bal.Dispose();
         }
     }
 

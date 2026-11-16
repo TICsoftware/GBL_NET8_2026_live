@@ -1,3 +1,5 @@
+ 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,12 @@ namespace GBL_MVC.Routes
         {
             // ✅ Custom routes first
 
+            
+            app.MapControllerRoute(
+                name: "businesses-inside",
+                pattern: "Businesses/{title}",
+                defaults: new { controller = "Businesses", action = "Inside" }
+            );
 
 
             app.MapControllerRoute(
@@ -84,9 +92,9 @@ app.MapControllerRoute(
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
            );
   app.MapControllerRoute(
-                   name: "Our Strategy",
+                   name: "OurStrategy",
                    pattern: "about-us/our-strategy",
-                   defaults: new { controller = "Career", action = "OurStrategy", title = "about-us/our-strategy" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-strategy" }
            );
 
   app.MapControllerRoute(

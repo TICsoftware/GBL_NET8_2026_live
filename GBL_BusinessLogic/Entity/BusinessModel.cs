@@ -1,24 +1,23 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GBL_BusinessLogic.Entity
 {
     public class BusinessModel
     {
         public ContentViewModel? Content { get; set; }
-       // public List<ComponentGroup> Components { get; set; } = new();
-        //Media
+
         public List<ArticleModel> Section_List { get; set; } = new();
-        public List<ArticleModel> SectionArticles_List { get; set; } = new();
 
-         public List<ComponentModel> Subsections_Components { get; set; } = new();
+        /// <summary>Landing / subsection image blocks (typically sequence 1).</summary>
+        public List<ComponentModel> Subsections_Components { get; set; } = new();
 
+        /// <summary>
+        /// Business inside: one list per CMS component_sequence (1, 2, 3…).
+        /// Any number of components binds automatically.
+        /// </summary>
+       public Dictionary<int, List<ComponentModel>> Component_Lists { get; set; } = new();
 
-  
+        public List<ComponentModel> Parent_section_Components { get; set; } = new();
 
     }
-
-
 }

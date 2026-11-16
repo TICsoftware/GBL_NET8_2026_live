@@ -4,8 +4,15 @@
     ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
+    @* All component sequences (any count), ordered — same L/R loop as businesses inside / our-subsidiaries *@
     var sections = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
-        .Where(x => x.IsBlock == 1)
+        .Where(x =>
+            !string.IsNullOrWhiteSpace(x.Title)
+            || !string.IsNullOrWhiteSpace(x.Intro)
+            || !string.IsNullOrWhiteSpace(x.Content)
+            || !string.IsNullOrWhiteSpace(x.ThumbnailImage)
+            || !string.IsNullOrWhiteSpace(x.ComponentThumbnail)
+            || !string.IsNullOrWhiteSpace(x.Component_LHS_thumbnail))
         .OrderBy(x => x.Sequence)
         .ToList();
     var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
@@ -70,14 +77,13 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
         var imageAlt = FirstText(item.ThumbnailAltText, item.ComponentThumbnailAltText, item.Title);
         var lead = item.Intro;
         var body = item.Content;
-        var hasListBody = !string.IsNullOrWhiteSpace(body)
-            && body.IndexOf("<ul", StringComparison.OrdinalIgnoreCase) >= 0;
-        var useHead = imageLeft && (hasListBody || !string.IsNullOrWhiteSpace(lead));
+        @* Same as LD “Expanding Professional Horizons”: title | intro in ld-head, then image + content *@
+        var hasHead = !string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(lead);
 
-        if (imageLeft && useHead)
-        {
-            <section class="ld-horizons wb-split-section section-spacing">
-                <div class="container">
+        <section class="ld-horizons wb-split-section section-spacing">
+            <div class="container">
+                @if (hasHead)
+                {
                     <div class="ld-head">
                         @if (!string.IsNullOrWhiteSpace(item.Title))
                         {
@@ -92,7 +98,10 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
                             <p>@Html.Raw(lead.CleanParagraphTags())</p>
                         }
                     </div>
-                    <div class="ld-split">
+                }
+                <div class="ld-split@(imageLeft ? "" : " ld-split--copy-first")">
+                    @if (imageLeft)
+                    {
                         <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
                             @if (!string.IsNullOrWhiteSpace(image))
                             {
@@ -100,35 +109,6 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
                             }
                         </figure>
                         <div class="ld-split__copy ld-split__copy--gray">
-                            @if (!string.IsNullOrWhiteSpace(body))
-                            {
-                                @Html.Raw(body)
-                            }
-                        </div>
-                    </div>
-                </div>
-            </section>
-        }
-        else if (imageLeft)
-        {
-            <section class="ld-knowledge wb-split-section section-spacing">
-                <div class="container">
-                    <div class="ld-split">
-                        <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
-                            @if (!string.IsNullOrWhiteSpace(image))
-                            {
-                                <img src="@image" alt="@imageAlt" class="parallax-img">
-                            }
-                        </figure>
-                        <div class="ld-split__copy ld-split__copy--white">
-                            @if (!string.IsNullOrWhiteSpace(item.Title))
-                            {
-                                <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(lead))
-                            {
-                                <p>@Html.Raw(lead.CleanParagraphTags())</p>
-                            }
                             @if (!string.IsNullOrWhiteSpace(body))
                             {
                                 @Html.Raw(body)
@@ -143,24 +123,10 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
                                 </a>
                             }
                         </div>
-                    </div>
-                </div>
-            </section>
-        }
-        else
-        {
-            <section class="ld-philosophy wb-split-section section-spacing">
-                <div class="container">
-                    <div class="ld-split ld-split--copy-first">
+                    }
+                    else
+                    {
                         <div class="ld-split__copy ld-split__copy--gray">
-                            @if (!string.IsNullOrWhiteSpace(item.Title))
-                            {
-                                <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(lead))
-                            {
-                                <p>@Html.Raw(lead.CleanParagraphTags())</p>
-                            }
                             @if (!string.IsNullOrWhiteSpace(body))
                             {
                                 @Html.Raw(body)
@@ -181,10 +147,10 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
                                 <img src="@image" alt="@imageAlt" class="parallax-img">
                             }
                         </figure>
-                    </div>
+                    }
                 </div>
-            </section>
-        }
+            </div>
+        </section>
     }
 }
 
