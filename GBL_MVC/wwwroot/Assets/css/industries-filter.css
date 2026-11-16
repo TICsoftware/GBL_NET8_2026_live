@@ -41,8 +41,29 @@ INDUSTRIES FILTER — custom select
   display: none;
 }
 
+/* Crossing the 767px breakpoint live (resize, no reload) switches .filter-inner
+   from a static desktop bar to position:fixed + hidden — suppress its
+   transition during that switch so it doesn't flash open full-screen. */
+html.is-resizing .filter-inner {
+  transition: none !important;
+}
+
 body.is-industry-filter-open {
   overflow: hidden;
+}
+
+/* The homepage filter lives inside .translatingProducts, which is its own
+   stacking context (z-index: 1). A fixed sheet cannot paint above the header
+   (z-index: 1000) until that context is raised. */
+@media (max-width: 767px) {
+  body.is-industry-filter-open .translatingProducts {
+    z-index: 1200;
+  }
+
+  body.is-industry-filter-open .back-to-top {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .cselect {

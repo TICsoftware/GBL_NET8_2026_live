@@ -65,6 +65,7 @@ namespace GBL_BusinessLogic.BAL
                     ? row.Field<string>("Cont_Publication") ?? ""
                     : (row.Table.Columns.Contains("Publication") ? row.Field<string>("Publication") ?? "" : ""),
                 External_url = row.Field<string>("cont_external_url") ?? "",
+                BreadcrumbTitle = Convert.ToString(row["cont_breadcrumb_title"]) ?? "",
             };
         }
 
