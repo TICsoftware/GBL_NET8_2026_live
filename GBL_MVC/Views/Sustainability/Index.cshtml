@@ -169,10 +169,10 @@
                         <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
                      </div>
                      <div class="turningCommitment-card__body">
-                        <h3 class="text-h5">@item.Title</h3>
+                        <h3 class="text-h4">@item.Title</h3>
                         @if (!string.IsNullOrWhiteSpace(item.Intro))
                         {
-                           <p>@Html.Raw(item.Intro)</p>
+                           @Html.Raw(item.Intro)
                         }
 
                         @if (!string.IsNullOrWhiteSpace(item.Intro))
