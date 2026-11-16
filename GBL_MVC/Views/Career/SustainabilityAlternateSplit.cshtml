@@ -4,18 +4,40 @@
     ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
-    @* All component sequences (any count), ordered — same L/R loop as businesses inside / our-subsidiaries *@
+
+    @* Bind Component Title + Component Intro only; skip empty / duplicate titles *@
     var sections = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
-        .Where(x =>
-            !string.IsNullOrWhiteSpace(x.Title)
-            || !string.IsNullOrWhiteSpace(x.Intro)
-            || !string.IsNullOrWhiteSpace(x.Content)
-            || !string.IsNullOrWhiteSpace(x.ThumbnailImage)
-            || !string.IsNullOrWhiteSpace(x.ComponentThumbnail)
-            || !string.IsNullOrWhiteSpace(x.Component_LHS_thumbnail))
+        .Where(x => HasText(x.Title) || HasText(x.Intro))
         .OrderBy(x => x.Sequence)
+        .ThenBy(x => x.IsBlock)
         .ToList();
+
+    // Drop consecutive duplicates (e.g. Sameerwadi title twice from block + parent)
+    var uniqueSections = new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    string? lastTitleKey = null;
+    foreach (var s in sections)
+    {
+        var key = NormalizeKey(s.Title);
+        if (!string.IsNullOrEmpty(key) && key == lastTitleKey) continue;
+        uniqueSections.Add(s);
+        if (!string.IsNullOrEmpty(key)) lastTitleKey = key;
+    }
+    sections = uniqueSections;
+
     var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
+    // Hide page intro when it only repeats the page / first component title
+    if (HasText(pageIntro))
+    {
+        var introKey = NormalizeKey(pageIntro);
+        var pageTitleKey = NormalizeKey(FirstText(content?.ContHmpgTitle, content?.ContTitle));
+        var firstCompKey = sections.Count > 0 ? NormalizeKey(sections[0].Title) : "";
+        if (introKey == pageTitleKey || introKey == firstCompKey)
+        {
+            pageIntro = "";
+        }
+    }
+
+    var sectionIndex = 0;
 }
 
 @section head {
@@ -45,7 +67,7 @@
     @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", content)
 }
 
-@if (!string.IsNullOrWhiteSpace(pageIntro))
+@if (HasText(pageIntro))
 {
     <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
         <div class="container">
@@ -55,106 +77,131 @@
         </div>
     </section>
 }
-else if (!string.IsNullOrWhiteSpace(content?.Content))
+
+@foreach (var item in sections)
 {
-    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+    var image = FirstPath(item.ThumbnailImage, item.ComponentThumbnail, item.Component_LHS_thumbnail);
+    var imageAlt = FirstText(item.ThumbnailAltText, item.ComponentThumbnailAltText, item.Title);
+
+    @* Only Component Title + Component Intro *@
+    var title = item.Title;
+    var intro = item.Intro;
+    var hasTitle = HasText(title);
+    var hasIntro = HasText(intro) && NormalizeKey(intro) != NormalizeKey(title);
+    var hasImage = !string.IsNullOrWhiteSpace(image);
+
+    @* Content only if it is real body text — not a repeat of Component Title *@
+    var body = item.Content;
+    if (HasText(body) && NormalizeKey(body) == NormalizeKey(title))
+    {
+        body = "";
+    }
+    var hasBody = HasText(body) || !string.IsNullOrWhiteSpace(item.Url);
+
+    if (!hasTitle && !hasIntro) { continue; }
+
+    var isGray = sectionIndex % 2 == 0;
+    var sectionTone = isGray ? "left-right-gray" : "left-right-white";
+    var imageLeft = sectionIndex % 2 == 0;
+    var copyTone = isGray ? "ld-split__copy--white" : "ld-split__copy--gray";
+    sectionIndex++;
+
+    <section class="left-right-section @sectionTone wb-split-section section-spacing">
         <div class="container">
-            <div class="page-intro-inner intro-lg text-center">
-                @Html.Raw(content.Content)
+            <div class="ld-head">
+                @if (hasTitle)
+                {
+                    <h2 class="text-h2">@Html.Raw(title.CleanParagraphTags())</h2>
+                }
+                else
+                {
+                    <div></div>
+                }
+                @if (hasIntro)
+                {
+                    <p>@Html.Raw(intro.CleanParagraphTags())</p>
+                }
             </div>
+
+            @if (hasImage || hasBody)
+            {
+                <div class="ld-split@(imageLeft ? "" : " ld-split--copy-first")">
+                    @if (imageLeft)
+                    {
+                        @if (hasImage)
+                        {
+                            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                                <img src="@image" alt="@imageAlt" class="parallax-img">
+                            </figure>
+                        }
+                        @if (hasBody)
+                        {
+                            <div class="ld-split__copy @copyTone">
+                                @if (HasText(body))
+                                {
+                                    @Html.Raw(body)
+                                }
+                                @if (!string.IsNullOrWhiteSpace(item.Url))
+                                {
+                                    <a href="@item.Url" class="site-btn site-btn--outline">
+                                        <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                        <span class="site-btn__arrow" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @if (hasBody)
+                        {
+                            <div class="ld-split__copy @copyTone">
+                                @if (HasText(body))
+                                {
+                                    @Html.Raw(body)
+                                }
+                                @if (!string.IsNullOrWhiteSpace(item.Url))
+                                {
+                                    <a href="@item.Url" class="site-btn site-btn--outline">
+                                        <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                        <span class="site-btn__arrow" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        }
+                        @if (hasImage)
+                        {
+                            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                                <img src="@image" alt="@imageAlt" class="parallax-img">
+                            </figure>
+                        }
+                    }
+                </div>
+            }
         </div>
     </section>
 }
 
-@if (sections.Count > 0)
-{
-    @for (var i = 0; i < sections.Count; i++)
-    {
-        var item = sections[i];
-        @* 1st/3rd… image left; 2nd/4th… image right *@
-        var imageLeft = i % 2 == 0;
-        var image = FirstPath(item.ThumbnailImage, item.ComponentThumbnail, item.Component_LHS_thumbnail);
-        var imageAlt = FirstText(item.ThumbnailAltText, item.ComponentThumbnailAltText, item.Title);
-        var lead = item.Intro;
-        var body = item.Content;
-        @* Same as LD “Expanding Professional Horizons”: title | intro in ld-head, then image + content *@
-        var hasHead = !string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(lead);
-
-        <section class="ld-horizons wb-split-section section-spacing">
-            <div class="container">
-                @if (hasHead)
-                {
-                    <div class="ld-head">
-                        @if (!string.IsNullOrWhiteSpace(item.Title))
-                        {
-                            <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
-                        }
-                        else
-                        {
-                            <div></div>
-                        }
-                        @if (!string.IsNullOrWhiteSpace(lead))
-                        {
-                            <p>@Html.Raw(lead.CleanParagraphTags())</p>
-                        }
-                    </div>
-                }
-                <div class="ld-split@(imageLeft ? "" : " ld-split--copy-first")">
-                    @if (imageLeft)
-                    {
-                        <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
-                            @if (!string.IsNullOrWhiteSpace(image))
-                            {
-                                <img src="@image" alt="@imageAlt" class="parallax-img">
-                            }
-                        </figure>
-                        <div class="ld-split__copy ld-split__copy--gray">
-                            @if (!string.IsNullOrWhiteSpace(body))
-                            {
-                                @Html.Raw(body)
-                            }
-                            @if (!string.IsNullOrWhiteSpace(item.Url))
-                            {
-                                <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
-                                    <span class="site-btn__arrow" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </span>
-                                </a>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="ld-split__copy ld-split__copy--gray">
-                            @if (!string.IsNullOrWhiteSpace(body))
-                            {
-                                @Html.Raw(body)
-                            }
-                            @if (!string.IsNullOrWhiteSpace(item.Url))
-                            {
-                                <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
-                                    <span class="site-btn__arrow" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </span>
-                                </a>
-                            }
-                        </div>
-                        <figure class="ld-media parallax-wrap@(string.IsNullOrWhiteSpace(image) ? " ld-media--empty" : "")" data-parallax-travel="5">
-                            @if (!string.IsNullOrWhiteSpace(image))
-                            {
-                                <img src="@image" alt="@imageAlt" class="parallax-img">
-                            }
-                        </figure>
-                    }
-                </div>
-            </div>
-        </section>
-    }
-}
-
 @functions {
+    private static bool HasText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return false;
+        var plain = System.Text.RegularExpressions.Regex.Replace(value, "<[^>]+>", " ").Trim();
+        return !string.IsNullOrWhiteSpace(plain);
+    }
+
+    private static string NormalizeKey(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "";
+        var plain = System.Text.RegularExpressions.Regex.Replace(value, "<[^>]+>", " ");
+        plain = System.Text.RegularExpressions.Regex.Replace(plain, @"\s+", " ").Trim();
+        return plain.ToLowerInvariant();
+    }
+
     private static string FirstText(params string?[] values)
     {
         foreach (var value in values)
