@@ -68,13 +68,13 @@
                <blockquote class="page-intro-mantra__quote">
                   @if (!string.IsNullOrWhiteSpace(item.Intro))
                   {
-                     <p>@Html.Raw(item.Intro)</p>
+                     @Html.Raw(item.Intro)
                   }
                </blockquote>
                <div class="page-intro-mantra__copy">
                   @if (!string.IsNullOrWhiteSpace(item.Content))
                   {
-                     <p>@Html.Raw(item.Content)</p>
+                    @Html.Raw(item.Content)
                   }
                </div>
             </div>
@@ -105,7 +105,7 @@
                <div class="CreatingTowards-copy">
                   @if (!string.IsNullOrWhiteSpace(item.Intro))
                   {
-                     <p>@Html.Raw(item.Intro)</p>
+                    @Html.Raw(item.Intro)
                   }
                </div>
 

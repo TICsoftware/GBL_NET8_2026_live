@@ -207,6 +207,14 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 }
 
 
+
+/**LEFT RIGHT SECTION**/
+.left-right-section.left-right-gray{ background: #f4f4f4; }
+.left-right-section.left-right-white{ background: #fff; }
+
+
+
+
 @media (prefers-reduced-motion: reduce) {
   .page-intro-inner p,
   .page-intro-inner .page-intro-fill-word{
