@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         zIndex: index + 1,
         scale: 1,
         yPercent: index === 0 ? 0 : 100,
-        opacity: 1,
+        autoAlpha: index === 0 ? 1 : 0,
         force3D: true,
         transformOrigin: "50% 50%",
       });
@@ -193,12 +193,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       cards.forEach((card, index) => {
         if (index === 0) return;
-        tl.fromTo(card, { yPercent: 100 }, { yPercent: 0, immediateRender: true }, index - 1);
+        const at = index - 1;
+        tl.fromTo(
+          card,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.08, immediateRender: false },
+          at
+        );
+        tl.fromTo(
+          card,
+          { yPercent: 100 },
+          { yPercent: 0, immediateRender: false },
+          at
+        );
         tl.fromTo(
           cards[index - 1],
-          { scale: 1 },
-          { scale: 0.72, immediateRender: false },
-          index - 1
+          { scale: 1, yPercent: 0 },
+          { scale: 0.72, yPercent: -86, immediateRender: false },
+          at
         );
       });
 
@@ -206,22 +218,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const onRefreshInit = () => {
-      syncSlotToPanel();
-      getTitleTopPx();
-      section.style.setProperty("--ataglance-slides", String(Math.max(cards.length - 1, 1)));
+      try {
+        if (!section.querySelector("[data-glance-stack]")) return;
+        syncSlotToPanel();
+        getTitleTopPx();
+        section.style.setProperty("--ataglance-slides", String(Math.max(cards.length - 1, 1)));
+      } catch (err) {}
     };
     ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
-    const onRefresh = () => ScrollTrigger.refresh();
-    window.addEventListener("load", onRefresh);
     window.addEventListener("resize", onRefreshInit);
     requestAnimationFrame(() => {
       onRefreshInit();
-      ScrollTrigger.refresh();
     });
 
     return () => {
       ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
-      window.removeEventListener("load", onRefresh);
       window.removeEventListener("resize", onRefreshInit);
       desktopTrack = null;
       section.classList.remove("is-pinning-desktop");
@@ -285,7 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
     media.appendChild(controls);
 
     const panel = section.querySelector(".ataglance-panel");
-    const cta = panel ? panel.querySelector(".site-link") : null;
+    const cta = panel ? panel.querySelector(".site-btn") : null;
     if (cta) media.appendChild(cta);
 
     const prevEl = controls.querySelector(".ataglance-nav--prev");

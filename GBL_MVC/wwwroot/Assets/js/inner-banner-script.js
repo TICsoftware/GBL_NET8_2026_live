@@ -85,8 +85,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const intros = document.querySelectorAll(".page-intro-inner");
     if (!intros.length) return;
 
-    const FILL_FROM = "#B2B2B2";
-    const FILL_TO = "#282B31";
+    function fillColors(el) {
+      var sample = el.querySelector("p") || el;
+      var white =
+        !!(el.closest &&
+          (el.closest(".white-copy") ||
+            el.closest(".text-white") ||
+            el.classList.contains("text-white") ||
+            el.classList.contains("white-copy")));
+      if (!white && sample) {
+        var color = (window.getComputedStyle(sample).color || "").replace(/\s+/g, "");
+        white = /^rgb\(255,255,255\)$/i.test(color) || /^rgba\(255,255,255/i.test(color);
+      }
+      if (white) return { from: "#f4f4f4", to: "#ffffff" };
+      return { from: "#B2B2B2", to: "#282B31" };
+    }
 
     intros.forEach(function (inner, index) {
       if (inner.dataset.pageIntroFill === "ready") return;
@@ -102,6 +115,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const words = inner.querySelectorAll(".page-intro-fill-word");
       if (!words.length) return;
+
+      const colors = fillColors(inner);
+      const FILL_FROM = colors.from;
+      const FILL_TO = colors.to;
 
       if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
         words.forEach(function (word) {

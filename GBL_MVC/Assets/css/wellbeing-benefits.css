@@ -1,14 +1,5 @@
 /* Wellbeing & Benefits — LD left/right image split pattern */
 
-/* Full-section alternate backgrounds (regenerative-processes, health-and-safety, etc.) */
-.left-right-section.left-right-gray {
-  background: var(--color-gray, #f2f2f2);
-}
-
-.left-right-section.left-right-white {
-  background: var(--color-white, #fff);
-}
-
 .wb-split-section .ld-media--empty {
   background: #e8e8e8;
   min-height: 0;
