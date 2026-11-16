@@ -12,6 +12,7 @@ namespace GBL_BusinessLogic.Entity
     {
         public int ContId { get; set; }
         public string Title { get; set; } = "";
+          public string Intro { get; set; } = "";
         public string Anchor { get; set; } = "";
         public string PageName { get; set; } = "";
         public bool ShowYearFilter { get; set; }

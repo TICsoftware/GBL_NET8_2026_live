@@ -463,7 +463,7 @@
   right: 12%;
   top: 40%;
 }
-.ld-step__copy li span{font-weight: 700; font-size:var(--text-20);}
+.ld-step__copy li span{font-family: var(--font-uniNeueBold); font-size:var(--text-20);}
 
 .ld-step {
   opacity: 0;
