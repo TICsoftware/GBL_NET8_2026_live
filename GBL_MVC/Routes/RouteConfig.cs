@@ -92,9 +92,9 @@ app.MapControllerRoute(
                    defaults: new { controller = "Career", action = "LearningDevelopment", title = "sustainability/health-and-safety" }
            );
   app.MapControllerRoute(
-                   name: "Our Strategy",
+                   name: "OurStrategy",
                    pattern: "about-us/our-strategy",
-                   defaults: new { controller = "Career", action = "OurStrategy", title = "about-us/our-strategy" }
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-strategy" }
            );
 
   app.MapControllerRoute(
@@ -113,8 +113,8 @@ app.MapControllerRoute(
 
   app.MapControllerRoute(
                    name: "Subsidiaries",
-                   pattern: "about-us/subsidiaries",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/subsidiaries" }
+                   pattern: "about-us/our-subsidiaries",
+                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-subsidiaries" }
            );
 
 
