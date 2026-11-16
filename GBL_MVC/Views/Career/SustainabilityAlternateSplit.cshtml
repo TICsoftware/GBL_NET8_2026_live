@@ -4,12 +4,39 @@
     ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
-    @* Only components with Title or Intro. Skip empty boxes. *@
+
+    @* Bind Component Title + Component Intro only; skip empty / duplicate titles *@
     var sections = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
         .Where(x => HasText(x.Title) || HasText(x.Intro))
         .OrderBy(x => x.Sequence)
+        .ThenBy(x => x.IsBlock)
         .ToList();
+
+    // Drop consecutive duplicates (e.g. Sameerwadi title twice from block + parent)
+    var uniqueSections = new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    string? lastTitleKey = null;
+    foreach (var s in sections)
+    {
+        var key = NormalizeKey(s.Title);
+        if (!string.IsNullOrEmpty(key) && key == lastTitleKey) continue;
+        uniqueSections.Add(s);
+        if (!string.IsNullOrEmpty(key)) lastTitleKey = key;
+    }
+    sections = uniqueSections;
+
     var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
+    // Hide page intro when it only repeats the page / first component title
+    if (HasText(pageIntro))
+    {
+        var introKey = NormalizeKey(pageIntro);
+        var pageTitleKey = NormalizeKey(FirstText(content?.ContHmpgTitle, content?.ContTitle));
+        var firstCompKey = sections.Count > 0 ? NormalizeKey(sections[0].Title) : "";
+        if (introKey == pageTitleKey || introKey == firstCompKey)
+        {
+            pageIntro = "";
+        }
+    }
+
     var sectionIndex = 0;
 }
 
@@ -40,7 +67,7 @@
     @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", content)
 }
 
-@if (!string.IsNullOrWhiteSpace(pageIntro))
+@if (HasText(pageIntro))
 {
     <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
         <div class="container">
@@ -50,30 +77,28 @@
         </div>
     </section>
 }
-else if (!string.IsNullOrWhiteSpace(content?.Content))
-{
-    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
-        <div class="container">
-            <div class="page-intro-inner intro-lg text-center">
-                @Html.Raw(content.Content)
-            </div>
-        </div>
-    </section>
-}
 
 @foreach (var item in sections)
 {
     var image = FirstPath(item.ThumbnailImage, item.ComponentThumbnail, item.Component_LHS_thumbnail);
     var imageAlt = FirstText(item.ThumbnailAltText, item.ComponentThumbnailAltText, item.Title);
-    var lead = item.Intro;
-    var body = item.Content;
-    var hasTitle = HasText(item.Title);
-    var hasLead = HasText(lead);
+
+    @* Only Component Title + Component Intro *@
+    var title = item.Title;
+    var intro = item.Intro;
+    var hasTitle = HasText(title);
+    var hasIntro = HasText(intro) && NormalizeKey(intro) != NormalizeKey(title);
     var hasImage = !string.IsNullOrWhiteSpace(image);
+
+    @* Content only if it is real body text — not a repeat of Component Title *@
+    var body = item.Content;
+    if (HasText(body) && NormalizeKey(body) == NormalizeKey(title))
+    {
+        body = "";
+    }
     var hasBody = HasText(body) || !string.IsNullOrWhiteSpace(item.Url);
 
-    @* Full section only when title/intro (and preferably image/body) exists *@
-    if (!hasTitle && !hasLead) { continue; }
+    if (!hasTitle && !hasIntro) { continue; }
 
     var isGray = sectionIndex % 2 == 0;
     var sectionTone = isGray ? "left-right-gray" : "left-right-white";
@@ -83,19 +108,18 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
 
     <section class="left-right-section @sectionTone wb-split-section section-spacing">
         <div class="container">
-            @* LD pattern: Component Title (left) | Component Intro (right) *@
             <div class="ld-head">
                 @if (hasTitle)
                 {
-                    <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
+                    <h2 class="text-h2">@Html.Raw(title.CleanParagraphTags())</h2>
                 }
                 else
                 {
                     <div></div>
                 }
-                @if (hasLead)
+                @if (hasIntro)
                 {
-                    <p>@Html.Raw(lead.CleanParagraphTags())</p>
+                    <p>@Html.Raw(intro.CleanParagraphTags())</p>
                 }
             </div>
 
@@ -168,6 +192,14 @@ else if (!string.IsNullOrWhiteSpace(content?.Content))
         if (string.IsNullOrWhiteSpace(value)) return false;
         var plain = System.Text.RegularExpressions.Regex.Replace(value, "<[^>]+>", " ").Trim();
         return !string.IsNullOrWhiteSpace(plain);
+    }
+
+    private static string NormalizeKey(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "";
+        var plain = System.Text.RegularExpressions.Regex.Replace(value, "<[^>]+>", " ");
+        plain = System.Text.RegularExpressions.Regex.Replace(plain, @"\s+", " ").Trim();
+        return plain.ToLowerInvariant();
     }
 
     private static string FirstText(params string?[] values)
