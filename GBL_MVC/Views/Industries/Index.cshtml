@@ -5,8 +5,12 @@
     var title = string.IsNullOrWhiteSpace(content.Title) ? "Industries we serve" : content.Title;
     var breadcrumb = string.IsNullOrWhiteSpace(content.BreadcrumbTitle) ? title : content.BreadcrumbTitle;
     var windowTitle = string.IsNullOrWhiteSpace(content.WindowTitle) ? title : content.WindowTitle;
-    var masthead = content.MastheadImage ?? "";
-    var mobileMasthead = string.IsNullOrWhiteSpace(content.MobileMastheadImage) ? masthead : content.MobileMastheadImage;
+    var defaultDesktop = Url.Content("~/Assets/images/banners/industries-we-serve-desktop.webp");
+    var defaultMobile = Url.Content("~/Assets/images/banners/industries-we-serve-mob.webp");
+    var masthead = !string.IsNullOrWhiteSpace(content.MastheadImage) ? content.MastheadImage! : defaultDesktop;
+    var mobileMasthead = !string.IsNullOrWhiteSpace(content.MobileMastheadImage)
+        ? content.MobileMastheadImage!
+        : (!string.IsNullOrWhiteSpace(content.MastheadImage) ? content.MastheadImage! : defaultMobile);
     var mastheadAlt = content.MastheadAlt ?? title;
     ViewData["Title"] = windowTitle;
 }
@@ -28,19 +32,13 @@
          <div class="inside-banner-inner banner-animation relative">
             <div class="overflow-hidden h-[75vh] sm:h-[700px] relative innerbanner-image-wrapper">
                <picture>
-                  @if (!string.IsNullOrWhiteSpace(masthead))
-                  {
-                      <source media="(min-width:1024px)" srcset="@masthead">
-                  }
-                  @if (!string.IsNullOrWhiteSpace(mobileMasthead))
-                  {
-                      <source media="(min-width:992px)" srcset="@mobileMasthead">
-                      <img src="@mobileMasthead"
-                           alt="@mastheadAlt"
-                           class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
-                           loading="eager"
-                           fetchpriority="high">
-                  }
+                  @* Desktop masthead; always keep an <img> fallback so the banner never renders empty *@
+                  <source media="(min-width:1024px)" srcset="@masthead">
+                  <img src="@mobileMasthead"
+                       alt="@mastheadAlt"
+                       class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover"
+                       loading="eager"
+                       fetchpriority="high">
                </picture>
                <div class="innerbanner-overlay"></div>
             </div>
