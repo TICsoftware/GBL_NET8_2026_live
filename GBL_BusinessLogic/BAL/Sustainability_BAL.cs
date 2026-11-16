@@ -154,9 +154,65 @@ namespace GBL_BusinessLogic.BAL
                 section.SelectedYear = "";
                 section.Years = new List<DropdownModel>();
                 section.Articles = LoadGovernanceArticlesByDateDesc(section.ContId);
+
+                // /sustainability/governance only — ensure tab Intro from section page content
+                if (string.IsNullOrWhiteSpace(section.Intro) && section.ContId > 0)
+                {
+                    section.Intro = LoadGovernanceSectionIntro(section.ContId, section.PageName, languageId, geographyId);
+                }
             }
 
             return model;
+        }
+
+        private string LoadGovernanceSectionIntro(int contId, string? pageName, int languageId, int geographyId)
+        {
+            var names = new List<string>();
+            if (!string.IsNullOrWhiteSpace(pageName))
+            {
+                names.Add(pageName.Trim().TrimStart('/'));
+                var last = pageName.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(last))
+                {
+                    names.Add(last);
+                    names.Add("sustainability/governance/" + last);
+                    names.Add("sustainability/" + last);
+                }
+            }
+
+            foreach (var name in names.Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var ds = GetContentComponentData_DAL(name, languageId, geographyId);
+                    if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                        continue;
+
+                    var row = ds.Tables[0].Rows[0];
+                    var mapped = MapContent(row);
+                    if (mapped.ContId > 0 && mapped.ContId != contId)
+                        continue;
+
+                    var intro = FirstNonEmpty(mapped.Cont_intro, mapped.Cont_hmpg_intro);
+                    if (!string.IsNullOrWhiteSpace(intro))
+                        return intro;
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
+            return "";
+        }
+
+        private static string FirstNonEmpty(params string?[] values)
+        {
+            foreach (var value in values)
+            {
+                if (!string.IsNullOrWhiteSpace(value)) return value;
+            }
+            return "";
         }
 
         private List<ArticleModel> LoadGovernanceArticlesByDateDesc(int contentId)
