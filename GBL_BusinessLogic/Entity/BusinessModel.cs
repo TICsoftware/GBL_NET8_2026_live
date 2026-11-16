@@ -15,6 +15,9 @@ namespace GBL_BusinessLogic.Entity
         /// Business inside: one list per CMS component_sequence (1, 2, 3…).
         /// Any number of components binds automatically.
         /// </summary>
-        public Dictionary<int, List<ComponentModel>> Component_Lists { get; set; } = new();
+       // public Dictionary<int, List<ComponentModel>> Component_Lists { get; set; } = new();
+
+        public List<ComponentModel> Parent_section_Components { get; set; } = new();
+
     }
 }
