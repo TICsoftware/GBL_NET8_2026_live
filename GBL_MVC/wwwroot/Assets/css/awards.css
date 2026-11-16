@@ -25,6 +25,7 @@
 
   line-height: 1.5;
   color: var(--color-gray-dark);
+  font-size:var(--text-intro);
 }
 
 /* ---------- Group title with trailing rule ---------- */
@@ -55,7 +56,7 @@
   display: flex;
   gap: 24px;
   margin: 0;
-  padding: 0;
+  padding: 0 0 28px;
   list-style: none;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -99,29 +100,42 @@
 
 /* ---------- Card ---------- */
 .award-card {
+  position: relative;
+  isolation: isolate;
   flex: 0 0 calc((100% - 48px) / 3);      /* 3 per view, 2 gaps of 24px */
   display: flex;
   flex-direction: column;
   scroll-snap-align: start;
   background: var(--color-gray);
   border-radius: 2px;
-  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+  transition: transform .4s var(--ease);
+}
+.award-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 .award-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, .08);
 }
 
 .award-card__media {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 50px 20px 0;
-  overflow: hidden;
+  padding:2rem;
+  overflow: hidden; background: var(--color-white);
 
       height:20rem;
     min-height: 18rem;
+    margin:1rem;
 }
 .award-card__media img {
   max-width: 80%;
@@ -137,7 +151,7 @@
   flex: 1;
   flex-direction: column;
   align-items: center;
-  padding: 18px 24px 24px;
+  padding:0.5rem 1.5rem 1.5rem;
   text-align: center;
 }
 .award-card__title {
@@ -146,76 +160,15 @@
   color: var(--color-primary);
 }
 .award-card__text {
-  margin: 0;
+  margin: auto 0 0;
   line-height: 1.5;
   color: var(--color-gray-dark);
   font-size: var(--t);
 }
 .award-card__year {
-  margin-top: auto;              /* pins the year to the bottom: equal rows */
-  padding-top: 22px;
-  color: var(--color-gray-dark);
-}
-
-/* ---------- Reveal on scroll ----------
-   1. card rises and scales in (left to right)
-   2. image wipes up from the bottom while settling from a zoom
-   3. title, category and year fade up one after another */
-.awards-slider .award-card {
-  --aw-d: calc(var(--aw-i, 0) * 120ms);
-  opacity: 0;
-  transform: translateY(40px) scale(.97);
-}
-.awards-slider .award-card__media {
-  clip-path: inset(100% 0 0 0);
-}
-.awards-slider .award-card__media img {
-  transform: scale(1.15);
-}
-.awards-slider .award-card__title,
-.awards-slider .award-card__text,
-.awards-slider .award-card__year {
-  opacity: 0;
-  transform: translateY(14px);
-}
-
-.awards-slider.is-inview .award-card {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .8s ease var(--aw-d),
-    transform 1s var(--ease) var(--aw-d),
-    box-shadow .4s var(--ease);
-}
-.awards-slider.is-inview .award-card__media {
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 1s var(--ease) calc(var(--aw-d) + 150ms);
-}
-.awards-slider.is-inview .award-card__media img {
-  transform: scale(1);
-  transition: transform 1.4s var(--ease) calc(var(--aw-d) + 150ms);
-}
-.awards-slider.is-inview .award-card__title,
-.awards-slider.is-inview .award-card__text,
-.awards-slider.is-inview .award-card__year {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .6s ease calc(var(--aw-d) + var(--aw-t)),
-    transform .7s var(--ease) calc(var(--aw-d) + var(--aw-t));
-}
-.awards-slider .award-card__title { --aw-t: 400ms; }
-.awards-slider .award-card__text  { --aw-t: 500ms; }
-.awards-slider .award-card__year  { --aw-t: 600ms; }
-
-/* Hover keeps working after the reveal, with no delay */
-.awards-slider.is-inview .award-card:hover {
-  transform: translateY(-4px);
-  transition-delay: 0s;
-}
-.awards-slider.is-inview .award-card:hover .award-card__media img {
-  transform: scale(1.04);
-  transition: transform .6s var(--ease);
+  padding-top: 0.5rem;
+  color: var(--color-secondary);
+  font-family: var(--font-uniNeueBold);
 }
 
 /* ---------- Responsive ---------- */
@@ -235,17 +188,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .awards-track { scroll-behavior: auto; }
-  .awards-slider .award-card,
-  .awards-slider .award-card__media,
-  .awards-slider .award-card__media img,
-  .awards-slider .award-card__title,
-  .awards-slider .award-card__text,
-  .awards-slider .award-card__year {
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-    transition: none !important;
-  }
 }
 
 
@@ -270,7 +212,7 @@
 .certs-head__title { margin: 0; }
 .certs-head__intro {
   margin: 0;
-  max-width: 520px;
+  max-width: 800px;
   line-height: 1.5;
   color: var(--color-gray-dark);
 }
@@ -279,20 +221,31 @@
 .certs-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 2.75rem 24px;
+  padding-bottom: 1.25rem;
 }
 
 .cert-card {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   min-width: 0;
   padding: 24px;
   background: var(--color-white);
   border-radius: 2px;
-  transition: box-shadow .4s var(--ease), transform .4s var(--ease);
 }
-.cert-card:hover {
-  box-shadow: 0 14px 30px rgba(0, 0, 0, .06);
+.cert-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
 }
 
 /* Title row (arrows are added here by JS when the card becomes a slider) */
@@ -323,39 +276,40 @@
   position: relative;
   display: flex;
   flex: 0 0 33.333%;
+  max-width: 33.333%;
+  min-width: 0;
   flex-direction: column;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 0.4rem;
   text-align: center;
 }
 
-/* Thin vertical divider between items */
+/* Thin vertical divider between logos */
 .cert-item + .cert-item::before {
   content: "";
   position: absolute;
-  top: 12px;
+  top: 0.35rem;
   left: 0;
   width: 1px;
-  height: 64px;
+  height: 6rem;
   background: var(--line);
 }
 
 .cert-item__logo {
-    width: 100%;
-    height: 8.5rem;
-    min-height: 8.5rem;
-    flex: 0 0 8.5rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 0.875rem;
-    overflow: hidden;
-
-  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.75rem;
+  max-width: 100%;
+  height: 6.75rem;
+  min-height: 0;
+  flex: 0 0 6.75rem;
+  margin: 0 auto 0.85rem;
 }
 .cert-item__logo img {
+  display: block;
+  width: auto;
+  height: auto;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
@@ -363,11 +317,20 @@
 }
 .cert-item:hover .cert-item__logo img { transform: scale(1.06); }
 
+/* Two certificates share the card. Three or more stay in equal thirds. */
+.cert-track:has(> .cert-item:nth-child(2):last-child) .cert-item {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+}
+
 .cert-item__name {
+  width: 100%;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--color-gray-dark);
-  font-size: var(--text-button);
+  font-size: var(--text-small, 0.875rem);
+  text-wrap: balance;
 }
 
 /* ---------- Slider mode (more than 3 items) ---------- */
@@ -409,69 +372,11 @@
   outline: none;
 }
 
-/* ---------- Reveal on scroll ----------
-   1. card rises and scales in
-   2. title slides in from the left
-   3. logos pop in one by one, dividers grow between them
-   4. names fade up under each logo
-   (.has-reveal is added by JS, so without JS nothing stays hidden) */
-.has-reveal .cert-card {
-  opacity: 0;
-  transform: translateY(40px) scale(.97);
-}
-.has-reveal .cert-card__title {
-  opacity: 0;
-  transform: translateX(-16px);
-}
-.has-reveal .cert-item__logo {
-  opacity: 0;
-  transform: scale(.6);
-}
-.has-reveal .cert-item__name {
-  opacity: 0;
-  transform: translateY(12px);
-}
-.has-reveal .cert-item + .cert-item::before {
-  transform: scaleY(0);
-  transform-origin: top center;
-}
-
-.has-reveal .cert-card.is-inview {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .8s ease var(--cert-d, 0ms),
-    transform 1s var(--ease) var(--cert-d, 0ms),
-    box-shadow .4s var(--ease);
-}
-.has-reveal .cert-card.is-inview .cert-card__title {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .6s ease calc(var(--cert-d, 0ms) + 200ms),
-    transform .8s var(--ease) calc(var(--cert-d, 0ms) + 200ms);
-}
-.has-reveal .cert-card.is-inview .cert-item__logo {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .5s ease calc(var(--cert-d, 0ms) + 350ms + var(--item-i, 0) * 110ms),
-    transform .7s cubic-bezier(.34, 1.56, .64, 1) calc(var(--cert-d, 0ms) + 350ms + var(--item-i, 0) * 110ms);
-}
-.has-reveal .cert-card.is-inview .cert-item__name {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .6s ease calc(var(--cert-d, 0ms) + 480ms + var(--item-i, 0) * 110ms),
-    transform .7s var(--ease) calc(var(--cert-d, 0ms) + 480ms + var(--item-i, 0) * 110ms);
-}
-.has-reveal .cert-card.is-inview .cert-item + .cert-item::before {
-  transform: scaleY(1);
-  transition: transform .6s var(--ease) calc(var(--cert-d, 0ms) + 400ms + var(--item-i, 0) * 110ms);
-}
-
 /* ---------- Responsive ---------- */
-@media (max-width: 1199px) {
+/* At 150% scale a 1920px screen is about 1280px. Three cards on that
+   width leave each certificate too narrow to read, so the cards sit
+   two across and the certificates inside stay in threes. */
+@media (max-width: 1600px) {
   .certs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -479,20 +384,16 @@
   .certs-grid { grid-template-columns: 1fr; gap: 16px; }
   .cert-card { padding: 20px 16px; }
   .cert-card__head { margin-bottom: 20px; }
-  .cert-item { padding: 0 8px; }
-  .cert-item__logo { height: 72px; }
+  .cert-item { padding: 0 0.35rem; }
+  .cert-item__logo {
+    width: 4.5rem;
+    height: 4.5rem;
+    flex-basis: 4.5rem;
+  }
+  .cert-item + .cert-item::before { height: 4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cert-card.is-slider .cert-track { scroll-behavior: auto; }
-  .has-reveal .cert-card,
-  .has-reveal .cert-card__title,
-  .has-reveal .cert-item__logo,
-  .has-reveal .cert-item__name,
-  .has-reveal .cert-item + .cert-item::before {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
 }
 
