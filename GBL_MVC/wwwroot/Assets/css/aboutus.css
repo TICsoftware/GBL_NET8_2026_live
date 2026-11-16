@@ -16,7 +16,6 @@
 }
 .about-lead {
   margin: 0;
-  font-size: var(--text-intro);
   color: var(--color-gray-dark);
 }
 .about-lead + .about-lead {
@@ -31,11 +30,9 @@
   margin-top: 1rem;
 }
 .about-btn {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
-.about-btn--wide {
-  margin-top: clamp(1.75rem, 2.6vw, 3.125rem);
-}
+
 
 /* Soft parallax: a little taller than its box, moved by aboutus.js. Keeps the
    design's framing, which the site-wide 130% parallax would zoom into. */
@@ -73,7 +70,7 @@
   margin-bottom: 0;
 }
 .about-intro__copy .about-intro__lead {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   font-size: var(--text-intro);
 }
 

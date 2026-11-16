@@ -759,14 +759,14 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 
 .mega-featured__copy{
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 0.825rem;
   line-height: 1.5;
   color: var(--header-muted);
   font-weight: 400;
-  display: -webkit-box;
+  /*display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: vertical; */
   overflow: hidden;
 }
 

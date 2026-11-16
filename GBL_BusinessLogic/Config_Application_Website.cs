@@ -217,49 +217,59 @@ namespace GBL_BusinessLogic
             return table.AsEnumerable()
                 .Select(row => new ArticleModel
                 {
-                    ContId = row.Field<int>("cont_id"),
-                    ContParentId = row.Field<int>("cont_parent_id"),
+                    ContId = GetInt(row, "cont_id"),
+                    ContParentId = GetInt(row, "cont_parent_id"),
 
-                    Title = string.IsNullOrWhiteSpace(row["cont_hmpg_title"]?.ToString())
-                        ? row["cont_title"]?.ToString()
-                        : row["cont_hmpg_title"]?.ToString(),
+                    Title = string.IsNullOrWhiteSpace(GetString(row, "cont_hmpg_title"))
+                        ? GetString(row, "cont_title")
+                        : GetString(row, "cont_hmpg_title"),
 
-                    Intro = row["cont_intro"]?.ToString(),
-                    HmpgIntro = row["cont_hmpg_intro"]?.ToString(),
-                    PageName = row["cont_pagename"]?.ToString(),
+                    Intro = GetString(row, "cont_intro"),
+                    HmpgIntro = GetString(row, "cont_hmpg_intro"),
+                    PageName = GetString(row, "cont_pagename"),
 
-                    ThumbnailImage = row["Hmpg_thumbnail"]?.ToString(),
-                    ThumbnailAltText = row["Hmpg_thumbnail_alt_text"]?.ToString(),
-                    BackgroundImage = table.Columns.Contains("background_image_path")
-                        ? row["background_image_path"]?.ToString()
-                        : "",
-                    BackgroundAltText = table.Columns.Contains("Background_alt_text")
-                        ? row["Background_alt_text"]?.ToString()
-                        : "",
-                    MastheadImage = table.Columns.Contains("masthead_image_path")
-                        ? row["masthead_image_path"]?.ToString()
-                        : "",
-                    MastheadAltText = table.Columns.Contains("Masthead_alt_text")
-                        ? row["Masthead_alt_text"]?.ToString()
-                        : "",
+                    ThumbnailImage = GetString(row, "Hmpg_thumbnail"),
+                    ThumbnailAltText = GetString(row, "Hmpg_thumbnail_alt_text"),
+                    BackgroundImage = GetString(row, "background_image_path"),
+                    BackgroundAltText = GetString(row, "Background_alt_text"),
+                    MastheadImage = GetString(row, "masthead_image_path"),
+                    MastheadAltText = GetString(row, "Masthead_alt_text"),
 
-                    ExternalUrl = row["cont_external_url"]?.ToString(),
-                    MediafilePath = row["MediafilePath"]?.ToString(),
+                    ExternalUrl = GetString(row, "cont_external_url"),
+                    MediafilePath = GetString(row, "MediafilePath"),
 
                     Url = GetArticleUrl(row),
                     UrlTarget = GetArticleTarget(row),
 
-                    DisplayDate = table.Columns.Contains("cont_displaydate") && row["cont_displaydate"] != DBNull.Value
-                        ? Convert.ToDateTime(row["cont_displaydate"])
-                        : null,
+                    DisplayDate = GetDateTime(row, "cont_displaydate"),
 
-                    Sequence = table.Columns.Contains("cont_sequence") && row["cont_sequence"] != DBNull.Value
-                        ? Convert.ToInt32(row["cont_sequence"])
-                        : 0,
-                    Content = row["content"]?.ToString(),       
-                    BreadcrumbTitle = Convert.ToString(row["cont_breadcrumb_title"])
+                    Sequence = GetInt(row, "cont_sequence"),
+                    Content = GetString(row, "content"),
+                    // Optional — investor PDF SPs do not return this column
+                    BreadcrumbTitle = GetString(row, "cont_breadcrumb_title")
                 })
                 .ToList();
+        }
+
+        private static string GetString(DataRow row, string column)
+        {
+            if (row?.Table == null || !row.Table.Columns.Contains(column) || row[column] == DBNull.Value)
+                return "";
+            return row[column]?.ToString() ?? "";
+        }
+
+        private static int GetInt(DataRow row, string column)
+        {
+            if (row?.Table == null || !row.Table.Columns.Contains(column) || row[column] == DBNull.Value)
+                return 0;
+            return Convert.ToInt32(row[column]);
+        }
+
+        private static DateTime? GetDateTime(DataRow row, string column)
+        {
+            if (row?.Table == null || !row.Table.Columns.Contains(column) || row[column] == DBNull.Value)
+                return null;
+            return Convert.ToDateTime(row[column]);
         }
 
 

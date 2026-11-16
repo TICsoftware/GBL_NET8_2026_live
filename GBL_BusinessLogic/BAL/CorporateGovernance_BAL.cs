@@ -101,9 +101,10 @@ namespace GBL_BusinessLogic.BAL
         public static string FinancialYearKey(ArticleModel? article)
         {
             if (article == null) return "";
-            var fromTitle = FinancialYearKeyFromText(article.Title);
-            if (!string.IsNullOrWhiteSpace(fromTitle)) return fromTitle;
-            return FinancialYearKey(article.DisplayDate);
+            // Prefer display date (matches Get_Investor_Pdf_Articles_List FY filter).
+            var fromDate = FinancialYearKey(article.DisplayDate);
+            if (!string.IsNullOrWhiteSpace(fromDate)) return fromDate;
+            return FinancialYearKeyFromText(article.Title);
         }
 
         public static string FinancialYearKey(DateTime? date)
@@ -313,8 +314,7 @@ namespace GBL_BusinessLogic.BAL
 
         private void AttachParentArticlesIfTabsEmpty(int parentId, DataSet? parentDs, List<GovernanceSectionModel> sections)
         {
-            if (sections.Count == 0) return;
-            if (sections.Take(2).Any(s => s.Articles.Count > 0)) return;
+            if (sections.Count > 0 && sections.Take(2).Any(s => s.Articles.Count > 0)) return;
 
             var articles = LoadPdfArticlesById(parentId);
             if (articles.Count == 0 && parentDs != null && parentDs.Tables.Count > 2 && parentDs.Tables[2].Rows.Count > 0)
@@ -339,9 +339,26 @@ namespace GBL_BusinessLogic.BAL
 
             if (articles.Count == 0) return;
 
+            var years = BuildYearList(articles);
+            if (sections.Count == 0)
+            {
+                sections.Add(new GovernanceSectionModel
+                {
+                    ContId = parentId,
+                    Title = "Documents",
+                    PageName = "",
+                    Anchor = "documents",
+                    Articles = articles,
+                    Years = years,
+                    SelectedYear = years.FirstOrDefault()?.Value ?? "",
+                    ShowYearFilter = years.Count > 0
+                });
+                return;
+            }
+
             sections[0].Articles = articles;
-            sections[0].Years = BuildYearList(articles);
-            sections[0].SelectedYear = sections[0].Years.FirstOrDefault()?.Value ?? "";
+            sections[0].Years = years;
+            sections[0].SelectedYear = years.FirstOrDefault()?.Value ?? "";
         }
 
         private static void RefreshSectionYears(List<GovernanceSectionModel> sections)

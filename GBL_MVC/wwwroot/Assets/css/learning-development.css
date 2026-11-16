@@ -26,14 +26,15 @@ LEARNING & DEVELOPMENT PAGE
   min-height: 26rem;
   margin: 0;
   overflow: hidden;
+   max-height:  560px;
 }
 /* Small extra height keeps the zoom low; matches data-parallax-travel="5" */
 .ld-media .parallax-img {
   position: absolute;
-  top: -5.6%;
+  top: -5%;
   left: 0;
   width: 100%;
-  height: 111.2%;
+  height: 110%;
   max-width: none;
 }
 
@@ -81,6 +82,7 @@ LEARNING & DEVELOPMENT PAGE
   align-items: flex-start;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 4.5rem);
+   height: 100%;
 }
 .ld-split__copy--white {
   background: var(--color-white);
@@ -91,13 +93,8 @@ LEARNING & DEVELOPMENT PAGE
 .ld-split__copy .text-h2 {
   margin: 0 0 1.5rem;
 }
-.ld-split__copy p {
-  color: var(--color-gray-dark);
-}
-.ld-split__copy .site-btn {
-  margin-top: 1.5rem;
-}
 
+.ld-split__copy h3{ margin: 0  0 0.25rem; }
 
 @media (max-width: 991px) {
   .ld-head,

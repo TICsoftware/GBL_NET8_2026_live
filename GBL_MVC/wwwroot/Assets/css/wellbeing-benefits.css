@@ -29,9 +29,25 @@
   flex: 0 0 0.55rem;
   width: 0.55rem;
   height: 0.55rem;
-  margin-top: 0.4rem;
-  border-radius: 0.1rem;
+  margin-top: 0;
   background: var(--color-secondary, #67815a);
+}
+
+/* Keep the image in view while the taller copy column scrolls, then release at the end of the split */
+@media (min-width: 992px) {
+  .wb-split-section .ld-split {
+    align-items: start;
+  }
+
+  .wb-split-section .ld-media {
+    position: sticky;
+    top: calc(var(--header-h, 88px) );
+    align-self: start;
+    z-index: 1;
+    height: min(560px, calc(100vh - var(--header-h, 88px) - 2.5rem));
+    min-height: 0;
+    max-height: none;
+  }
 }
 
 @media (max-width: 991px) {

@@ -101,7 +101,7 @@
   margin: 0 0 0.5rem;
   color: var(--color-primary, #282b31);
   font-size: var(--text-20, 1rem);
-  font-weight: 700;
+  font-family: var(--font-uniNeueBold);
   line-height: 1.25;
 }
 
@@ -935,7 +935,7 @@
 .logo-item p {
   margin: 0; 
   font-size: var(--text-22);
-  font-weight: 700;
+  font-family: var(--font-uniNeueBold);
   line-height: 1.5;
 }
 
@@ -1166,7 +1166,7 @@ ALL MEDIA QUERIES
     padding: 0 0.15rem;
     color: var(--color-primary);
     font-size: clamp(1.05rem, 2.4vw, 1.35rem);
-    font-weight: 700;
+    font-family: var(--font-uniNeueBold);
     line-height: 1.3;
   }
 

@@ -39,8 +39,9 @@ namespace GBL_BusinessLogic.BAL
                 var groupedData = GetGroupedComponents(ds.Tables[1]);
                 model.Components = groupedData;
 
-                // Legacy / shared career inside pages (social, diversity, etc.)
-                model.Learning_Development_List = MapComponents(groupedData, 1);
+                // Alternate-split pages (regenerative-processes, manufacturing, our-subsidiaries, etc.)
+                // Flatten every component sequence so 2+ / 4 blocks can L/R alternate.
+                model.Learning_Development_List = MapAllSequenceComponents(groupedData);
 
                 // New Learning & Development layout (/careers/learning-and-development)
                 // 1 Empowering Growth (intro block + cards)
@@ -79,6 +80,7 @@ namespace GBL_BusinessLogic.BAL
             {
                 Add("careers/" + last);
                 Add("sustainability/" + last);
+                Add("about-us/" + last);
             }
 
             // Only for the Learning & Development page — do not bleed into wellbeing/social/etc.
@@ -97,6 +99,26 @@ namespace GBL_BusinessLogic.BAL
             return names;
         }
 
+        /// <summary>
+        /// Maps every component sequence (ordered) into one list for alternate L/R layouts.
+        /// </summary>
+        private List<ComponentModel> MapAllSequenceComponents(List<ComponentGroup> groupedData)
+        {
+            var list = new List<ComponentModel>();
+            if (groupedData == null || groupedData.Count == 0) return list;
+
+            foreach (var seq in groupedData.Select(g => g.Sequence).Distinct().OrderBy(s => s))
+            {
+                foreach (var item in MapComponents(groupedData, seq))
+                {
+                    if (item.Sequence <= 0)
+                        item.Sequence = seq;
+                    list.Add(item);
+                }
+            }
+
+            return list;
+        }
 
         public CareersModel GetCareers_BAL(string pagename, int languageId, int geographyId)
         {
