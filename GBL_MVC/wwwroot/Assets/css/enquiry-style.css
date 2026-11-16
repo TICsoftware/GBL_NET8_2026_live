@@ -480,6 +480,21 @@ ENQUIRY — underline form
   margin-top: 0.35rem;
 }
 
+#enquiryMessage .cu-form-alert {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.45;
+  padding: 0.65rem 0;
+}
+
+#enquiryMessage .cu-form-alert--success {
+  color: #1f7a3a;
+}
+
+#enquiryMessage .cu-form-alert--error {
+  color: #c62828;
+}
+
 @media (max-width: 767px) {
   .enquiry-form__row,
   .enquiry-form__columns {
@@ -496,4 +511,180 @@ ENQUIRY — underline form
 
   .enquiry-form{ padding: clamp(1rem, 4vw, 2rem); }
   .enquiry-form {max-width: 100%;}
+}
+
+/**=====================================
+ENQUIRY — product popup
+=====================================**/
+.enquiry-modal {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: clamp(0.75rem, 2vh, 1.5rem) clamp(0.75rem, 2vw, 2rem);
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary, #282b31);
+}
+
+.enquiry-modal[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enquiry-modal::backdrop {
+  background: transparent;
+}
+
+.enquiry-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 14, 18, 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.enquiry-modal__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(960px, 100%);
+  height: min(90vh, 820px);
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--color-white, #fff);
+  opacity: 1;
+  transform: translate3d(0, -100vh, 0);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.enquiry-modal.is-open .enquiry-modal__backdrop {
+  opacity: 1;
+}
+
+.enquiry-modal.is-open .enquiry-modal__panel {
+  transform: translate3d(0, 0, 0);
+}
+
+.enquiry-modal.is-closing .enquiry-modal__panel {
+  transition: transform 0.3s ease;
+  transform: translate3d(0, -100vh, 0);
+}
+
+.enquiry-modal.is-closing .enquiry-modal__backdrop {
+  opacity: 0;
+}
+
+.enquiry-modal__close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(40, 43, 49, 0.3);
+  border-radius: 50%;
+  background: var(--color-white, #fff);
+  color: var(--color-primary, #282b31);
+  cursor: pointer;
+  transition:
+    color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.enquiry-modal__close:hover,
+.enquiry-modal__close:focus-visible {
+  border-color: var(--color-secondary, #67815a);
+  background: var(--color-secondary, #67815a);
+  color: var(--color-white, #fff);
+}
+
+.enquiry-modal__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.enquiry-modal__scroll {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.enquiry-modal__head {
+  margin-bottom: 1.25rem;
+  padding-right: 3rem;
+}
+
+.enquiry-modal__title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  line-height: 1.2;
+  color: var(--color-primary, #282b31);
+}
+
+.enquiry-modal__product {
+  margin: 0;
+  color: rgba(40, 43, 49, 0.72);
+  font-size: 0.95rem;
+}
+
+.enquiry-modal .enquiry-form {
+  max-width: none;
+  margin: 0;
+  margin-bottom: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.enquiry-modal .enquiry-form::after {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .enquiry-modal {
+    padding: 0.5rem;
+  }
+
+  .enquiry-modal__panel {
+    height: min(94vh, 100%);
+  }
+
+  .enquiry-modal__scroll {
+    padding: 1rem;
+  }
+
+  .enquiry-modal__close {
+    top: 0.6rem;
+    right: 0.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enquiry-modal__backdrop,
+  .enquiry-modal__panel {
+    transition: none;
+  }
+
+  .enquiry-modal__panel,
+  .enquiry-modal.is-open .enquiry-modal__panel,
+  .enquiry-modal.is-closing .enquiry-modal__panel {
+    transform: none;
+  }
 }
