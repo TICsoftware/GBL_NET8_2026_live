@@ -1,8 +1,10 @@
-@model GBL_BusinessLogic.Entity.PageViewModel
+@model GBL_BusinessLogic.Entity.BusinessModel
 @{
    ViewData["Title"] = Model?.Content?.ContTitle ?? "Businessess";
    Layout = "~/Views/Shared/_Layout.cshtml";
    var content = Model?.Content;
+   var componentLists = Model?.Component_Lists ?? new Dictionary<int, List<GBL_BusinessLogic.Entity.ComponentModel>>();
+   var splitIndex = 0;
 }
 
 
@@ -63,4 +65,121 @@
          </div>
       </div>
    </section>
-   <!--PAGE INTRO OUTER END--> 
+   <!--PAGE INTRO OUTER END-->
+
+@foreach (var seqPair in componentLists.OrderBy(x => x.Key))
+{
+    var items = seqPair.Value ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    if (items.Count == 0) { continue; }
+
+    // Landing-only image blocks (e.g. Business-RHS-image) — no intro / no background
+    var isImageGallery = items.All(x =>
+        x.IsBlock == 1
+        && string.IsNullOrWhiteSpace(x.Intro)
+        && string.IsNullOrWhiteSpace(x.Componentbackground));
+    if (isImageGallery) { continue; }
+
+    foreach (var item in items)
+    {
+        var thumb = FirstPath(item.ComponentThumbnail, item.ThumbnailImage, item.Component_LHS_thumbnail);
+        var thumbAlt = FirstText(item.ComponentThumbnailAltText, item.ThumbnailAltText, item.Title);
+        var hasBg = !string.IsNullOrWhiteSpace(item.Componentbackground);
+        var hasIntro = !string.IsNullOrWhiteSpace(item.Intro);
+        var isFindSection = !hasBg && !hasIntro && !string.IsNullOrWhiteSpace(thumb);
+
+        if (hasBg)
+        {
+            <section class="bbc-leadership bg-parallax-section section-spacing" aria-labelledby="bbc-section-title_@seqPair.Key">
+                <div class="parallax-wrap bbc-leadership__bg" data-parallax-travel="10" aria-hidden="true">
+                    <img src="@item.Componentbackground" alt="@item.ComponentbackgroundAltText" class="parallax-img" loading="lazy" />
+                </div>
+                <div class="bbc-leadership__veil" aria-hidden="true"></div>
+                <div class="container">
+                    <div class="bbc-leadership__copy card-rise">
+                        @if (!string.IsNullOrWhiteSpace(item.DisplayTitle))
+                        {
+                            <span class="addon-section-title">@item.DisplayTitle.Trim()</span>
+                        }
+                        <h2 id="bbc-section-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)</h2>
+                        @if (hasIntro)
+                        {
+                            <div class="bbc-body">
+                                @Html.Raw(item.Intro)
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+        else if (isFindSection)
+        {
+            <section class="bbc-find section-spacing" aria-labelledby="bbc-find-title_@seqPair.Key">
+                <div class="container">
+                    <div class="bbc-find__card">
+                        <div class="bbc-find__bg" aria-hidden="true">
+                            <img src="@thumb" alt="" loading="lazy" />
+                        </div>
+                        <div class="bbc-find__content card-rise">
+                            <h2 id="bbc-find-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)</h2>
+                            @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
+                            {
+                                <a href="@item.Url" class="site-btn site-btn--outline">
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+        else
+        {
+            var imageLeft = splitIndex % 2 == 0;
+            splitIndex++;
+            <section class="bbc-substitutes section-spacing" aria-labelledby="bbc-split-title_@seqPair.Key">
+                <div class="container">
+                    <div class="bbc-split@(imageLeft ? "" : " reverse")">
+                        <div class="bbc-split__media bbc-parallax">
+                            @if (!string.IsNullOrWhiteSpace(thumb))
+                            {
+                                <img src="@thumb" alt="@thumbAlt" loading="lazy" />
+                            }
+                        </div>
+                        <div class="bbc-split__copy card-rise">
+                            @if (!string.IsNullOrWhiteSpace(item.DisplayTitle))
+                            {
+                                <span class="addon-section-title">@item.DisplayTitle.Trim()</span>
+                            }
+                            <h2 id="bbc-split-title_@seqPair.Key" class="text-h2 title-animation bbc-title bbc-title--substitutes">@Html.Raw(item.Title)</h2>
+                            @if (hasIntro)
+                            {
+                                <div class="bbc-body bbc-body--muted">
+                                    @Html.Raw(item.Intro)
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
+                            {
+                                <a href="@item.Url" class="site-btn site-btn--outline">
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+}
+
+@functions {
+    private static string FirstText(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value)) return value;
+        }
+        return "";
+    }
+
+    private static string FirstPath(params string?[] values) => FirstText(values);
+}
