@@ -50,9 +50,16 @@ $(document).ready(function () {
                         '<div class="cu-form-alert cu-form-alert--success">' + response.message + "</div>"
                     );
 
-                    $("html, body").animate({
-                        scrollTop: $("#enquiryMessage").offset().top - 100
-                    }, 500);
+                    var $modalScroll = $("#enquiryMessage").closest(".enquiry-modal__scroll");
+                    if ($modalScroll.length) {
+                        $modalScroll.animate({
+                            scrollTop: Math.max(0, $("#enquiryMessage").position().top - 24)
+                        }, 400);
+                    } else {
+                        $("html, body").animate({
+                            scrollTop: $("#enquiryMessage").offset().top - 100
+                        }, 500);
+                    }
                 } else {
                     if (response && response.errors) {
                         $.each(response.errors, function (key, msg) {
