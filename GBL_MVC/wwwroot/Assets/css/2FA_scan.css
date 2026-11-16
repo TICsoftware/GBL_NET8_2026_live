@@ -1,0 +1,94 @@
+.qr-container {
+    text-align: center;
+}
+
+.qr-image {
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+
+
+/* Center container */
+.otp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Card */
+.otp-card {
+    background: #fff;
+    padding: 30px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/* Title */
+.title {
+    margin-bottom: 10px;
+}
+
+/* Subtitle */
+.subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+/* OTP Input */
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 4px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #43cea2;
+}
+
+/* Button */
+.btn-verify {
+    width: 100%;
+    padding: 10px;
+    background: #43cea2;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-verify:hover {
+    background: #2bbf91;
+}
+
+/* Error */
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}

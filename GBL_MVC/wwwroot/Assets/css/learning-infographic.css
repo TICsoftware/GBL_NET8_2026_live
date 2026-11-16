@@ -1,0 +1,152 @@
+/* Learning & Development — g1 / g2 / g3 infographic */
+.ld-flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 4.5rem;
+}
+
+.ld-step {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.ld-step--energy { width: 34%; }
+.ld-step--water { width: 33%; margin-top: 0.15rem; }
+.ld-step--waste { width: 28%; }
+
+.ld-step__frame {
+  position: relative;
+}
+
+.ld-step img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ld-step h3 {
+  margin: 0.65rem 0 0;
+  color: var(--color-primary, #282b31);
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ld-step--water h3 {
+  margin: 0 0 0.35rem;
+  text-align: left;
+  position: relative;
+    left: calc(50% - 125px);
+}
+
+.ld-step--energy h3 {
+  /* padding-left: 0.75rem; */
+  text-align: left;
+  position: relative;
+    left: calc(50% - 125px);
+}
+
+.ld-step--waste h3 {
+  /* padding-left: 0.75rem; */
+  text-align: left;
+  position: relative;
+    left: calc(50% - 85px);
+}
+
+.ld-step__copy {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-primary, #282b31);
+}
+
+.ld-step__copy li {
+  position: relative;
+  margin: 0 0 0.4rem;
+  padding-left: 0.75rem;
+  font-size: clamp(0.90rem, 0.72vw, 1rem);
+  line-height: 1.35;
+}
+
+.ld-step__copy li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ld-step--energy .ld-step__copy {
+  left: 8%;
+  right: 32%;
+  top: 40%;
+}
+
+.ld-step--water .ld-step__copy {
+  left: 8%;
+  right: 32%;
+  top: 10%;
+}
+
+.ld-step--waste .ld-step__copy {
+  left: 8%;
+  right: 12%;
+  top: 40%;
+}
+.ld-step__copy li span{font-weight: 700;}
+
+.ld-step {
+  opacity: 0;
+  transform: translateX(-1.25rem);
+}
+
+.ld-step.is-inview {
+  animation: ld-rise 0.7s ease forwards;
+}
+
+.ld-step--water.is-inview { animation-delay: 0.18s; }
+.ld-step--waste.is-inview { animation-delay: 0.36s; }
+
+@keyframes ld-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-step {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ld-step.is-inview {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .ld-flow {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    overflow: hidden;
+  }
+
+  .ld-step--water.is-inview,
+  .ld-step--waste.is-inview {
+    animation-delay: 0s;
+  }
+
+  .ld-step--energy,
+  .ld-step--water,
+  .ld-step--waste {
+    width: min(100%, 26rem);
+  }
+}

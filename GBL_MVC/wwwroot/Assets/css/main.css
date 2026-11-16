@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+@source "../../../Views/**/*.cshtml";
+@source "../../../Pages/**/*.cshtml";
+@source "../../../wwwroot/**/*.{html,js,ts,jsx,tsx}";
+
+/* -----------------------------------------------
+   FONT FACES
+------------------------------------------------- */
+
+@font-face {
+  font-family: 'uni_neuebold';
+  src: url('/Assets/fonts/unineue-bold-webfont.eot');
+  src: url('/Assets/fonts/unineue-bold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/Assets/fonts/unineue-bold-webfont.woff2') format('woff2'),
+       url('/Assets/fonts/unineue-bold-webfont.woff') format('woff'),
+       url('/Assets/fonts/unineue-bold-webfont.ttf') format('truetype'),
+       url('/Assets/fonts/unineue-bold-webfont.svg#uni_neuebold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'uni_neuelight';
+  src: url('/Assets/fonts/unineue-light-webfont.eot');
+  src: url('/Assets/fonts/unineue-light-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/Assets/fonts/unineue-light-webfont.woff2') format('woff2'),
+       url('/Assets/fonts/unineue-light-webfont.woff') format('woff'),
+       url('/Assets/fonts/unineue-light-webfont.ttf') format('truetype'),
+       url('/Assets/fonts/unineue-light-webfont.svg#uni_neuelight') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'uni_neueregular';
+  src: url('/Assets/fonts/unineue-regular-webfont.eot');
+  src: url('/Assets/fonts/unineue-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/Assets/fonts/unineue-regular-webfont.woff2') format('woff2'),
+       url('/Assets/fonts/unineue-regular-webfont.woff') format('woff'),
+       url('/Assets/fonts/unineue-regular-webfont.ttf') format('truetype'),
+       url('/Assets/fonts/unineue-regular-webfont.svg#uni_neueregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme{
+/* ── Font ── */
+--font-body: 'uni_neueregular', sans-serif;
+--font-uniNeue: 'uni_neueregular', sans-serif;
+--font-uniNeueRegular: 'uni_neueregular', sans-serif;
+--font-uniNeueBold: 'uni_neuebold', sans-serif;
+--font-uniNeueLight: 'uni_neuelight', sans-serif;
+
+/* ── Font Scale ── */
+--text-h1:  clamp(32px, calc(1.65rem + 2.82vw), 70px);      /* 40px → 70px */
+--text-h2: clamp(1.5rem, 1.25rem + 1.14vw, 2.75rem);  /* 38px → 44px */
+--text-h3: clamp(1.25rem, 1rem + 0.65vw, 2.1875rem); /* 32px → 35px */
+--text-h4: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
+--text-24: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */
+
+--text-h5: clamp(1.125rem, 1rem + 0.26vw, 1.25rem);        /* 18px → 20px */
+--text-20: clamp(1rem, 0.875rem + 0.26vw, 1.25rem);        /* 18px → 20px */
+--text-p: clamp(0.875rem, 0.65rem + 0.26vw, 1.125rem);  
+--text-p: clamp(1rem, calc(0.375rem + 0.78125vw), 1.125rem);      /* 16px → 18px */
+--text-small: 0.875rem;                                     /* 14px fixed, no scaling needed */
+--text-button: clamp(0.875rem, 0.65rem + 0.26vw, 1rem);   /* 16px → 16px */
+--text-intro: clamp(1.125rem, 1rem + 0.75vw, 1.375rem); /* 18px → 22px */
+--text-22: 1.375rem; /* 22px on desktop */
+--text-base: 1rem;   
+ 
+/* ── Brand Colors ── */
+--color-primary: #282B31;   /**primary/ Black**/
+--color-secondary: #67815A; /**secondary/ Green**/
+--color-gray: #F4F4F4;     /**third/ Gray**/
+--color-gray-dark: #565B65;
+--color-white: #ffffff; 
+
+--line: rgba(28,25,24,0.1);
+--ease:cubic-bezier(.22,1,.36,1);
+--ink-soft:#6B6664;
+--panel:#fff;
+--red-tint:rgba(237,28,36,0.06);
+--red-tint-strong:rgba(237,28,36,0.1);
+--title-grey:#b6bcc6;
+}
+
+
+/* ---------------------------------------
+   OPTIONAL BASE STYLES
+--------------------------------------- */
+p { font-family: var(--font-body); font-size: var(--text-p); margin-bottom: 20px; line-height: 1.5;}
+/* p:first-child { margin-bottom: 0; } */
+p:last-child { margin-bottom: 0; }
+
+
+
+/* -----------------------------------------------
+   RESET
+------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; line-height:1.25;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+ font-family: var(--font-body); 
+  font-size: var(--text-p);
+  line-height: 1.25;
+  color: var(--color-primary);
+   transition:background-color 0.35s ease,color 0.35s ease;
+   font-weight: 400;
+   background-color: var(--color-white);
+
+  }
+
+
+@layer base {
+/* -----------------------------------------------
+   TYPOGRAPHY BASE
+------------------------------------------------- */
+/* h1, h2, h3, h4, h5 {font-weight: 700;} */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-uniNeueBold);
+  color: var(--color-primary);
+  line-height: 1.125 !important;
+  margin-bottom: 1rem;
+}
+
+p{ font-size: var(--text-p); margin-bottom: 1rem;}
+p:last-child { margin-bottom: 0; }
+
+/* h1, .text-h1{ font-size: var(--text-h1);}
+h2, .text-h2{ font-size: var(--text-h2); line-height:1 !important;}
+h3, .text-h3{ font-size: var(--text-h3);}
+h4, .text-h4{ font-size: var(--text-h4);}
+h5, .text-h5{ font-size: var(--text-h5);} */
+.text-14{ font-size:var(--text-small);}
+.text-base {font-size: var(--text-base);}
+
+
+  
+/* -----------------------------------------------
+   LINKS & MEDIA
+------------------------------------------------- */
+a { text-decoration: none; color: inherit;font-size: var(--text-p); }
+button { font-family: inherit; font-size: var(--text-button); cursor: pointer; }
+
+img, picture, video, canvas {
+  display: block;
+  max-width: 100%;
+}
+}
+
+
+/* -----------------------------------------------
+   CUSTOM CONTAINER
+------------------------------------------------- */
+@layer componants  {
+  .container {  
+  width: 90%;
+  max-width: 1680px;
+  margin-inline: auto; /* centers it */
+}   
+}
+
+@layer utilities {  
+  .rounded-sm {border-radius:0.625rem;}
+  .rounded-md {border-radius:1.25rem;}
+
+   .section-spacing {
+    @apply py-10 md:py-15 2xl:py-20;
+  }
+  .section-pt {
+    @apply pt-10 md:pt-15  2xl:pt-20;
+  }
+   .section-pb {
+    @apply pb-10 md:pb-15  2xl:pb-20;
+  }
+/* Hide system cursor on desktop */
+
+
+/* ------------------------
+Background BG
+------------------------*/
+
+
+
+
+/* ------------------------
+Common 
+------------------------*/
+.bg-gray{ background-color: var(--color-gray);}
+}
+
+@media (max-width: 992px) {
+  .container {width: 100%;padding-left:1.5pc;padding-right: 1.5pc;}
+  .container-fluid{padding-left: 1.5pc; padding-right: 1.5pc;}
+}
+
+/* Laptop widths, and 125%/150% zoom on a desktop, through to mobile */
+@media (max-width: 1599px) {
+  :root {
+    --text-22: 1.25rem; /* 20px */
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-p: 1rem;    
+    --text-h1:32px;
+  }
+}

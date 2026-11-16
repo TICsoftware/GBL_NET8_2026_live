@@ -1,0 +1,496 @@
+﻿/* Why Join â€” same card pattern as Sustainability turning-commitment */
+.whyJoin-cards-outer {
+  margin-top: 2rem;
+  overflow: hidden;
+  padding-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .whyJoin-cards-outer.swiper {
+    overflow: visible;
+  }
+}
+
+.whyJoin-cards-outer .swiper-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.whyJoin-cards-outer .swiper-slide {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: auto;
+}
+
+.whyJoin-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  height: 100%;
+  background: #fff;
+  overflow: visible;
+  --card-fill: var(--color-secondary, #67815a);
+}
+
+.whyJoin-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--fill-top, 46%);
+  bottom: 0;
+  z-index: 1;
+  background: var(--card-fill);
+  pointer-events: none;
+  clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+  transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whyJoin-card.is-filled::before,
+.whyJoin-card:focus-within::before {
+  clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
+}
+
+.whyJoin-card::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  bottom: -20px;
+  z-index: -1;
+  height: 22px;
+  pointer-events: none;
+  background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+  opacity: 0.25;
+}
+
+.whyJoin-card__media {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.whyJoin-card__media .parallax-img {
+  position: absolute;
+  left: 0;
+  top: -5%;
+  width: 100%;
+  height: 110%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.whyJoin-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  position: relative;
+  padding: 1.25rem 1.25rem 5.25rem;
+}
+
+.whyJoin-card__body h3 {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 0.65rem;
+  color: var(--color-primary);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whyJoin-card__body p {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  color: var(--color-gray-dark);
+  font-size: var(--text-p);
+  transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whyJoin-card.is-filled h3,
+.whyJoin-card:focus-within h3,
+.whyJoin-card.is-filled p,
+.whyJoin-card:focus-within p {
+  color: #fff;
+}
+
+.whyJoin-card a.site-btn {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  top: auto;
+  z-index: 2;
+  margin: 0;
+  max-width: calc(100% - 40px);
+  opacity: 0;
+  transform: translateY(calc(100% + 20px));
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+              transform 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.whyJoin-card:hover a.site-btn,
+.whyJoin-card:focus-within a.site-btn,
+.whyJoin-card.is-filled a.site-btn {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  color: #fff;
+  border-color: #fff;
+}
+
+.whyJoin-card .site-btn.site-btn--outline:hover,
+.whyJoin-card .site-btn.site-btn--outline:focus-visible {
+  color: var(--color-secondary, #67815a);
+  border-color: #fff;
+  background-color: #fff;
+  --btn-fill: #fff;
+  --btn-white: var(--color-secondary, #67815a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whyJoin-card::before,
+  .whyJoin-card__body h3,
+  .whyJoin-card__body p {
+    transition: none;
+  }
+}
+
+.whyJoin-controls {
+  display: none;
+}
+
+@media (max-width: 1179px) {
+  .whyJoin-cards-outer .swiper-wrapper {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .whyJoin-cards-outer .swiper-wrapper {
+    display: flex;
+    gap: 0;
+  }
+
+  .whyJoin-cards-outer .swiper-slide {
+    width: 100%;
+    height: auto;
+    padding-bottom: 22px;
+    background-clip: content-box;
+  }
+
+  .whyJoin-card::after {
+    bottom: 0;
+  }
+
+  .whyJoin-card::before {
+    bottom: 22px;
+  }
+
+  .whyJoin-card a.site-btn {
+    bottom: 42px;
+  }
+
+  .whyJoin-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.25rem;
+    margin-top: 1.5rem;
+    position: relative;
+  }
+
+  .whyJoin-nav,
+  .whyJoin-nav.swiper-button-prev,
+  .whyJoin-nav.swiper-button-next {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    margin: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0;
+    border: 1px solid rgba(40, 43, 49, 0.18);
+    border-radius: 50%;
+    background: var(--color-white, #fff);
+    color: var(--color-primary, #282b31);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .whyJoin-nav::before,
+  .whyJoin-nav::after {
+    content: none;
+    display: none;
+  }
+
+  .whyJoin-nav svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    display: block;
+  }
+
+  .whyJoin-nav.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .whyJoin-pagination.swiper-pagination {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: auto !important;
+    transform: none !important;
+    margin: 0;
+    height: 2.25rem;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .whyJoin-pagination .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    margin: 0 3px !important;
+    background: #cfcfcf;
+    opacity: 1;
+    flex-shrink: 0;
+    transform: scale(0.72);
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .whyJoin-pagination .swiper-pagination-bullet-active {
+    background: var(--color-primary, #282b31);
+    transform: scale(1.2);
+  }
+
+  .whyJoin-card a.site-btn {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
+/* Life at Godavari */
+.lifeAtGodavari-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+
+.lifeAtGodavari-row + .lifeAtGodavari-row {
+  margin-top: clamp(3rem, 6vw, 5.5rem);
+}
+
+.lifeAtGodavari-row--reverse .lifeAtGodavari-media {
+  order: -1;
+}
+
+.lifeAtGodavari-copy h2 {
+  margin: 0 0 1rem;
+  color: var(--color-primary);
+}
+
+.lifeAtGodavari-copy p {
+  margin: 0 0 1rem;
+  color: var(--color-gray-dark);
+  font-size: var(--text-p);
+}
+
+.lifeAtGodavari-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.lifeAtGodavari-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4.75 / 3;
+}
+
+.lifeAtGodavari-media .parallax-img {
+  position: absolute;
+  left: 0;
+  top: -5%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 767px) {
+  .lifeAtGodavari-row,
+  .lifeAtGodavari-row--reverse {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .lifeAtGodavari-row--reverse .lifeAtGodavari-media {
+    order: 0;
+  }
+
+  .lifeAtGodavari-copy {
+    order: -1;
+  }
+}
+
+/* Ready to Shape the Future */
+.shapeFuture-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #fff;
+  min-height: clamp(22rem, 46vw, 32rem);
+}
+
+.shapeFuture-banner > .parallax-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.shapeFuture-banner > .parallax-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 22, 26, 0.62) 0%,
+    rgba(20, 22, 26, 0.38) 42%,
+    rgba(20, 22, 26, 0.12) 100%
+  );
+  pointer-events: none;
+}
+
+.shapeFuture-banner .parallax-img {
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+}
+
+.shapeFuture-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: clamp(22rem, 46vw, 32rem);
+  padding: clamp(2rem, 5vw, 3.5rem);
+}
+
+.shapeFuture-inner h2 {
+  margin: 0 0 0.85rem;
+  /* max-width: 16ch; */
+  color: #fff;
+}
+
+.shapeFuture-inner p {
+  margin: 0 0 1.5rem;
+  max-width: 27rem;
+  color: #fff;
+  font-size: var(--text-p);
+  line-height: 1.55;
+}
+
+.learningCopy {
+  max-width: 100%;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.learningCopy:last-child {
+  margin-bottom: 0;
+}
+
+.learningCopy h2 {
+  margin: 0 0 0.85rem;
+  color: var(--color-primary);
+}
+
+.learningCopy h3 {
+  margin: 1.35rem 0 0.4rem;
+  color: var(--color-primary);
+  font-size: var(--text-20);
+  font-weight: 700;
+}
+
+.learningCopy p {
+  margin: 0 0 0.85rem;
+  color: var(--color-gray-dark);
+  font-size: var(--text-p);
+  line-height: 1.55;
+}
+
+.learningCopy .site-btn {
+  margin-top: 0.5rem;
+}
+
+/* Work with us â€” resume pill inside the enquiry form */
+.career-field--file {
+  position: relative;
+}
+
+.career-file {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2.85rem;
+  margin: 0;
+  padding: 0.55rem 1.25rem;
+  border: 1px solid rgba(40, 43, 49, 0.18);
+  border-radius: 999px;
+  background: var(--color-white, #fff);
+  cursor: pointer;
+}
+
+.career-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.career-file__icon {
+  display: inline-flex;
+  color: var(--color-secondary, #67815a);
+}
+
+.career-file__icon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.career-file__name {
+  color: var(--ink-soft, #6b6664);
+  font-size: var(--text-p, 1rem);
+  line-height: 1.2;
+}
+
+.career-file:focus-within {
+  outline: 2px solid var(--color-secondary, #67815a);
+  outline-offset: 2px;
+}

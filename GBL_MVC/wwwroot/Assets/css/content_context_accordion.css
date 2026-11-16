@@ -1,0 +1,36 @@
+/* Content context accordion (CMS) */
+.content-accordion-header { cursor: pointer; }
+.content-accordion-header .arrow { display: inline-block; transition: transform 0.2s ease; }
+
+.js-block-sortable .js-block-sort-item {
+    background: #fff;
+    position: relative;
+}
+.js-block-sortable .js-block-sort-item.is-dragging {
+    opacity: 0.65;
+    background: #eef5ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.js-block-sortable .drag-handle {
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 6px 10px;
+    cursor: grab;
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+}
+.js-block-sortable .drag-handle:active,
+body.is-block-sorting .js-block-sortable .drag-handle {
+    cursor: grabbing;
+}
+body.is-block-sorting {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    cursor: grabbing !important;
+}
+body.is-block-sorting * {
+    cursor: grabbing !important;
+}

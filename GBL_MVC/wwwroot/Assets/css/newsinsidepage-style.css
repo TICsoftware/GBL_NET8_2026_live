@@ -1,0 +1,399 @@
+.news-inside-banner-outer h1{ 
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.news-inside-banner-caption{ top:inherit; bottom:80px; position: absolute; padding-bottom: 0rem; }
+
+/* Press Release Detail — content section */
+.press-release-outer{background-color: #f5f5f5;}
+.press-release-card {
+background: #ffffff;
+    margin: -135px auto 0;
+    padding: 55px 110px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 30;
+    max-width: 1380px;
+}
+
+.press-release-card__date {
+    font-size: 0.875rem;
+
+    margin-bottom: 24px;
+}
+
+/* Rich text body coming from the CMS via Html.Raw */
+.press-release-card__content p {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.press-release-card__content ul{    
+    margin: 0 0 1rem 1.25rem;
+    padding: 0;
+    list-style-type: disc;
+}
+
+.press-release-card__content ul li{    
+    margin-bottom: 1rem;
+   
+}
+
+
+.press-release-card__content h2,
+.press-release-card__content h3 {
+    clear: none;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.press-release-card__content strong {
+    color: #111827;
+}
+
+.press-release-card__content a {
+    color: var(--color-secondary, #67815a);
+    text-decoration: underline;
+}
+
+.press-release-card__content::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.press-release-card__content blockquote,
+.press-release-pullquote {
+    position: relative;
+    display: block;
+    clear: both;
+    width: auto;
+    max-width: 100%;
+    margin: 1.5rem 0 1.25rem;
+    padding: 1.35rem 1.5rem 1.35rem 1.65rem;
+    border-left: 3px solid var(--color-secondary, #67815a);
+    background: #f4f6f2;
+    font-style: italic;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #374151;
+    quotes: none;
+}
+
+.press-release-pullquote::before {
+    content: "“";
+    position: absolute;
+    top: 0.55rem;
+    left: 0.7rem;
+    font-size: 1.75rem;
+    line-height: 1;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--color-secondary, #67815a);
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.press-release-pullquote p {
+    margin: 0;
+    padding-left: 0.85rem;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+.press-release-figure {
+    display: flow-root;
+    overflow: hidden;
+    margin: 0 0 1.25rem;
+    width: min(320px, 42%);
+    max-width: 320px;
+    background: #fff;
+}
+
+.press-release-figure p{ margin-bottom:0;}
+
+.press-release-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: auto 1;
+}
+
+.press-release-figure figcaption {
+    display: block;
+    margin: 0;
+    padding: 0.65rem 0 0.15rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #6b7280;
+    background: #fff;
+}
+
+.press-release-figure--left {
+    float: left;
+    margin: 0.35rem 1.75rem 1.15rem 0;
+}
+
+.press-release-figure--right {
+    float: right;
+    margin: 0.35rem 0 1.15rem 1.75rem;
+}
+
+.press-release-figure--full {
+ width: 100%;
+  display: flex; flex-wrap:wrap; max-width:100%;
+}
+
+.press-release-card__footer {
+    clear: both;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9375rem;
+    background: transparent;
+}
+
+.press-release-card__footer-label {
+    color: #6b7280;
+    border-left: 2px solid var(--color-secondary, #67815a);
+    padding-left: 10px;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    line-height: 1.3;
+}
+
+.press-release-card__footer-link {
+    color: var(--color-secondary, #67815a);
+    font-weight: 700;
+    text-decoration: none;
+    line-height: 1.3;
+}
+
+.press-release-card__footer-link:hover {
+    color: #556c4c;
+}
+
+@media (max-width: 768px) {
+    .press-release-card {
+        margin-top: -70px;
+        padding: 32px 24px;
+    }
+
+    .press-release-pullquote {
+        margin: 22px 0;
+        padding: 1rem 1rem 1rem 1.15rem;
+        font-size: 1rem;
+    }
+
+    .press-release-pullquote::before {
+        top: 0.45rem;
+        left: 0.5rem;
+        font-size: 1.4rem;
+    }
+
+    .press-release-pullquote p {
+        padding-left: 0.65rem;
+    }
+
+    .press-release-figure,
+    .press-release-figure--left,
+    .press-release-figure--right {
+        float: none;
+        display: block;
+        width: 100%;
+        max-width: none;
+        margin: 1.25rem 0;
+    }
+
+    .press-release-figure img {
+        width: 100%;
+    }
+}
+
+.innerbanner-caption:before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:linear-gradient(79.1deg, rgba(0, 0, 0, 0.68) 26.23%, rgba(0, 0, 0, 0) 87.65%);
+    z-index: -1;
+}
+
+/* More Press Release */
+.morePressRelease{
+    background-color: #ebebeb;
+}
+.morePressRelease .title-section {
+    margin-bottom: 32px;
+}
+
+.press-release-mini-card {
+    background: #ffffff;
+    height: 100%;
+    padding: 55px 80px 95px 66px;
+}
+
+.press-release-mini-card__date {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.press-release-mini-card__title {
+    font-size: var(--text-20);
+    font-weight: 600;
+    color: var(--color-primary, #2f6b3e);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Desktop: static 3-up row (works even before Swiper JS runs) */
+.press-release-swiper .swiper-wrapper {
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.press-release-swiper .swiper-slide {
+    flex: 1 1 0;
+    height: auto;
+    width: auto;
+}
+
+/* prev/next + dots row — hidden on desktop, shown on mobile below */
+.press-release-controls {
+    display: none;
+}
+
+.morePressRelease__cta {
+    margin-top: 40px;
+}
+
+.btn-outline-pill {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid #111827;
+    border-radius: 999px;
+    color: #111827;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline-pill:hover {
+    background-color: #111827;
+    color: #ffffff;
+}
+.press-release-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #6b7280;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.press-release-nav svg {
+    display: block;
+}
+
+.press-release-nav:hover {
+    border-color: #9ca3af;
+    color: #111827;
+}
+
+.press-release-nav.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+}
+/* Mobile: real Swiper slider, controls centered under the cards */
+@media (max-width: 768px) {
+    .press-release-swiper .swiper-wrapper {
+        gap: 16px;
+    }
+
+    .press-release-swiper .swiper-slide {
+        flex: 0 0 88%;
+    }
+
+    .press-release-mini-card {
+        padding: 45px;
+    }
+
+    .press-release-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+.press-release-controls .press-release-pagination.swiper-pagination {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    bottom: auto;
+    left: auto;
+}
+
+    .press-release-pagination .swiper-pagination-bullet {
+        margin: 0;
+        background: #d1d5db;
+        opacity: 1;
+    }
+
+    .press-release-pagination .swiper-pagination-bullet-active {
+        background: #2f6b3e;
+    }
+
+    .press-release-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #111827;
+        font-size: 1rem;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .press-release-nav:hover {
+        background-color: #2f6b3e;
+        border-color: #2f6b3e;
+        color: #ffffff;
+    }
+
+    .press-release-nav.swiper-button-disabled {
+        opacity: 0.35;
+        cursor: default;
+        pointer-events: none;
+    }
+}
