@@ -16,7 +16,7 @@
             <div class="section-intro__content">
                 @if (!string.IsNullOrWhiteSpace(component?.Intro))
                 {
-                    <p>@Html.Raw(component.Intro)</p>
+                    @Html.Raw(component.Intro)
                 }
             </div>
         </div>

@@ -45,7 +45,7 @@
    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet" />
    <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
    <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
 }
@@ -152,7 +152,7 @@
                <div class="section-intro__content">
                   @if (!string.IsNullOrWhiteSpace(item.Intro))
                   {
-                     <p>@Html.Raw(item.Intro)</p>
+                     @Html.Raw(item.Intro)
                   }
                </div>
             </div>
