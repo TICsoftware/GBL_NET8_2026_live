@@ -8,6 +8,12 @@
     var bannerAlt = industry.BannerAlt ?? title;
     var activeCategoryId = Model.ActiveCategoryId;
     var categories = Model.Categories ?? new List<Core_project_BusinessLogic.Entity.Industry_Public_Lookup>();
+    var enquiryModel = new GBL_BusinessLogic.Entity.ProductEnquiryPageModel
+    {
+        ProductName = "",
+        ProductPageName = "",
+        ProductUrl = "/products"
+    };
     ViewData["Title"] = windowTitle;
 }
 
@@ -20,6 +26,7 @@
    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
    <link rel="stylesheet" href="~/Assets/css/industries-style.css" asp-append-version="true" />
    <link rel="stylesheet" href="~/Assets/css/industries-tab.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/enquiry-style.css" asp-append-version="true" />
 }
 
    <section class="relative inside-banner-outer">
@@ -195,7 +202,28 @@
       </div>
    </section>
 
+<dialog class="enquiry-modal" id="enquiry-modal" aria-labelledby="enquiry-modal-title">
+   <div class="enquiry-modal__backdrop" data-enquiry-close></div>
+   <div class="enquiry-modal__panel">
+      <button type="button" class="enquiry-modal__close" data-enquiry-close aria-label="Close enquiry form">
+         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+         </svg>
+      </button>
+      <div class="enquiry-modal__scroll" data-lenis-prevent tabindex="-1">
+         <div class="enquiry-modal__head">
+            <h2 class="enquiry-modal__title" id="enquiry-modal-title">Enquire Now</h2>
+            <p class="enquiry-modal__product" data-enquiry-product-label></p>
+         </div>
+         @await Html.PartialAsync("~/Views/Enquiry/_EnquiryForm.cshtml", enquiryModel)
+      </div>
+   </div>
+</dialog>
+
 @section Scripts {
    <script src="~/Assets/js/industries-tab-script.js" asp-append-version="true"></script>
    <script src="~/Assets/js/industries-inside-loadmore.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/enquiry-phone.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/enquiry-form.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/enquiry-modal.js" asp-append-version="true"></script>
 }

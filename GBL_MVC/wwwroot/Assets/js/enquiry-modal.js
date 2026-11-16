@@ -5,8 +5,7 @@
   var panel = modal.querySelector(".enquiry-modal__panel");
   var backdrop = modal.querySelector(".enquiry-modal__backdrop");
   var scroller = modal.querySelector(".enquiry-modal__scroll");
-  var openTriggers = document.querySelectorAll("[data-enquiry-open]");
-  var closeTriggers = modal.querySelectorAll("[data-enquiry-close]");
+  var productLabel = modal.querySelector("[data-enquiry-product-label]");
   var closing = false;
   var closeTimer = 0;
 
@@ -24,6 +23,19 @@
     document.documentElement.style.overflow = "";
   }
 
+  function setProductContext(trigger) {
+    if (!trigger) return;
+
+    var nameInput = document.getElementById("ProductName");
+    var pageInput = document.getElementById("ProductPageName");
+    var productName = trigger.getAttribute("data-product-name") || (nameInput && nameInput.value) || "";
+    var productPage = trigger.getAttribute("data-product-page") || (pageInput && pageInput.value) || "";
+
+    if (nameInput) nameInput.value = productName;
+    if (pageInput) pageInput.value = productPage;
+    if (productLabel) productLabel.textContent = productName;
+  }
+
   function finishClose() {
     window.clearTimeout(closeTimer);
     closing = false;
@@ -37,9 +49,10 @@
     unlockPage();
   }
 
-  function openModal() {
+  function openModal(trigger) {
     window.clearTimeout(closeTimer);
     closing = false;
+    setProductContext(trigger);
     if (!modal.open) {
       modal.showModal();
       lockPage();
@@ -65,18 +78,19 @@
     closeTimer = window.setTimeout(finishClose, 320);
   }
 
-  openTriggers.forEach(function (btn) {
-    btn.addEventListener("click", function (event) {
+  document.addEventListener("click", function (event) {
+    var openBtn = event.target.closest("[data-enquiry-open]");
+    if (openBtn) {
       event.preventDefault();
-      openModal();
-    });
-  });
+      openModal(openBtn);
+      return;
+    }
 
-  closeTriggers.forEach(function (el) {
-    el.addEventListener("click", function (event) {
+    var closeBtn = event.target.closest("[data-enquiry-close]");
+    if (closeBtn && modal.contains(closeBtn)) {
       event.preventDefault();
       closeModal();
-    });
+    }
   });
 
   modal.addEventListener("cancel", function (event) {
