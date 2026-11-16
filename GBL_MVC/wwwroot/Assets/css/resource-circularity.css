@@ -693,6 +693,9 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
+ min-height: 600px;
+    display: flex;
+    align-items: center;
 }
 .rc-statement__bg {
   position: absolute;
@@ -725,9 +728,6 @@
   color: var(--color-white);
 }
 .rc-statement__copy p {
-  margin: 0 0 1.25rem;
-  font-size: var(--text-22);
-  line-height: 1.45;
   color: rgba(255, 255, 255, 0.9);
 }
 .rc-statement__copy p:last-child {
@@ -791,7 +791,6 @@
 .rc-panel__copy {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
   padding: clamp(1.5rem, 3.4vw, 4rem);
 }
 .rc-panel__copy p {
@@ -817,7 +816,10 @@
 .rc-results__list {
   padding: 2.5rem clamp(1.5rem, 2.5vw, 3rem);
   background: var(--color-white);
+  margin-bottom:0;
 }
+
+
 .rc-results__statement {
   display: flex;
   align-items: center;
