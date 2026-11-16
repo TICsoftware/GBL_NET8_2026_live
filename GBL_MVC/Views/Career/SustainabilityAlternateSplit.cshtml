@@ -4,8 +4,15 @@
     ViewData["Title"] = Model?.Content?.ContTitle ?? "Sustainability";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
+    @* All component sequences (any count), ordered — same L/R loop as businesses inside / our-subsidiaries *@
     var sections = (Model?.Learning_Development_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>())
-        .Where(x => x.IsBlock == 1)
+        .Where(x =>
+            !string.IsNullOrWhiteSpace(x.Title)
+            || !string.IsNullOrWhiteSpace(x.Intro)
+            || !string.IsNullOrWhiteSpace(x.Content)
+            || !string.IsNullOrWhiteSpace(x.ThumbnailImage)
+            || !string.IsNullOrWhiteSpace(x.ComponentThumbnail)
+            || !string.IsNullOrWhiteSpace(x.Component_LHS_thumbnail))
         .OrderBy(x => x.Sequence)
         .ToList();
     var pageIntro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
