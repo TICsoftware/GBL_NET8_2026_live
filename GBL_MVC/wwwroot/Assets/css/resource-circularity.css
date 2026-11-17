@@ -744,6 +744,7 @@
   display: grid;
   grid-template-columns:minmax(0, 700fr) minmax(0, 730fr);
   background: var(--color-gray);
+  align-items: start;
 }
 .rc-panel--copy-first {
   grid-template-columns: minmax(0, 730fr) minmax(0, 700fr);
@@ -755,7 +756,7 @@
   /* min-height: 26rem; */
   margin: 0;
   overflow: hidden;
-  aspect-ratio: 4/3.25;
+  aspect-ratio: 4/3;
 }
 .rc-panel__media .parallax-img {
   position: absolute;

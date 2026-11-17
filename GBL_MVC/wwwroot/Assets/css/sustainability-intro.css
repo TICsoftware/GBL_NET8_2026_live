@@ -623,10 +623,10 @@ height: clamp(25vw, 25vw, 560px);
     bottom: 22px;
   }
 
-  .turningCommitment-card a.site-btn,
+  /* .turningCommitment-card a.site-btn,
   .carbonCircularity-card a.site-btn {
     bottom: 42px;
-  }
+  } */
 
   .turningCommitment-controls,
   .carbonCircularity-controls {

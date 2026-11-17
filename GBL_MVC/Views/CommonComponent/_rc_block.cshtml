@@ -50,7 +50,7 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(img))
                 {
-                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap" data-parallax-travel="5">
+                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@img" alt="@alt" class="parallax-img" loading="lazy">
                     </figure>
                 }
@@ -59,7 +59,7 @@
             {
                 @if (!string.IsNullOrWhiteSpace(img))
                 {
-                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap" data-parallax-travel="5">
+                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@img" alt="@alt" class="parallax-img" loading="lazy">
                     </figure>
                 }
