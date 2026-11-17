@@ -52,11 +52,11 @@
   ];
 
   var countryRoot = document.querySelector(".enquiry-country");
-  var countryInput = document.getElementById("country");
+  var countryInput = document.getElementById("Country");
   var countryBtn = countryRoot && countryRoot.querySelector(".enquiry-country__btn");
   var countryValue = countryRoot && countryRoot.querySelector(".enquiry-country__value");
   var countryList = document.getElementById("countryList");
-  var input = root.querySelector("#countryCode");
+  var input = document.getElementById("CountryCode");
   var button = root.querySelector(".enquiry-phone__code-btn");
   var flag = root.querySelector(".enquiry-phone__flag");
   var value = root.querySelector(".enquiry-phone__code-value");
@@ -136,16 +136,37 @@
     });
   }
 
+  function setFlag(country) {
+    if (!flag) return;
+    var img = flag.tagName === "IMG" ? flag : flag.querySelector("img");
+    if (!img) {
+      flag.textContent = "";
+      img = document.createElement("img");
+      img.alt = "";
+      img.width = 22;
+      img.height = 16;
+      flag.appendChild(img);
+    }
+    img.src = "/Assets/images/flags/" + country.iso + ".svg";
+  }
+
   function choose(index) {
     var country = countries[index];
+    if (!country) return;
     highlight(index);
-    input.value = country.dial;
-    value.textContent = country.dial;
-    flag.src = "/Assets/images/flags/" + country.iso + ".svg";
-    button.setAttribute("aria-label", "Country code, " + country.name + " " + country.dial);
+    if (input) input.value = country.dial;
+    if (value) value.textContent = country.dial;
+    setFlag(country);
+    if (button) {
+      button.setAttribute("aria-label", "Country code, " + country.name + " " + country.dial);
+      button.classList.add("is-selected");
+    }
     if (countryInput) countryInput.value = country.name;
     if (countryValue) countryValue.textContent = country.name;
-    if (countryBtn) countryBtn.setAttribute("aria-label", "Country, " + country.name);
+    if (countryBtn) {
+      countryBtn.setAttribute("aria-label", "Country, " + country.name);
+      countryBtn.classList.add("is-selected");
+    }
     closeAll();
   }
 
@@ -197,6 +218,7 @@
 
   keepListScroll(list);
   if (countryList) keepListScroll(countryList);
+  setFlag(countries[0]);
 
   bindMenu(button, list);
   if (countryBtn && countryList) bindMenu(countryBtn, countryList);
