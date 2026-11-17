@@ -166,7 +166,15 @@
                {
                   <article class="swiper-slide turningCommitment-card">
                      <div class="turningCommitment-card__media parallax-wrap">
-                        <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+                        @{
+                           var cardImage = !string.IsNullOrWhiteSpace(item.MastheadImage)
+                               ? item.MastheadImage
+                               : item.ThumbnailImage;
+                           var cardAlt = !string.IsNullOrWhiteSpace(item.MastheadImage)
+                               ? (item.MastheadAltText ?? item.Title)
+                               : (item.ThumbnailAltText ?? item.Title);
+                        }
+                        <img src="@cardImage" alt="@cardAlt" class="parallax-img">
                      </div>
                      <div class="turningCommitment-card__body">
                         <h3 class="text-h4">@item.Title</h3>
