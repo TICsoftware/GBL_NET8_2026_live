@@ -1504,42 +1504,6 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   .site-footer-grid > .site-footer-col:not(.site-footer-company),
   .site-footer-grid .site-footer-nav { display: contents; }
 
-  /* company block: heading, round contact icons, address behind toggle */
-  .site-footer-company .site-footer-heading { font-size: 1.125rem; margin-bottom: 0.875rem; }
-  .site-footer-company-body { display: flex; flex-direction: column; }
-  .site-footer-company .site-footer-address { display: none; order: 2; margin: 0.75rem 0 0; font-size: 0.875rem; }
-  .site-footer-addr-toggle:checked + .site-footer-company-body .site-footer-address { display: block; }
-
-  .site-footer-company .site-footer-contact { flex-direction: row; gap: 0.75rem; order: 1; }
-  .site-footer-company .site-footer-contact li {
-    position: relative;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-  }
-  .site-footer-company .site-footer-icon { width: 1.15rem; height: 1.15rem; margin: 0; }
-  .site-footer-company .site-footer-contact li a {
-    position: absolute;
-    inset: 0;
-    font-size: 0;
-    border-radius: 50%;
-  }
-  .site-footer-company .site-footer-sep { display: none; }
-
-  .site-footer-addr-label {
-    display: inline-block;
-    margin-top: 0.75rem;
-    font-size: 0.875rem;
-    opacity: 0.9;
-    cursor: pointer;
-  }
-  .site-footer-addr-label::after { content: " \25BE"; }
-  .site-footer-addr-toggle:checked ~ .site-footer-addr-label::after { content: " \25B4"; }
-
   /* links as chips */
   .site-footer-nav span.site-footer-heading,
   .site-footer-nav a, .site-footer-links-sub{
@@ -1630,10 +1594,8 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   .site-footer-bottom a { font-size: 0.8125rem; }
 }
 
-.site-footer-addr-toggle { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
 .site-footer-subtoggle { position: absolute; opacity: 0; width: 1px; height: 1px; }
 @media all and (min-width: 768px) {
-  .site-footer-addr-label,
   .site-footer-subtoggle,
   .site-footer-subtoggle-btn { display: none; }
 }

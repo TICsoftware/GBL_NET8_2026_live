@@ -307,10 +307,11 @@ Mobile: below 1180px
 }
 @media (max-width: 1179px) {
   .industry-tabs {
-    display: flex;
-    width: 100%;
-    max-width: 100%;
+    display: inline-flex;
+    width: inherit;
+    max-width: inherit;
     box-sizing: border-box;
+    margin: 0 auto 1rem;
   }
 
   .industry-tab {
@@ -333,6 +334,9 @@ Mobile: below 1180px
   }
 }
 
+/* Tab arrows are mobile-only (shown inside the max-width: 767px block below) */
+.industry-tabs__arrow { display: none; }
+
 @media (max-width: 767px) {
   .industry-tabs {
     padding: 0.375rem;
@@ -343,27 +347,109 @@ Mobile: below 1180px
     height: calc(100% - 0.75rem);
   }
 
-  .industry-tab {
-    padding: 0.625rem 0.5rem;
-    font-size: 0.9375rem; /* 15px */
-  }
+  
 
   .industry-product-grid {
     grid-template-columns: 1fr;
   }
 
-.industry-tabs {
+  /* Tabs swipe sideways inside the pill (capped at screen width); scrollbar hidden.
+     The active tab is scrolled fully into view by industries-tab-script.js (revealTab). */
+  .industry-tabs {
+    width: auto;
+    max-width: 100%;
     overflow-x: auto;
-    scrollbar-width: none;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
   }
   .industry-tabs::-webkit-scrollbar { display: none; }
+
+  /* Edge fades: white overlays pinned (sticky) to each end of the tab row, so the pill's
+     outline and background stay solid and only the tab content fades.
+     Shown only on a side that still has hidden tabs
+     (has-more-left / has-more-right set by industries-tab-script.js). */
+  .industry-tabs::before,
+  .industry-tabs::after {
+    content: "";
+    position: sticky;
+    z-index: 2;
+    flex: 0 0 4.5rem;
+    align-self: stretch;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .industry-tabs::before {
+    left: 0;
+    margin-right: -4.5rem;
+    border-radius: 999px 0 0 999px;
+    background: linear-gradient(to right, #fff 0%, #fff 25%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+  }
+  .industry-tabs::after {
+    right: 0;
+    margin-left: -4.5rem;
+    border-radius: 0 999px 999px 0;
+    background: linear-gradient(to left, #fff 0%, #fff 25%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+  }
+  .industry-tabs.has-more-left::before,
+  .industry-tabs.has-more-right::after { opacity: 1; }
+
+  /* Arrow buttons sit on the fades, pinned to each end (added by industries-tab-script.js) */
+  .industry-tabs__arrow {
+    position: sticky;
+    z-index: 3;
+    flex: 0 0 2rem;
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(40, 43, 49, 0.16);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--color-secondary, #67815a);
+    box-shadow: 0 2px 6px rgba(40, 43, 49, 0.12);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+  .industry-tabs__arrow::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+  }
+  .industry-tabs__arrow--prev {
+    left: 0;
+    margin-right: -2rem;
+    order: -1;
+  }
+  .industry-tabs__arrow--prev::before { transform: translateX(1px) rotate(-135deg); }
+  .industry-tabs__arrow--next {
+    right: 0;
+    margin-left: -2rem;
+    order: 99;
+  }
+  .industry-tabs__arrow--next::before { transform: translateX(-1px) rotate(45deg); }
+  .industry-tabs.has-more-left .industry-tabs__arrow--prev,
+  .industry-tabs.has-more-right .industry-tabs__arrow--next {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0s;
+  }
 
   .industry-tab {
     flex: 0 0 auto;
     white-space: nowrap;
-    padding: 0.625rem 1rem;
-    font-size: 0.9375rem;
+    padding: 0.625rem 1.5rem;
+    font-size: 1rem;
   }
 
 }

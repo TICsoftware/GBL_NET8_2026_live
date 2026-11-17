@@ -73,12 +73,7 @@
 
                 @if (!string.IsNullOrEmpty(companyInfo?.Description))
                 {
-                    @* Mobile-only toggle: reveals the full address (CSS in header-footer.css) *@
-                    <input type="checkbox" id="site-footer-addr-toggle" class="site-footer-addr-toggle" />
-                    <div class="site-footer-company-body">
-                        @Html.Raw(companyInfo.Description)
-                    </div>
-                    <label for="site-footer-addr-toggle" class="site-footer-addr-label">View full address</label>
+                    @Html.Raw(companyInfo.Description)
                 }
             </div>
 
