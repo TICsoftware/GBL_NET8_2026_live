@@ -42,8 +42,9 @@ $(document).ready(function () {
                     $("#Country").val("India");
                     $("#CountryCode").val("+91");
                     $(".enquiry-country__value").text("India");
+                    $(".enquiry-country__btn, .enquiry-phone__code-btn").removeClass("is-selected");
                     $(".enquiry-phone__code-value").text("+91");
-                    $(".enquiry-phone__flag").text("🇮🇳");
+                    $(".enquiry-phone__flag").html('<img src="/Assets/images/flags/in.svg" alt="" width="22" height="16">');
                     $('[data-valmsg-for]').text("");
 
                     $("#enquiryMessage").html(

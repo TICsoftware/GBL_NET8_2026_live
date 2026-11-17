@@ -6,7 +6,7 @@ ENQUIRY — underline form
 }
 
 .enquiry-form {
-  --enquiry-bg: var(--color-gray, #f4f4f4);
+  /* --enquiry-bg: var(--color-gray, #f4f4f4); */
   display: flex;
   flex-direction: column;
   position: relative;
@@ -17,7 +17,7 @@ ENQUIRY — underline form
   max-width: 60vw;
   margin-inline: auto;
   margin-bottom: 1.25rem;
-  padding: clamp(2rem, 4vw, 3rem);
+  /* padding: clamp(2rem, 4vw, 3rem); */
   background: var(--enquiry-bg);
 }
 
@@ -557,11 +557,10 @@ ENQUIRY — product popup
   display: flex;
   flex-direction: column;
   width: min(960px, 100%);
-  height: min(90vh, 820px);
-  max-height: 100%;
+  height: auto;
+  max-height: none;
   min-width: 0;
-  min-height: 0;
-  overflow: hidden;
+  overflow: visible;
   background: var(--color-white, #fff);
   opacity: 1;
   transform: translate3d(0, -100vh, 0);
@@ -620,16 +619,14 @@ ENQUIRY — product popup
 }
 
 .enquiry-modal__scroll {
-  flex: 1;
+  flex: none;
   width: 100%;
-  min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  overflow: visible;
+  padding: clamp(0.85rem, 1.6vh, 1.25rem) clamp(1rem, 2vw, 1.75rem);
 }
 
 .enquiry-modal__head {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.55rem;
   padding-right: 3rem;
 }
 
@@ -650,11 +647,114 @@ ENQUIRY — product popup
   max-width: none;
   margin: 0;
   margin-bottom: 0;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  gap: 0.75rem;
+  padding: clamp(0.85rem, 1.6vw, 1.15rem);
 }
 
 .enquiry-modal .enquiry-form::after {
   display: none;
+}
+
+.enquiry-modal .enquiry-form__columns {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "name company"
+    "email business"
+    "street city"
+    "state country"
+    "phone fax"
+    "mobile mobile"
+    "details details";
+  column-gap: 0.85rem;
+  row-gap: 0.55rem;
+}
+
+.enquiry-modal .enquiry-form__col {
+  display: contents;
+}
+
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(1) { grid-area: name; }
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(2) { grid-area: street; }
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(3) { grid-area: city; }
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(4) { grid-area: country; }
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(5) { grid-area: fax; }
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(6) { grid-area: email; }
+.enquiry-modal .enquiry-form__col:first-child .enquiry-field:nth-child(7) { grid-area: business; }
+.enquiry-modal .enquiry-form__col:last-child .enquiry-field:nth-child(1) { grid-area: company; }
+.enquiry-modal .enquiry-form__col:last-child .enquiry-field:nth-child(2) { grid-area: state; }
+.enquiry-modal .enquiry-form__col:last-child .enquiry-field:nth-child(3) { grid-area: phone; }
+.enquiry-modal .enquiry-form__col:last-child .enquiry-field:nth-child(4) { grid-area: mobile; }
+.enquiry-modal .enquiry-form__col:last-child .enquiry-field:nth-child(5) { grid-area: details; }
+
+.enquiry-modal .enquiry-phone {
+  flex-wrap: nowrap;
+}
+
+.enquiry-modal .enquiry-phone__code {
+  flex: 0 0 auto;
+}
+
+.enquiry-modal .enquiry-phone input {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.enquiry-modal .enquiry-field input,
+.enquiry-modal .enquiry-field textarea,
+.enquiry-modal .enquiry-country__btn,
+.enquiry-modal .enquiry-phone__code-btn {
+  min-height: 2.2rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  font-size: 0.92rem;
+}
+
+.enquiry-modal .enquiry-field input::placeholder,
+.enquiry-modal .enquiry-field textarea::placeholder,
+.enquiry-modal .enquiry-country__btn,
+.enquiry-modal .enquiry-country__value,
+.enquiry-modal .enquiry-phone__code-btn,
+.enquiry-modal .enquiry-phone__code-value {
+  color: #b9b9b9;
+  opacity: 1;
+}
+
+.enquiry-modal .enquiry-country__btn.is-selected,
+.enquiry-modal .enquiry-country__btn.is-selected .enquiry-country__value,
+.enquiry-modal .enquiry-phone__code-btn.is-selected,
+.enquiry-modal .enquiry-phone__code-btn.is-selected .enquiry-phone__code-value {
+  color: var(--color-primary, #282b31);
+}
+
+.enquiry-modal .enquiry-field--area textarea {
+  min-height: 4.75rem;
+  height: 4.75rem;
+  padding: 0.7rem 1.1rem;
+}
+
+.enquiry-modal .enquiry-consent {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.enquiry-modal .enquiry-agree {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.enquiry-modal .enquiry-recaptcha {
+  flex: 0 0 auto;
+}
+
+.enquiry-modal .enquiry-recaptcha__box {
+  min-height: 3.25rem;
+  padding: 0.4rem 0.7rem;
+}
+
+.enquiry-modal .enquiry-form .site-btn {
+  margin-top: 0;
 }
 
 @media (max-width: 767px) {
@@ -662,17 +762,72 @@ ENQUIRY — product popup
     padding: 0.5rem;
   }
 
-  .enquiry-modal__panel {
-    height: min(94vh, 100%);
-  }
-
   .enquiry-modal__scroll {
-    padding: 1rem;
+    padding: 0.75rem 0.85rem;
   }
 
   .enquiry-modal__close {
-    top: 0.6rem;
-    right: 0.6rem;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 36px;
+    height: 36px;
+  }
+
+  .enquiry-modal .enquiry-consent {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .enquiry-modal .enquiry-consent {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .enquiry-modal .enquiry-phone {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .enquiry-modal .enquiry-phone__code,
+  .enquiry-modal .enquiry-phone input {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .enquiry-modal .enquiry-form__col {
+    gap: 0.35rem;
+  }
+
+  .enquiry-modal .enquiry-field input,
+  .enquiry-modal .enquiry-field textarea,
+  .enquiry-modal .enquiry-country__btn,
+  .enquiry-modal .enquiry-phone__code-btn {
+    min-height: 2rem;
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-height: 740px) {
+  .enquiry-modal__head {
+    margin-bottom: 0.35rem;
+  }
+
+  .enquiry-modal__title {
+    font-size: 1.15rem;
+  }
+
+  .enquiry-modal .enquiry-form {
+    gap: 0.45rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .enquiry-modal .enquiry-form__col {
+    gap: 0.3rem;
+  }
+
+  .enquiry-modal .enquiry-recaptcha__box {
+    min-height: 2.75rem;
   }
 }
 

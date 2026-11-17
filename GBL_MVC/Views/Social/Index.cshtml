@@ -78,11 +78,12 @@
     var hasPhilosophyCopy = HasText(philosophyMain.Intro) || HasText(philosophyMain.Title);
     if (hasPhilosophyCopy || !string.IsNullOrWhiteSpace(philosophyImage))
     {
-        <section class="social-belief section-spacing">
-            <div class="container social-split">
+        <section class="social-belief left-right-section left-right-gray section-spacing">
+            <div class="container">
+                <div class="social-split">
                 @if (!string.IsNullOrWhiteSpace(philosophyImage))
                 {
-                    <figure class="social-split__media parallax-wrap" data-parallax-travel="5">
+                    <figure class="social-split__media parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@philosophyImage" alt="@philosophyAlt" class="parallax-img">
                     </figure>
                 }
@@ -99,6 +100,7 @@
                         }
                     </div>
                 }
+                </div>
             </div>
         </section>
     }
@@ -137,8 +139,9 @@
     var hasDifferenceCopy = HasText(differenceMain.Title) || HasText(differenceMain.Intro);
     if (hasDifferenceCopy || !string.IsNullOrWhiteSpace(differenceImage))
     {
-        <section class="social-difference section-spacing">
-            <div class="container social-split social-split--copy-first">
+        <section class="social-difference left-right-section left-right-white section-spacing">
+            <div class="container">
+                <div class="social-split social-split--copy-first">
                 @if (hasDifferenceCopy)
                 {
                     <div class="social-split__copy">
@@ -154,10 +157,11 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(differenceImage))
                 {
-                    <figure class="social-split__media parallax-wrap" data-parallax-travel="5">
+                    <figure class="social-split__media parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@differenceImage" alt="@differenceAlt" class="parallax-img">
                     </figure>
                 }
+                </div>
             </div>
         </section>
     }
