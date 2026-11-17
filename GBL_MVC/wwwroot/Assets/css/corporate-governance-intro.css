@@ -228,7 +228,7 @@
   min-height: 4.75rem;
   height: 100%;
   padding: 1rem 1.15rem;
-  background: var(--color-gray, #f4f4f4);
+  /* background: var(--color-gray, #f4f4f4); */
   color: var(--color-primary, #282b31);
   text-decoration: none;
   --card-fill: var(--color-secondary, #67815a);
