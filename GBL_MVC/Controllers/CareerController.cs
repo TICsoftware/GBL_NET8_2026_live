@@ -67,6 +67,11 @@ public class CareerController : Controller
                 return View("WellbeingAndBenefits", data);
             }
 
+            if (slug.Equals("social", StringComparison.OrdinalIgnoreCase))
+            {
+                return View("~/Views/Social/Index.cshtml", data);
+            }
+
             if (IsSustainabilityAlternateSplitPage(slug))
             {
                 return View("SustainabilityAlternateSplit", data);
@@ -209,7 +214,6 @@ public class CareerController : Controller
             || slug.Equals("regenerative-process", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("health-and-safety", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("circular-products", StringComparison.OrdinalIgnoreCase)
-            || slug.Equals("social", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("diversity-and-inclusion", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("diversity", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("quality-and-safety", StringComparison.OrdinalIgnoreCase)
