@@ -179,9 +179,15 @@ namespace GBL_BusinessLogic.BAL
             Add(requested);
             var last = requested.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "";
             Add(last);
+            if (!string.IsNullOrWhiteSpace(last))
+            {
+                Add("about-us/" + last);
+                Add("sustainability/" + last);
+            }
             Add("awards");
             Add("awards-and-certifications");
             Add("awards-certifications");
+            Add("about-us/awards-and-certifications");
             Add("sustainability/awards");
             Add("sustainability/awards-and-certifications");
             return names;

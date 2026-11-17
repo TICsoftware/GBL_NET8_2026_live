@@ -32,6 +32,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/awards.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/leadership.css" asp-append-version="true" />
 }
 
 @if (content != null && content.ContId > 0)
@@ -79,7 +80,6 @@
                                 var title = FirstText(item.Title, item.DisplayTitle, item.BlockDisplayTitle);
                                 var text = FirstText(PlainText(item.Intro), PlainText(item.year));
                                 var year = HasYearValue(item.year) ? PlainText(item.year) : "";
-                                // If Year field holds category text and Intro is empty, show year text as card text
                                 if (string.IsNullOrWhiteSpace(PlainText(item.Intro)) && !HasYearValue(item.year))
                                 {
                                     text = PlainText(item.year);
@@ -89,18 +89,25 @@
                                 {
                                     text = PlainText(item.Intro);
                                 }
+                                var popupIntro = FirstText(item.Popup_Content);
+                                var hasPopup = !string.IsNullOrWhiteSpace(PlainText(popupIntro));
+                                var modalRole = FirstText(year, text);
 
-                                <li class="award-card card-rise">
+                                <li class="award-card card-rise"
+                                    @if (hasPopup)
+                                    {
+                                        <text>data-award role="button" tabindex="0" aria-haspopup="dialog" aria-controls="award-modal"</text>
+                                    }>
                                     <div class="award-card__media">
                                         @if (!string.IsNullOrWhiteSpace(image))
                                         {
-                                            <img src="@image" alt="@alt" loading="lazy">
+                                            <img src="@image" alt="@alt" loading="lazy" @(hasPopup ? Html.Raw("data-award-photo") : null)>
                                         }
                                     </div>
                                     <div class="award-card__body">
                                         @if (!string.IsNullOrWhiteSpace(title))
                                         {
-                                            <h4 class="award-card__title">@title</h4>
+                                            <h4 class="award-card__title" @(hasPopup ? Html.Raw("data-award-name") : null)>@title</h4>
                                         }
                                         @if (!string.IsNullOrWhiteSpace(text))
                                         {
@@ -111,6 +118,13 @@
                                             <span class="award-card__year">@year</span>
                                         }
                                     </div>
+                                    @if (hasPopup)
+                                    {
+                                        <span class="sr-only" data-award-role>@modalRole</span>
+                                        <div class="hidden" hidden data-award-bio>
+                                            @Html.Raw(popupIntro)
+                                        </div>
+                                    }
                                 </li>
                             }
                         </ul>
@@ -170,9 +184,32 @@
     </section>
 }
 
+<dialog class="leader-modal" id="award-modal" aria-labelledby="award-modal-name">
+    <div class="leader-modal__backdrop" data-award-close></div>
+    <div class="leader-modal__panel">
+        <button type="button" class="leader-modal__close" data-award-close aria-label="Close award details">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        </button>
+        <div class="leader-modal__scroll" data-lenis-prevent tabindex="-1">
+            <div class="leader-modal__media">
+                <div class="leader-modal__photo">
+                    <img src="" alt="" data-award-modal-photo>
+                </div>
+            </div>
+            <div class="leader-modal__content">
+                <h2 class="leader-modal__name" id="award-modal-name" data-award-modal-name></h2>
+                <p class="leader-modal__role" data-award-modal-role></p>
+                <span class="leader-modal__rule" aria-hidden="true"></span>
+                <div class="leader-modal__bio" data-award-modal-bio></div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
 @section Scripts {
     <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
     <script src="~/Assets/js/awards-slider.js" asp-append-version="true"></script>
+    <script src="~/Assets/js/awards-modal.js" asp-append-version="true"></script>
 }
 
 @functions {
