@@ -136,7 +136,7 @@ Title left | copy + CTA right
 @media (max-width: 767px) {
   .section-intro {
     grid-template-columns: 1fr;
-    gap: 1rem;
+   
   }
 
   .section-intro__title .text-h2 {
