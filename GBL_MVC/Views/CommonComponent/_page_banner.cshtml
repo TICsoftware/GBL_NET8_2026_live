@@ -9,10 +9,6 @@
     var requestPath = Context?.Request?.Path.Value ?? Model?.PageName ?? "";
     var crumbFromCms = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "";
     var crumb = BreadcrumbHelper.ForSustainability(requestPath, Model, crumbFromCms);
-    if (string.IsNullOrWhiteSpace(crumb))
-    {
-        crumb = string.IsNullOrWhiteSpace(crumbFromCms) ? "Products" : crumbFromCms;
-    }
     var alt = !string.IsNullOrWhiteSpace(Model?.Masthead_image_Alt_text) ? Model.Masthead_image_Alt_text : title;
 }
 
@@ -51,9 +47,12 @@
                         </h1>
                     }
 
+                    @if (!string.IsNullOrWhiteSpace(crumb))
+                    {
                     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                         @Html.Raw(crumb)
                     </nav>
+                    }
                 </div>
             </div>
         </div>
