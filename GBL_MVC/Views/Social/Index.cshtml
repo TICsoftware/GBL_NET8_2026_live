@@ -78,9 +78,9 @@
     var hasPhilosophyCopy = HasText(philosophyMain.Intro) || HasText(philosophyMain.Title);
     if (hasPhilosophyCopy || !string.IsNullOrWhiteSpace(philosophyImage))
     {
-        <section class="social-belief left-right-section left-right-gray section-spacing">
+        <section class="social-belief left-right-section left-right-white section-spacing">
             <div class="container">
-                <div class="social-split">
+                <div class="social-split bg-gray">
                 @if (!string.IsNullOrWhiteSpace(philosophyImage))
                 {
                     <figure class="social-split__media parallax-wrap parallax-sticky" data-parallax-travel="5">
@@ -139,9 +139,9 @@
     var hasDifferenceCopy = HasText(differenceMain.Title) || HasText(differenceMain.Intro);
     if (hasDifferenceCopy || !string.IsNullOrWhiteSpace(differenceImage))
     {
-        <section class="social-difference left-right-section left-right-white section-spacing">
+        <section class="social-difference left-right-section left-right-gray section-spacing">
             <div class="container">
-                <div class="social-split social-split--copy-first">
+                <div class="social-split social-split--copy-first bg-white">
                 @if (hasDifferenceCopy)
                 {
                     <div class="social-split__copy">

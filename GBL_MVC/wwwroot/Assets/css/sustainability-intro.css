@@ -814,9 +814,7 @@ height: clamp(25vw, 25vw, 560px);
   padding-top: clamp(2rem, 3.4vw, 4rem);
 }
 
-.social-difference {
-  background: var(--color-gray, #f4f4f4);
-}
+
 
 .social-principles__grid {
   display: grid;
@@ -957,6 +955,7 @@ height: clamp(25vw, 25vw, 560px);
   flex-basis: 30.28%;
 }
 
+
 .social-impact__notch {
   position: absolute;
   z-index: 1;
@@ -969,11 +968,14 @@ height: clamp(25vw, 25vw, 560px);
   height: 36px;
 }
 
-.social-impact__notch--up {
-  bottom: 0;
-  left: 51.2%;
-  width: 36px;
-  height: 20px;
+.social-impact__row--offset > .social-impact__photo--students .social-impact__notch--left {
+ bottom: -8px;
+    left: 51.2%;
+    width: 22px;
+    height: 36px;
+    top: inherit;
+    right: inherit;
+    transform: rotate(90deg);
 }
 
 @media (max-width: 991px) {
@@ -1108,7 +1110,7 @@ height: clamp(25vw, 25vw, 560px);
   .AwardsCertifications-tile:nth-child(4) { order: 3; }
 
   .AwardsCertifications-tile--copy .site-btn {
-    padding-top: 1.25rem;
+    margin-top: 1.25rem;
   }
 }
 
