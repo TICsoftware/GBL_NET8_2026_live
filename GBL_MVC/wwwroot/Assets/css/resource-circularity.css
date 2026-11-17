@@ -752,9 +752,10 @@
 /* Small extra height keeps the zoom low; matches data-parallax-travel="5" */
 .rc-panel__media {
   position: relative;
-  min-height: 26rem;
+  /* min-height: 26rem; */
   margin: 0;
   overflow: hidden;
+  aspect-ratio: 4/3.25;
 }
 .rc-panel__media .parallax-img {
   position: absolute;
@@ -774,11 +775,7 @@
   flex-direction: column;
   padding: clamp(1.5rem, 3.4vw, 3rem);
 }
-.rc-panel__copy p {
-  margin: 0;
-  line-height: 1.5;
-  color: var(--color-gray-dark);
-}
+
 .rc-panel__copy .rc-panel__dark {
   color: var(--color-primary);
 }
