@@ -60,10 +60,13 @@
               '<span class="site-btn__label">Learn More</span>' +
               '<span class="site-btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
             "</a>" +
-            '<a href="/contact-us" class="site-btn site-btn--outline">' +
+            '<button type="button" class="site-btn site-btn--outline" data-enquiry-open' +
+              ' data-product-name="' + escapeHtml(name) + '"' +
+              ' data-product-page="' + escapeHtml(pageName) + '"' +
+              ' aria-haspopup="dialog" aria-controls="enquiry-modal">' +
               '<span class="site-btn__label">Enquire Now</span>' +
               '<span class="site-btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
-            "</a>" +
+            "</button>" +
           "</div>" +
         "</div>" +
       "</article>"

@@ -207,6 +207,8 @@
                      <button type="button"
                              class="site-btn site-btn--outline"
                              data-enquiry-open
+                             data-product-name="@title"
+                             data-product-page="@productPageName"
                              aria-haspopup="dialog"
                              aria-controls="enquiry-modal">
                         <span class="site-btn__label">Order Sample / Enquire Now</span>
@@ -235,7 +237,7 @@
       <div class="enquiry-modal__scroll" data-lenis-prevent tabindex="-1">
          <div class="enquiry-modal__head">
             <h2 class="enquiry-modal__title" id="enquiry-modal-title">Order Sample / Enquire Now</h2>
-            <p class="enquiry-modal__product">@title</p>
+            <p class="enquiry-modal__product" data-enquiry-product-label>@title</p>
          </div>
          @await Html.PartialAsync("~/Views/Enquiry/_EnquiryForm.cshtml", enquiryModel)
       </div>

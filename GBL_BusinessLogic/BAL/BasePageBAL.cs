@@ -144,6 +144,17 @@ namespace GBL_BusinessLogic.BAL
                     ComponentbackgroundAltText = Config_Application_Website.GetValue(dict, "Component background image alt"),
                     ThumbnailImage = Config_Application_Website.GetPath(group, "Thumbnail Image"),
                     ThumbnailAltText = Config_Application_Website.GetValue(dict, "thumbnail image alt"),
+                    MastheadImage = Config_Application_Website.GetPath(
+                        group,
+                        "Masthead Image",
+                        "masthead image",
+                        "Masthead image"),
+                    MastheadAltText = Config_Application_Website.GetValue(
+                        dict,
+                        "Masthead image alt",
+                        "masthead image alt",
+                        "Masthead Image alt",
+                        "Masthead_alt_text"),
                     Url = Config_Application_Website.GetValue(dict, "Url", "Component URL"),
                     Url_Text = Config_Application_Website.GetValue(dict, "Url text", "Component URL text"),
                     component_Url2 = Config_Application_Website.GetValue(dict, "component url 2", "Component URL 2"),
