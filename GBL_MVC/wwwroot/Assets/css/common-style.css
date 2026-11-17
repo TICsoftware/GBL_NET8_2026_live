@@ -71,6 +71,24 @@ Title left | copy + CTA right
   gap: 1rem;
 }
 
+.left-right-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 760fr) minmax(0, 816fr);
+  gap: clamp(1rem, 5vw, 6rem);
+  align-items: start;
+  margin-bottom: 3rem;
+}
+.left-right-heading .text-h2 {
+  margin: 0 0 10px;
+}
+.left-right-heading p {
+  margin: 0;
+  font-size: var(--text-22);
+  line-height: 1.45;
+  color: var(--color-gray-dark);
+}
+
+
 .section-intro__content p {
   margin: 0;
   font-size: var(--text-intro);

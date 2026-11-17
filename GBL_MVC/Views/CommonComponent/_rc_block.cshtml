@@ -27,7 +27,7 @@
     <div class="container">
         @if (!string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(item.Intro))
         {
-            <div class="rc-head">
+            <div class="rc-head left-right-heading">
                 @if (!string.IsNullOrWhiteSpace(item.Title))
                 {
                     <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
