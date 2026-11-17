@@ -68,11 +68,11 @@ namespace GBL_BusinessLogic.BAL
             }
             Dictionary<int, List<ComponentModel>> dictionary_Componentists = [];
             var ds_parent_component = GetParentComponentData_DAL(pagename, languageId, geographyId);
-            if (ds_parent_component.Tables.Count >= 2 && ds_parent_component.Tables[0].Rows.Count > 0)
+            if (ds_parent_component.Tables.Count >= 1 && ds_parent_component.Tables[0].Rows.Count > 0)
             {
-                var groupedData = GetGroupedComponents(ds_parent_component.Tables[1]);
+                var groupedData = GetGroupedComponents(ds_parent_component.Tables[0]);
                 dictionary_Componentists = MapComponentsBySequence(groupedData);
-                model.Subsections_Components = dictionary_Componentists.TryGetValue(1, out var seq1)
+                model.Parent_section_Components = dictionary_Componentists.TryGetValue(1, out var seq1)
                     ? seq1
                     : MapComponents(groupedData, 1);
 

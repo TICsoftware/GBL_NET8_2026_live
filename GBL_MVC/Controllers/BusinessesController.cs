@@ -14,14 +14,14 @@ namespace GBL_MVC.Controllers;
 public class BusinessesController : Controller
 {
     private readonly ILogger<BusinessesController> _logger;
-    private readonly Business_BAL _bal; 
+    private readonly Business_BAL _bal;
     private readonly PartialViewRenderer _partialViewRenderer;
 
 
     public BusinessesController(ILogger<BusinessesController> logger, IConfiguration configuration, PartialViewRenderer partialViewRenderer)
     {
         _logger = logger;
-        _bal = new Business_BAL(configuration); 
+        _bal = new Business_BAL(configuration);
         _partialViewRenderer = partialViewRenderer;
     }
 

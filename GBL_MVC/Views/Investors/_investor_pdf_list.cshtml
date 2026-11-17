@@ -39,8 +39,8 @@
         }
 
         var isHidden = !yearMatch || hideMore;
-        <li class="card-rise" data-year="@yearKey" @(isHidden ? "hidden" : null)>
-            <a class="cg-doc"
+        <li class="card-rise " data-year="@yearKey" @(isHidden ? "hidden" : null)>
+            <a class="cg-doc bg-white"
                href="@(string.IsNullOrWhiteSpace(href) ? "#" : href)"
                target="_blank"
                rel="noopener noreferrer">

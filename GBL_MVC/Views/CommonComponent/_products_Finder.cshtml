@@ -1,0 +1,69 @@
+@using Core_project_BusinessLogic
+@using Core_project_BusinessLogic.Entity
+@inject GBL_MVC.Services.ProductFinderService ProductFinder
+@{
+    // Reuse filters when the host page is already the industries listing.
+    // Any other view can call this partial with no model; options are loaded here.
+    var page = Model as Industry_Public_Page ?? ProductFinder.GetPage();
+    var industryFilters = page.IndustryFilters ?? new List<Industry_Public_Lookup>();
+    var applicationFilters = page.ApplicationFilters ?? new List<Industry_Public_Lookup>();
+    var categoryFilters = page.CategoryFilters ?? new List<Industry_Public_Lookup>();
+}
+<div class="filter-outer section-spacing-sm">
+    <button type="button" class="filter-mobile-trigger" data-open-industry-filter aria-controls="industry-filter"
+            aria-expanded="false">
+        <span class="filter-mobile-trigger__icon" aria-hidden="true"></span>
+        Refine by Filters
+    </button>
+    <div class="filter-mobile-backdrop" data-close-industry-filter></div>
+    <form class="filter-inner" id="industry-filter" action="/products" method="get">
+        <div class="filter-mobile-sheet-head">
+            <h2 class="filter-mobile-sheet-head__title">Set Filters</h2>
+            <button type="button" class="filter-mobile-close" data-close-industry-filter
+                    aria-label="Close filters">&times;</button>
+        </div>
+        <div class="industry-filters-desktop">
+            <div class="cselect">
+                <label class="cselect-sr" for="filter-industry">Industry</label>
+                <select id="filter-industry" name="industry" class="cselect-native">
+                    <option value="">Industry</option>
+                    @foreach (var item in industryFilters)
+                    {
+                        <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="cselect">
+                <label class="cselect-sr" for="filter-application">Application</label>
+                <select id="filter-application" name="application" class="cselect-native">
+                    <option value="">Application</option>
+                    @foreach (var item in applicationFilters)
+                    {
+                        <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="cselect">
+                <label class="cselect-sr" for="filter-product-categories">Product Categories</label>
+                <select id="filter-product-categories" name="category" class="cselect-native">
+                    <option value="">Product Categories</option>
+                    @foreach (var item in categoryFilters)
+                    {
+                        <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="filter-submit">
+                <span class="filter-submit-arrow" aria-hidden="true">&rarr;</span>
+                Filter
+            </button>
+        </div>
+        <div class="filter-mobile-sheet-foot">
+            <button type="button" class="filter-mobile-clear" data-clear-industry-filter>Clear Filters</button>
+            <button type="button" class="filter-mobile-apply" data-apply-industry-filter>Apply Filters</button>
+        </div>
+    </form>
+</div>

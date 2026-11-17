@@ -469,10 +469,10 @@ with certificates stacked under it, so the panel does not stretch.
   margin: 0;
 }
 
-.technical-safety-grid .sds-col .title-section,
+/* .technical-safety-grid .sds-col .title-section,
 .technical-safety-grid .tech-overview-col .title-section {
   margin-bottom: 0.55rem;
-}
+} */
 
 .technical-safety-grid .title-section .text-h2 {
   margin: 0;
