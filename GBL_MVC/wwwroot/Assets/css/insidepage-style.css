@@ -19,16 +19,21 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 .addon-section-title{
   display: inline-flex;
     font-family: var(--font-uniNeueRegular);
-    font-size: var(--text-small);
+    font-size: 12px;
     color: #fff;
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: linear-gradient(90deg, #adb67c, #58803d);
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
+    background: linear-gradient(90deg, #adb67ccc, #58803d80);
+    padding: 0.35rem 1rem;
+    border-radius: 1rem;
     line-height: unset;
+    backdrop-filter: blur(4px);
 }
+
+
+
+
 
 
 /* Desktop: 700px at 100% zoom; at ~125%/150% zoom use 80vh so banner fits viewport */
@@ -174,7 +179,7 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 .list-icon li::before {
   content: "";
   position: absolute;
-  top: 0.5em;
+  top: 0.35em;
   left: 0;
   width: 8px;
   height: 8px;
@@ -205,6 +210,14 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 .technical-Safety-outer .tech-overview table tbody td {
   border-bottom: 1px solid rgba(40, 43, 49, 0.12);
 }
+
+
+
+/**LEFT RIGHT SECTION**/
+.left-right-section.left-right-gray{ background: #f4f4f4; }
+.left-right-section.left-right-white{ background: #fff; }
+
+
 
 
 @media (prefers-reduced-motion: reduce) {

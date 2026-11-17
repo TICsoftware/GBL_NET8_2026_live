@@ -1,0 +1,186 @@
+﻿.customerservice-block {
+  border-radius: 20px;
+  border: 1px solid #EFEFEF;
+  background: #FFF;
+  box-shadow: 0 4px 12px 2px rgba(0, 0, 0, 0.05);
+  padding: 16px 16px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.customerservice-grid {
+  align-items: stretch;
+}
+
+.customerservice-block .call-txt {
+  margin-top: auto; /* pushes phone line to the bottom for equal heights */
+}
+.customerservice-grid.is-rise-anim .customerservice-block {
+  /* GSAP owns translateY â€” don't fight it with CSS transition on transform */
+  transition: box-shadow 0.3s ease;
+}
+.customerservice-block:hover { box-shadow: 0 12px 24px 4px rgba(0, 0, 0, 0.12); }
+.customerservice-block p { margin-bottom: 0; }
+.time-txt { font-size: var(--text-p) !important; font-weight: 500; }
+.customerservice-block .call-txt { margin-top: 8px;}
+.customerservice-block .call-txt a {font-size: var(--text-p);}
+
+
+
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CONTACT US â€” enquiry band + form
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+#enquiry .f-field {
+  width: 100%;
+  background-color: #5E1E21;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 7px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 28px;
+  color: #fff;
+}
+#enquiry .f-field::placeholder {  color: rgba(255, 255, 255, 0.9); }
+#enquiry .f-field:focus,
+#enquiry .f-field:focus-within {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+#enquiry .cselect { position: relative; }
+#enquiry .cselect-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+}
+#enquiry .cselect-btn[data-empty="true"] .cselect-value {
+  color: rgba(255, 255, 255, 0.9);
+}
+#enquiry .cselect-chevron {
+  transition: transform 0.25s ease;
+  flex: none;
+}
+#enquiry .cselect.is-open .cselect-chevron { transform: rotate(180deg); }
+#enquiry .cselect-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 40;
+  background: #5E1E21;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 7px;
+  padding: 0.25rem;
+  max-height: 240px;
+  overflow-y: auto;
+  box-shadow: 0 24px 40px -20px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+#enquiry .cselect-menu::-webkit-scrollbar { width: 5px; }
+#enquiry .cselect-menu::-webkit-scrollbar-track { background: transparent; }
+#enquiry .cselect-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.28);
+  border-radius: 9999px;
+}
+#enquiry .cselect-menu::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+#enquiry .cselect-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+}
+#enquiry .cselect-option:hover,
+#enquiry .cselect-option[aria-selected="true"] {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+#enquiry .logo-lion-vector-outer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+  width: min(72vw, 375px);
+  max-width: 375px;
+  pointer-events: none;
+}
+#enquiry .logo-lion-vector-outer .lion-logo-svg {
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+
+
+/* Hide native select — kept in DOM for submit / validation / cascade */
+.cselect select.cselect-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.cselect .cselect-ui { position: relative; width: 100%; }
+
+/* Enquiry form card: allow cselect dropdown to escape (was overflow-hidden) */
+.enquiry-form-card {
+  overflow: visible;
+}
+.enquiry-form-card .logo-lion-vector-outer {
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+#enquiry .cselect,
+.bg-brand-band .cselect {
+  z-index: 5;
+}
+#enquiry .cselect.is-open,
+.bg-brand-band .cselect.is-open {
+  z-index: 50;
+}
+#enquiry .cselect-menu,
+.bg-brand-band .cselect-menu {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 1200px) and (max-width: 1366px) {
+.customerservice-block .call-txt a{font-size:1rem}
+.customerservice-grid {gap: 20px;}
+#enquiry .f-field { padding: 8px 13px;font-size: 0.875rem;}
+.customerservice-block a {font-size: 1rem;}
+}
+
+
+@media (max-width: 767px) {
+  #enquiry .logo-lion-vector-outer {
+    width: min(50vw, 360px);
+  }
+}

@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.matchMedia("(max-width: 992px)").matches;
+  const stScroller = isMobile ? window : document.documentElement;
   const titles = document.querySelectorAll(
     ".text-h2, .title-animation, .reveal-text, .innerbanner-title"
   );
@@ -105,6 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const bannerTrigger = isInnerBannerTitle(el) ? getInnerBannerTrigger(el) : null;
     const section = bannerTrigger || getParentSection(el);
+    // Headings over images sit far below the section start, so reveal on the heading.
+    const trigger =
+      bannerTrigger ||
+      (el.closest && (el.closest("figcaption") || el.closest(".learningBand-caption") || el.closest(".common-media-caption")) ? el : section);
 
     gsap.set(el, TITLE_FROM);
 
@@ -135,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Inner banner: animate on load / enter, reverse on leave either way
       ScrollTrigger.create({
         trigger: bannerTrigger,
+        scroller: stScroller,
         start: "top 90%",
         end: "bottom top",
         onEnter: playTitle,
@@ -144,20 +151,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } else {
       ScrollTrigger.create({
-        trigger: section,
+        trigger: trigger,
+        scroller: stScroller,
         start: "top 90%",
         onEnter: playTitle,
         onEnterBack: playTitle,
         onLeaveBack: () => {
           if (ScrollTrigger.isRefreshing) return;
-          if (isInView(section)) return;
+          if (isInView(trigger)) return;
           tween.reverse();
         },
       });
     }
 
-    if (isInView(section)) {
-      inViewTweens.push({ tween, section });
+    if (isInView(trigger)) {
+      inViewTweens.push({ tween, section: trigger });
     }
   });
 
@@ -174,6 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("load", () => {
     ScrollTrigger.refresh();
+    requestAnimationFrame(playInViewTitles);
+  });
+
+  window.addEventListener("gbl:after-resize", () => {
     requestAnimationFrame(playInViewTitles);
   });
 });

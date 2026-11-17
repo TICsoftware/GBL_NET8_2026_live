@@ -5,61 +5,59 @@
   // --------------------------------------------
   gsap.registerPlugin(ScrollTrigger);
   
-  const isMobile = window.matchMedia("(max-width: 992px)").matches;
-  
-  /** Same scroll root as Lenis default (wrapper: window ÃƒÂ¢Ã¢â‚¬ Ã¢â‚¬â„¢ classes + scroll on documentElement). */
+  const mobileMq = window.matchMedia("(max-width: 992px)");
   const scrollRootEl = document.documentElement;
-  
-  let lenis;
-  
-  if (!isMobile) {
-  
-    lenis = new Lenis({
+  let lenis = null;
+  let scrollModeIsMobile = null;
+  let stResizeTimer = 0;
+
+  let stRefreshing = false;
+  const safeRefresh = () => {
+    if (stRefreshing || typeof ScrollTrigger === "undefined") return;
+    stRefreshing = true;
+    try {
+      ScrollTrigger.refresh();
+    } catch (err) {}
+    stRefreshing = false;
+  };
+
+  function enableDesktopScroll() {
+    document.body.classList.remove("native-scroll");
+
+    const instance = new Lenis({
       smoothWheel: true,
       smoothTouch: false,
-  
-      // PERFECT NO-LAG SETTINGS
-      lerp: 0.05,              // fast response, no delay
-      wheelMultiplier: 1.02,   // mouse feels natural
+      lerp: 0.05,
+      wheelMultiplier: 1.02,
       normalizeWheel: true,
       syncTouch: false,
-        prevent: (node) => {
-        return node.closest('.testimonial-content')
-          || node.closest('#products-section')
-          || node.closest('.cselect-menu')
-          || node.closest('.cselect')
-          || node.closest('.mega-menu')
-          || node.closest('.site-header__nav-wrap');
+      prevent: (node) => {
+        return node.closest(".testimonial-content")
+          || node.closest("#products-section")
+          || node.closest(".cselect-menu")
+          || node.closest(".cselect")
+          || node.closest(".enquiry-phone__list")
+          || node.closest(".pf-dropdown__panel-inner")
+          || node.closest(".mega-menu")
+          || node.closest(".site-header__nav-wrap");
       }
     });
-  
+    lenis = instance;
+    window.lenis = instance;
+
     function raf(time) {
-      lenis.raf(time);
+      if (window.lenis !== instance) return;
+      instance.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
-  
-    window.lenis = lenis;
 
-    // Nested scrollables (cselect dropdown): Lenis steals wheel before bubble handlers.
-    // Capture on window, block Lenis, and scroll the menu ourselves.
-    window.addEventListener(
-      "wheel",
-      (e) => {
-        const menu = e.target && e.target.closest && e.target.closest(".cselect-menu");
-        if (!menu) return;
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-        menu.scrollTop += e.deltaY;
-      },
-      { capture: true, passive: false }
-    );
-
-  
-    // ---- GSAP SYNC ----
     ScrollTrigger.scrollerProxy(scrollRootEl, {
       scrollTop(value) {
+        if (!lenis) {
+          if (arguments.length) window.scrollTo(0, value);
+          return window.pageYOffset || document.documentElement.scrollTop || 0;
+        }
         return arguments.length
           ? lenis.scrollTo(value, { immediate: true })
           : lenis.scroll;
@@ -73,21 +71,85 @@
         };
       }
     });
-  
-    // ScrollTriggers must use the same element Lenis proxies ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â otherwise scrub/toggle use native scroll and wonÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢t match smooth scroll.
+
     ScrollTrigger.defaults({ scroller: scrollRootEl });
-  
-    lenis.on("scroll", ScrollTrigger.update);
-    ScrollTrigger.addEventListener("refresh", () => lenis.resize());
-    ScrollTrigger.refresh();
-  
-  } else {
-    document.body.classList.add("native-scroll");
-    // Mobile: keep true native window/document scroll (no scrollerProxy).
-    // Proxying documentElement can interfere with touch scrolling on some mobile browsers.
-    ScrollTrigger.defaults({ scroller: window });
-    ScrollTrigger.refresh();
+    instance.on("scroll", ScrollTrigger.update);
   }
+
+  function enableMobileScroll() {
+    if (lenis) {
+      try {
+        lenis.destroy();
+      } catch (err) {}
+    }
+    lenis = null;
+    window.lenis = null;
+    document.body.classList.add("native-scroll");
+    ScrollTrigger.defaults({ scroller: window });
+  }
+
+  function applyScrollMode() {
+    const mobile = mobileMq.matches;
+    if (mobile === scrollModeIsMobile) return;
+    scrollModeIsMobile = mobile;
+    if (mobile) {
+      enableMobileScroll();
+    } else {
+      enableDesktopScroll();
+    }
+  }
+
+  applyScrollMode();
+  ScrollTrigger.refresh();
+
+  window.addEventListener(
+    "wheel",
+    (e) => {
+      const menu =
+        e.target &&
+        e.target.closest &&
+        (e.target.closest(".cselect-menu") || e.target.closest(".pf-dropdown__panel-inner"));
+      if (!menu) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+      menu.scrollTop += e.deltaY;
+    },
+    { capture: true, passive: false }
+  );
+
+  // Breakpoint crossings while the page is live (no reload) briefly run CSS
+  // transitions meant only for user-triggered open/close on fixed, full-screen
+  // off-canvas panels (e.g. .filter-inner, .product-filter-sidebar) — suppress
+  // those transitions for the duration of the resize so they don't flash open.
+  const onViewportResize = () => {
+    window.clearTimeout(stResizeTimer);
+    stResizeTimer = window.setTimeout(() => {
+      applyScrollMode();
+      if (window.lenis && typeof window.lenis.resize === "function") {
+        window.lenis.resize();
+      }
+      const bar = document.querySelector(".site-header__bar");
+      if (bar) {
+        const h = Math.round(bar.getBoundingClientRect().height);
+        if (h > 0) document.documentElement.style.setProperty("--header-h", h + "px");
+      }
+      const banner = document.querySelector(".heroBanner");
+      if (banner && !window.matchMedia("(max-width: 767px)").matches) {
+        banner.style.height = "";
+      }
+      safeRefresh();
+      window.dispatchEvent(new CustomEvent("gbl:after-resize"));
+      window.setTimeout(() => {
+        document.documentElement.classList.remove("is-resizing");
+      }, 50);
+    }, 160);
+  };
+
+  window.addEventListener("resize", () => {
+    document.documentElement.classList.add("is-resizing");
+    onViewportResize();
+  });
 
 
   // --------------------------------------------
@@ -221,7 +283,8 @@ if (yearFoot) yearFoot.innerHTML = String(new Date().getFullYear());
   if (!header) return;
 
   const setHeaderH = () => {
-    const h = Math.round(header.getBoundingClientRect().height);
+    const bar = header.querySelector(".site-header__bar") || header;
+    const h = Math.round(bar.getBoundingClientRect().height);
     if (h > 0) {
       document.documentElement.style.setProperty("--header-h", h + "px");
     }

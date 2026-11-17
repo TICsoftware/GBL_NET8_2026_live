@@ -27,6 +27,7 @@ BEGIN
 
     DECLARE @Offset INT = (@Page - 1) * @PageSize;
 
+    /* Banner / intro content — match exact pagename, then common industries aliases */
     SELECT TOP (1)
         c.cont_id,
         c.cont_title,
@@ -42,12 +43,24 @@ BEGIN
     FROM dbo.content c
     LEFT JOIN dbo.media md ON md.ID = c.Masthead_image_Media_id
     LEFT JOIN dbo.media mm ON mm.ID = c.Mobile_Masthead_image_Media_id
-    WHERE @PageName IS NOT NULL
-      AND LTRIM(RTRIM(@PageName)) <> N''
-      AND LOWER(LTRIM(RTRIM(c.cont_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
-      AND ISNULL(c.cont_status, 0) = 2
+    WHERE ISNULL(c.cont_status, 0) = 2
       AND (c.language_master_id IS NULL OR c.language_master_id = @LanguageId)
-    ORDER BY c.cont_id DESC;
+      AND (
+            (
+                @PageName IS NOT NULL
+                AND LTRIM(RTRIM(@PageName)) <> N''
+                AND LOWER(LTRIM(RTRIM(c.cont_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+            )
+            OR LOWER(LTRIM(RTRIM(ISNULL(c.cont_pagename, N'')))) IN (N'industries', N'industries/index')
+          )
+    ORDER BY
+        CASE
+            WHEN @PageName IS NOT NULL
+                 AND LOWER(LTRIM(RTRIM(c.cont_pagename))) = LOWER(LTRIM(RTRIM(@PageName)))
+            THEN 0
+            ELSE 1
+        END,
+        c.cont_id DESC;
 
     ;WITH filtered AS
     (

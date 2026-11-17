@@ -66,30 +66,44 @@ document.addEventListener("DOMContentLoaded", function () {
     return Math.max(0, window.innerWidth - document.documentElement.clientWidth);
   };
 
+  const syncScrollTriggers = () => {
+    if (typeof ScrollTrigger === "undefined") return;
+    requestAnimationFrame(() => {
+      ScrollTrigger.update();
+      ScrollTrigger.refresh();
+    });
+  };
+
   const lockPage = (lock) => {
     const root = document.documentElement;
     const body = document.body;
     const already = root.classList.contains("is-header-locked");
+    const freezeLayout = isMobile();
 
     if (lock) {
       if (!already) {
         const gap = getScrollbarWidth();
         root.style.setProperty("--header-scrollbar-w", gap + "px");
         root.classList.add("is-header-locked");
-        body.style.overflow = "hidden";
-        body.style.paddingRight = gap + "px";
-        header.style.paddingRight = gap + "px";
+        if (freezeLayout) {
+          root.classList.add("is-header-lock-scroll");
+          body.style.overflow = "hidden";
+          body.style.paddingRight = gap + "px";
+          header.style.paddingRight = gap + "px";
+        }
       }
       if (window.lenis && typeof window.lenis.stop === "function") window.lenis.stop();
+      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.update();
       return;
     }
 
-    root.classList.remove("is-header-locked");
+    root.classList.remove("is-header-locked", "is-header-lock-scroll");
     root.style.removeProperty("--header-scrollbar-w");
     body.style.overflow = "";
     body.style.paddingRight = "";
     header.style.paddingRight = "";
     if (window.lenis && typeof window.lenis.start === "function") window.lenis.start();
+    syncScrollTriggers();
   };
 
   const setExpanded = (trigger, expanded) => {
@@ -170,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
     placeL3Panel(item, panel);
   };
 
-  const closeMega = () => {
+  const closeMega = (instant) => {
     clearTimeout(openTimer);
     clearTimeout(closeTimer);
     clearTimeout(closeAnimTimer);
@@ -187,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     };
 
-    if (isMobile()) {
+    if (isMobile() || instant) {
       hideMenus();
     } else {
       closeAnimTimer = window.setTimeout(hideMenus, 300);
@@ -219,6 +233,8 @@ document.addEventListener("DOMContentLoaded", function () {
     menu.hidden = false;
     header.classList.add("is-mega-open");
     activeMenu = menu;
+    const preferred = menu.querySelector("[data-l2][data-panel]");
+    if (preferred) activateL2(preferred);
     if (!isMobile()) lockPage(true);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => positionMega(trigger, !switching));
@@ -324,6 +340,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  const mediaItem = header.querySelector(".site-header__media-item");
+  if (mediaItem) {
+    mediaItem.addEventListener("mouseenter", () => {
+      if (!isMobile()) closeMega(true);
+    });
+    mediaItem.addEventListener("focusin", () => {
+      closeMega(true);
+    });
+  }
+
   menus.forEach((menu) => {
     menu.addEventListener("mouseenter", () => {
       if (isMobile()) return;
@@ -336,16 +362,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     menu.querySelectorAll("[data-l2]").forEach((item) => {
-      item.addEventListener("mouseenter", () => {
-        if (!isMobile()) activateL2(item);
-      });
       item.addEventListener("click", (event) => {
         if (item.getAttribute("href") === "#") event.preventDefault();
-        if (!item.hasAttribute("data-panel")) return;
-        event.preventDefault();
-        if (isMobile() && item.classList.contains("is-active")) {
-          closeAllL2(item.closest(".mega-menu"));
-          return;
+        if (item.hasAttribute("data-panel")) {
+          event.preventDefault();
+          if (item.classList.contains("is-active")) {
+            closeAllL2(item.closest(".mega-menu"));
+            return;
+          }
         }
         activateL2(item);
       });
@@ -441,6 +465,15 @@ document.addEventListener("DOMContentLoaded", function () {
   if (window.lenis && typeof window.lenis.on === "function") {
     window.lenis.on("scroll", updateTheme);
   }
+
+  const blockPageScrollWhileMega = (event) => {
+    if (!document.documentElement.classList.contains("is-header-locked")) return;
+    if (document.documentElement.classList.contains("is-header-lock-scroll")) return;
+    if (event.target && event.target.closest && event.target.closest(".mega-menu")) return;
+    event.preventDefault();
+  };
+  window.addEventListener("wheel", blockPageScrollWhileMega, { passive: false });
+  window.addEventListener("touchmove", blockPageScrollWhileMega, { passive: false });
   header.querySelector(".site-header__bar")?.addEventListener("transitionend", (event) => {
     if (event.propertyName === "height") syncMegaPosition();
   });

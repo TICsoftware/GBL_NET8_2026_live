@@ -8,7 +8,7 @@ LEARNING & DEVELOPMENT PAGE
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
   gap: clamp(1rem, 3vw, 3rem);
   align-items: start;
-  margin-bottom: clamp(1.5rem, 3vw, 3.5rem);
+  margin-bottom: clamp(1.5rem, 3vw, 1.5rem);
 }
 .ld-head .text-h2 {
   max-width: 15.5em;
@@ -22,26 +22,20 @@ LEARNING & DEVELOPMENT PAGE
 }
 
 .ld-media {
-  position: sticky;
-  top: calc(var(--header-h, 88px) + 0.75rem);
-  align-self: start;
-  z-index: 1;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 32rem;
-  min-height: 0;
+  position: relative;
+  min-height: 26rem;
   margin: 0;
   overflow: hidden;
+   max-height:  560px;
 }
 /* Small extra height keeps the zoom low; matches data-parallax-travel="5" */
 .ld-media .parallax-img {
   position: absolute;
-  top: -5.6%;
+  top: -5%;
   left: 0;
   width: 100%;
-  height: 111.2%;
+  height: 110%;
   max-width: none;
-  object-fit: cover;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -88,6 +82,7 @@ LEARNING & DEVELOPMENT PAGE
   align-items: flex-start;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 4.5rem);
+   height: 100%;
 }
 .ld-split__copy--white {
   background: var(--color-white);
@@ -98,13 +93,8 @@ LEARNING & DEVELOPMENT PAGE
 .ld-split__copy .text-h2 {
   margin: 0 0 1.5rem;
 }
-.ld-split__copy p {
-  color: var(--color-gray-dark);
-}
-.ld-split__copy .site-btn {
-  margin-top: 1.5rem;
-}
 
+.ld-split__copy h3{ margin: 0  0 0.25rem; }
 
 @media (max-width: 991px) {
   .ld-head,
@@ -113,10 +103,7 @@ LEARNING & DEVELOPMENT PAGE
     grid-template-columns: 1fr;
   }
   .ld-media {
-    position: relative;
-    top: auto;
     min-height: 0;
-    max-height: none;
     aspect-ratio: 16 / 10;
   }
   .ld-split--copy-first .ld-media {
@@ -127,23 +114,5 @@ LEARNING & DEVELOPMENT PAGE
 @media (max-width: 767px) {
   .ld-growth__cards {
     grid-template-columns: 1fr;
-  }
-}
-
-/* 125% zoom — 1920×1080 → ~1536×864 */
-@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.25),
-  screen and (min-width: 1025px) and (min-resolution: 120dpi) {
-  .ld-media {
-    max-height: min(28rem, calc(100vh - var(--header-h, 88px) - 2.5rem));
-    top: calc(var(--header-h, 88px) + 0.75rem);
-  }
-}
-
-/* 150% zoom — 1920×1080 → ~1280×720 */
-@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.5),
-  screen and (min-width: 1025px) and (min-resolution: 144dpi) {
-  .ld-media {
-    max-height: min(22rem, calc(100vh - var(--header-h, 88px) - 2rem));
-    top: calc(var(--header-h, 88px) + 0.5rem);
   }
 }

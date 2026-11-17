@@ -45,7 +45,7 @@
    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet" />
    <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
    <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
 }
@@ -68,13 +68,13 @@
                <blockquote class="page-intro-mantra__quote">
                   @if (!string.IsNullOrWhiteSpace(item.Intro))
                   {
-                     <p>@Html.Raw(item.Intro)</p>
+                     @Html.Raw(item.Intro)
                   }
                </blockquote>
                <div class="page-intro-mantra__copy">
                   @if (!string.IsNullOrWhiteSpace(item.Content))
                   {
-                     <p>@Html.Raw(item.Content)</p>
+                    @Html.Raw(item.Content)
                   }
                </div>
             </div>
@@ -105,7 +105,7 @@
                <div class="CreatingTowards-copy">
                   @if (!string.IsNullOrWhiteSpace(item.Intro))
                   {
-                     <p>@Html.Raw(item.Intro)</p>
+                    @Html.Raw(item.Intro)
                   }
                </div>
 
@@ -152,7 +152,7 @@
                <div class="section-intro__content">
                   @if (!string.IsNullOrWhiteSpace(item.Intro))
                   {
-                     <p>@Html.Raw(item.Intro)</p>
+                     @Html.Raw(item.Intro)
                   }
                </div>
             </div>
@@ -166,13 +166,21 @@
                {
                   <article class="swiper-slide turningCommitment-card">
                      <div class="turningCommitment-card__media parallax-wrap">
-                        <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
+                        @{
+                           var cardImage = !string.IsNullOrWhiteSpace(item.MastheadImage)
+                               ? item.MastheadImage
+                               : item.ThumbnailImage;
+                           var cardAlt = !string.IsNullOrWhiteSpace(item.MastheadImage)
+                               ? (item.MastheadAltText ?? item.Title)
+                               : (item.ThumbnailAltText ?? item.Title);
+                        }
+                        <img src="@cardImage" alt="@cardAlt" class="parallax-img">
                      </div>
                      <div class="turningCommitment-card__body">
-                        <h3 class="text-h5">@item.Title</h3>
+                        <h3 class="text-h4">@item.Title</h3>
                         @if (!string.IsNullOrWhiteSpace(item.Intro))
                         {
-                           <p>@Html.Raw(item.Intro)</p>
+                           @Html.Raw(item.Intro)
                         }
 
                         @if (!string.IsNullOrWhiteSpace(item.Intro))

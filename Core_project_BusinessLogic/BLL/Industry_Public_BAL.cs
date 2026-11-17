@@ -20,10 +20,39 @@ namespace Core_project_BusinessLogic.BAL
             // Filter dropdowns (Industry / Application / Category) are bound for redirect to /products.
             // Industry cards remain an unfiltered portfolio listing unless explicit ids are passed.
             filter ??= new Industry_Public_Filter();
-            var page = _dal.GetIndex(NormalizePageName(pageName), languageId, filter);
+
+            Industry_Public_Page? page = null;
+            foreach (var name in GetIndexPageNames(pageName))
+            {
+                page = _dal.GetIndex(name, languageId, filter);
+                if ((page.Content?.ContId ?? 0) > 0
+                    || !string.IsNullOrWhiteSpace(page.Content?.MastheadImage))
+                {
+                    break;
+                }
+            }
+
+            page ??= new Industry_Public_Page();
             foreach (var item in page.Industries)
                 item.Intro = ToPlainText(item.Intro);
             return page;
+        }
+
+        private static IEnumerable<string> GetIndexPageNames(string? pageName)
+        {
+            var names = new List<string>();
+            void Add(string? value)
+            {
+                var name = (value ?? string.Empty).Trim().Trim('/');
+                if (string.IsNullOrWhiteSpace(name)) return;
+                if (!names.Exists(x => x.Equals(name, System.StringComparison.OrdinalIgnoreCase)))
+                    names.Add(name);
+            }
+
+            Add(NormalizePageName(pageName));
+            Add("industries");
+            Add("Industries");
+            return names;
         }
 
         public (List<Industry_Public_Item> Data, int Total) GetPaged(Industry_Public_Filter filter)

@@ -26,6 +26,9 @@ namespace GBL_BusinessLogic.Entity
         public string ThumbnailImage { get; set; }
         public string ThumbnailAltText { get; set; }
 
+        public string MastheadImage { get; set; }
+        public string MastheadAltText { get; set; }
+
         public string Url { get; set; }
         public string Url_Text { get; set; }
         public string component_Url2 { get; set; }

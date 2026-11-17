@@ -105,7 +105,10 @@ namespace GBL_MVC.Controllers
                 return title.Trim().Trim('/');
 
             var path = HttpContext?.Request?.Path.Value?.Trim('/') ?? string.Empty;
-            return string.IsNullOrWhiteSpace(path) ? "industries" : path;
+            if (string.IsNullOrWhiteSpace(path) || path.Equals("industries", StringComparison.OrdinalIgnoreCase))
+                return "industries";
+
+            return path;
         }
     }
 }

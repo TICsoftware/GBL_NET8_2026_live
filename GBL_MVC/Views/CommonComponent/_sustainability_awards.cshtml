@@ -16,7 +16,7 @@
             <div class="section-intro__content">
                 @if (!string.IsNullOrWhiteSpace(component?.Intro))
                 {
-                    <p>@Html.Raw(component.Intro)</p>
+                    @Html.Raw(component.Intro)
                 }
             </div>
         </div>
@@ -28,7 +28,7 @@
                 if (item.Sequence % 2 == 0)
                 {
                     <article class="AwardsCertifications-tile AwardsCertifications-tile--copy">
-                        <h3 class="text-h5">@item.Title</h3>
+                        <h3 class="text-h4">@item.Title</h3>
                         @if (!string.IsNullOrWhiteSpace(item.Content))
                         {
                             @Html.Raw(item.Content)
@@ -59,7 +59,7 @@
                     </article>
 
                     <article class="AwardsCertifications-tile AwardsCertifications-tile--copy">
-                        <h3 class="text-h5">@item.Title</h3>
+                        <h3 class="text-h4">@item.Title</h3>
 
                         @if (!string.IsNullOrWhiteSpace(item.Content))
                         {

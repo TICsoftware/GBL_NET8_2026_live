@@ -1,0 +1,250 @@
+/* ---------- Life Inside — pinned canvas sequence ---------- */
+:root {
+  --stage: min(74vmin, 700px);
+
+}
+
+#life-inside.lifeinside-section {
+  position: relative;
+  isolation: isolate;
+  /* Tall pin scroll must stay dark — never flash page white */
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+/* GSAP wraps the pinned panel; spacer is otherwise page-white */
+#life-inside .pin-spacer {
+
+}
+
+/* Pinned panel — must carry its own bg or pin shows page white */
+#life-inside .sticky-stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: visible;
+  color: #fff;
+}
+
+#life-inside .lifeinside-bg,
+#lifeinside-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: none;
+}
+
+#life-inside .lifeinside-bg-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#life-inside #section-title {
+  position: absolute;
+  left: clamp(1rem, 20vw, 15rem);
+  top: clamp(10.5rem, 38vh, 40rem);
+  z-index: 5;
+  margin: 0;
+  max-width: min(28rem, 70vw);
+  pointer-events: none;
+}
+
+
+
+/* ---------- Stage (square, centred) ---------- */
+#life-inside .stage {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(calc(-50% + 50px), -50%);
+  width: var(--stage);
+  height: var(--stage);
+  z-index: 2;
+  overflow: visible;
+}
+
+#life-inside .flower-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+}
+
+/* ---------- Nodes (icons + logo) ---------- */
+#life-inside .node {
+  position: absolute;
+  width: 24.76%;
+  height: auto;
+  /* Do NOT use translate(-50%,-50%) here — GSAP owns transform
+     (xPercent/yPercent). CSS + GSAP both centering double-offsets. */
+  opacity: 0;
+  filter: blur(10px);
+  will-change: transform, opacity, filter;
+  pointer-events: none;
+  user-select: none;
+}
+
+#life-inside .center-logo {
+  width: 25.23%;
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 32% 28%, #ffffff 0%, #f3f3f3 45%, #dcdcdc 100%);
+  box-shadow: 0 0.35rem 0.85rem rgba(0, 0, 0, 0.16);
+}
+
+/*
+ * logo.png: white disc + lion (lion sits high-left in the disc).
+ * multiply hides the PNG white onto the CSS sphere; pan recenters the mark.
+ */
+#life-inside .center-logo-img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  width: 112%;
+  height: 112%;
+  max-width: none;
+  margin: 0;
+  object-fit: cover;
+  transform: translate(-47%, -52.5%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  user-select: none;
+}
+
+
+
+/* ---------- Labels (on sticky-stage, not clipped by stage) ---------- */
+#life-inside .lifeinside-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+#life-inside .label-txt {
+  position: absolute;
+  opacity: 0;
+  width: max-content;
+  max-width: 15rem;
+  will-change: transform, opacity;
+  z-index: 4;
+  -webkit-font-smoothing: antialiased;
+}
+
+#life-inside .label-txt h2 {
+  margin: 0;
+  font-size: var(--text-h4);
+  font-weight: 700;
+}
+
+#life-inside .label-txt p {
+  margin: 0.15rem 0 0;
+  color: var(--color-primary);
+}
+
+#life-inside .label-txt[data-side="left"],
+#life-inside .label-txt[data-side="right"] {
+  text-align: left;
+}
+
+
+@media (max-width: 1024px) {
+  :root {
+    --stage: min(62vmin, 480px);
+  }
+
+  #life-inside .stage {
+    transform: translate(-50%, -50%);
+  }
+
+  #life-inside .label-txt {
+    max-width: 9.5rem;
+  }
+}
+
+/* Same radial layout as desktop — scaled down so labels fit in side gutters */
+@media (max-width: 767px) {
+  :root {
+    --stage: min(56vmin, 248px);
+  }
+
+  #life-inside .stage {
+    top: 54%;
+  }
+
+  #life-inside #section-title {
+    left: 1rem;
+    right: 1rem;
+    top: clamp(4.75rem, 11vh, 7rem);
+    max-width: none;
+    text-align: center;
+  }
+
+  #life-inside .label-txt {
+    max-width: 5.75rem;
+  }
+
+  #life-inside .label-txt h2 {
+    font-size: clamp(0.72rem, 3.1vw, 0.9rem);
+    line-height: 1.15;
+  }
+
+  #life-inside .label-txt p {
+    margin-top: 0.1rem;
+    font-size: clamp(0.58rem, 2.5vw, 0.72rem);
+    line-height: 1.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #life-inside .node {
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  #life-inside .label-txt {
+    opacity: 1 !important;
+  }
+
+  #life-inside .flower-canvas {
+    opacity: 1 !important;
+    filter: none !important;
+  }
+}
+
+@media (max-width: 992px){
+#life-inside #section-title{top: clamp(10.5rem, 18vh, 40rem);}
+}
+
+@media (min-width: 1200px) and (max-width: 1366px) {
+  #life-inside #section-title{left: clamp(1rem, 20vw, 6rem);}
+}
+
+
+/* 125% zoom (high-DPI / zoomed Chrome — light extra) */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.25),
+  screen and (min-width: 1025px) and (min-resolution: 120dpi) {
+
+}
+
+/* 150% zoom */
+@media screen and (min-width: 1025px) and (-webkit-min-device-pixel-ratio: 1.5),
+  screen and (min-width: 1025px) and (min-resolution: 144dpi) {
+#life-inside #section-title {left: clamp(1rem, 20vw, 8rem);}
+#life-inside .label-txt p {font-size: 1rem;}
+}

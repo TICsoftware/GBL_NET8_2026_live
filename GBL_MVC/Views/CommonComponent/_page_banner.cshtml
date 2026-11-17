@@ -3,10 +3,16 @@
 @model ContentViewModel
 
 @{
-    var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage :"/Assets/images/banners/blank-banner.webp";
-    var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage :"/Assets/images/banners/blank-banner.webp";
+    var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage : "/Assets/images/banners/blank-banner.webp";
+    var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage : "/Assets/images/banners/blank-banner.webp";
     var title = !string.IsNullOrWhiteSpace(Model?.ContHmpgTitle) ? Model.ContHmpgTitle : Model?.ContTitle ?? "";
-    var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "Products";
+    var requestPath = Context?.Request?.Path.Value ?? Model?.PageName ?? "";
+    var crumbFromCms = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "";
+    var crumb = BreadcrumbHelper.ForSustainability(requestPath, Model, crumbFromCms);
+    if (string.IsNullOrWhiteSpace(crumb))
+    {
+        crumb = string.IsNullOrWhiteSpace(crumbFromCms) ? "Products" : crumbFromCms;
+    }
     var alt = !string.IsNullOrWhiteSpace(Model?.Masthead_image_Alt_text) ? Model.Masthead_image_Alt_text : title;
 }
 
@@ -53,7 +59,3 @@
         </div>
     </div>
 </section>
-
-
-
-

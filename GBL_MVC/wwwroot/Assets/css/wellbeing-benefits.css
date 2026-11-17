@@ -44,9 +44,10 @@
     top: calc(var(--header-h, 88px) );
     align-self: start;
     z-index: 1;
-    height: min(560px, calc(100vh - var(--header-h, 88px) - 2.5rem));
+    height: auto;
     min-height: 0;
     max-height: none;
+    aspect-ratio: 4/2.5;
   }
 }
 

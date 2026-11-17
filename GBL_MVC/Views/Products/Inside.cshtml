@@ -24,6 +24,13 @@
     var hasSds = !string.IsNullOrWhiteSpace(product.SafetyDataSheetUrl);
     var hasCertificates = certificates.Count > 0;
     var sdsName = title + "-SDS.pdf";
+    var productPageName = product.Product_pagename ?? "";
+    var enquiryModel = new GBL_BusinessLogic.Entity.ProductEnquiryPageModel
+    {
+        ProductName = title,
+        ProductPageName = productPageName,
+        ProductUrl = string.IsNullOrWhiteSpace(productPageName) ? "/products" : "/Products/" + productPageName
+    };
     ViewData["Title"] = title;
 }
 
@@ -35,6 +42,7 @@
    <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
    <link rel="stylesheet" href="~/Assets/css/product-only-inside.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/enquiry-style.css" asp-append-version="true" />
 }
 
    <section class="product-inside-banner-outer section-spacing">
@@ -136,7 +144,7 @@
 
    @if (hasOverview || hasSds || hasCertificates)
    {
-   <section class="technical-Safety-outer section-spacing">
+   <section class="technical-Safety-outer section-pb">
      <div class="container">
         <div class="technical-safety-grid">
            @if (hasOverview || hasCertificates)
@@ -196,12 +204,18 @@
                         </span>
                      </a>
                      }
-                     <a href="/enquiry/@(product.Product_pagename)" class="site-btn site-btn--outline">
+                     <button type="button"
+                             class="site-btn site-btn--outline"
+                             data-enquiry-open
+                             data-product-name="@title"
+                             data-product-page="@productPageName"
+                             aria-haspopup="dialog"
+                             aria-controls="enquiry-modal">
                         <span class="site-btn__label">Order Sample / Enquire Now</span>
                         <span class="site-btn__arrow" aria-hidden="true">
                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
-                     </a>
+                     </button>
                   </div>
                </div>
            </div>
@@ -212,9 +226,28 @@
    </section>
    }
 
+<dialog class="enquiry-modal" id="enquiry-modal" aria-labelledby="enquiry-modal-title">
+   <div class="enquiry-modal__backdrop" data-enquiry-close></div>
+   <div class="enquiry-modal__panel">
+      <button type="button" class="enquiry-modal__close" data-enquiry-close aria-label="Close enquiry form">
+         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+         </svg>
+      </button>
+      <div class="enquiry-modal__scroll" data-lenis-prevent tabindex="-1">
+         <div class="enquiry-modal__head">
+            <h2 class="enquiry-modal__title" id="enquiry-modal-title">Order Sample / Enquire Now</h2>
+            <p class="enquiry-modal__product" data-enquiry-product-label>@title</p>
+         </div>
+         @await Html.PartialAsync("~/Views/Enquiry/_EnquiryForm.cshtml", enquiryModel)
+      </div>
+   </div>
+</dialog>
+
 @section Scripts {
    <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
    <script src="~/Assets/js/product-only-inside.js" asp-append-version="true"></script>
-      <script src="/Assets/js/swiper-bundle.min.js?v=cE5rPkdco9RQUGuPRFJTyX_SwHsY5wFKx2t4XP5HEbI"></script>
-   <script src="/Assets/js/product-only-inside.js?v=unTlVoTjGBEbdPyi2Gqkq0vUEL-kZDi8UazuoiUidpk"></script>
+   <script src="~/Assets/js/enquiry-phone.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/enquiry-form.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/enquiry-modal.js" asp-append-version="true"></script>
 }
