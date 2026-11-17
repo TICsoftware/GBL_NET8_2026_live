@@ -69,8 +69,8 @@ else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
       <div class="container">
          @if (circularEnergy != null)
          {
-            <div class="rc-energy__intro">
-               <div class="rc-energy__lead">
+            <div class="rc-energy__intro left-right-heading">
+               <div class="rc-energy__lead ">
                   @if (!string.IsNullOrWhiteSpace(circularEnergy.Title))
                   {
                      <h2 id="rc-energy-title" class="text-h2">@Html.Raw(circularEnergy.Title.CleanParagraphTags())</h2>
