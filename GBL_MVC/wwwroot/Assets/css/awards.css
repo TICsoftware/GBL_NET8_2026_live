@@ -19,6 +19,15 @@
 .award-card__title {
     font-size: var(--text-20);
 }
+
+.award-card[data-award] {
+  cursor: pointer;
+}
+
+.award-card[data-award]:focus-visible {
+  outline: 2px solid var(--color-secondary, #67815a);
+  outline-offset: 4px;
+}
 .awards-head__title { margin: 0; }
 .awards-head__intro {
   margin: 0;

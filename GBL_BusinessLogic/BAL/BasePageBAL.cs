@@ -166,7 +166,7 @@ namespace GBL_BusinessLogic.BAL
                     Component_Icon2_Image = Config_Application_Website.GetPath(group, "component icon 2"),
                     Component_Icon3_Image = Config_Application_Website.GetPath(group, "component icon image 3"),
                     Component_Icon_alt_Image = Config_Application_Website.GetPath(group, "component icon image alt"),
-                    Popup_Content = Config_Application_Website.GetValue(dict, "popup content"),
+                    Popup_Content = Config_Application_Website.GetValue(dict, "popup content", "popup intro", "Popup intro"),
                     Popup_Display_Title = Config_Application_Website.GetValue(dict, "Popup Display title"),
                     Sequence = Config_Application_Website.GetIntValue(dict, "Sequence"),
                     IsBlock = group.Fields.First().IsBlock,

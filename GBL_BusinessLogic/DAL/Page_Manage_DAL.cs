@@ -148,6 +148,18 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Sustainability_Governance_Articles_List", sqlParams);
         }
 
+        public DataSet Get_Awards_Certifications_Page_DAL(string pagename, int languageId, int geographyId)
+        {
+            SqlParameter[] sqlParams =
+            {
+                new SqlParameter("@PageName", string.IsNullOrWhiteSpace(pagename) ? (object)DBNull.Value : pagename.Trim()),
+                new SqlParameter("@LanguageID", languageId > 0 ? languageId : 1),
+                new SqlParameter("@GeographyID", geographyId > 0 ? geographyId : 1)
+            };
+
+            return GetDataSet("Get_Awards_Certifications_Page", sqlParams);
+        }
+
         public DataSet Get_Annual_Reports_page_wise_DAL(int contentId, int page, int pageSize)
         {
             SqlParameter[] sqlParams =
