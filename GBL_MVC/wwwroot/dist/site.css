@@ -1309,10 +1309,6 @@
     border-style: var(--tw-border-style);
     border-width: 5px;
   }
-  .border-r-0 {
-    border-right-style: var(--tw-border-style);
-    border-right-width: 0px;
-  }
   .border-none {
     --tw-border-style: none;
     border-style: none;
