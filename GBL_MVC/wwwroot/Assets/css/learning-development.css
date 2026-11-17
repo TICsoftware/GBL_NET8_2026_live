@@ -81,7 +81,7 @@ LEARNING & DEVELOPMENT PAGE
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding: clamp(1.5rem, 4vw, 4.5rem);
+  padding: clamp(1.5rem, 3.4vw, 3rem);
    height: 100%;
 }
 .ld-split__copy--white {
