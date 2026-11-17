@@ -90,6 +90,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
 
 
 builder.Services.AddScoped<PartialViewRenderer>();
+builder.Services.AddScoped<GBL_MVC.Services.ProductFinderService>();
 
 var app = builder.Build();
 

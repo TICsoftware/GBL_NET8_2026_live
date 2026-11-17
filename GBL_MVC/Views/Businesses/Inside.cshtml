@@ -1,71 +1,72 @@
+@using Microsoft.AspNetCore.SignalR.Protocol
 @model GBL_BusinessLogic.Entity.BusinessModel
 @{
-   ViewData["Title"] = Model?.Content?.ContTitle ?? "Businessess";
-   Layout = "~/Views/Shared/_Layout.cshtml";
-   var content = Model?.Content;
-   var componentLists = Model?.Component_Lists ?? new Dictionary<int, List<GBL_BusinessLogic.Entity.ComponentModel>>();
-   var splitIndex = 0;
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "Businessess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+    var componentLists = Model?.Component_Lists ?? new Dictionary<int, List<GBL_BusinessLogic.Entity.ComponentModel>>();
+    var splitIndex = 0;
 }
 
 
 @section head {
-   <title>@(content?.cont_window_title)</title>
+    <title>@(content?.cont_window_title)</title>
 
-   <meta content="@(content?.cont_metatag)" name="keywords" />
-   <meta content="@(content?.cont_metadesc)" name="description" />
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
 
-   <meta name="twitter:card" content="summary" />
-   <meta name="twitter:site" content="" />
-   <meta name="twitter:title" content="@(content?.ContTitle)" />
-   <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
 
-   <meta property="og:type" content="article" />
-   <meta property="og:site_name" content="Godavari Biorefineries" />
-   <meta property="og:title" content="@(content?.ContTitle)" />
-   <meta property="og:description" content="@(content?.cont_metadesc)" />
-   <meta property="og:url" content="@(content?.CanonicalUrl)" />
-   <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
 
-   <meta itemprop="name" content="Godavari Biorefineries" />
-   <meta itemprop="description" content="@(content?.cont_metadesc)" />
-   <meta itemprop="image" content="@(content?.cont_meta_image)" />
+    <meta itemprop="name" content="Godavari Biorefineries" />
+    <meta itemprop="description" content="@(content?.cont_metadesc)" />
+    <meta itemprop="image" content="@(content?.cont_meta_image)" />
 
-   <meta property="og:type" content="website" />
-   <meta property="og:site_name" content="Godavari Biorefineries" />
-   <meta property="og:title" content="@(content?.ContTitle)" />
-   <meta property="og:description" content="@(content?.cont_metadesc)" />
-   <meta property="og:image" content="@(content?.cont_meta_image)" />
-   <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
 
-   <link rel="canonical" href="@(content?.CanonicalUrl)" />
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
 }
 @section Styles {
-   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
-   <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
-   <link rel="stylesheet" href="~/Assets/css/bio-based-chemicals.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/bio-based-chemicals.css" asp-append-version="true" />
 }
 
 <!-- HERO BANNER -->
 @if (Model?.Content != null)
 {
-   @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
 }
 <!-- HERO BANNER END-->
 
 
-   <!--PAGE INTRO OUTER-->
-   <section class="bbc-intro" aria-label="Introduction">
-      <div class="container">
-         <div class="bbc-intro__copy page-intro-inner">
-            @if(!string.IsNullOrWhiteSpace(content?.Cont_intro))
+<!--PAGE INTRO OUTER-->
+<section class="bbc-intro" aria-label="Introduction">
+    <div class="container">
+        <div class="bbc-intro__copy page-intro-inner">
+            @if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
             {
                 @Html.Raw(content.Cont_intro)
             }
             @Html.Raw(content?.Content)
-         </div>
-      </div>
-   </section>
-   <!--PAGE INTRO OUTER END-->
+        </div>
+    </div>
+</section>
+<!--PAGE INTRO OUTER END-->
 
 @foreach (var seqPair in componentLists.OrderBy(x => x.Key))
 {
@@ -81,8 +82,8 @@
 
     foreach (var item in items)
     {
-        var thumb = FirstPath(item.ComponentThumbnail, item.ThumbnailImage, item.Component_LHS_thumbnail);
-        var thumbAlt = FirstText(item.ComponentThumbnailAltText, item.ThumbnailAltText, item.Title);
+        var thumb = item.ComponentThumbnail;
+        var thumbAlt = item.ComponentThumbnailAltText;
         var hasBg = !string.IsNullOrWhiteSpace(item.Componentbackground);
         var hasIntro = !string.IsNullOrWhiteSpace(item.Intro);
         var isFindSection = !hasBg && !hasIntro && !string.IsNullOrWhiteSpace(thumb);
@@ -91,7 +92,8 @@
         {
             <section class="bbc-leadership bg-parallax-section section-spacing" aria-labelledby="bbc-section-title_@seqPair.Key">
                 <div class="parallax-wrap bbc-leadership__bg" data-parallax-travel="10" aria-hidden="true">
-                    <img src="@item.Componentbackground" alt="@item.ComponentbackgroundAltText" class="parallax-img" loading="lazy" />
+                    <img src="@item.Componentbackground" alt="@item.ComponentbackgroundAltText" class="parallax-img"
+                         loading="lazy" />
                 </div>
                 <div class="bbc-leadership__veil" aria-hidden="true"></div>
                 <div class="container">
@@ -120,17 +122,19 @@
                             <img src="@thumb" alt="" loading="lazy" />
                         </div>
                         <div class="bbc-find__content card-rise">
-                            <h2 id="bbc-find-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)</h2>
+                            <h2 id="bbc-find-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)
+                            </h2>
                             @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
                             {
                                 <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
-                                </a>
-                            }
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" :
+                                                                                                        item.Url_Text)</span>
+                                    </a>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
         }
         else
         {
@@ -150,7 +154,8 @@
                             {
                                 <span class="addon-section-title">@item.DisplayTitle.Trim()</span>
                             }
-                            <h2 id="bbc-split-title_@seqPair.Key" class="text-h2 title-animation bbc-title bbc-title--substitutes">@Html.Raw(item.Title)</h2>
+                            <h2 id="bbc-split-title_@seqPair.Key" class="text-h2 title-animation bbc-title bbc-title--substitutes">
+                                @Html.Raw(item.Title)</h2>
                             @if (hasIntro)
                             {
                                 <div class="bbc-body bbc-body--muted">
@@ -160,8 +165,9 @@
                             @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
                             {
                                 <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
-                                </a>
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" :
+                                                                                                            item.Url_Text)</span>
+                                    </a>
                             }
                         </div>
                     </div>
@@ -170,16 +176,30 @@
         }
     }
 }
+    
 
-@functions {
-    private static string FirstText(params string?[] values)
+@if (Model?.Parent_section_Components != null && Model.Parent_section_Components.Count > 0)
+{
+    foreach (var item in Model.Parent_section_Components)
     {
-        foreach (var value in values)
-        {
-            if (!string.IsNullOrWhiteSpace(value)) return value;
-        }
-        return "";
+        <section class="bbc-find section-spacing" aria-labelledby="bbc-find-title">
+            <div class="container">
+                <div class="bbc-find__card">
+                    <div class="bbc-find__bg" aria-hidden="true">
+                        <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" loading="lazy">
+                    </div>
+                    <div class="bbc-find__content">
+                        <h2 id="bbc-find-title" class="text-h2 title-animation bbc-title">@item.Title</h2>
+                        @await Html.PartialAsync("~/Views/CommonComponent/_products_Finder.cshtml")
+                    </div>
+                </div>
+            </div>
+        </section>
     }
+}
 
-    private static string FirstPath(params string?[] values) => FirstText(values);
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/industries-filter.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/bio-based-chemicals.js" asp-append-version="true"></script>
 }

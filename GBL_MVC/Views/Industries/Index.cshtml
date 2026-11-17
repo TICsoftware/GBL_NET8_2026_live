@@ -1,5 +1,4 @@
 @model Core_project_BusinessLogic.Entity.Industry_Public_Page
-@using Core_project_BusinessLogic
 @{
     var content = Model.Content ?? new Core_project_BusinessLogic.Entity.Industry_Public_Content();
     var title = string.IsNullOrWhiteSpace(content.Title) ? "Industries we serve" : content.Title;
@@ -89,66 +88,7 @@
               <h2 class="text-h2">Industry Portfolios</h2>
             </div>
 
-            <div class="filter-outer section-spacing-sm">
-                  <button type="button"
-                          class="filter-mobile-trigger"
-                          data-open-industry-filter
-                          aria-controls="industry-filter"
-                          aria-expanded="false">
-                     <span class="filter-mobile-trigger__icon" aria-hidden="true"></span>
-                     Refine by Filters
-                  </button>
-                  <div class="filter-mobile-backdrop" data-close-industry-filter></div>
-                  <form class="filter-inner" id="industry-filter" action="/products" method="get">
-                     <div class="filter-mobile-sheet-head">
-                        <h2 class="filter-mobile-sheet-head__title">Set Filters</h2>
-                        <button type="button" class="filter-mobile-close" data-close-industry-filter aria-label="Close filters">&times;</button>
-                     </div>
-                     <div class="industry-filters-desktop">
-                     <div class="cselect">
-                        <label class="cselect-sr" for="filter-industry">Industry</label>
-                        <select id="filter-industry" name="industry" class="cselect-native">
-                           <option value="">Industry</option>
-                           @foreach (var item in Model.IndustryFilters)
-                           {
-                               <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
-                           }
-                        </select>
-                     </div>
-
-                     <div class="cselect">
-                        <label class="cselect-sr" for="filter-application">Application</label>
-                        <select id="filter-application" name="application" class="cselect-native">
-                           <option value="">Application</option>
-                           @foreach (var item in Model.ApplicationFilters)
-                           {
-                               <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
-                           }
-                        </select>
-                     </div>
-
-                     <div class="cselect">
-                        <label class="cselect-sr" for="filter-product-categories">Product Categories</label>
-                        <select id="filter-product-categories" name="category" class="cselect-native">
-                           <option value="">Product Categories</option>
-                           @foreach (var item in Model.CategoryFilters)
-                           {
-                               <option value="@CryptoEngine.Encrypt(item.Id.ToString())">@item.Name</option>
-                           }
-                        </select>
-                     </div>
-
-                     <button type="submit" class="filter-submit">
-                        <span class="filter-submit-arrow" aria-hidden="true">&rarr;</span>
-                        Filter
-                     </button>
-                     </div>
-                     <div class="filter-mobile-sheet-foot">
-                        <button type="button" class="filter-mobile-clear" data-clear-industry-filter>Clear Filters</button>
-                        <button type="button" class="filter-mobile-apply" data-apply-industry-filter>Apply Filters</button>
-                     </div>
-                  </form>
-            </div>
+            @await Html.PartialAsync("~/Views/CommonComponent/_products_Finder.cshtml")
          </div>
       </div>
 
