@@ -179,6 +179,24 @@ app.MapControllerRoute(
                 }
             );
 
+            app.MapControllerRoute(
+                name: "awards-certifications",
+                pattern: "awards",
+                defaults: new { controller = "AwardsCertifications", action = "Index", title = "awards" }
+            );
+
+            app.MapControllerRoute(
+                name: "awards-and-certifications",
+                pattern: "awards-and-certifications",
+                defaults: new { controller = "AwardsCertifications", action = "Index", title = "awards-and-certifications" }
+            );
+
+            app.MapControllerRoute(
+                name: "sustainability-awards",
+                pattern: "sustainability/awards",
+                defaults: new { controller = "AwardsCertifications", action = "Index", title = "sustainability/awards" }
+            );
+
 
             app.MapControllerRoute(
                  name: "press-release",
