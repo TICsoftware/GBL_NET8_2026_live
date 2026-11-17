@@ -135,7 +135,7 @@ else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
          ? energyStatement.ComponentThumbnail
          : energyStatement.ThumbnailImage);
    <section class="rc-statement section-spacing">
-      @if (!string.IsNullOrWhiteSpace(statementBg))
+      @if (!string.IsNullOrWhiteSpace(statementBg))           
       {
          <img src="@statementBg" alt="" class="rc-statement__bg" loading="lazy">
       }

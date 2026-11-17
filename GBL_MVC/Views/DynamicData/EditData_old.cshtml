@@ -96,18 +96,18 @@
                             data-bs-toggle="modal" data-bs-target="#btnSelectFiles">
                         Change File
                     </button>
-                    <a href="javascript:void(0)"
-                       title="Click here to remove file"
-                       class="btn btn-sm btn-outline-danger content-thumb-link js-clear-dynamic-media@(hasImage ? " is-visible" : "")"
-                       style="@(hasImage ? "" : "display:none;")">
-                        <i class="bi bi-trash" aria-hidden="true"></i>
-                    </a>
                     <input type="hidden" name="@($"{f.name_key}_new")" />
                     <input type="hidden" name="@($"{f.name_key}_existing")" value="@f.File_path" />
                     <img src="@(hasImage ? f.File_path_name : "")"
                          alt=""
                          class="imgPreview img-responsive img-thumbnail dynamic-data-preview-img@(hasImage ? " is-visible" : "")"
                          style="max-height:120px;@(hasImage ? "" : "display:none;")" />
+                    <a href="javascript:void(0)"
+                       title="Click here to remove file"
+                       class="btn btn-sm btn-outline-danger content-thumb-link js-clear-dynamic-media@(hasImage ? " is-visible" : "")"
+                       style="@(hasImage ? "" : "display:none;")">
+                        <i class="bi bi-trash" aria-hidden="true"></i>
+                    </a>
                 </div>
             }
 
