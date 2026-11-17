@@ -73,8 +73,8 @@ Title left | copy + CTA right
 
 .left-right-heading {
   display: grid;
-  grid-template-columns: minmax(0, 760fr) minmax(0, 816fr);
-  gap: clamp(1rem, 5vw, 6rem);
+  grid-template-columns: minmax(0, 700fr) minmax(0, 730fr);
+  gap: clamp(1rem, 4vw, 4rem);
   align-items: start;
   margin-bottom: 3rem;
 }
@@ -82,11 +82,12 @@ Title left | copy + CTA right
   margin: 0 0 10px;
 }
 .left-right-heading p {
-  margin: 0;
   font-size: var(--text-22);
   line-height: 1.45;
   color: var(--color-gray-dark);
 }
+
+.left-right-heading p:last-child{ margin-bottom:0;}
 
 
 .section-intro__content p {

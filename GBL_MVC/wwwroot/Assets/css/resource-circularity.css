@@ -631,12 +631,12 @@
 .rc-energy {
   background: var(--color-gray);
 }
-.rc-energy__intro {
+/* .rc-energy__intro {
   display: grid;
   grid-template-columns: minmax(0, 640fr) minmax(0, 920fr);
   gap: clamp(2rem, 5.8vw, 7rem);
   align-items: start;
-}
+} */
 
 .rc-energy__lead p {
   margin: 0;
@@ -645,9 +645,7 @@
   color: var(--color-primary);
 }
 .rc-energy__copy p {
-  margin: 0 0 1.25rem;
-  color: var(--color-gray-dark);
-  line-height: 1.5;
+ font-size: var(--text-p);
 }
 .rc-energy__copy p:last-child {
   margin-bottom: 0;
@@ -744,11 +742,11 @@
 /* Image and copy panel */
 .rc-panel {
   display: grid;
-  grid-template-columns: minmax(0, 760fr) minmax(0, 912fr);
+  grid-template-columns:minmax(0, 700fr) minmax(0, 730fr);
   background: var(--color-gray);
 }
 .rc-panel--copy-first {
-  grid-template-columns: minmax(0, 912fr) minmax(0, 760fr);
+  grid-template-columns: minmax(0, 730fr) minmax(0, 700fr);
   background: var(--color-white);
 }
 /* Small extra height keeps the zoom low; matches data-parallax-travel="5" */
@@ -774,7 +772,7 @@
 .rc-panel__copy {
   display: flex;
   flex-direction: column;
-  padding: clamp(1.5rem, 3.4vw, 4rem);
+  padding: clamp(1.5rem, 3.4vw, 3rem);
 }
 .rc-panel__copy p {
   margin: 0;
@@ -793,7 +791,7 @@
 /* Water results */
 .rc-results {
   display: grid;
-  grid-template-columns: minmax(0, 918fr) minmax(0, 754fr);
+  grid-template-columns: minmax(0, 730fr) minmax(0, 700fr);
   margin-top: 3rem;
 }
 .rc-results__list {
