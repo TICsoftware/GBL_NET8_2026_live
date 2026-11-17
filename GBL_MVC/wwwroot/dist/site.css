@@ -1285,10 +1285,6 @@
     border-style: var(--tw-border-style);
     border-width: 5px;
   }
-  .border-r-0 {
-    border-right-style: var(--tw-border-style);
-    border-right-width: 0px;
-  }
   .border-none {
     --tw-border-style: none;
     border-style: none;
@@ -1973,12 +1969,15 @@ body {
   h1, h2, h3, h4, h5 {
     font-family: var(--font-uniNeueBold);
     color: var(--color-primary);
-    line-height: 1.05 !important;
+    line-height: 1.15 !important;
     margin-bottom: 1rem;
   }
   p {
     font-size: var(--text-p);
     margin-bottom: 1rem;
+  }
+  strong, b {
+    font-family: var(--font-uniNeueBold);
   }
   p:last-child {
     margin-bottom: 0;

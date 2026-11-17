@@ -680,6 +680,16 @@ a:active > .site-btn--line::after {
   overflow: hidden;
   position: relative;
 }
+/* Sticks beside a taller sibling column, then releases when that column ends.
+   Add .parallax-sticky on the .parallax-wrap. Parent row must not use overflow:hidden. */
+@media (min-width: 992px) {
+  .parallax-wrap.parallax-sticky {
+    position: sticky;
+    top: calc(var(--header-h, 88px) + 1.5rem);
+    align-self: start;
+    z-index: 1;
+  }
+}
 .parallax-img {
   display: block;
   width: 100%;
@@ -758,6 +768,10 @@ IMAGE card COMMON CSS
 
 
 @media all and (max-width: 1179px) {
+
+  .breadcrumb-nav, .breadcrumb-nav ol, .breadcrumb-nav li, .breadcrumb-nav a {
+    font-size: 13px;
+}
   
   .breadcrumb-nav ol {
     flex-wrap: wrap;
