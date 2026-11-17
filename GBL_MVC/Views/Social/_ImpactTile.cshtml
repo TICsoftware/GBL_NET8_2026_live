@@ -1,0 +1,63 @@
+@model GBL_BusinessLogic.Entity.ComponentModel
+@{
+    string FirstText(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value)) return value;
+        }
+        return "";
+    }
+
+    string PlainText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "";
+        var plain = System.Text.RegularExpressions.Regex.Replace(value, "<[^>]+>", " ");
+        return System.Text.RegularExpressions.Regex.Replace(plain, @"\s+", " ").Trim();
+    }
+
+    bool HasText(string? value) => !string.IsNullOrWhiteSpace(PlainText(value));
+
+    var image = FirstText(Model?.ThumbnailImage, Model?.ComponentThumbnail, Model?.Component_LHS_thumbnail);
+    var imageAlt = FirstText(Model?.ThumbnailAltText, Model?.ComponentThumbnailAltText, Model?.Title, "Impact");
+    var hasImage = !string.IsNullOrWhiteSpace(image);
+}
+
+@if (hasImage)
+{
+    var photoClass = "social-impact__photo";
+    if (!string.IsNullOrWhiteSpace(Model?.bg_class))
+    {
+        photoClass += " " + Model.bg_class.Trim();
+    }
+    <figure class="@photoClass">
+        <img src="@image" alt="@imageAlt" class="social-impact__img" loading="lazy">
+        <img src="~/Assets/images/social-impact/notch-left.svg" alt="" class="social-impact__notch social-impact__notch--left">
+    </figure>
+}
+else
+{
+    var display = FirstText(Model?.BlockDisplayTitle, Model?.DisplayTitle, Model?.Title);
+    var label = PlainText(display);
+    var match = System.Text.RegularExpressions.Regex.Match(label, @"^(?<num>\d+(?:[.,]\d+)?)(?<suffix>.*)$");
+    var target = match.Success ? match.Groups["num"].Value.Replace(",", "") : "0";
+    var suffix = match.Success ? match.Groups["suffix"].Value.Trim() : "";
+    <article class="social-impact__stat">
+        @if (!string.IsNullOrWhiteSpace(suffix))
+        {
+            <strong class="counter" data-target="@target" data-suffix="@suffix">@(string.IsNullOrWhiteSpace(label) ? "0" : label)</strong>
+        }
+        else
+        {
+            <strong class="counter" data-target="@target">@(string.IsNullOrWhiteSpace(label) ? "0" : label)</strong>
+        }
+        @if (HasText(Model?.Intro))
+        {
+            @Html.Raw(Model.Intro)
+        }
+        else if (HasText(Model?.Title))
+        {
+            <p>@PlainText(Model.Title)</p>
+        }
+    </article>
+}
