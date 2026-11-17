@@ -28,6 +28,29 @@
         .ToList();
 }
 
+@functions {
+    // Renders one footer menu item: a link when it has a URL, otherwise plain text.
+    private Microsoft.AspNetCore.Html.IHtmlContent RenderFooterLink(MenuFooter link)
+    {
+        var isExternal = link.Target == "_blank";
+
+        if (string.IsNullOrWhiteSpace(link.Url))
+        {
+            return new Microsoft.AspNetCore.Html.HtmlString(
+                $"<span class=\"{HtmlEncoder.Encode(link.IconClass ?? "")}\">{HtmlEncoder.Encode(link.Title ?? "")}</span>");
+        }
+
+        var cls = ((isExternal ? "site-footer-external " : "") + (link.IconClass ?? "")).Trim();
+        var rel = isExternal ? " rel=\"noopener noreferrer\"" : "";
+        var icon = isExternal
+            ? $"<span class=\"site-footer-ext-icon\" aria-hidden=\"true\"><img src=\"{Url.Content("~/Assets/images/common-images/external-link.svg")}\" alt=\"\" /></span>"
+            : "";
+
+        return new Microsoft.AspNetCore.Html.HtmlString(
+            $"<a href=\"{HtmlEncoder.Encode(link.Url)}\" target=\"{HtmlEncoder.Encode(link.Target ?? "")}\" class=\"{HtmlEncoder.Encode(cls)}\"{rel}>{HtmlEncoder.Encode(link.Title ?? "")}{icon}</a>");
+    }
+}
+
 <footer class="site-footer relative overflow-hidden text-white">
 
     @if (!string.IsNullOrEmpty(companyInfo?.FooterThumbImage))
@@ -42,7 +65,7 @@
     <div class="container relative z-10">
 
         <div class="site-footer-grid section-spacing-sm">
-            <div class="site-footer-col">
+            <div class="site-footer-col site-footer-company">
                 @if (!string.IsNullOrEmpty(companyInfo?.Title))
                 {
                     <h5 class="site-footer-heading">@companyInfo.Title</h5>
@@ -50,7 +73,12 @@
 
                 @if (!string.IsNullOrEmpty(companyInfo?.Description))
                 {
-                    @Html.Raw(companyInfo.Description)
+                    @* Mobile-only toggle: reveals the full address (CSS in header-footer.css) *@
+                    <input type="checkbox" id="site-footer-addr-toggle" class="site-footer-addr-toggle" />
+                    <div class="site-footer-company-body">
+                        @Html.Raw(companyInfo.Description)
+                    </div>
+                    <label for="site-footer-addr-toggle" class="site-footer-addr-label">View full address</label>
                 }
             </div>
 
@@ -68,28 +96,42 @@
                     @if (hasLinks)
                     {
                         <ul class="site-footer-nav">
-                            @foreach (var link in links)
+                            @for (var i = 0; i < links.Count; i++)
                             {
-                                <li>
-                                    @if (!string.IsNullOrWhiteSpace(link.Url))
+                                var link = links[i];
+                                var isGroupHeading = (link.IconClass ?? "").Contains("site-footer-heading");
+
+                                @* A heading item (e.g. Business) owns the "site-footer-links-sub" items that follow it *@
+                                var subLinks = new List<MenuFooter>();
+                                if (isGroupHeading)
+                                {
+                                    while (i + 1 < links.Count && (links[i + 1].IconClass ?? "").Contains("site-footer-links-sub"))
                                     {
-                                        <a href="@link.Url" target="@link.Target"
-                                           class="@(link.Target == "_blank" ? "site-footer-external" : "") @link.IconClass"
-                                           rel="@(link.Target == "_blank" ? "noopener noreferrer" : null)">
+                                        subLinks.Add(links[++i]);
+                                    }
+                                }
 
-                                            @link.Title
-
-                                            @if (link.Target == "_blank")
-                                            {
-                                                <span class="site-footer-ext-icon" aria-hidden="true">
-                                                    <img src="@Url.Content("~/Assets/images/common-images/external-link.svg")" alt="" />
-                                                </span>
-                                            }
-                                        </a>
+                                <li class="@(subLinks.Any() ? "site-footer-group" : null)">
+                                    @if (!subLinks.Any())
+                                    {
+                                        @RenderFooterLink(link)
                                     }
                                     else
                                     {
-                                        <span class="@link.IconClass">@link.Title</span>
+                                        var toggleId = $"site-footer-sub-{link.FooterId}";
+                                        <span class="site-footer-split">
+                                            @RenderFooterLink(link)
+                                            @* Mobile-only toggle (split chip arrow); hidden on desktop via CSS *@
+                                            <input type="checkbox" id="@toggleId" class="site-footer-subtoggle"
+                                                   aria-label="Show @link.Title links" />
+                                            <label for="@toggleId" class="site-footer-subtoggle-btn" aria-hidden="true"></label>
+                                        </span>
+                                        <ul class="site-footer-subnav">
+                                            @foreach (var sub in subLinks)
+                                            {
+                                                <li>@RenderFooterLink(sub)</li>
+                                            }
+                                        </ul>
                                     }
                                 </li>
                             }
