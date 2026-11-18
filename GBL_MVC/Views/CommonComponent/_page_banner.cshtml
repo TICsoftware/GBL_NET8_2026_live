@@ -5,7 +5,7 @@
 @{
     var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage : "/Assets/images/banners/blank-banner.webp";
     var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage : "/Assets/images/banners/blank-banner.webp";
-    var title = !string.IsNullOrWhiteSpace(Model?.ContHmpgTitle) ? Model.ContHmpgTitle : Model?.ContTitle ?? "";
+    var title = !string.IsNullOrWhiteSpace(Model?.ContTitle) ? Model.ContTitle : Model?.ContHmpgTitle ?? "";
     var requestPath = Context?.Request?.Path.Value ?? Model?.PageName ?? "";
     var crumbFromCms = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "";
     var crumb = BreadcrumbHelper.ForSustainability(requestPath, Model, crumbFromCms);

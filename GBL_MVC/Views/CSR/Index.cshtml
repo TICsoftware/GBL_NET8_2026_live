@@ -1,0 +1,214 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@using Microsoft.AspNetCore.Razor.Language
+@model GBL_BusinessLogic.Entity.CSRModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "CSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+    var componentLists = Model?.ListComponents ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var sections = componentLists.Where(x => x.IsBlock == 0).OrderBy(x => x.Sequence).ToList();
+}
+
+
+@section head {
+    <title>@(content?.cont_window_title)</title>
+
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+    <meta itemprop="name" content="Godavari Biorefineries" />
+    <meta itemprop="description" content="@(content?.cont_metadesc)" />
+    <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/csr.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER -->
+@if (Model?.Content != null)
+{
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END-->
+
+<!--PAGE INTRO OUTER--> 
+   <section class="page-intro-outer page-intro-outer--mantra csr-philosophy section-spacing">
+      <div class="container">
+         <div class="title-section">
+            <h2 class="text-h2">@Html.Raw(content?.ContHmpgTitle)</h2>
+         </div>
+         <div class="page-intro-mantra">
+            <blockquote class="page-intro-mantra__quote">
+               @Html.Raw(content?.Cont_hmpg_intro)
+            </blockquote>
+            <div class="page-intro-mantra__copy">
+               @Html.Raw(content?.Cont_intro) 
+               @Html.Raw(content?.Content)
+            </div>
+         </div>
+      </div>
+   </section>
+<!--PAGE INTRO OUTER END-->
+
+
+@foreach (var itemsection in sections)
+{
+    var blocks = componentLists
+        .Where(x => x.IsBlock == 1 && x.context_master_id == itemsection.context_master_id)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+    var sectionTitle = !string.IsNullOrWhiteSpace(itemsection.Title) ? itemsection.Title : itemsection.DisplayTitle;
+    var sectionIntro = itemsection.Intro ?? string.Empty;
+    var sectionBackground = itemsection.Componentbackground ?? string.Empty;
+    if(string.IsNullOrWhiteSpace(sectionBackground) && string.IsNullOrWhiteSpace(sectionIntro))
+    {
+        if(itemsection.Sequence == 1)
+        {
+            <section class="csr-approach section-spacing">
+                <div class="container">
+                    <div class="title-section">
+                        <h2 class="text-h2">@Html.Raw(sectionTitle)</h2>
+                    </div>                    
+                    @if(blocks != null && blocks.Count > 0)
+                    {
+                        <div class="csr-grid">
+                        @foreach (var item in blocks)
+                        {
+                            <article class="csr-approach-card">
+                                <div>
+                                    <h3 class="csr-title">@Html.Raw(item.Title)</h3>
+                                    <p>@Html.Raw(item.Intro)</p>
+                                </div>
+                                <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText"  class="csr-approach-card__icon">
+                            </article>
+                        }
+                        </div>
+                    } 
+                </div>
+            </section>
+        }
+        else
+        {
+            <section class="csr-focus section-spacing">
+                <div class="container">
+                    <div class="title-section">
+                        <h2 class="text-h2">@Html.Raw(sectionTitle)</h2>
+                    </div>
+                    @if(blocks != null && blocks.Count > 0)
+                    {
+                        <div class="csr-grid csr-focus-grid">
+                            @foreach (var item in blocks)
+                            {
+                                <article class="csr-focus-card">
+                                    <div class="csr-focus-card__media">
+                                        <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" loading="lazy" />
+                                    </div>
+                                    <div class="csr-focus-card__body">
+                                        <h3 class="csr-title">@Html.Raw(item.Title)</h3>
+                                        <p>@Html.Raw(item.Intro)</p>
+                                        <a href="@item.Url" class="csr-readmore" aria-label="@Html.Raw(item.Title)>
+                                            <img src="~/Assets/images/csr/arrow-forward.svg" alt="" >
+                                            <span>@item.Url_Text</span>
+                                        </a>
+                                    </div>
+                                </article>
+                            }
+                        </div>
+                    } 
+                </div>
+            </section>
+        }
+    }
+    else if(!string.IsNullOrWhiteSpace(sectionBackground) && !string.IsNullOrWhiteSpace(sectionIntro))
+    {
+        <section class="csr-progress section-spacing">
+            <div class="container">
+                <div class="csr-progress__panel">
+                    <img src="@sectionBackground" alt="@itemsection.ComponentbackgroundAltText" class="csr-progress__bg" loading="lazy" />
+                    <div class="csr-progress__content">
+                        <div class="csr-progress__copy">
+                            <h3 class="csr-title">@Html.Raw(sectionTitle)</h3>
+                            <p> @Html.Raw(sectionIntro)</p>
+                        </div>
+                        @if(blocks != null && blocks.Count > 0)
+                        {
+                            <div class="csr-sdgs">
+                            @foreach (var item in blocks)
+                            {
+                                @if(!string.IsNullOrWhiteSpace(item.ComponentThumbnail))
+                                {
+                                    <div class="csr-sdg"><img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" loading="lazy" /></div>
+                                }
+                            } 
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+         <section class="csr-impact">
+            @if(!string.IsNullOrWhiteSpace(sectionBackground))
+            {
+            <img src="@sectionBackground" alt="@itemsection.ComponentbackgroundAltText" class="csr-impact__bg" loading="lazy">
+            }
+            <div class="container csr-impact__inner">
+                <div class="title-section">
+                    <h2 class="text-h2 text-white">@Html.Raw(sectionTitle)</h2>
+                </div>
+                @if(blocks != null && blocks.Count > 0)
+                {
+                    <ul class="csr-stats">
+                        @foreach (var item in blocks)
+                        {
+                            <li class="csr-stat">
+                                <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" class="csr-stat__icon" />
+                                @Html.Raw(item.HmpgIntro)
+                                <span>@Html.Raw(item.Title)</span>
+                            </li>
+                        }
+                    </ul>
+                }                
+            </div>
+        </section>
+    }
+  
+}
+
+
+@section Scripts {
+   <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/odometer-counter-script.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/csr-script.js" asp-append-version="true"></script>
+}

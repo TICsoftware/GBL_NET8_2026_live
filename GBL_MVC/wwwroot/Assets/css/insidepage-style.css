@@ -6,7 +6,7 @@ INSIDE BANNER CSS
   will-change: transform;
   backface-visibility: hidden;
 }
-.innerbanner-caption{ bottom:80px; top:inherit;}
+.innerbanner-caption{ bottom:60px; top:inherit;}
 .innerbanner-overlay {
   position: absolute;
   inset: 0;
