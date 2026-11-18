@@ -1,6 +1,6 @@
- 
-using Microsoft.AspNetCore.Mvc; 
-using GBL_BusinessLogic.BAL; 
+
+using Microsoft.AspNetCore.Mvc;
+using GBL_BusinessLogic.BAL;
 using GBL_BusinessLogic.Entity;
 namespace GBL_MVC.Controllers;
 
@@ -20,14 +20,23 @@ public class CSRController : Controller
 
     public IActionResult Index(string title)
     {
+        string pagetitle = "";
         try
         {
+            pagetitle = title;
+            if (string.IsNullOrWhiteSpace(pagetitle))
+            {
+                pagetitle = "corporate-social-responsibility";
+            }
+            var data = _bal.GetPageData_GroupedComponents_BAL(pagetitle, 1, 1);
             if (string.IsNullOrWhiteSpace(title))
             {
-                title = "corporate-social-responsibility";
+                return View(data);
             }
-            var data = _bal.GetPageData_GroupedComponents_BAL(title, 1, 1);
-            return View(data);
+            else
+            {
+                return View("Inside", data);
+            }
         }
         catch (Exception ex)
         {
