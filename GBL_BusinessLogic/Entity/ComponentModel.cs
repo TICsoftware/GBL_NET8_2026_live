@@ -7,9 +7,9 @@ namespace GBL_BusinessLogic.Entity
 {
     public class ComponentModel
     {
-        public int cont_id{get;set;}
+        public int cont_id { get; set; }
         public string GroupId { get; set; }
-
+        public int context_master_id { get; set; }
         public string Title { get; set; }
         public string Intro { get; set; }
         public string HmpgIntro { get; set; }
@@ -81,7 +81,7 @@ namespace GBL_BusinessLogic.Entity
         public string bg_class { get; set; }
         public string year { get; set; }
 
-            // Resource Circularity / chart fields
+        // Resource Circularity / chart fields
         public string DataKey { get; set; }
         public string DataValue { get; set; }
         public string DataDraw { get; set; }

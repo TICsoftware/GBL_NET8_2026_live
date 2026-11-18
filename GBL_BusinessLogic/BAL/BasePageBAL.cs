@@ -96,7 +96,9 @@ namespace GBL_BusinessLogic.BAL
                             GetColumnString(row, "File_path"),
                             GetColumnString(row, "field_media_path")),
                         sequence = group.Key.Sequence,
-                        IsBlock = group.Key.IsBlock
+                        IsBlock = group.Key.IsBlock,
+                        context_master_id = row.Field<int>("context_master_id"),
+
                     }).ToList()
                 }).OrderBy(x => x.Fields.First().sequence).ToList();
         }
@@ -132,7 +134,8 @@ namespace GBL_BusinessLogic.BAL
                 {
                     GroupId = group.GroupId,
                     cont_id = group.cont_id,
-                    Title = Config_Application_Website.GetValue(dict, "Title", "Component Title", "component title"),
+                    context_master_id = group.Fields.FirstOrDefault()?.context_master_id ?? 0,   
+                    Title = Config_Application_Website.GetValue(dict, "Title", "Component Title", "component title", "Component main title", "Main title"),
                     Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro", "component intro", "Component intro"),
                     HmpgIntro = Config_Application_Website.GetValue(dict, "Landing intro", "Component Landing intro"),
                     DisplayTitle = Config_Application_Website.GetValue(dict, "Component Display title"),
@@ -249,5 +252,43 @@ namespace GBL_BusinessLogic.BAL
 
             return result;
         }
+
+        /// <summary>
+        /// Builds a separate ComponentModel list for every distinct context_master_id.
+        /// </summary>
+        public Dictionary<int, List<ComponentModel>> MapComponentsByContextMasterId(List<ComponentGroup> groupedData)
+        {
+            var result = new Dictionary<int, List<ComponentModel>>();
+            if (groupedData == null || groupedData.Count == 0)
+                return result;
+
+            var mapped = groupedData
+                .Select(g => g.Sequence)
+                .Distinct()
+                .OrderBy(seq => seq)
+                .SelectMany(seq =>
+                {
+                    var list = MapComponents(groupedData, seq);
+                    foreach (var item in list)
+                    {
+                        if (item.Sequence <= 0)
+                            item.Sequence = seq;
+                    }
+                    return list;
+                })
+                .ToList();
+
+            foreach (var masterId in mapped.Select(x => x.context_master_id).Distinct().OrderBy(id => id))
+            {
+                result[masterId] = mapped
+                    .Where(x => x.context_master_id == masterId)
+                    .OrderBy(x => x.IsBlock)
+                    .ThenBy(x => x.Sequence)
+                    .ToList();
+            }
+
+            return result;
+        }
+ 
     }
 }

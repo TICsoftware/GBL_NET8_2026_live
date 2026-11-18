@@ -15,7 +15,7 @@ namespace GBL_BusinessLogic.Entity
 
     public class ComponentGroup
     {
-        public int cont_id {get;set;}
+        public int cont_id { get; set; }
         public string GroupId { get; set; }
         public int Sequence { get; set; }
         public List<ComponentField> Fields { get; set; } = new List<ComponentField>();
@@ -23,7 +23,7 @@ namespace GBL_BusinessLogic.Entity
 
     public class ComponentField
     {
-        public int cont_id {get;set;}
+        public int cont_id { get; set; }
         public string GroupId { get; set; }   // ADD THIS
         public string FieldName { get; set; }
         public string FieldKey { get; set; }
@@ -33,6 +33,7 @@ namespace GBL_BusinessLogic.Entity
         public string popup_content { get; set; }
         public int sequence { get; set; }
         public int IsBlock { get; set; }
+        public int context_master_id { get; set; }
     }
 
     public class ContentViewModel
