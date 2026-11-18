@@ -66,10 +66,6 @@ PRODUCT INSIDE — split banner
     grid-template-columns: 1fr;
   }
 
-  .product-inside-banner__media {
-    order: -1;
-  }
-
   .product-inside-banner__intro {
     max-width: none;
   }
