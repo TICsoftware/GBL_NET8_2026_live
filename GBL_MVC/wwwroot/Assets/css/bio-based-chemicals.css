@@ -28,15 +28,7 @@
   padding-block: clamp(2.5rem, 3.3vw, 4rem) clamp(3rem, 6.25vw, 7.5rem);
   background: var(--color-gray);
 }
-.bbc-intro__copy {
-  max-width: 1102px;
-  margin-inline: auto;
-  color: var(--color-gray-dark);
-}
-.bbc-intro__copy p {
-  margin: 0;
-  font-size: var(--text-p);
-}
+
 .bbc-intro__copy .bbc-intro__lead {
   margin-bottom: 2rem;
   font-size: var(--text-intro);

@@ -24,17 +24,7 @@
   color: var(--color-white, #fff);
 }
 
-.business-title {
-  max-width: 776px;
-  margin: 0 0 1.5rem;
-  color: var(--color-primary);
-}
-.business-title--chemicals {
-  max-width: 703px;
-}
-.business-title--biofuels {
-  max-width: 588px;
-}
+
 .business-section--dark .business-title {
   color: var(--color-white, #fff);
 }
@@ -53,9 +43,9 @@
   color: #fff;
 }
 
-.business-body {
+/* .business-body {
   max-width: 776px;
-}
+} */
 .business-body p {
   margin: 0;
   font-size: var(--text-p);
@@ -98,6 +88,10 @@
 .business-section--dark .business-split,
 .business-section--dark .business-split.reverse {
   background: transparent;
+}
+
+.business-section--dark .business-split__copy{
+   padding:0 clamp(1.5rem, 3.4vw, 3rem);
 }
 
 .business-split--center {
