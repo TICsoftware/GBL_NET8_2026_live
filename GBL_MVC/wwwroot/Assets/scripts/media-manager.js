@@ -399,10 +399,28 @@
         const nonImageTypes = ["pdf", "mp3", "mp4", "zip"];
         const isNonImage = nonImageTypes.includes(ext);
     
-        // hidden fields
-        $(window.sourceControl).next("input[type='hidden']").val(select_mediaId);
-    
-        const $group = $(window.sourceControl).closest(".form-group");
+        const $group = $(window.sourceControl).closest(".form-group, .dynamic-media-field").length
+            ? $(window.sourceControl).closest(".form-group, .dynamic-media-field")
+            : $(window.sourceControl).closest(".mb-3");
+
+        // Prefer dynamic soft-template media fields; fall back to content-page immediate/next hidden.
+        let $hiddenTarget = $();
+        if ($group.length) {
+            $hiddenTarget = $group.find("input[type='hidden'][name$='_new']").first();
+            if (!$hiddenTarget.length) {
+                $hiddenTarget = $group.find("input[type='hidden'][name$='_existing']").first();
+            }
+        }
+        if (!$hiddenTarget.length) {
+            $hiddenTarget = $(window.sourceControl).next("input[type='hidden']");
+        }
+        if (!$hiddenTarget.length) {
+            $hiddenTarget = $(window.sourceControl).nextAll("input[type='hidden']").first();
+        }
+        if ($hiddenTarget.length) {
+            $hiddenTarget.val(select_mediaId);
+        }
+
         const imgPreview = $group.find(".imgPreview").first().length
             ? $group.find(".imgPreview").first()
             : $(window.sourceControl).nextAll(".imgPreview:first");
@@ -410,7 +428,7 @@
             ? $group.find(".filePreview").first()
             : $(window.sourceControl).nextAll(".filePreview:first");
         const fileLink = filePreview.find(".fileLink");
-        const deleteLink = $group.find(".content-thumb-link, .js-clear-content-media").first();
+        const deleteLink = $group.find(".content-thumb-link, .js-clear-content-media, .js-clear-dynamic-media").first();
 
         // keep path string hidden in sync (exact path fields only — never alttext)
         $group.find("input[type='hidden']").each(function () {

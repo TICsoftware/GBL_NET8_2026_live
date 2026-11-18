@@ -160,7 +160,7 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.4375rem;
+  gap:0.75rem;
 }
 
 .list-icon:first-child {
@@ -171,9 +171,9 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
   position: relative;
   margin: 0;
   padding-left: 1rem;
-  color: var(--color-gray-dark, #565b65);
-  font-size: var(--text-p, 1rem);
-  line-height: 1.45;
+  color: var(--color-primary, #67815a);
+  font-size: var(--text-p);
+  line-height: 1.5;
 }
 
 .list-icon li::before {
@@ -188,27 +188,193 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 
 
 
+/* Data table (tech-overview) */
+.technical-Safety-outer .tech-overview {
+  width: 100%;
+}
 .technical-Safety-outer .tech-overview table {
   width: 100%;
-  border-collapse: collapse;
+  margin: 0.5rem 0 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #dfe5da;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--color-white, #fff);
+  line-height: 1.5;
 }
-
+.technical-Safety-outer .tech-overview table p {
+  margin: 0;
+}
 .technical-Safety-outer .tech-overview table th,
 .technical-Safety-outer .tech-overview table td {
-  padding: 0.85rem 1.1rem;
+  padding: 0.6rem 1rem;
   text-align: left;
   font-size: var(--text-p);
+  line-height: 1.4;
   vertical-align: top;
 }
-
-.technical-Safety-outer .tech-overview table thead th,
-.technical-Safety-outer .tech-overview table tr:first-child th {
-  background: var(--color-gray, #f4f4f4);
-  font-weight: 700;
+/* Title row (th with colspan) */
+.technical-Safety-outer .tech-overview table thead th[colspan] {
+  background: var(--color-secondary, #67815a);
+  color: var(--color-white, #fff);
+  font-size: 1.15rem;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  letter-spacing: 0.01em;
+}
+/* Column header row */
+.technical-Safety-outer .tech-overview table thead th:not([colspan]) {
+  background: #eef2ea;
+  color: #3f5236;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--color-secondary, #67815a);
+}
+.technical-Safety-outer .tech-overview table tbody td {
+  color: var(--color-gray-dark, #565b65);
+  border-bottom: 1px solid #edf0ea;
+  transition: background-color 0.2s ease;
+}
+.technical-Safety-outer .tech-overview table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.technical-Safety-outer .tech-overview table tbody tr:nth-child(even) td {
+  background: #fafbf8;
+}
+.technical-Safety-outer .tech-overview table tbody tr:hover td {
+  background: #f1f5ee;
+}
+/* First column: item name */
+.technical-Safety-outer .tech-overview table tbody td:first-child {
+  color: var(--color-primary, #282b31);
+  font-weight: 600;
+  width: 34%;
+}
+/* Last column (benefits) */
+.technical-Safety-outer .tech-overview table tbody td:last-child:not(:first-child) {
+  color: #4f6a43;
 }
 
-.technical-Safety-outer .tech-overview table tbody td {
-  border-bottom: 1px solid rgba(40, 43, 49, 0.12);
+/* Mobile: same table as desktop, tighter spacing; scrolls sideways if too wide */
+@media (max-width: 767px) {
+  .ld-split__copy:has(.technical-Safety-outer),
+  .ld-split__copy .technical-Safety-outer {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+  .technical-Safety-outer .tech-overview {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+  .technical-Safety-outer .tech-overview table {
+    width: 640px;
+    min-width: 640px;
+    max-width: none;
+    table-layout: fixed;
+  }
+  .technical-Safety-outer .tech-overview table thead th:not([colspan]) {
+    white-space: normal;
+  }
+  .technical-Safety-outer .tech-overview table th,
+  .technical-Safety-outer .tech-overview table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  .technical-Safety-outer .tech-overview table thead th[colspan] {
+    padding: 0.65rem 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+
+
+/* Product inside pages: Technical Overview table (vertical th/td rows and horizontal thead tables) */
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #dfe5da;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--color-white, #fff);
+  table-layout: auto;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table p {
+  margin: 0;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table th,
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table td {
+  padding: 0.6rem 1rem;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--color-gray-dark, #565b65);
+  background: var(--color-white, #fff);
+  border-bottom: 1px solid #edf0ea;
+  white-space: normal;
+}
+/* Label column (first cell of every body row, th or td) */
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr > :first-child {
+  width: 46%;
+  background: #eef2ea;
+  color: #3f5236;
+  font-weight: 600;
+  /* border-right: 2px solid var(--color-secondary, #67815a); */
+  border-bottom-color: #dfe5da;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr > :first-child strong {
+  font-weight: inherit;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr > :last-child:not(:first-child) {
+  color: var(--color-gray-dark, #565b65);
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr > * {
+  transition: background-color 0.2s ease;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr:hover > * {
+  background: #f6f8f3;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr:hover > :first-child {
+  background: #e3eadb;
+}
+/* Horizontal tables: heading row */
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table thead th,
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table thead th:not([colspan]) {
+  background: var(--color-secondary, #67815a);
+  color: var(--color-white, #fff);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  border-bottom: 0;
+}
+.technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table thead th:first-child {
+  border-right: 2px solid var(--color-secondary, #67815a);
+}
+
+@media (max-width: 767px) {
+  .technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: auto;
+  }
+  .technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table th,
+  .technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table td {
+    padding: 0.5rem 0.75rem;
+  }
+  .technical-Safety-outer .technical-safety-grid .tech-overview .tech-overview-table tbody tr > :first-child {
+    width: 48%;
+  }
 }
 
 
@@ -235,14 +401,19 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 }
 
 @media all and (max-width: 1179px) {
-  .innerbanner-image-wrapper{ height:auto !important;}
+  .innerbanner-image-wrapper{ height:55vw !important;}
+  .innerbanner-image-wrapper picture{ height:100% !important;}
+
   .inside-banner-outer .innerbanner-image{ position: relative;}
   .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:20px 0; text-align: center; background:#fff}
   .innerbanner-caption *{ color: var(--text-black);}
   .innerbanner-caption .breadcrumb-nav{ margin-bottom: 0;}
+  .innerbanner-caption .addon-section-title{ color:#fff;}
 
   .page-intro-inner{width: 100%;}
   .page-intro-inner, .middle-container .container{ max-width:min(100vw, 1100px);}
+
+  .innerbanner-overlay{ background: linear-gradient(0deg, rgb(0 0 0 / 33%) 0%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0) 93%); }
 }
 
 

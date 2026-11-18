@@ -9,6 +9,7 @@
     var requestPath = Context?.Request?.Path.Value ?? Model?.PageName ?? "";
     var crumbFromCms = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "";
     var crumb = BreadcrumbHelper.ForSustainability(requestPath, Model, crumbFromCms);
+    // var crumb = "";
     if (string.IsNullOrWhiteSpace(crumb))
     {
         crumb = string.IsNullOrWhiteSpace(crumbFromCms) ? "Products" : crumbFromCms;

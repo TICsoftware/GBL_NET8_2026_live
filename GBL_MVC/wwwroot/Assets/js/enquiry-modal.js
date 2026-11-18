@@ -44,9 +44,21 @@
     if (panel) {
       panel.style.transition = "";
       panel.style.transform = "";
+      panel.style.zoom = "";
     }
     if (backdrop) backdrop.style.opacity = "";
     unlockPage();
+  }
+
+  function fitPanel() {
+    if (!panel || !modal.open) return;
+    panel.style.zoom = "";
+    var pad = window.getComputedStyle(modal);
+    var available = window.innerHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) - 4;
+    var needed = panel.offsetHeight;
+    if (needed > available && available > 0) {
+      panel.style.zoom = String(Math.max(0.62, available / needed));
+    }
   }
 
   function openModal(trigger) {
@@ -60,9 +72,11 @@
     if (scroller) scroller.scrollTop = 0;
     modal.classList.remove("is-closing");
     void modal.offsetWidth;
+    fitPanel();
     requestAnimationFrame(function () {
       if (closing || !modal.open) return;
       modal.classList.add("is-open");
+      fitPanel();
     });
   }
 
@@ -101,5 +115,10 @@
   modal.addEventListener("close", function () {
     unlockPage();
     modal.classList.remove("is-open", "is-closing");
+    if (panel) panel.style.zoom = "";
+  });
+
+  window.addEventListener("resize", function () {
+    if (modal.open) fitPanel();
   });
 })();

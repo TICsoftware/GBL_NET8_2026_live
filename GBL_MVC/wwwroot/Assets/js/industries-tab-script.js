@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var wrapRect = tabsWrap.getBoundingClientRect();
     var tabRect = tab.getBoundingClientRect();
-    var x = tabRect.left - wrapRect.left;
+    /* + scrollLeft: on mobile the tab row scrolls sideways, and the thumb lives in the scrolled content */
+    var x = tabRect.left - wrapRect.left + tabsWrap.scrollLeft;
     var width = tabRect.width;
 
     if (!canAnimate || !animate) {
@@ -190,6 +191,20 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /** Show the panel that matches the clicked tab. */
+  /* Mobile: if the tab row scrolls sideways, centre the chosen tab in it.
+     Scrolls only the tab row (never the page), so it doesn't fight smooth-scroll. */
+  function revealTab(tab, animate) {
+    if (!tabsWrap || tabsWrap.scrollWidth <= tabsWrap.clientWidth + 1) return;
+    var target = tab.offsetLeft - (tabsWrap.clientWidth - tab.offsetWidth) / 2;
+    var max = tabsWrap.scrollWidth - tabsWrap.clientWidth;
+    target = Math.max(0, Math.min(max, target));
+    if (typeof tabsWrap.scrollTo === "function") {
+      tabsWrap.scrollTo({ left: target, behavior: animate ? "smooth" : "auto" });
+    } else {
+      tabsWrap.scrollLeft = target;
+    }
+  }
+
   function activateTab(tab, animate) {
     var id = tab.getAttribute("data-tab");
     var nextPanel = null;
@@ -208,6 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     moveThumb(tab, animate);
+    revealTab(tab, animate);
 
     if (nextPanel && canAnimate) {
       requestAnimationFrame(function () {
@@ -230,6 +246,43 @@ document.addEventListener("DOMContentLoaded", function () {
   }) || tabs[0];
 
   if (startTab) activateTab(startTab, false);
+
+  /* Edge fades (CSS mask): flag each side that still has tabs scrolled out of view */
+  function updateTabFades() {
+    if (!tabsWrap) return;
+    var max = tabsWrap.scrollWidth - tabsWrap.clientWidth;
+    var left = tabsWrap.scrollLeft;
+    tabsWrap.classList.toggle("has-more-left", max > 1 && left > 2);
+    tabsWrap.classList.toggle("has-more-right", max > 1 && left < max - 2);
+  }
+
+  /* Arrow buttons on top of the fades (mobile only via CSS): tap to slide the tab row.
+     Convenience only — swipe and keyboard still work — so they stay out of the tab order. */
+  function addTabArrow(dir) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "industry-tabs__arrow industry-tabs__arrow--" + dir;
+    btn.setAttribute("aria-hidden", "true");
+    btn.tabIndex = -1;
+    btn.addEventListener("click", function () {
+      var step = Math.max(120, tabsWrap.clientWidth * 0.6) * (dir === "prev" ? -1 : 1);
+      if (typeof tabsWrap.scrollBy === "function") {
+        tabsWrap.scrollBy({ left: step, behavior: reduceMotion ? "auto" : "smooth" });
+      } else {
+        tabsWrap.scrollLeft += step;
+      }
+    });
+    if (dir === "prev") tabsWrap.insertBefore(btn, tabsWrap.firstChild);
+    else tabsWrap.appendChild(btn);
+  }
+
+  if (tabsWrap) {
+    addTabArrow("prev");
+    addTabArrow("next");
+    tabsWrap.addEventListener("scroll", updateTabFades, { passive: true });
+    window.addEventListener("resize", updateTabFades);
+    updateTabFades();
+  }
 
   window.addEventListener("load", refreshTriggers);
   window.setTimeout(refreshTriggers, 400);

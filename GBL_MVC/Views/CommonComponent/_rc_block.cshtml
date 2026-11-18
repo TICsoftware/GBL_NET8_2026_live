@@ -27,7 +27,7 @@
     <div class="container">
         @if (!string.IsNullOrWhiteSpace(item.Title) || !string.IsNullOrWhiteSpace(item.Intro))
         {
-            <div class="rc-head">
+            <div class="rc-head left-right-heading">
                 @if (!string.IsNullOrWhiteSpace(item.Title))
                 {
                     <h2 class="text-h2">@Html.Raw(item.Title.CleanParagraphTags())</h2>
@@ -50,7 +50,7 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(img))
                 {
-                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap" data-parallax-travel="5">
+                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@img" alt="@alt" class="parallax-img" loading="lazy">
                     </figure>
                 }
@@ -59,7 +59,7 @@
             {
                 @if (!string.IsNullOrWhiteSpace(img))
                 {
-                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap" data-parallax-travel="5">
+                    <figure class="rc-panel__media@(string.IsNullOrWhiteSpace(mediaMod) ? "" : " " + mediaMod) parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@img" alt="@alt" class="parallax-img" loading="lazy">
                     </figure>
                 }
@@ -72,7 +72,9 @@
             }
         </div>
 
-        
+          @if (!string.IsNullOrWhiteSpace(item.Component_LHS_intro) && !string.IsNullOrWhiteSpace(item.Component_RHS_intro))
+
+                {
             <div class="rc-results">
                @if (!string.IsNullOrWhiteSpace(item.Component_LHS_intro))
                 {
@@ -84,6 +86,7 @@
                  @Html.Raw(item.Component_RHS_intro)
                 }
             </div>
+            }
        
     </div>
 </section>

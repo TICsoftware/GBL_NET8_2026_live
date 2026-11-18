@@ -96,7 +96,7 @@
                         <h3 class="text-h5">@item.Title</h3>
                         @if (!string.IsNullOrWhiteSpace(item.Intro))
                         {
-                           <p>@Html.Raw(item.Intro.CleanParagraphTags())</p>
+                           @Html.Raw(item.Intro)
                         }
 
                         @if (!string.IsNullOrWhiteSpace(item.Url))

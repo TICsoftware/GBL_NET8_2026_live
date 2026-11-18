@@ -1016,18 +1016,20 @@ $(document)
         e.preventDefault();
         e.stopPropagation();
 
-        var $group = $(this).closest(".form-group");
+        var $group = $(this).closest(".form-group, .dynamic-media-field");
         if (!$group.length) return;
 
         $group.find(".imgPreview").attr("src", "").removeClass("is-visible").addClass("d-none").hide();
         $group.find(".filePreview").removeClass("is-visible").addClass("d-none").hide();
         $group.find(".fileLink").attr("href", "#");
-        $group.find(".content-thumb-link, .js-clear-content-media").removeClass("is-visible").addClass("d-none").hide();
+        $group.find(".content-thumb-link, .js-clear-content-media, .js-clear-dynamic-media").removeClass("is-visible").addClass("d-none").hide();
 
         $group.find("input[type='hidden']").each(function () {
             var name = (this.name || "").toLowerCase();
             if (!name) return;
-            if (name.endsWith("_id") || name.indexOf("media_id") >= 0) {
+            if (name.endsWith("_new") || name.endsWith("_existing")) {
+                $(this).val("");
+            } else if (name.endsWith("_id") || name.indexOf("media_id") >= 0) {
                 $(this).val("0");
             } else if (name.endsWith("_isdelete") || name.indexOf("isdelete") >= 0) {
                 $(this).val("true");

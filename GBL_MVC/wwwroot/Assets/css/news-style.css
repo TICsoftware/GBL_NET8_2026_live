@@ -178,7 +178,7 @@ NEWS — tabs, filters, press + media cards
 
 .media-coverage-card time {
   display: block;
-  margin: 0 0 0.85rem;
+  /* margin: 0 0 0.85rem; */
   color: var(--ink-soft, #6b6664);
   font-size: var(--text-small, 0.875rem);
   line-height: 1.3;
