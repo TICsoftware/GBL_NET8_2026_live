@@ -20,16 +20,24 @@ document.addEventListener("DOMContentLoaded", function () {
     card.style.setProperty("--hr", radius + "px");
   }
 
-  grid.querySelectorAll(".product-card").forEach(function (card) {
-    placeFill(card, null);
-    card.addEventListener("mouseenter", function (e) {
-      placeFill(card, e);
-      card.classList.add("is-filled");
+  function bindHover(cards) {
+    (cards || grid.querySelectorAll(".product-card")).forEach(function (card) {
+      if (card.getAttribute("data-product-hover-bound") === "1") return;
+      card.setAttribute("data-product-hover-bound", "1");
+      placeFill(card, null);
+      card.addEventListener("mouseenter", function (e) {
+        placeFill(card, e);
+        card.classList.add("is-filled");
+      });
+      card.addEventListener("mouseleave", function () {
+        card.classList.remove("is-filled");
+      });
     });
-    card.addEventListener("mouseleave", function () {
-      card.classList.remove("is-filled");
-    });
-  });
+  }
+
+  bindHover();
+
+  window.bindProductCardHover = bindHover;
 
   window.addEventListener("resize", function () {
     grid.querySelectorAll(".product-card").forEach(function (card) {
@@ -51,8 +59,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var grid = document.querySelector(".product-filter-grid");
   if (!grid) return;
-  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+    // Hover still works; expose a no-op refresh that only binds hover.
+    window.refreshProductCardAnimation = function () {
+      if (typeof window.bindProductCardHover === "function") {
+        window.bindProductCardHover();
+      }
+    };
+    return;
+  }
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.refreshProductCardAnimation = function () {
+      if (typeof window.bindProductCardHover === "function") {
+        window.bindProductCardHover();
+      }
+    };
+    return;
+  }
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -125,6 +148,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function rebuild() {
+    if (typeof window.bindProductCardHover === "function") {
+      window.bindProductCardHover();
+    }
     allCards().forEach(function (card) {
       gsap.set(card, { clearProps: "transform,opacity,visibility" });
     });

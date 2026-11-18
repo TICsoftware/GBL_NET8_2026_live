@@ -132,18 +132,30 @@
       $loadMore.toggle((currentPage * pageSize) < (total || 0));
     }
 
+    function refreshCardEffects() {
+      if (typeof window.refreshProductCardAnimation === "function") {
+        window.refreshProductCardAnimation();
+        return;
+      }
+      if (typeof window.bindProductCardHover === "function") {
+        window.bindProductCardHover();
+      }
+    }
+
     function renderGrid(items, total, append) {
       if (!append) $grid.empty();
       if (!items || !items.length) {
         if (!append) {
           $empty.prop("hidden", false);
           toggleLoadMore(0, 1);
+          refreshCardEffects();
         }
         return;
       }
       $empty.prop("hidden", true);
       $grid.append(items.map(buildCard).join(""));
       toggleLoadMore(total || 0, page);
+      refreshCardEffects();
     }
 
     function post(url, payload) {
