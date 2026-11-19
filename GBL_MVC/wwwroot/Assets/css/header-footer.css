@@ -948,15 +948,15 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 
   /* Somaiya logo sits on a small white tile */
   .site-header__logo--somaiya{
-    align-self: center;
+    align-self: flex-start;
     background: #fff;
-    border-radius: 10px;
-    padding: 6px 8px;
+    /* border-radius: 10px;
+    padding: 6px 8px; */
   }
 
   .site-header__logo--somaiya img,
   .site-header.is-compact .site-header__logo--somaiya img{
-    height: 46px;
+    height: 80px;
   }
 
   .site-header.is-compact .site-header__logo--somaiya{

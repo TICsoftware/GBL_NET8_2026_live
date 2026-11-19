@@ -430,6 +430,24 @@ CSR PAGE
     transform: scale(1.44);
     transform-origin: 48% 92%;
   }
+
+  /* Advancing Shared Progress: dark overlay over the photo (text sits on top of it here).
+     Layers inside the panel: photo (-2) → overlay (-1) → text. Darkest at the top, behind the copy. */
+  .csr-progress__panel.bg-parallax-section .csr-progress__bg {
+    z-index: -2;
+  }
+  .csr-progress__panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.3) 55%, rgba(0, 0, 0, 0.12) 100%);
+  }
+  .csr-progress__copy h2,
+  .csr-progress__copy p {
+    color: #fff;
+  }
 }
 
 @media (max-width: 1179px) {
