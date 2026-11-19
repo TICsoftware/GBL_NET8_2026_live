@@ -26,11 +26,11 @@ namespace GBL_MVC.Routes
             );
 
 
-            app.MapControllerRoute(
-                    name: "aboutus",
-                    pattern: "about-us",
-                    defaults: new { controller = "AboutUs", action = "AboutUs", title = "about-us" }
-                );
+            // app.MapControllerRoute(
+            //         name: "aboutus",
+            //         pattern: "about-us",
+            //         defaults: new { controller = "AboutUs", action = "AboutUs", title = "about-us" }
+            //     );
 
             app.MapControllerRoute(
                     name: "our-legacy",

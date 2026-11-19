@@ -39,7 +39,7 @@ namespace GBL_BusinessLogic.Entity
         public List<ArticleModel> Section_List { get; set; } = new();
         public List<ArticleModel> SectionArticles_List { get; set; } = new();
 
-
+        public Dictionary<int, List<ComponentModel>> Component_Dictionary { get; set; } = new();
         public int TotalCount { get; set; }
 
     }

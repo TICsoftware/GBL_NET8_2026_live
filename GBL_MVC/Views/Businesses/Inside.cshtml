@@ -87,7 +87,10 @@
         var hasBg = !string.IsNullOrWhiteSpace(item.Componentbackground);
         var hasIntro = !string.IsNullOrWhiteSpace(item.Intro);
         var isFindSection = !hasBg && !hasIntro && !string.IsNullOrWhiteSpace(thumb);
-
+        @* var URLval = (item.IsBlock == 0 ? item.component_Url2 : item.Url)   ;
+        var URLtextval = (item.IsBlock == 0 ? item.component_Url_Text2 : item.Url_Text)   ; *@
+        var URLval =   item.Url    ;
+        var URLtextval =    item.Url_Text    ;
         if (hasBg)
         {
             <section class="bbc-leadership bg-parallax-section section-spacing" aria-labelledby="bbc-section-title_@seqPair.Key">
@@ -119,16 +122,16 @@
                 <div class="container">
                     <div class="bbc-find__card">
                         <div class="bbc-find__bg" aria-hidden="true">
-                            <img src="@thumb" alt="" loading="lazy" />
+                            <img src="@thumb" alt="@thumbAlt" loading="lazy" />
                         </div>
                         <div class="bbc-find__content card-rise">
                             <h2 id="bbc-find-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)
                             </h2>
-                            @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
+                            @if (!string.IsNullOrWhiteSpace(URLval) && URLval != "#")
                             {
-                                <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" :
-                                                                                                        item.Url_Text)</span>
+                                <a href="@URLval" class="site-btn site-btn--outline">
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(URLtextval) ? "Learn more" :
+                                                                                                        URLtextval)</span>
                                     </a>
                                 }
                             </div>
@@ -162,11 +165,11 @@
                                     @Html.Raw(item.Intro)
                                 </div>
                             }
-                            @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
+                            @if (!string.IsNullOrWhiteSpace(URLval) && URLval != "#")
                             {
                                 <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" :
-                                                                                                            item.Url_Text)</span>
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(URLtextval) ? "Learn more" :
+                                                                                                            URLtextval)</span>
                                     </a>
                             }
                         </div>

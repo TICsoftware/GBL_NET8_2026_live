@@ -1,0 +1,77 @@
+@model GBL_BusinessLogic.Entity.AboutModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "CSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+    var componentLists = Model?.Infographic_List ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var sections = componentLists.Where(x => x.IsBlock == 0).OrderBy(x => x.Sequence).ToList();
+}
+
+
+@section head {
+    <title>@(content?.cont_window_title)</title>
+
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+    <meta itemprop="name" content="Godavari Biorefineries" />
+    <meta itemprop="description" content="@(content?.cont_metadesc)" />
+    <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/aboutus.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER -->
+@if (Model?.Content != null)
+{
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END-->
+@if (!string.IsNullOrWhiteSpace(content?.Cont_intro) || !string.IsNullOrWhiteSpace(content?.Content))
+{
+   <!--PAGE INTRO OUTER-->
+   <section class="about-intro" aria-label="Introduction">
+      <div class="container">
+         <div class="about-intro__copy page-intro-inner"> 
+            <p class="about-intro__lead">@Html.Raw(content.Cont_intro)</p>
+            @Html.Raw(content.Content)
+        </div>
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+}
+
+@foreach (var itemsection in sections)
+{
+    var blocks = componentLists
+        .Where(x => x.IsBlock == 1 && x.context_master_id == itemsection.context_master_id)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+}

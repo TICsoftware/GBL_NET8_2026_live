@@ -326,5 +326,35 @@ namespace GBL_BusinessLogic.BAL
 
             return model;
         }
+
+        
+            
+
+        public AboutModel GetAboutUs_Index_BAL(string pagename, int languageId, int geographyId)
+        {
+
+            var model = new AboutModel();
+            var ds = GetContentComponentData_DAL(pagename, languageId, geographyId);
+
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                model.Content = MapContent(ds.Tables[0].Rows[0]);
+            }
+
+            if (ds.Tables.Count >= 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                model.Components = GetGroupedComponents(ds.Tables[1]);
+                model.Component_Dictionary = MapComponentsByContextMasterId(model.Components);
+
+                // Flat ordered list (all sequences) for views that still use Subsections_Components
+                model.Infographic_List = model.Component_Dictionary
+                    .OrderBy(kv => kv.Key)
+                    .SelectMany(kv => kv.Value)
+                    .ToList();
+            }
+
+            return model;
+        }
+
     }
 }
