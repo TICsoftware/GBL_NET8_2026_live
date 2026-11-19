@@ -596,6 +596,17 @@ font-weight: 400;
   transition: none;
 }
 
+.mega-menu__pill{
+  display: none;
+}
+
+/* Dropdown arrow icon (SVG), shared by desktop and mobile; grey by default and white on the green hover circle */
+.site-header{
+  --mega-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6' stroke='%235c5c5c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --mega-arrow-white: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --mega-arrow-accent: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6' stroke='%2367815A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
 .mega-menu__close{
   position: absolute;
   top: 12px;
@@ -770,27 +781,10 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   overflow: hidden;
 }
 
+/* The button itself is the shared .site-btn--fill (common-style.css); only spacing here */
 .mega-featured__cta{
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
   width: max-content;
   margin-top: 0.75rem;
-  padding: 0.42rem 1rem;
-  border: 1px solid var(--header-ink);
-  border-radius: 999px;
-  color: var(--header-ink);
-  font-size: 0.875rem;
-  line-height: 1.2;
-  font-weight: 400;
-  text-decoration: none;
-  transition: background-color .22s ease, color .22s ease, border-color .22s ease;
-}
-
-.mega-featured__cta:hover{
-  background: var(--header-accent);
-  border-color: var(--header-accent);
-  color: #fff;
 }
 
 @media (min-width: 1200px){
@@ -848,6 +842,491 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 @keyframes megaGridIn{
   from{ opacity: 0; }
   to{ opacity: 1; }
+}
+
+/* =========================
+   HEADER — DESIGN REFRESH (desktop only, visual styles)
+========================= */
+@media (min-width: 1200px){
+  .site-header{
+    --hd-line: rgba(40,43,49,0.10);
+    --hd-panel: #f6f5f2;
+    --hd-accent-soft: #eef2ea;
+    --hd-bold: var(--font-uniNeueBold, inherit);
+  }
+
+  /* Bar: soft shade over the banner, solid white once scrolled */
+  .site-header.is-dark .site-header__bar,
+  .site-header--inner:not(.is-compact) .site-header__bar{
+    background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%);
+  }
+
+  .site-header.is-dark .site-header__bar::before{
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .site-header.is-light .site-header__bar{
+    background: rgba(255,255,255,0.96);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    color: var(--header-ink);
+  }
+
+  /* Utility row */
+  .site-header__utility-list a{
+    font-size: 0.875rem;
+    transition: opacity .2s ease, color .2s ease;
+  }
+
+  .site-header__utility-list a:hover{
+    color: var(--header-accent);
+  }
+
+  .site-header__search-btn{
+    width: 30px;
+    height: 30px;
+    transition: opacity .2s ease, background-color .2s ease;
+  }
+
+  .site-header__search-btn:hover{
+    background: rgba(255,255,255,0.14);
+  }
+
+  .site-header.is-light .site-header__search-btn:hover{
+    background: rgba(0,0,0,0.05);
+  }
+
+  /* Primary row */
+  .site-header__nav{
+    border-top-color: rgba(255,255,255,0.25);
+    /* Bottom space matches padding-top */
+    padding-bottom: 10px;
+    transition: padding-top .4s ease, padding-bottom .4s ease;
+  }
+
+  .site-header.is-compact .site-header__nav{
+    padding-bottom: 6px;
+  }
+
+  .site-header.is-light .site-header__nav{
+    border-top-color: var(--hd-line);
+  }
+
+  .site-header__link{
+    font-family: var(--hd-bold);
+    font-size: 1rem;
+    transition: color .2s ease, opacity .2s ease;
+  }
+
+  .site-header__link:hover,
+  .site-header__item.is-open > .site-header__link{
+    color: var(--header-accent);
+  }
+
+  /* Open item sits on the light green pill (.mega-menu__pill): dark theme-green text */
+  .site-header__item.is-open > .site-header__link{
+    color: #4f6644;
+  }
+
+  .site-header__caret{
+    width: 6px;
+    height: 6px;
+    border: 0;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    margin: -3px 0 0 3px;
+    transform: rotate(45deg);
+    transition: transform .25s ease, margin .25s ease;
+  }
+
+  .site-header__item.is-open .site-header__caret{
+    margin-top: 3px;
+    transform: rotate(-135deg);
+  }
+
+  /* Somaiya logo sits on a small white tile */
+  .site-header__logo--somaiya{
+    align-self: center;
+    background: #fff;
+    border-radius: 10px;
+    padding: 6px 8px;
+  }
+
+  .site-header__logo--somaiya img,
+  .site-header.is-compact .site-header__logo--somaiya img{
+    height: 46px;
+  }
+
+  .site-header.is-compact .site-header__logo--somaiya{
+    height: auto;
+    padding: 0;
+  }
+
+  /* Mega menu panel */
+  /* Arrow on top of the open panel; slides to the active item (left set by header.js) */
+  .mega-menu__caret{
+    top: calc(100% + 5px);
+    border-left-width: 10px;
+    border-right-width: 10px;
+    border-bottom: 10px solid var(--hd-panel);
+    z-index: 13;
+    transition: left .32s cubic-bezier(.22,.61,.36,1), opacity .28s ease;
+  }
+
+  /* Background behind the open item; travels between items (position set by header.js) */
+  .mega-menu__pill{
+    display: block;
+    position: absolute;
+    left: var(--mega-pill-left, 0);
+    top: var(--mega-pill-top, 0);
+    width: var(--mega-pill-width, 0);
+    height: var(--mega-pill-height, 0);
+    z-index: -1;
+    border-radius: 999px;
+    background: var(--hd-panel);
+    opacity: 0;
+    pointer-events: none;
+    transition: left .32s cubic-bezier(.22,.61,.36,1), width .32s cubic-bezier(.22,.61,.36,1), top .32s ease, opacity .28s ease;
+  }
+
+  .site-header.is-mega-open .mega-menu__pill{
+    opacity: 1;
+  }
+
+  /* Light theme-green tint (lighter than the active dropdown items) on dark and scrolled header */
+  .site-header .mega-menu__pill{
+    background: #e1e9dc;
+  }
+
+  .site-header__nav-wrap.is-caret-instant .mega-menu__pill{
+    transition: opacity .28s ease;
+  }
+
+  .mega-menu{
+    top: calc(100% + 14px);
+    background: var(--hd-panel);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+  }
+
+  /* Clip on the grid, not the panel, so the hover bridge (.mega-menu::before) keeps working */
+  .mega-menu__grid{
+    grid-template-columns: minmax(0,1fr) 280px;
+    margin-top: 0;
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .mega-menu__col--l2{
+    background: transparent;
+    padding: 24px;
+  }
+
+  /* Second level as cards */
+  .mega-l2{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 10px;
+    align-items: start;
+  }
+
+  .mega-l2 > li{
+    min-width: 0;
+  }
+
+  .mega-l2 > li:has(> .mega-l3-panel.is-active){
+    grid-column: 1 / -1;
+  }
+
+  .mega-l2__item,
+  .mega-l2 li:last-child .mega-l2__item{
+    min-height: 50px;
+    padding: 12px 12px 12px 16px;
+    border: 1px solid var(--hd-line);
+    border-radius: 12px;
+    background: #fff;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+  }
+
+  .mega-l2__item:not([data-panel])::after{
+    content: "";
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--hd-line);
+    border-radius: 50%;
+    background: var(--mega-arrow) center / 14px no-repeat;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+  }
+
+  .mega-l2__item:hover,
+  .mega-l2__item.is-active{
+    border-color: var(--header-accent);
+    background: var(--hd-accent-soft);
+    color: var(--header-accent);
+    font-weight: 400;
+  }
+
+  .mega-l2__item:hover::after{
+    background: var(--header-accent) var(--mega-arrow-white) center / 14px no-repeat;
+    border-color: var(--header-accent);
+    color: #fff;
+  }
+
+  /* Third level as small cards under the active item */
+  .mega-l2 > li > .mega-l3-panel.is-active{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 8px;
+    padding: 10px 0 2px;
+  }
+
+  .mega-l3-item{
+    min-width: 0;
+  }
+
+  .mega-l3-item > .mega-l3{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--hd-line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--header-ink);
+    font-size: 0.875rem;
+    transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+  }
+
+  .mega-l3-item > .mega-l3:not([data-l3])::after{
+    content: "";
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    background: var(--mega-arrow) center / 14px no-repeat;
+    opacity: 0.5;
+  }
+
+  .mega-l3-item > .mega-l3:hover{
+    border-color: var(--header-accent);
+    background: var(--hd-accent-soft);
+    color: var(--header-accent);
+  }
+
+  .mega-l3-children .mega-l3{
+    padding: 4px 2px;
+  }
+
+  /* Feature column */
+  .mega-menu__col--feature{
+    background: #fff;
+    border-left: 1px solid var(--hd-line);
+    padding: 20px;
+  }
+
+  .mega-featured__media{
+    border-radius: 12px;
+    max-height: none;
+    aspect-ratio: 16 / 10;
+    margin-bottom: 14px;
+  }
+
+  .mega-featured__title{
+    font-family: var(--hd-bold);
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+
+  .mega-featured__copy{
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  /* ---- List-style mega menu (used by all mega menus) ---- */
+  .mega-menu--list .mega-menu__grid{
+    position: relative;
+    grid-template-columns: 290px minmax(0,1fr);
+    /* min-height: 340px; */
+    padding: 1.5rem;
+  }
+
+  .mega-menu--list .mega-menu__col--l2{
+    padding: 0 16px 0 0;
+    border-right: 1px solid var(--hd-line);
+  }
+
+  .mega-menu--list .mega-l2{
+    display: block;
+  }
+
+  /* Links as white cards with a round arrow (level 2 and level 3) */
+  .mega-menu--list .mega-l2 > li + li{
+    margin-top: 10px;
+  }
+
+  .mega-menu--list .mega-l2__item,
+  .mega-menu--list .mega-l2 li:last-child .mega-l2__item,
+  .mega-menu--list .mega-l3-item > .mega-l3{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 40px;
+    padding: 8px 1rem 8px 1rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    color: var(--header-ink);
+    font-size: 0.95rem;
+    line-height: 1.3;
+    transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+  }
+
+  .mega-menu--list .mega-l2__item::after,
+  .mega-menu--list .mega-l3-item > .mega-l3:not([data-l3])::after{
+    content: "";
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--header-line);
+    border-radius: 50%;
+    background: var(--mega-arrow) center / 12px no-repeat;
+    color: var(--header-muted);
+    opacity: 1;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+  }
+
+  .mega-menu--list .mega-l2__item .mega-chevron{
+    display: none;
+  }
+
+  /* Hover / active: theme colour fills in as a circle from the mouse entry point
+     (same effect as .cg-doc on the corporate governance page; --hx/--hy/--hr set by header.js) */
+  .mega-menu--list .mega-l2__item,
+  .mega-menu--list .mega-l3-item > .mega-l3{
+    position: relative;
+    isolation: isolate;
+    transition: border-color .45s cubic-bezier(.22,1,.36,1), color .45s cubic-bezier(.22,1,.36,1);
+  }
+
+  .mega-menu--list .mega-l2__item::before,
+  .mega-menu--list .mega-l3-item > .mega-l3::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--header-accent);
+    pointer-events: none;
+    clip-path: circle(0px at var(--hx, 50%) var(--hy, 50%));
+    transition: clip-path .65s cubic-bezier(.22,1,.36,1);
+  }
+
+  .mega-menu--list .mega-l2__item:hover::before,
+  .mega-menu--list .mega-l2__item.is-active::before,
+  .mega-menu--list .mega-l3-item > .mega-l3:hover::before{
+    clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 50%));
+  }
+
+  /* li:last-child versions needed: the base card rule includes .mega-l2 li:last-child .mega-l2__item,
+     which is more specific and otherwise keeps the last item's text dark */
+  .mega-menu--list .mega-l2__item:hover,
+  .mega-menu--list .mega-l2__item.is-active,
+  .mega-menu--list .mega-l2 li:last-child .mega-l2__item:hover,
+  .mega-menu--list .mega-l2 li:last-child .mega-l2__item.is-active,
+  .mega-menu--list .mega-l3-item > .mega-l3:hover{
+    border-color: var(--header-accent);
+    color: #fff;
+    font-weight: 400;
+  }
+
+  .mega-menu--list .mega-l2__item:hover::after,
+  .mega-menu--list .mega-l2__item.is-active::after,
+  .mega-menu--list .mega-l3-item > .mega-l3:hover::after{
+    border-color: #fff;
+    background: #fff var(--mega-arrow-accent) center / 12px no-repeat;
+    color: var(--header-accent);
+  }
+
+  /* Third level replaces the feature area */
+  .mega-menu--list .mega-l2 > li > .mega-l3-panel.is-active{
+    position: absolute;
+    /* Same inset as the grid padding, so top and bottom spacing match */
+    top: 1.5rem;
+    bottom: 1.5rem;
+    left: calc(1.5rem + 290px);
+    right: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 10px;
+    align-content: start;
+    padding: 0 0 0 28px;
+  }
+
+  .mega-menu--list .mega-l3-panel.is-active::before{
+    content: attr(data-title);
+    grid-column: 1 / -1;
+    padding: 2px 0 10px;
+    font-family: var(--hd-bold);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--header-accent);
+  }
+
+
+  .mega-menu--list .mega-menu__grid:has(.mega-l3-panel.is-active) .mega-menu__col--feature{
+    visibility: hidden;
+  }
+
+  .mega-menu--list .mega-menu__col--feature{
+    background: none;
+    border: 0;
+    padding: 0 0 0 28px;
+  }
+
+  .mega-menu--list .mega-featured{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Feature: image, then content, then the site button */
+  .mega-menu--list .mega-featured__media{
+    width: 100%;
+    max-width: 480px;
+    height: 200px;
+    aspect-ratio: auto;
+    margin: 0 0 18px;
+    border-radius: 12px;
+  }
+
+  .mega-menu--list .mega-featured__title{
+    margin-bottom: 8px;
+    font-size: 1.5rem;
+  }
+
+  .mega-menu--list .mega-featured__copy{
+    max-width: 480px;
+    font-size: 0.95rem;
+    color: var(--header-muted);
+  }
+
+  .mega-menu--list .mega-featured__cta{
+    margin-top: 20px;
+  }
 }
 
 @media all and (min-width:1025px) and (max-width:1280px){
@@ -914,6 +1393,35 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   .site-header__search-btn{
     width: 32px;
     height: 32px;
+  }
+
+  /* Menu toggle (mobile): round bordered button, same as the search icon */
+  .site-header__toggle{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.92;
+  }
+
+  .site-header__toggle span{
+    width: 14px;
+    height: 1.5px;
+    margin: 0;
+  }
+
+  .site-header.is-nav-open .site-header__toggle span:nth-child(1){
+    transform: translateY(4.5px) rotate(45deg);
+  }
+
+  .site-header.is-nav-open .site-header__toggle span:nth-child(3){
+    transform: translateY(-4.5px) rotate(-45deg);
   }
 
   .site-header__search-wrap{
@@ -1175,6 +1683,353 @@ html.is-header-locked.is-header-lock-scroll .site-header{
     font-size: 0.9rem;
     padding: 0.45rem 0;
   }
+
+  /* ---- Mobile: same visual language as the desktop dropdown ---- */
+
+  /* Open top-level item: green row, white text (matches the desktop green pill) */
+  .site-header__link{
+    transition: background-color .25s ease, color .25s ease;
+  }
+
+  .site-header__item.is-open > .site-header__link{
+    background: var(--header-accent);
+    color: #fff;
+  }
+
+  /* Panel: warm off-white with the items as cards */
+  .mega-menu{
+    background: #f6f5f2;
+  }
+
+  .mega-menu__col--l2{
+    padding: 14px 16px 16px;
+  }
+
+  .mega-l2 > li + li{
+    margin-top: 8px;
+  }
+
+  .mega-l2__item,
+  .mega-l2 li:last-child .mega-l2__item,
+  .mega-l3-item > .mega-l3{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    color: var(--header-ink);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.3;
+    text-align: left;
+    text-decoration: none;
+    transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+  }
+
+  .mega-l2__item .mega-chevron{
+    display: none;
+  }
+
+  /* Round SVG arrow, as on desktop */
+  .mega-l2__item::after,
+  .mega-l3-item > .mega-l3::after{
+    content: "";
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--header-line);
+    border-radius: 50%;
+    background: var(--mega-arrow) center / 13px no-repeat;
+    transition: background-color .25s ease, border-color .25s ease, transform .25s ease;
+  }
+
+  /* Items that expand a sub-list: arrow points down when open */
+  .mega-l2__item[data-panel].is-active::after,
+  .mega-l3-item > .mega-l3[data-l3].is-active::after{
+    transform: rotate(90deg);
+  }
+
+  /* Tap / active: theme colour fill */
+  .mega-l2__item:hover,
+  .mega-l2__item.is-active,
+  .mega-l2 li:last-child .mega-l2__item:hover,
+  .mega-l2 li:last-child .mega-l2__item.is-active,
+  .mega-l3-item > .mega-l3:hover,
+  .mega-l3-item > .mega-l3.is-active{
+    border-color: var(--header-accent);
+    background: var(--header-accent);
+    color: #fff;
+  }
+
+  .mega-l2__item:hover::after,
+  .mega-l2__item.is-active::after,
+  .mega-l3-item > .mega-l3:hover::after,
+  .mega-l3-item > .mega-l3.is-active::after{
+    border-color: #fff;
+    background: #fff var(--mega-arrow-accent) center / 13px no-repeat;
+  }
+
+  /* Level 3: smaller cards, indented under the open item */
+  .mega-l2 > li > .mega-l3-panel.is-active{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 0 2px 14px;
+    background: transparent;
+  }
+
+  .mega-l3-item > .mega-l3{
+    min-height: 42px;
+    padding: 8px 10px 8px 14px;
+    font-size: 0.925rem;
+  }
+
+  .mega-l3-item > .mega-l3::after{
+    width: 22px;
+    height: 22px;
+    background-size: 11px;
+  }
+
+  /* ---- Mobile first level: rounded cards with the round arrow, like the second level ---- */
+  .site-header__nav-wrap{
+    background: #f6f5f2;
+  }
+
+  .site-header__primary{
+    padding: 0 16px;
+  }
+
+  .site-header__item{
+    border-bottom: 0;
+  }
+
+  .site-header__item + .site-header__item{
+    margin-top: 8px;
+  }
+
+  .site-header__link{
+    min-height: 54px;
+    padding: 8px 12px 8px 18px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    font-size:  var(--text-lg, 1.25rem);
+  }
+
+  /* Replace the +/- with the round SVG arrow; points down when open */
+  .site-header__caret{
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--header-line);
+    border-radius: 50%;
+    background: transparent;
+    transition: transform .25s ease, background-color .25s ease, border-color .25s ease;
+  }
+
+  .site-header__caret::before{
+    width: 13px;
+    height: 13px;
+    background: var(--mega-arrow) center / 13px no-repeat;
+  }
+
+  .site-header__caret::after{
+    display: none;
+  }
+
+  .site-header__item.is-open > .site-header__link{
+    background: var(--header-accent);
+    color: #fff;
+  }
+
+  .site-header__item.is-open .site-header__caret{
+    transform: rotate(90deg);
+    border-color: #fff;
+    background: #fff;
+  }
+
+  .site-header__item.is-open .site-header__caret::before{
+    background-image: var(--mega-arrow-accent);
+  }
+
+  /* Utility links (Media, Careers, Contact Us): same cards as the first level */
+  .site-header__utility{
+    padding: 8px 16px 1.5rem;
+  }
+
+  .site-header__utility-list{
+    gap: 8px;
+  }
+
+  .site-header__utility-list li{
+    border-bottom: 0;
+  }
+
+  .site-header__utility-list a{
+    gap: 12px;
+    min-height: 54px;
+    padding: 12px 12px 12px 18px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+     font-size:  var(--text-lg, 1.25rem);
+    transition: background-color .25s ease, color .25s ease;
+  }
+
+  .site-header__utility-list a::after{
+    content: "";
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--header-line);
+    border-radius: 50%;
+    background: var(--mega-arrow) center / 13px no-repeat;
+    transition: background-color .25s ease, border-color .25s ease;
+  }
+
+  .site-header__utility-list a:hover,
+  .site-header__utility-list a:active{
+    background: var(--header-accent);
+    color: #fff;
+  }
+
+  .site-header__utility-list a:hover::after,
+  .site-header__utility-list a:active::after{
+    border-color: #fff;
+    background: #fff var(--mega-arrow-accent) center / 13px no-repeat;
+  }
+
+  /* Sub-menu sits under the card, aligned with it */
+  .mega-menu{
+    background: transparent;
+  }
+
+  /* Level 2 indented under the level-1 card; level 3 indented again */
+  .mega-menu__col--l2{
+    padding: 8px 16px 0px 16px;
+  }
+
+  .mega-l2 > li + li{
+    margin-top: 6px;
+  }
+
+  /* Slimmer cards for level 2 and 3 */
+  .mega-l2__item,
+  .mega-l2 li:last-child .mega-l2__item{
+    min-height: 42px;
+    padding: 8px 10px 8px 14px;
+    font-size: 0.95rem;
+  }
+
+  .mega-l2__item::after{
+    width: 22px;
+    height: 22px;
+    background-size: 11px;
+  }
+
+  .mega-l2 > li > .mega-l3-panel.is-active{
+    gap: 5px;
+    padding: 6px 0 2px 16px;
+  }
+
+  .mega-l3-item > .mega-l3{
+    min-height: 36px;
+    padding: 6px 8px 6px 12px;
+    font-size: 0.875rem;
+  }
+
+  .mega-l3-item > .mega-l3::after{
+    width: 20px;
+    height: 20px;
+    background-size: 10px;
+  }
+
+  .mega-l2__item:hover::after,
+  .mega-l2__item.is-active::after{
+    background-size: 11px;
+  }
+
+  .mega-l3-item > .mega-l3:hover::after,
+  .mega-l3-item > .mega-l3.is-active::after{
+    background-size: 10px;
+  }
+
+  /* Items that open another level: + instead of the arrow, − when open */
+  .site-header{
+    --mega-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 5v14M5 12h14' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    --mega-plus-accent: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 5v14M5 12h14' stroke='%2367815A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    --mega-minus-accent: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 12h14' stroke='%2367815A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+
+  .mega-l2__item[data-panel]::after,
+  .mega-l3-item > .mega-l3[data-l3]::after{
+    background-image: var(--mega-plus);
+  }
+
+  .mega-l2__item[data-panel]:hover::after,
+  .mega-l3-item > .mega-l3[data-l3]:hover::after{
+    background-image: var(--mega-plus-accent);
+  }
+
+  .mega-l2__item[data-panel].is-active::after,
+  .mega-l3-item > .mega-l3[data-l3].is-active::after{
+    background-image: var(--mega-minus-accent);
+    transform: none;
+  }
+
+  /* Arrow circles: theme green with a white icon (active items keep white circle + green icon) */
+  .site-header__caret{
+    border-color: var(--header-accent);
+    background: var(--header-accent);
+  }
+
+  .site-header__caret::before{
+    background-image: var(--mega-arrow-white);
+  }
+
+  .mega-l2__item::after{
+    border-color: var(--header-accent);
+    background: var(--header-accent) var(--mega-arrow-white) center / 11px no-repeat;
+  }
+
+  .mega-l3-item > .mega-l3::after{
+    border-color: var(--header-accent);
+    background: var(--header-accent) var(--mega-arrow-white) center / 10px no-repeat;
+  }
+
+  .site-header__utility-list a::after{
+    border-color: var(--header-accent);
+    background: var(--header-accent) var(--mega-arrow-white) center / 13px no-repeat;
+  }
+
+  /* Open sub-menu: subtle tinted panel under the green card */
+  .mega-menu{
+    border-radius: 12px;
+    transition: grid-template-rows .32s cubic-bezier(.22,.61,.36,1), background-color .25s ease, margin-top .32s ease;
+  }
+
+  .site-header__item.is-open > .mega-menu{
+    margin-top: 6px;
+    background: #eef2ea;
+  }
+
+  .mega-menu__col--l2{
+    padding: 10px 10px 10px 16px;
+  }
+
+  /* Header controls: more breathing room between search, menu button and Somaiya logo */
+  .site-header__tools{
+    gap: 10px;
+  }
+
+  .site-header__toggle{
+    margin-right: 12px;
+  }
 }
 
 @media all and (max-width: 767px){
@@ -1204,8 +2059,9 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   }
 
   .site-header__toggle{
-    margin-right: 0.25rem;
-    width: 36px;
+    margin-right: 12px;
+    width: 30px;
+    height: 30px;
   }
 
   .site-header__search-btn{
