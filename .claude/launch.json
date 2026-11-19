@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "gbl-mvc",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "GBL_MVC/GBL_MVC.csproj", "--launch-profile", "http"],
+      "port": 5186
+    }
+  ]
+}

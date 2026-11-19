@@ -1315,6 +1315,8 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   /* font-family: var(--font-uniNeueBold);  */
 }
 
+
+
 .site-footer-address {
   font-style: normal;
   font-size: var(--text-p);
@@ -1330,6 +1332,8 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   display: flex;
   flex-direction: column;  gap:15px 
 }
+
+.site-footer-links-sub{ font-size:1.15rem !important; color: rgba(255, 255, 255, 0.8) !important; font-family:var(--font-uniNeueRegular); margin:0 0 0.5rem;}
 
 .site-footer-contact li {
   display: flex;
@@ -1381,6 +1385,16 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 
 
 
+/* Sub-links grouped under a heading item (e.g. Business) */
+.site-footer-subnav {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 .site-footer-external {
   display: inline-flex;
   align-items: flex-start;
@@ -1420,11 +1434,11 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   gap: 1rem;
   padding: 1rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.35);
-  font-size: var(--text-base); font-weight: 300;
+  font-size: var(--text-sm); font-weight: 300;
 }
 .site-footer-copy,
 .site-footer-bottom a{
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   font-weight: 400;
   margin: 0;
 }
@@ -1476,6 +1490,114 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 
   .site-footer-nav{ gap:1rem;}
   .site-footer-address{ margin-bottom: 0.75rem;}
+
+  /* ---- Compact mobile footer (minimal chips layout) ---- */
+  .site-footer { padding: 1.75rem 0 0.5rem; }
+
+  .site-footer-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-bottom: 1.25rem;
+  }
+  .site-footer-grid > .site-footer-company { width: 100%; margin-bottom: 0.5rem; }
+  .site-footer-grid > .site-footer-col:not(.site-footer-company),
+  .site-footer-grid .site-footer-nav { display: contents; }
+
+  /* links as chips */
+  .site-footer-nav span.site-footer-heading,
+  .site-footer-nav a, .site-footer-links-sub{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem !important;
+    line-height: 1.2;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 999px;
+  }
+  .site-footer-nav .site-footer-ext-icon { margin-top: 0; }
+  .site-footer-nav span.site-footer-heading { margin: 0; font-weight: 400; }
+
+  /* Business group: split chip (text opens page, arrow shows sub-links) */
+  /* the group li steps aside so the Business chip can share a row with About Us,
+     and the sub-link list becomes its own full-width row underneath */
+  .site-footer-nav li.site-footer-group { display: contents; }
+  .site-footer-split {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+  }
+  .site-footer-split .site-footer-subtoggle { top: 0; left: 0; }
+  .site-footer .site-footer-nav .site-footer-split > a,
+  .site-footer .site-footer-nav .site-footer-split > span {
+    border-right: 0;
+    border-radius: 999px 0 0 999px;
+    padding-right: 0.6rem;
+  }
+  .site-footer-subtoggle-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.7rem 0 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 0 999px 999px 0;
+    background: rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+  .site-footer-subtoggle-btn::after { content: "\25BE"; }
+  .site-footer-subtoggle:checked + .site-footer-subtoggle-btn::after { content: "\25B4"; }
+  .site-footer-subtoggle:focus-visible + .site-footer-subtoggle-btn { outline: 2px solid #fff; outline-offset: 2px; }
+  /* Sub-links: always their own (zero-height when closed) row, so opening only
+     slides content down and never re-flows the chips around Business.
+     Row spacing comes from item margins (not row-gap) so the closed row adds no space. */
+  .site-footer-grid { row-gap: 0; }
+  .site-footer-grid > .site-footer-company { margin-bottom: 1rem; }
+  .site-footer-nav > li:not(.site-footer-group),
+  .site-footer-split,
+  .site-footer-grid .site-footer-col .site-footer-col { margin-bottom: 0.5rem; }
+  .site-footer-subnav {
+    display: flex;
+    flex-basis: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 0.625rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.3s ease, margin-bottom 0.3s ease, opacity 0.2s ease, visibility 0s linear 0.3s;
+  }
+  .site-footer-group:has(.site-footer-subtoggle:checked) .site-footer-subnav {
+    max-height: 20rem;
+    margin-bottom: 0.5rem;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.3s ease, margin-bottom 0.3s ease, opacity 0.2s ease 0.05s, visibility 0s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-footer-subnav,
+    .site-footer-group:has(.site-footer-subtoggle:checked) .site-footer-subnav { transition: none; }
+  }
+  .site-footer-subnav .site-footer-links-sub { margin: 0; }
+
+  /* follow us row */
+  .site-footer-grid .site-footer-col .site-footer-col { width: 100%; }
+  .site-footer-follow { margin-top: 0.75rem; font-size: 0.9375rem; }
+
+  .site-footer-bottom { padding: 0.75rem 0; gap: 0.4rem; }
+  .site-footer-copy,
+  .site-footer-bottom a { font-size: 0.8125rem; }
+}
+
+.site-footer-subtoggle { position: absolute; opacity: 0; width: 1px; height: 1px; }
+@media all and (min-width: 768px) {
+  .site-footer-subtoggle,
+  .site-footer-subtoggle-btn { display: none; }
 }
 
 @media (min-width: 1200px) and (max-width: 1366px) {

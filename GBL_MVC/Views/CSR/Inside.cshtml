@@ -1,0 +1,111 @@
+@model GBL_BusinessLogic.Entity.CSRModel
+@{
+    ViewData["Title"] = Model?.Content?.ContTitle ?? "CSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var content = Model?.Content;
+    var componentLists = Model?.ListComponents ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var sections = componentLists.Where(x => x.IsBlock == 0).OrderBy(x => x.Sequence).ToList();
+}
+
+
+@section head {
+    <title>@(content?.cont_window_title)</title>
+
+    <meta content="@(content?.cont_metatag)" name="keywords" />
+    <meta content="@(content?.cont_metadesc)" name="description" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@(content?.ContTitle)" />
+    <meta name="twitter:description" content="@(content?.cont_metadesc)" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+
+    <meta itemprop="name" content="Godavari Biorefineries" />
+    <meta itemprop="description" content="@(content?.cont_metadesc)" />
+    <meta itemprop="image" content="@(content?.cont_meta_image)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Godavari Biorefineries" />
+    <meta property="og:title" content="@(content?.ContTitle)" />
+    <meta property="og:description" content="@(content?.cont_metadesc)" />
+    <meta property="og:image" content="@(content?.cont_meta_image)" />
+    <meta property="og:url" content="@(content?.CanonicalUrl)" />
+
+    <link rel="canonical" href="@(content?.CanonicalUrl)" />
+}
+
+@section Styles {
+   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/Assets/css/sustainability-intro.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/Assets/css/swiper-bundle.min.css" asp-append-version="true" />
+}
+
+<!-- HERO BANNER -->
+@if (Model?.Content != null)
+{
+    @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+}
+<!-- HERO BANNER END-->
+
+@if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
+{       
+   <!--PAGE INTRO OUTER-->
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+       <div class="container">
+         <div class="page-intro-inner intro-lg text-center">
+            <p>@Html.Raw(content.Cont_intro)</p>
+         </div>      
+      </div>
+   </section>
+   <!--PAGE INTRO OUTER END-->
+}
+
+
+@foreach (var itemsection in sections)
+{
+    var blocks = componentLists
+        .Where(x => x.IsBlock == 1 && x.context_master_id == itemsection.context_master_id)
+        .OrderBy(x => x.Sequence)
+        .ToList();
+
+    <section class="carbonCircularity section-spacing">
+        <div class="container">
+        <div class="title-section">
+            <h2 class="text-h2">@Html.Raw(itemsection?.Title)</h2>
+         </div>
+        @if(blocks != null && blocks.Count > 0)
+        {
+            <div class="swiper carbonCircularity-cards">
+                <div class="swiper-wrapper">
+                    @foreach (var item in blocks)
+                    {
+                    <article class="swiper-slide carbonCircularity-card">
+                        <div class="carbonCircularity-card__media parallax-wrap">
+                            <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" class="parallax-img">
+                        </div>
+                        <div class="carbonCircularity-card__body">
+                            <h3 class="text-h5">@Html.Raw(item.Title)</h3>
+                            <p>@Html.Raw(item.Intro)</p>
+                            <a href="@item.Url"    class="site-btn site-btn--outline">
+                                <span class="site-btn__label">@Html.Raw(item.Url_Text)</span>
+                                <span class="site-btn__arrow" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        </div>
+                    </article>
+                    }
+                </div>
+            </div>
+        }
+    </section>
+}

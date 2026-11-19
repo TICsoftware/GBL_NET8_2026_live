@@ -788,9 +788,7 @@ height: clamp(25vw, 25vw, 560px);
   margin-bottom: 0;
 }
 
-.social-split__copy .text-h2 {
-  margin: 0 0 2.5rem;
-}
+
 
 /* Opening paragraph is the small one here; the rest step up to intro size */
 .social-belief .social-split__copy p {
@@ -825,7 +823,7 @@ height: clamp(25vw, 25vw, 560px);
 .social-principles__card {
   min-height: 11.25rem;
   margin: 0;
-  padding: 1.5rem 2.5rem 1.75rem;
+  padding: 1.5rem ;
   background: var(--color-gray, #f4f4f4);
 }
 
@@ -1216,4 +1214,6 @@ height: clamp(25vw, 25vw, 560px);
   .sustainabilityReportsList__grid {
     grid-template-columns: 1fr;
   }
+
+  .social-principles__card{ min-height:inherit;}
 }

@@ -133,7 +133,8 @@ Mobile: below 1180px
 
 @media (max-width: 1179px) {
   .industries-list {
-    grid-template-columns: 1fr 1fr;
+    /* minmax(0, …) so a column can't grow past the container to fit card content */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
   }
 
@@ -187,23 +188,26 @@ Mobile: below 1180px
 
 @media (max-width: 767px) {
   .industries-list {
-    grid-template-columns: 1fr;
+    /* minmax(0, 1fr): a plain 1fr track expanded to ~920px (card min-content) and overflowed the phone */
+    grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
   }
 
+  /* Mobile: image on top, content below */
   .industry-card {
-    flex-direction: row;
+    flex-direction: column;
     align-items: stretch;
     height: auto;
     min-height: 0;
+    min-width: 0;
   }
 
   .industry-card__media {
-    flex: 0 0 42%;
-    width: 42%;
-    max-width: 42%;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
     min-height: 0;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     background: #e8e8e8;
   }
@@ -226,9 +230,9 @@ Mobile: below 1180px
 
   .industry-card__caption {
     flex: 1 1 auto;
-    width: auto;
+    width: 100%;
     min-width: 0;
-    padding: 0.85rem 0.9rem;
+    padding: 1rem;
   }
 
   

@@ -25,6 +25,12 @@
         return $"<p>{System.Net.WebUtility.HtmlEncode(value)}</p>";
     }
 
+    string PlainMissionLine(string? html)
+    {
+        var value = (html ?? "").CleanParagraphTags().Trim();
+        return string.IsNullOrWhiteSpace(value) ? "" : value;
+    }
+
     // Page details
     var bannerTitle = FirstNonEmpty(content?.ContTitle, "Our Vision");
     var bannerImg = FirstNonEmpty(content?.MastheadImage, Url.Content("~/Assets/images/banners/sustainability-banner.webp"));
@@ -37,12 +43,25 @@
         || !string.IsNullOrWhiteSpace(pageIntroCopy);
 
     // ========== Component 1: Our Guiding Principles ==========
+    // Soft-template component "Our Guiding Principles"
     // IsBlock 0 → Component Title, Component Intro, Component Background image
     // IsBlock 1 → Title, Intro, Thumbnail Image (icon), Sequence
-    var principlesSection = Model?.Guiding_Principles_List?.FirstOrDefault(x => x.IsBlock == 0);
-    var principleItems = (Model?.Guiding_Principles_List?.Where(x => x.IsBlock == 1)
-            .OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList()
-        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
+    var guidingList = Model?.Guiding_Principles_List
+        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var principlesSection = guidingList.FirstOrDefault(x => x.IsBlock == 0);
+    var principleItems = guidingList
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence <= 0 ? int.MaxValue : x.Sequence)
+        .ThenBy(x => x.Title)
+        .ToList();
+    if (!principleItems.Any() && guidingList.Any())
+    {
+        principleItems = guidingList
+            .Where(x => principlesSection == null || !ReferenceEquals(x, principlesSection))
+            .OrderBy(x => x.Sequence <= 0 ? int.MaxValue : x.Sequence)
+            .ThenBy(x => x.Title)
+            .ToList();
+    }
 
     var principlesTitle = SectionHeading(
         FirstNonEmpty(principlesSection?.Title, principlesSection?.DisplayTitle, principlesSection?.BlockDisplayTitle),
@@ -54,18 +73,32 @@
         Url.Content("~/Assets/images/our-vision/guiding-principles-bg.webp"));
 
     // ========== Component 2: Our Mission ==========
-    // IsBlock 0 → Title, Component Background image
-    // IsBlock 1 → Title (mission line list)
-    var missionSection = Model?.Our_Mission_List?.FirstOrDefault(x => x.IsBlock == 0);
-    var missionItems = (Model?.Our_Mission_List?.Where(x => x.IsBlock == 1)
-            .OrderBy(x => x.Sequence).ThenBy(x => x.Title).ToList()
-        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>());
+    // Soft-template component "our mission" — separate section below Guiding Principles
+    // IsBlock 0 → Title / Component Title, Component Background image
+    // IsBlock 1 → Title (each mission line), Sequence
+    var missionList = Model?.Our_Mission_List
+        ?? new List<GBL_BusinessLogic.Entity.ComponentModel>();
+    var missionSection = missionList.FirstOrDefault(x => x.IsBlock == 0);
+    var missionItems = missionList
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence <= 0 ? int.MaxValue : x.Sequence)
+        .ThenBy(x => x.Title)
+        .ToList();
+    if (!missionItems.Any() && missionList.Any())
+    {
+        missionItems = missionList
+            .Where(x => missionSection == null || !ReferenceEquals(x, missionSection))
+            .OrderBy(x => x.Sequence <= 0 ? int.MaxValue : x.Sequence)
+            .ThenBy(x => x.Title)
+            .ToList();
+    }
 
     var missionTitle = SectionHeading(
         FirstNonEmpty(missionSection?.Title, missionSection?.DisplayTitle, missionSection?.BlockDisplayTitle),
         "Our Mission");
     var missionBg = FirstNonEmpty(
         missionSection?.Componentbackground,
+        missionSection?.ComponentThumbnail,
         missionSection?.ThumbnailImage,
         Url.Content("~/Assets/images/our-vision/our-mission-bg.webp"));
 }
@@ -235,7 +268,12 @@
             <ul class="our-mission__list card-list-items">
                @foreach (var item in missionItems)
                {
-                  var line = item.Title?.CleanParagraphTags() ?? "";
+                  var line = FirstNonEmpty(
+                      item.Title?.CleanParagraphTags(),
+                      item.DisplayTitle?.CleanParagraphTags(),
+                      item.BlockDisplayTitle?.CleanParagraphTags(),
+                      PlainMissionLine(item.Intro),
+                      PlainMissionLine(item.Content));
                   if (string.IsNullOrWhiteSpace(line))
                   {
                      continue;

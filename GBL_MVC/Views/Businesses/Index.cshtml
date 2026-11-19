@@ -54,10 +54,10 @@
 <!--PAGE INTRO OUTER-->
 @if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
 {
-   <section class="business-intro" aria-label="Introduction">
+   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray" aria-label="Introduction">
       <div class="container">
          <div class="page-intro-inner">
-            <p class="business-intro__lead">@Html.Raw(content.Cont_intro)</p>
+            @Html.Raw(content.Cont_intro)
          </div>
       </div>
    </section>
@@ -73,7 +73,7 @@
       var itemfirstcomponent = itemcomponent.FirstOrDefault(); 
       if (incr % 2 == 0)
       {
-         business_class = "reverse";
+         business_class = "reverse bg-gray";
       }
       else
       {
@@ -89,21 +89,21 @@
                {
                   @if (itemcomponent.Count == 1)
                   {
-                     <div class="business-split__media business-media business-media--full business-parallax">
-                        <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
+                     <div class="business-split__media business-media business-media--full parallax-wrap parallax-sticky" data-parallax-travel="5">
+                        <img class="parallax-img" src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
                      </div>
                   }
                   else
                   {
-                     <div class="business-split__media business-collage">
-                        <div class="business-media business-media--wide business-parallax">
-                           <img src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
+                     <div class="business-split__media business-collage parallax-sticky">
+                        <div class="business-media business-media--wide parallax-wrap" data-parallax-travel="5">
+                           <img class="parallax-img" src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
                         </div>
                         <div class="business-collage__row">
                         @foreach (var component in itemcomponent.Skip(1))
                         {
-                           <div class="business-media business-media--small business-parallax">
-                              <img src="@component.ThumbnailImage" alt="@component.ThumbnailAltText" loading="lazy" />
+                           <div class="business-media business-media--small parallax-wrap" data-parallax-travel="5">
+                              <img class="parallax-img" src="@component.ThumbnailImage" alt="@component.ThumbnailAltText" loading="lazy" />
                            </div>
                         } 
                         </div>
@@ -142,5 +142,4 @@
 
    @section Scripts {
       <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
-      <script src="~/Assets/js/business.js" asp-append-version="true"></script>
    }

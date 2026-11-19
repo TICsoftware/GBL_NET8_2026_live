@@ -56,7 +56,10 @@ body.is-industry-filter-open {
    stacking context (z-index: 1). A fixed sheet cannot paint above the header
    (z-index: 1000) until that context is raised. */
 @media (max-width: 767px) {
-  body.is-industry-filter-open .translatingProducts {
+  /* Raise the parent stacking context so the fixed sheet paints above the
+     header (z-index: 1000) and the footer overlay (z-index: 1). */
+  body.is-industry-filter-open .translatingProducts,
+  body.is-industry-filter-open .bbc-find__content {
     z-index: 1200;
   }
 

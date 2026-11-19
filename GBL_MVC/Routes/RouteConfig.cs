@@ -13,6 +13,11 @@ namespace GBL_MVC.Routes
         {
             // ✅ Custom routes first
 
+            app.MapControllerRoute(
+                name: "CSR-inside",
+                pattern: "CSR/{title}",
+                defaults: new { controller = "CSR", action = "Index" }
+            );
             
             app.MapControllerRoute(
                 name: "businesses-inside",
