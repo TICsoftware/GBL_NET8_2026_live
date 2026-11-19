@@ -56,7 +56,7 @@
 --font-uniNeueLight: 'uni_neuelight', sans-serif;
 
 /* ── Font Scale ── */
---text-h1:  clamp(32px, calc(1.65rem + 2.82vw), 70px);      /* 40px → 70px */
+--text-h1:  clamp(32px, calc(1.65rem + 2.82vw), 64px);      /* 40px → 64px */
 --text-h2: clamp(1.5rem, 1.25rem + 1.14vw, 2.75rem);  /* 38px → 44px */
 --text-h3: clamp(1.25rem, 1rem + 0.65vw, 2.1875rem); /* 32px → 35px */
 --text-h4: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);          /* 20px → 24px */

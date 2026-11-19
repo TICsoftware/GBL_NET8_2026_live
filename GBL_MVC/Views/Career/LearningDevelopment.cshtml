@@ -209,13 +209,13 @@ else
     </div>
 </section>
 
-<section class="ld-knowledge section-spacing">
+<section class="ld-knowledge left-right-section left-right-gray section-spacing">
     <div class="container">
-        <div class="ld-split">
-            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+        <div class="ld-split lr-row">
+            <figure class="ld-media lr-media parallax-wrap" data-parallax-travel="5">
                 <img src="@knowledgeImage" alt="@knowledgeImageAlt" class="parallax-img">
             </figure>
-            <div class="ld-split__copy ld-split__copy--white">
+            <div class="ld-split__copy lr-copy lr-panel ld-split__copy--white">
                 <h2 class="text-h2">@Html.Raw(knowledgeTitle.CleanParagraphTags())</h2>
                 @if (!string.IsNullOrWhiteSpace(knowledgeIntro))
                 {
@@ -236,17 +236,17 @@ else
     </div>
 </section>
 
-<section class="ld-horizons section-spacing">
+<section class="ld-horizons left-right-section left-right-white section-spacing">
     <div class="container">
         <div class="ld-head">
             <h2 class="text-h2">@Html.Raw(horizonsTitle.CleanParagraphTags())</h2>
             <p>@Html.Raw(horizonsLead.CleanParagraphTags())</p>
         </div>
-        <div class="ld-split">
-            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+        <div class="ld-split lr-row">
+            <figure class="ld-media lr-media parallax-wrap" data-parallax-travel="5">
                 <img src="@horizonsImage" alt="@horizonsImageAlt" class="parallax-img">
             </figure>
-            <div class="ld-split__copy ld-split__copy--gray">
+            <div class="ld-split__copy lr-copy lr-panel ld-split__copy--gray">
                 @if (horizonsHasListHtml)
                 {
                     @Html.Raw(horizonsIntro!.Content)
@@ -269,10 +269,10 @@ else
     </div>
 </section>
 
-<section class="ld-philosophy section-pb">
+<section class="ld-philosophy left-right-section left-right-white section-pb">
     <div class="container">
-        <div class="ld-split ld-split--copy-first">
-            <div class="ld-split__copy ld-split__copy--gray">
+        <div class="ld-split ld-split--copy-first lr-row lr-row--reverse">
+            <div class="ld-split__copy lr-copy lr-panel ld-split__copy--gray">
                 <h2 class="text-h2">@Html.Raw(philosophyTitle.CleanParagraphTags())</h2>
                 @if (!string.IsNullOrWhiteSpace(philosophyIntro))
                 {
@@ -289,7 +289,7 @@ else
                     </span>
                 </a>
             </div>
-            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+            <figure class="ld-media lr-media parallax-wrap" data-parallax-travel="5">
                 <img src="@philosophyImage" alt="@philosophyImageAlt" class="parallax-img">
             </figure>
         </div>

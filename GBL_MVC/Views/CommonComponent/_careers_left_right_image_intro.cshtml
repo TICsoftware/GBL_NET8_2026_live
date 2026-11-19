@@ -3,21 +3,21 @@
 @model List<ComponentModel>
 
 
-<section class="lifeAtGodavari section-spacing bg-gray">
+<section class="lifeAtGodavari left-right-section left-right-gray section-spacing bg-gray">
     <div class="container">
         @foreach (var item in Model.Where(x => x.IsBlock == 1).OrderBy(x => x.Sequence))
         {
-            var reverseClass = item.Sequence % 2 == 0 ? "lifeAtGodavari-row--reverse" : "";
+            var reverseClass = item.Sequence % 2 == 0 ? "lifeAtGodavari-row--reverse lr-row--reverse" : "";
 
-            <article class="lifeAtGodavari-row @reverseClass">
-                <div class="lifeAtGodavari-copy">
+            <article class="lifeAtGodavari-row lr-row @reverseClass">
+                <div class="lifeAtGodavari-copy lr-copy">
                     <h2 class="text-h2">@item.Title</h2>
                     @if (!string.IsNullOrWhiteSpace(item.Intro))
                     {
                         @Html.Raw(item.Intro)
                     }
                 </div>
-                <div class="lifeAtGodavari-media parallax-wrap">
+                <div class="lifeAtGodavari-media lr-media parallax-wrap">
                     <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText" class="parallax-img">
                 </div>
             </article>

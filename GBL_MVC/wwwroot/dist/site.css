@@ -63,7 +63,7 @@
     --font-uniNeue: 'uni_neueregular', sans-serif;
     --font-uniNeueRegular: 'uni_neueregular', sans-serif;
     --font-uniNeueBold: 'uni_neuebold', sans-serif;
-    --text-h1: clamp(32px, calc(1.65rem + 2.82vw), 70px);
+    --text-h1: clamp(32px, calc(1.65rem + 2.82vw), 64px);
     --text-h2: clamp(1.5rem, 1.25rem + 1.14vw, 2.75rem);
     --text-h3: clamp(1.25rem, 1rem + 0.65vw, 2.1875rem);
     --text-h4: clamp(1.25rem, 1rem + 0.52vw, 1.5rem);

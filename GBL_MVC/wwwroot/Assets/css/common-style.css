@@ -333,7 +333,7 @@ INNER BANNER CSS
   margin: 0;
   width: auto;
   max-width: 100%;
-  min-height: 2.75rem;
+  min-height: 2.25rem;
   padding: 0.6rem var(--btn-pad-x);
   overflow: hidden;
   box-sizing: border-box;

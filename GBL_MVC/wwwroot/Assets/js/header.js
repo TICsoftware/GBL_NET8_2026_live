@@ -53,6 +53,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const placeL3Panel = (item, panel) => {
     const li = item.closest("li");
     if (li && panel.parentElement !== li) li.appendChild(panel);
+    fitGridToL3(panel);
+  };
+
+  // Hover fill (same as the corporate governance doc cards): circle grows from where the mouse enters
+  header.addEventListener("mouseover", (e) => {
+    const item = e.target.closest && e.target.closest(".mega-l2__item, .mega-l3-item > .mega-l3");
+    if (!item || item.contains(e.relatedTarget)) return;
+    const rect = item.getBoundingClientRect();
+    const x = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
+    const y = Math.min(Math.max(e.clientY - rect.top, 0), rect.height);
+    const radius = Math.ceil(Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y))) + 16;
+    item.style.setProperty("--hx", x + "px");
+    item.style.setProperty("--hy", y + "px");
+    item.style.setProperty("--hr", radius + "px");
+  });
+
+  // The L3 panel is absolutely positioned, so grow the grid to fit it (keeps bottom space equal to top)
+  const fitGridToL3 = (panel) => {
+    const grid = panel.closest(".mega-menu__grid");
+    if (!grid) return;
+    grid.style.minHeight = "";
+    if (isMobile() || !panel.classList.contains("is-active")) return;
+    const cs = getComputedStyle(grid);
+    const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+    grid.style.minHeight = panel.scrollHeight + padY + "px";
   };
 
   const getScrollY = () => {
@@ -119,6 +144,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const clamped = Math.min(wrapRect.width - pad, Math.max(pad, left));
     if (instant) navWrap.classList.add("is-caret-instant");
     navWrap.style.setProperty("--mega-caret-left", clamped + "px");
+
+    // Pill behind the open item: wraps the label, ignoring the link's tall hover-bridge padding
+    const cs = getComputedStyle(trigger);
+    const padL = parseFloat(cs.paddingLeft) || 0;
+    const padR = parseFloat(cs.paddingRight) || 0;
+    const padT = parseFloat(cs.paddingTop) || 0;
+    const lineH = parseFloat(cs.fontSize) || 16;
+    // Compact (scrolled) bar is shorter, so keep the pill inside it
+    const compact = header.classList.contains("is-compact");
+    const padX = compact ? 12 : 14;
+    const padY = compact ? 5 : 9;
+    const pillLeft = trigRect.left + padL - wrapRect.left - padX;
+    const pillWidth = trigRect.width - padL - padR + padX * 2;
+    const pillTop = trigRect.top + padT - wrapRect.top - padY;
+    navWrap.style.setProperty("--mega-pill-left", pillLeft + "px");
+    navWrap.style.setProperty("--mega-pill-width", pillWidth + "px");
+    navWrap.style.setProperty("--mega-pill-top", pillTop + "px");
+    navWrap.style.setProperty("--mega-pill-height", lineH + padY * 2 + "px");
     if (instant) {
       requestAnimationFrame(() => navWrap.classList.remove("is-caret-instant"));
     }
@@ -172,6 +215,8 @@ document.addEventListener("DOMContentLoaded", function () {
       panel.classList.remove("is-active");
       panel.hidden = true;
     });
+    const grid = menu.querySelector(".mega-menu__grid");
+    if (grid) grid.style.minHeight = "";
   };
 
   const activateL2 = (item) => {
@@ -238,8 +283,9 @@ document.addEventListener("DOMContentLoaded", function () {
     header.classList.add("is-mega-open");
     activeMenu = menu;
     const isListMenu = menu.classList.contains("mega-menu--list");
-    // List-style menu opens with the feature showing; sub-menus appear on hover
-    if (isListMenu && !isMobile()) {
+    // List-style menu opens with the feature showing; sub-menus appear on hover.
+    // On mobile, inner accordions start closed too (opened by tapping).
+    if (isListMenu || isMobile()) {
       closeAllL2(menu);
     } else {
       const preferred = menu.querySelector("[data-l2][data-panel]");
