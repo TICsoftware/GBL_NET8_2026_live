@@ -9,7 +9,7 @@ namespace GBL_MVC.Controllers
 {
     public class IndustriesController : Controller
     {
-        private const int DefaultPageSize = 10;
+        private const int DefaultPageSize = 8;
         private readonly Industry_Public_BAL _bal;
 
         public IndustriesController(IConfiguration configuration)
