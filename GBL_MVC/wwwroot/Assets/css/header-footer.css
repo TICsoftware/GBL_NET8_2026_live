@@ -119,7 +119,7 @@ font-weight: 400;
 }
 
 .site-header.is-compact .site-header__logo--gbl img{
-  height: 56px;
+  height: 67px; /* +20% (was 56px) */
 }
 
 .site-header.is-compact .site-header__logo--somaiya img{
@@ -164,7 +164,7 @@ font-weight: 400;
 }
 
 .site-header__logo--gbl img{
-  height: 128px;
+  height: 154px; /* +20% (was 128px) */
 }
 
 .site-header__logo--somaiya{
@@ -948,15 +948,15 @@ html.is-header-locked.is-header-lock-scroll .site-header{
 
   /* Somaiya logo sits on a small white tile */
   .site-header__logo--somaiya{
-    align-self: center;
+    align-self: flex-start;
     background: #fff;
-    border-radius: 10px;
-    padding: 6px 8px;
+    /* border-radius: 10px;
+    padding: 6px 8px; */
   }
 
   .site-header__logo--somaiya img,
   .site-header.is-compact .site-header__logo--somaiya img{
-    height: 46px;
+    height: 80px;
   }
 
   .site-header.is-compact .site-header__logo--somaiya{
@@ -1355,7 +1355,7 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   }
 
   .site-header__logo--gbl img{
-    height: 86px;
+    height: 103px; /* +20% (was 86px) */
   }
 
   .site-header__logo--somaiya img{
@@ -1367,7 +1367,7 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   }
 
   .site-header.is-compact .site-header__logo--gbl img{
-    height: 50px;
+    height: 60px; /* +20% (was 50px); = compact bar height */
   }
 
   .site-header.is-compact .site-header__logo--somaiya img{
@@ -2039,7 +2039,7 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   }
 
   .site-header__logo--gbl img{
-    height: 74px;
+    height: 89px; /* +20% (was 74px) */
   }
 
   .site-header__logo--somaiya img{
@@ -2051,7 +2051,7 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   }
 
   .site-header.is-compact .site-header__logo--gbl img{
-    height: 46px;
+    height: 54px; /* ~+20% (was 46px), capped at the 54px compact bar so it isn't clipped */
   }
 
   .site-header.is-compact .site-header__logo--somaiya img{
