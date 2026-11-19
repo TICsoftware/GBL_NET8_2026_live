@@ -63,6 +63,7 @@
     --font-uniNeue: 'uni_neueregular', sans-serif;
     --font-uniNeueRegular: 'uni_neueregular', sans-serif;
     --font-uniNeueBold: 'uni_neuebold', sans-serif;
+    --font-uniNeueLight: 'uni_neuelight', sans-serif;
     --text-h1: clamp(32px, calc(1.65rem + 2.82vw), 64px);
     --text-h2: clamp(1.5rem, 1.25rem + 1.14vw, 2.75rem);
     --text-h3: clamp(1.25rem, 1rem + 0.65vw, 2.1875rem);
@@ -82,6 +83,9 @@
     --line: rgba(28,25,24,0.1);
     --ease: cubic-bezier(.22,1,.36,1);
     --ink-soft: #6B6664;
+    --panel: #fff;
+    --red-tint: rgba(237,28,36,0.06);
+    --red-tint-strong: rgba(237,28,36,0.1);
     --title-grey: #b6bcc6;
   }
 }
@@ -234,6 +238,9 @@
   }
 }
 @layer utilities {
+  .\@container {
+    container-type: inline-size;
+  }
   .pointer-events-auto {
     pointer-events: auto;
   }
@@ -1068,6 +1075,9 @@
   .max-w-4xl {
     max-width: var(--container-4xl);
   }
+  .max-w-6xl {
+    max-width: var(--container-6xl);
+  }
   .flex-shrink {
     flex-shrink: 1;
   }
@@ -1244,6 +1254,9 @@
   }
   .rounded-lg {
     border-radius: var(--radius-lg);
+  }
+  .rounded-md {
+    border-radius: var(--radius-md);
   }
   .rounded-sm {
     border-radius: var(--radius-sm);
@@ -1435,6 +1448,9 @@
   .py-6 {
     padding-block: calc(var(--spacing) * 6);
   }
+  .py-10 {
+    padding-block: calc(var(--spacing) * 10);
+  }
   .ps-0 {
     padding-inline-start: 0px;
   }
@@ -1489,6 +1505,9 @@
   .pt-5 {
     padding-top: calc(var(--spacing) * 5);
   }
+  .pt-10 {
+    padding-top: calc(var(--spacing) * 10);
+  }
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
   }
@@ -1512,6 +1531,9 @@
   }
   .pb-5 {
     padding-bottom: calc(var(--spacing) * 5);
+  }
+  .pb-10 {
+    padding-bottom: calc(var(--spacing) * 10);
   }
   .pb-12 {
     padding-bottom: calc(var(--spacing) * 12);
@@ -1555,6 +1577,10 @@
   .font-uniNeueBold {
     font-family: var(--font-uniNeueBold);
   }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
   .text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
@@ -1571,6 +1597,9 @@
   }
   .text-h2 {
     font-size: var(--text-h2);
+  }
+  .text-h3 {
+    font-size: var(--text-h3);
   }
   .text-h4 {
     font-size: var(--text-h4);
@@ -1856,6 +1885,12 @@
     }
     .md\:px-8 {
       padding-inline: calc(var(--spacing) * 8);
+    }
+    .md\:py-15 {
+      padding-block: calc(var(--spacing) * 15);
+    }
+    .md\:pt-15 {
+      padding-top: calc(var(--spacing) * 15);
     }
     .md\:pb-5 {
       padding-bottom: calc(var(--spacing) * 5);
