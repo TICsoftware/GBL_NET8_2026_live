@@ -132,9 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const wrapRect = navWrap.getBoundingClientRect();
     const trigRect = trigger.getBoundingClientRect();
-    const width = Math.min(616, wrapRect.width, Math.max(320, window.innerWidth - 40));
+    const maxWidth = menu.classList.contains("mega-menu--list") ? 900 : 1000;
+    const width = Math.min(maxWidth, Math.max(320, window.innerWidth - 40));
     const center = trigRect.left + trigRect.width / 2 - wrapRect.left;
-    const left = Math.max(0, Math.min(center - width / 2, wrapRect.width - width));
+    // Keep the right edge inside the nav; let a wide panel extend left, but not off-screen
+    const maxLeft = wrapRect.width - width;
+    const minLeft = Math.max(20 - wrapRect.left, Math.min(0, maxLeft));
+    const left = Math.min(maxLeft, Math.max(minLeft, center - width / 2));
     menu.style.width = width + "px";
     menu.style.setProperty("--mega-left", left + "px");
     positionCaret(trigger, instant);
@@ -233,8 +237,14 @@ document.addEventListener("DOMContentLoaded", function () {
     menu.hidden = false;
     header.classList.add("is-mega-open");
     activeMenu = menu;
-    const preferred = menu.querySelector("[data-l2][data-panel]");
-    if (preferred) activateL2(preferred);
+    const isListMenu = menu.classList.contains("mega-menu--list");
+    // List-style menu opens with the feature showing; sub-menus appear on hover
+    if (isListMenu && !isMobile()) {
+      closeAllL2(menu);
+    } else {
+      const preferred = menu.querySelector("[data-l2][data-panel]");
+      if (preferred) activateL2(preferred);
+    }
     if (!isMobile()) lockPage(true);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => positionMega(trigger, !switching));
@@ -373,6 +383,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         activateL2(item);
       });
+
+      if (menu.classList.contains("mega-menu--list")) {
+        item.addEventListener("mouseenter", () => {
+          if (isMobile()) return;
+          if (item.hasAttribute("data-panel")) activateL2(item);
+          else closeAllL2(menu);
+        });
+      }
     });
 
     menu.querySelectorAll("[data-l3]").forEach((item) => {

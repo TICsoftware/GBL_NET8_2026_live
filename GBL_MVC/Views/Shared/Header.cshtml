@@ -160,7 +160,7 @@
                 @* Mega Menu *@
                 @if (hasMegaMenu)
                 {
-                  <div class="mega-menu" id="@menuId" data-mega="@menuKey" hidden>
+                  <div class="mega-menu mega-menu--list" id="@menuId" data-mega="@menuKey" hidden>
 
                     <div class="mega-menu__grid">
 
@@ -205,6 +205,7 @@
                                 {
                                     <div class="mega-l3-panel"
                                         data-panel="@panelId"
+                                        data-title="@child.MenuName"
                                         hidden>
 
                                         @foreach (var subChild in subChildren)
@@ -305,13 +306,14 @@
 
                             @if (!string.IsNullOrWhiteSpace(parent.FeatureButtonText))
                             {
-                              <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" class="mega-featured__cta"
+                              <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" class="site-btn site-btn--fill mega-featured__cta"
                                  target="@(parent.FeatureButtonTarget ?? "_self")"
                                  rel="@(parent.FeatureButtonTarget == "_blank" ? "noopener noreferrer" : null)">
 
-                                <span aria-hidden="true">&rarr;</span>
-
-                                @parent.FeatureButtonText
+                                <span class="site-btn__label">@parent.FeatureButtonText</span>
+                                <span class="site-btn__arrow" aria-hidden="true">
+                                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
 
                               </a>
                             }
