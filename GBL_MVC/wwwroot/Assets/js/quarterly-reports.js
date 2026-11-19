@@ -67,6 +67,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ensureVisible(activeIndex);
     updateArrows();
+    updateTableFades();
+  }
+
+  var wraps = Array.prototype.slice.call(root.querySelectorAll(".qr-table-wrap"));
+
+  function updateTableFade(wrap) {
+    var max = wrap.scrollWidth - wrap.clientWidth;
+    var more = max > 2 && wrap.scrollLeft < max - 2;
+    wrap.classList.toggle("has-more-right", more);
+  }
+
+  function updateTableFades() {
+    wraps.forEach(updateTableFade);
   }
 
   tabs.forEach(function (tab) {
@@ -93,8 +106,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   updateArrows();
   layout();
+  wraps.forEach(function (wrap) {
+    wrap.addEventListener("scroll", function () { updateTableFade(wrap); }, { passive: true });
+  });
+  updateTableFades();
 
   window.addEventListener("resize", function () {
     ensureVisible(currentIndex());
+    updateTableFades();
   });
 });
