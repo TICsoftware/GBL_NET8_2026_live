@@ -1,5 +1,5 @@
 (function () {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = parseInt(document.querySelector(".industries-list")?.getAttribute("data-page-size") || "8", 10) || 8;
   let page = 1;
 
   const list = document.getElementById("industryList");
