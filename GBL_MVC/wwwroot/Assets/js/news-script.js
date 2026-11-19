@@ -276,6 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       var panel = activeProductPanel();
       bindMediaParallax(panel);
+      bindCardFill();
       refreshCardFill(panel);
 
       if (!canAnimate) {
@@ -398,9 +399,10 @@ document.addEventListener("DOMContentLoaded", function () {
     card.style.setProperty("--hr", radius + "px");
   }
 
-  function bindCardFill() {
-    document.querySelectorAll(".news-inside-outer .industry-product-card").forEach(function (card) {
-      if (card.dataset.fillBound) return;
+  function bindCardFill(root) {
+    var scope = root || document;
+    scope.querySelectorAll(".news-inside-outer .industry-product-card, .industry-product-card.media-coverage-card, [data-news-grid] .industry-product-card").forEach(function (card) {
+      if (card.dataset.fillBound === "1") return;
       card.dataset.fillBound = "1";
       placeFill(card, null);
       card.addEventListener("mouseenter", function (e) {
@@ -415,10 +417,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function refreshCardFill(panel) {
     var root = panel || document;
+    bindCardFill(root);
     root.querySelectorAll(".industry-product-card").forEach(function (card) {
       placeFill(card, null);
     });
   }
+
+  window.bindNewsCardFill = bindCardFill;
+  window.refreshNewsCardFill = refreshCardFill;
 
   bindCardFill();
   window.addEventListener("resize", function () {
