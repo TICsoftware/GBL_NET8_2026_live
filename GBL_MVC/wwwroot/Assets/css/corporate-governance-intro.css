@@ -84,35 +84,74 @@
 }
 
 .cg-jump__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0;
+  max-width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(40, 43, 49, 0.16);
+  border-radius: 999px;
+  background: var(--color-white, #fff);
+  vertical-align: middle;
+}
+
+.cg-jump__thumb {
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  z-index: 0;
+  height: calc(100% - 1rem);
+  border-radius: 999px;
+  background: var(--color-secondary, #67815a);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
 }
 
 .cg-jump__btn {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
-  padding: 1rem 2rem;
-  background: var(--color-secondary, #67815a);
-  color: #fff;
-  font-size: var(--text-18, 18px);
-  line-height: 1.2;
+  min-height: 2.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary, #282b31);
+  font-size: var(--text-22);
+  font-weight: 400;
+  line-height: 1.15;
   text-decoration: none;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.35s ease;
 }
 
 .cg-jump__btn:hover,
-.cg-jump__btn:focus-visible,
+.cg-jump__btn:focus-visible {
+  background: transparent;
+  color: var(--color-primary, #282b31);
+}
+
 .cg-jump__btn.is-active {
-  background: var(--color-primary, #282b31);
+  background: var(--color-secondary, #67815a);
   color: #fff;
+}
+
+.cg-jump__nav.is-ready .cg-jump__btn.is-active {
+  background: transparent;
 }
 
 .cg-jump__btn:focus-visible {
   outline: 2px solid var(--color-primary, #282b31);
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-jump__thumb {
+    transition: none;
+  }
 }
 
 .cg-docs {
@@ -452,10 +491,17 @@
     flex: 1;
     flex-wrap: nowrap;
     min-width: 0;
+    padding: 0.375rem;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .cg-jump__thumb {
+    top: 0.375rem;
+    height: calc(100% - 0.75rem);
   }
 
   .cg-jump__nav::-webkit-scrollbar {
@@ -467,6 +513,8 @@
     width: auto;
     scroll-snap-align: center;
     white-space: nowrap;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
   }
 
   .cg-docs__grid,

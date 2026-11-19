@@ -230,6 +230,16 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Soft edge while more columns sit off-screen. Mask follows the visible box, not the scrolled table. */
+  .qr-table-wrap.has-more-right {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.75rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 2.75rem), transparent);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
   .qr-table {
     width: max-content;
     min-width: 46rem;
