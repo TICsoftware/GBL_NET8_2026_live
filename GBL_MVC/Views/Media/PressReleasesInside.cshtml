@@ -3,6 +3,7 @@
 @model GBL_BusinessLogic.Entity.MediaModel
 @{
    ViewData["Title"] = Model?.Content?.ContTitle ?? "Press release";
+   ViewData["HideMediaBreadcrumbTitle"] = true;
    Layout = "~/Views/Shared/_Layout.cshtml";
    var content = Model?.Content;
 }
@@ -87,7 +88,7 @@
          @if (!string.IsNullOrWhiteSpace(Model.Content?.External_url))
          {
             <div class="press-release-card__footer">
-               <span class="press-release-card__footer-label">Link:</span>
+               <span class="press-release-card__footer-label">Source:</span>
                <a href="@Model.Content.External_url" target="_blank" rel="noopener" class="fill-site-link">
                   @Model.Content.Publication
                </a>
@@ -144,4 +145,5 @@ More Press Release
 @section Scripts {
    <script src="~/Assets/js/swiper-bundle.min.js" asp-append-version="true"></script>
    <script src="~/Assets/js/more-press-release.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
 }

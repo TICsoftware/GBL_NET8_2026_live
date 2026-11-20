@@ -1,55 +1,168 @@
 @using GBL_BusinessLogic.Entity
 @using GBL_MVC.Helpers
+@using System.Text.RegularExpressions
 @model ContentViewModel
 
 @{
     var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage : "/Assets/images/banners/news-press-release-banner.webp";
     var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage : "/Assets/images/banners/news-press-release-banner.webp";
     var title = !string.IsNullOrWhiteSpace(Model?.ContTitle) ? Model.ContTitle : "";
-    var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "Products";
+    var breadcrumbTitle = !string.IsNullOrWhiteSpace(Model?.BreadcrumbTitle) ? Model.BreadcrumbTitle : "";
+    var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "";
     var alt = !string.IsNullOrWhiteSpace(Model?.Masthead_image_Alt_text) ? Model.Masthead_image_Alt_text : title;
+
+    var path = (Context?.Request?.Path.Value ?? "").Trim();
+    var isMediaDetail =
+        ViewData["HideMediaBreadcrumbTitle"] as bool? == true
+        || Regex.IsMatch(path, @"^/media/(press-release|media-coverage)/[^/]+", RegexOptions.IgnoreCase);
+
+    // Press-release / media-coverage inside: remove ContTitle from breadcrumbs only.
+    // Keep H1 title; keep Home / Media / Press Release (or Media Coverage).
+    if (isMediaDetail && !string.IsNullOrWhiteSpace(crumb))
+    {
+        crumb = RemoveContTitleFromBreadcrumb(crumb, title, breadcrumbTitle);
+    }
+
+    var showTitle = !string.IsNullOrWhiteSpace(title);
 }
 
-<section class="relative inside-banner-outer news-inside-banner-outer">
+<section class="relative inside-banner-outer news-inside-banner-outer@(isMediaDetail ? " news-inside-banner-outer--detail" : "")">
     <div class="inside-banner-inner banner-animation relative">
-        <!-- Banner -->
         <div class="overflow-hidden h-[75vh] sm:h-131.25 relative innerbanner-image-wrapper">
-            <!-- Parallax Image -->
             <picture>
-                <!-- Desktop -->
                 <source media="(min-width:1024px)" srcset="@desktopImg">
-               
-
-                <!-- Mobile -->
                 <img src="@desktopImg" alt="@alt"
                      class="innerbanner-image absolute left-0 top-0 w-full h-full object-cover" loading="eager"
                      fetchpriority="high">
             </picture>
-            <!-- Keep Existing Overlay -->
             <div class="innerbanner-overlay"></div>
         </div>
-        <!-- Content -->
 
-        <!--Breadcrumb-->
         <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
             <div class="container">
-                <div class="max-w-4xl text-left  news-inside-banner-caption">
-                    @if (!string.IsNullOrWhiteSpace(title))
+                <div class="max-w-4xl text-left news-inside-banner-caption">
+                    @if (showTitle)
                     {
                         <h1 class="innerbanner-title text-h1 text-white">
                             @Html.Raw(title.CleanParagraphTags())
                         </h1>
                     }
 
-                    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                        @Html.Raw(crumb)
-                    </nav>
+                    @if (!string.IsNullOrWhiteSpace(crumb))
+                    {
+                        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                            @Html.Raw(crumb)
+                        </nav>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+@functions {
+    private static string PlainText(string? html)
+    {
+        var text = Regex.Replace(html ?? "", "<[^>]+>", " ");
+        text = System.Net.WebUtility.HtmlDecode(text);
+        return Regex.Replace(text, @"\s+", " ").Trim();
+    }
 
+    private static bool TextsMatch(string a, string b)
+    {
+        if (string.IsNullOrWhiteSpace(a) || string.IsNullOrWhiteSpace(b)) return false;
+        return string.Equals(a, b, StringComparison.OrdinalIgnoreCase)
+            || a.Contains(b, StringComparison.OrdinalIgnoreCase)
+            || b.Contains(a, StringComparison.OrdinalIgnoreCase);
+    }
 
+    private static bool IsSeparatorLi(string liHtml)
+    {
+        if (liHtml.Contains("breadcrumb-sep", StringComparison.OrdinalIgnoreCase)) return true;
+        var text = PlainText(liHtml);
+        return string.IsNullOrWhiteSpace(text) || text == "/" || text == "|" || text == "›" || text == ">";
+    }
 
+    private static string RemoveLiAt(string html, Match liMatch)
+    {
+        return (html.Substring(0, liMatch.Index) + html.Substring(liMatch.Index + liMatch.Length)).Trim();
+    }
+
+    private static string StripTrailingSeparators(string html)
+    {
+        var result = html ?? "";
+        while (true)
+        {
+            var matches = Regex.Matches(result, @"<li\b[^>]*>[\s\S]*?</li>", RegexOptions.IgnoreCase);
+            if (matches.Count == 0) break;
+            var last = matches[matches.Count - 1];
+            if (!IsSeparatorLi(last.Value)) break;
+            result = RemoveLiAt(result, last);
+        }
+
+        result = Regex.Replace(result, @"(?:\s*<span\b[^>]*>\s*/\s*</span>\s*)+$", "", RegexOptions.IgnoreCase);
+        result = Regex.Replace(result, @"\s*/\s*$", "").Trim();
+        return result;
+    }
+
+    /// <summary>
+    /// Removes ContTitle (and BreadcrumbTitle if set) from the breadcrumb trail,
+    /// plus any dangling "/" left behind.
+    /// </summary>
+    private static string RemoveContTitleFromBreadcrumb(string crumbHtml, string? contTitle, string? breadcrumbTitle)
+    {
+        if (string.IsNullOrWhiteSpace(crumbHtml)) return crumbHtml;
+
+        var result = crumbHtml;
+        var titleA = PlainText(contTitle);
+        var titleB = PlainText(breadcrumbTitle);
+        var hasTitle = !string.IsNullOrWhiteSpace(titleA) || !string.IsNullOrWhiteSpace(titleB);
+
+        var matches = Regex.Matches(result, @"<li\b[^>]*>[\s\S]*?</li>", RegexOptions.IgnoreCase);
+        if (matches.Count >= 2)
+        {
+            // Find and remove the li that is ContTitle (prefer last match).
+            Match? titleLi = null;
+            for (var i = matches.Count - 1; i >= 0; i--)
+            {
+                var li = matches[i];
+                if (IsSeparatorLi(li.Value)) continue;
+                var text = PlainText(li.Value);
+                if (TextsMatch(text, titleA) || TextsMatch(text, titleB))
+                {
+                    titleLi = li;
+                    break;
+                }
+            }
+
+            // Fallback: last non-separator crumb is ContTitle on inside pages.
+            if (titleLi == null && hasTitle)
+            {
+                for (var i = matches.Count - 1; i >= 0; i--)
+                {
+                    if (IsSeparatorLi(matches[i].Value)) continue;
+                    titleLi = matches[i];
+                    break;
+                }
+            }
+
+            if (titleLi != null)
+                result = RemoveLiAt(result, titleLi);
+
+            result = StripTrailingSeparators(result);
+            return string.IsNullOrWhiteSpace(result) ? crumbHtml : result;
+        }
+
+        // Plain / slash-separated crumbs
+        foreach (var t in new[] { titleA, titleB })
+        {
+            if (string.IsNullOrWhiteSpace(t)) continue;
+            var escaped = Regex.Escape(t);
+            result = Regex.Replace(result, @"(\s*/\s*)(" + escaped + @")\s*$", "", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"(" + escaped + @")\s*$", "", RegexOptions.IgnoreCase);
+        }
+
+        result = Regex.Replace(result, @"\s*/\s*$", "").Trim();
+        return string.IsNullOrWhiteSpace(result) ? crumbHtml : result;
+    }
+}
