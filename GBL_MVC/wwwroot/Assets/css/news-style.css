@@ -120,7 +120,9 @@ NEWS — tabs, filters, press + media cards
   width: auto;
   max-width: calc(100% - 4rem);
   align-self: flex-start;
-  transform: translateY(calc(100% + 1.75rem));
+  /* Start just below its final spot but still inside the card's bottom padding,
+     so it never shows outside the card while sliding in on hover */
+  transform: translateY(0.75rem);
   opacity: 0;
   pointer-events: none;
   transition:
