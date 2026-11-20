@@ -97,7 +97,7 @@ namespace GBL_BusinessLogic.BAL
                             GetColumnString(row, "field_media_path")),
                         sequence = group.Key.Sequence,
                         IsBlock = group.Key.IsBlock,
-                        context_master_id = row.Table.Columns.Contains("context_master_id") ? row.Field<int>("context_master_id") : 0,
+                        context_parent_id = row.Table.Columns.Contains("context_parent_id") ? row.Field<int>("context_parent_id") : 0,
 
                     }).ToList()
                 }).OrderBy(x => x.Fields.First().sequence).ToList();
@@ -134,7 +134,7 @@ namespace GBL_BusinessLogic.BAL
                 {
                     GroupId = group.GroupId,
                     cont_id = group.cont_id,
-                    context_master_id = group.Fields.FirstOrDefault()?.context_master_id ?? 0,
+                    context_parent_id = group.Fields.FirstOrDefault()?.context_parent_id ?? 0,
                     Title = Config_Application_Website.GetValue(dict, "Title", "Component Title", "component title", "Component main title", "Main title"),
                     Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro", "component intro", "Component intro"),
                     HmpgIntro = Config_Application_Website.GetValue(dict, "Landing intro", "Component Landing intro"),
@@ -278,10 +278,10 @@ namespace GBL_BusinessLogic.BAL
                 })
                 .ToList();
 
-            foreach (var masterId in mapped.Select(x => x.context_master_id).Distinct().OrderBy(id => id))
+            foreach (var parentId in mapped.Select(x => x.context_parent_id).Distinct().OrderBy(id => id))
             {
-                result[masterId] = mapped
-                    .Where(x => x.context_master_id == masterId)
+                result[parentId] = mapped
+                    .Where(x => x.context_parent_id == parentId)
                     .OrderBy(x => x.IsBlock)
                     .ThenBy(x => x.Sequence)
                     .ToList();

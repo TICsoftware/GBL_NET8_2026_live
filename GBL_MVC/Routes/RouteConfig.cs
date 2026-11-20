@@ -210,9 +210,9 @@ app.MapControllerRoute(
             );
 
             app.MapControllerRoute(
-                name: "investor-relations",
-                pattern: "investor-relations",
-                defaults: new { controller = "InvestorRelations", action = "Index", title = "investor-relations" }
+                name: "investors",
+                pattern: "investors",
+                defaults: new { controller = "InvestorRelations", action = "Index", title = "investors" }
             );
 
             app.MapControllerRoute(
@@ -223,7 +223,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-shareholding-pattern",
-                pattern: "investor-relations/shareholding-pattern",
+                pattern: "investors/shareholding-pattern",
                 defaults: new
                 {
                     controller = "Investors",
@@ -232,8 +232,8 @@ app.MapControllerRoute(
                 }
             );
    app.MapControllerRoute(
-                name: "investor-disclosures",
-                pattern: "investor-relations/disclosures",
+                name: "investors-disclosures",
+                pattern: "investors/disclosures",
                 defaults: new
                 {
                     controller = "Investors",
@@ -243,7 +243,7 @@ app.MapControllerRoute(
             );
  app.MapControllerRoute(
                 name: "postal-ballot",
-                pattern: "investor-relations/postal-ballot",
+                pattern: "investors/postal-ballot",
                 defaults: new
                 {
                     controller = "Investors",
@@ -254,7 +254,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-subsidiaries",
-                pattern: "investor-relations/subsidiaries",
+                pattern: "investors/subsidiaries",
                 defaults: new
                 {
                     controller = "Investors",
@@ -265,7 +265,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-policies",
-                pattern: "investor-relations/policies",
+                pattern: "investors/policies",
                 defaults: new
                 {
                     controller = "Investors",
@@ -276,7 +276,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-code-of-conduct",
-                pattern: "investor-relations/code-of-conduct",
+                pattern: "investors/code-of-conduct",
                 defaults: new
                 {
                     controller = "Investors",
@@ -287,7 +287,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "corporate-governance",
-                pattern: "investor-relations/corporate-governance",
+                pattern: "investors/corporate-governance",
                 defaults: new
                 {
                     controller = "CorporateGovernance",
@@ -300,13 +300,13 @@ app.MapControllerRoute(
             // Point additional URLs at CorporateGovernance/Index to reuse this layout.
             app.MapControllerRoute(
                 name: "investor-general-meeting",
-                pattern: "investor-relations/general-meeting/{*title}",
+                pattern: "investors/general-meeting/{*title}",
                 defaults: new { controller = "CorporateGovernance", action = "Index" }
             );
 
             app.MapControllerRoute(
                 name: "Notice-of-meeting",
-                pattern: "investor-relations/notice-of-meeting",
+                pattern: "investors/notice-of-meeting",
                 defaults: new
                 {
                     controller = "CorporateGovernance",
@@ -322,7 +322,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-annual-report",
-                pattern: "investor-relations/annual-reports",
+                pattern: "investors/annual-reports",
                 defaults: new
                 {
                     controller = "AnnualReports",
@@ -333,7 +333,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-annual-report-singular",
-                pattern: "investor-relations/annual-report",
+                pattern: "investors/annual-report",
                 defaults: new
                 {
                     controller = "AnnualReports",
@@ -344,7 +344,7 @@ app.MapControllerRoute(
 
             app.MapControllerRoute(
                 name: "investor-quarterly-reports",
-                pattern: "investor-relations/quarterly-reports",
+                pattern: "investors/quarterly-reports",
                 defaults: new
                 {
                     controller = "QuarterlyReports",

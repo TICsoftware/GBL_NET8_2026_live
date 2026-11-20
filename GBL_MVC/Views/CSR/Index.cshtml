@@ -83,7 +83,7 @@
 @foreach (var itemsection in sections)
 {
     var blocks = componentLists
-        .Where(x => x.IsBlock == 1 && x.context_master_id == itemsection.context_master_id)
+        .Where(x => x.IsBlock == 1 && x.context_parent_id == itemsection.context_parent_id)
         .OrderBy(x => x.Sequence)
         .ToList();
     var sectionTitle = !string.IsNullOrWhiteSpace(itemsection.Title) ? itemsection.Title : itemsection.DisplayTitle;
