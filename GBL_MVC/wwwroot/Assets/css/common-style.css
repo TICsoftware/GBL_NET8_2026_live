@@ -263,7 +263,7 @@ INNER BANNER CSS
     display:inline-flex;
     align-items:center;
     gap:4px;
-    padding:6px 6px 6px 18px;
+    padding: 0.35rem 1rem;
     background:var(--color-primary);
     color:#fff;
     border-radius:10px;
@@ -297,7 +297,7 @@ INNER BANNER CSS
 }
 
 .fill-site-link:hover{
-    background:#ED1C24;
+   background: linear-gradient(90deg, #adb67c, #67815a);
 }
 
 .fill-site-link:hover .fill-site-link-arrow{
