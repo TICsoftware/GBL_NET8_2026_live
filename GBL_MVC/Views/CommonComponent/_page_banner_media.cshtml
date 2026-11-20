@@ -1,16 +1,33 @@
 @using GBL_BusinessLogic.Entity
 @using GBL_MVC.Helpers
+@using System.Text.RegularExpressions
 @model ContentViewModel
 
 @{
     var desktopImg = !string.IsNullOrWhiteSpace(Model?.MastheadImage) ? Model.MastheadImage : "/Assets/images/banners/news-press-release-banner.webp";
     var mobileImg = !string.IsNullOrWhiteSpace(Model?.MobileMastheadImage) ? Model.MobileMastheadImage : "/Assets/images/banners/news-press-release-banner.webp";
     var title = !string.IsNullOrWhiteSpace(Model?.ContTitle) ? Model.ContTitle : "";
-    var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "Products";
+    var crumb = !string.IsNullOrWhiteSpace(Model?.BreadcrumPath) ? Model.BreadcrumPath.CleanParagraphTags() : "";
     var alt = !string.IsNullOrWhiteSpace(Model?.Masthead_image_Alt_text) ? Model.Masthead_image_Alt_text : title;
+
+    // Detail URLs: /media/press-release/{slug} and /media/media-coverage/{slug}
+    var path = (Context?.Request?.Path.Value ?? "").Trim();
+    var isMediaDetail = Regex.IsMatch(
+        path,
+        @"^/media/(press-release|media-coverage)/[^/]+",
+        RegexOptions.IgnoreCase);
+
+    // Inside only: drop article crumb + dangling "/" so trail ends at
+    // Home / Media / Media Coverage  (or Press Release)
+    if (isMediaDetail && !string.IsNullOrWhiteSpace(crumb))
+    {
+        crumb = TrimMediaDetailBreadcrumb(crumb, title);
+    }
+
+    var showTitle = !string.IsNullOrWhiteSpace(title);
 }
 
-<section class="relative inside-banner-outer news-inside-banner-outer">
+<section class="relative inside-banner-outer news-inside-banner-outer@(isMediaDetail ? " news-inside-banner-outer--detail" : "")">
     <div class="inside-banner-inner banner-animation relative">
         <!-- Banner -->
         <div class="overflow-hidden h-[75vh] sm:h-131.25 relative innerbanner-image-wrapper">
@@ -18,7 +35,6 @@
             <picture>
                 <!-- Desktop -->
                 <source media="(min-width:1024px)" srcset="@desktopImg">
-               
 
                 <!-- Mobile -->
                 <img src="@desktopImg" alt="@alt"
@@ -33,23 +49,122 @@
         <!--Breadcrumb-->
         <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
             <div class="container">
-                <div class="max-w-4xl text-left  news-inside-banner-caption">
-                    @if (!string.IsNullOrWhiteSpace(title))
+                <div class="max-w-4xl text-left news-inside-banner-caption">
+                    @if (showTitle)
                     {
                         <h1 class="innerbanner-title text-h1 text-white">
                             @Html.Raw(title.CleanParagraphTags())
                         </h1>
                     }
 
-                    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                        @Html.Raw(crumb)
-                    </nav>
+                    @if (!string.IsNullOrWhiteSpace(crumb))
+                    {
+                        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                            @Html.Raw(crumb)
+                        </nav>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+@functions {
+    private static string PlainCrumbText(string html)
+    {
+        var text = Regex.Replace(html ?? "", "<[^>]+>", " ");
+        text = System.Net.WebUtility.HtmlDecode(text);
+        return Regex.Replace(text, @"\s+", " ").Trim();
+    }
 
+    private static bool IsSeparatorCrumb(string liHtml)
+    {
+        if (string.IsNullOrWhiteSpace(liHtml)) return true;
+        if (liHtml.Contains("breadcrumb-sep", StringComparison.OrdinalIgnoreCase)) return true;
+        var text = PlainCrumbText(liHtml);
+        return string.IsNullOrWhiteSpace(text) || text == "/" || text == "|" || text == "›" || text == ">";
+    }
 
+    private static string RemoveLastLi(string html)
+    {
+        var matches = Regex.Matches(html, @"<li\b[^>]*>[\s\S]*?</li>", RegexOptions.IgnoreCase);
+        if (matches.Count == 0) return html;
+        var last = matches[matches.Count - 1];
+        return (html.Substring(0, last.Index) + html.Substring(last.Index + last.Length)).Trim();
+    }
 
+    private static string StripTrailingSeparators(string html)
+    {
+        var result = html ?? "";
+        while (true)
+        {
+            var matches = Regex.Matches(result, @"<li\b[^>]*>[\s\S]*?</li>", RegexOptions.IgnoreCase);
+            if (matches.Count == 0) break;
+            var last = matches[matches.Count - 1].Value;
+            if (!IsSeparatorCrumb(last)) break;
+            result = RemoveLastLi(result);
+        }
+
+        // Non-list / mixed markup: strip trailing slash nodes or characters
+        result = Regex.Replace(
+            result,
+            @"(?:(?:\s|&nbsp;|<br\s*/?>)*|(?:<span\b[^>]*>\s*/\s*</span>)|(?:<[^>]+>\s*/\s*</[^>]+>))+\s*$",
+            "",
+            RegexOptions.IgnoreCase);
+        result = Regex.Replace(result, @"(?:\s|/|</?span[^>]*>)*$", "", RegexOptions.IgnoreCase).Trim();
+        result = Regex.Replace(result, @"\s*/\s*$", "").Trim();
+        return result;
+    }
+
+    /// <summary>
+    /// Media inside pages: remove last title crumb and any dangling "/" separators.
+    /// </summary>
+    private static string TrimMediaDetailBreadcrumb(string crumbHtml, string? articleTitle)
+    {
+        if (string.IsNullOrWhiteSpace(crumbHtml)) return crumbHtml;
+
+        var result = crumbHtml;
+        var plainTitle = PlainCrumbText(articleTitle ?? "");
+
+        var matches = Regex.Matches(result, @"<li\b[^>]*>[\s\S]*?</li>", RegexOptions.IgnoreCase);
+        if (matches.Count >= 2)
+        {
+            // Drop trailing separators first (… Coverage / )
+            result = StripTrailingSeparators(result);
+
+            matches = Regex.Matches(result, @"<li\b[^>]*>[\s\S]*?</li>", RegexOptions.IgnoreCase);
+            if (matches.Count >= 2)
+            {
+                var lastText = PlainCrumbText(matches[matches.Count - 1].Value);
+                var looksLikeArticle =
+                    string.IsNullOrWhiteSpace(lastText)
+                    || (!string.IsNullOrWhiteSpace(plainTitle)
+                        && (string.Equals(lastText, plainTitle, StringComparison.OrdinalIgnoreCase)
+                            || lastText.Contains(plainTitle, StringComparison.OrdinalIgnoreCase)
+                            || plainTitle.Contains(lastText, StringComparison.OrdinalIgnoreCase)));
+
+                // Always remove one trailing content crumb on detail pages when there are 4+ items
+                // (Home, Media, Section, Article) or when it matches the article title.
+                if (looksLikeArticle || matches.Count >= 4)
+                {
+                    result = RemoveLastLi(result);
+                }
+            }
+
+            // Drop any separator left behind after removing the article crumb
+            result = StripTrailingSeparators(result);
+            return string.IsNullOrWhiteSpace(result) ? crumbHtml : result;
+        }
+
+        // Plain slash-separated breadcrumbs
+        if (!string.IsNullOrWhiteSpace(plainTitle))
+        {
+            var escaped = Regex.Escape(plainTitle);
+            result = Regex.Replace(result, @"(\s*/\s*)(" + escaped + @")\s*$", "", RegexOptions.IgnoreCase);
+        }
+
+        result = Regex.Replace(result, @"(\s*/\s*)[^/<][^/]*\s*$", "");
+        result = Regex.Replace(result, @"\s*/\s*$", "").Trim();
+        return string.IsNullOrWhiteSpace(result) ? crumbHtml : result;
+    }
+}
