@@ -13,6 +13,9 @@
    Story cards use stories-card-animation.js
 
    Load More / AJAX: call window.gblAnimateCardRise(cards)
+
+   Optional per-list overrides:
+   data-card-start / data-card-end on .card-list-items
 --------------------------------------- */
 (function () {
   const CARD_RISE = {
@@ -54,17 +57,19 @@
     return rect.top < vh * 0.9 && rect.bottom > vh * 0.08;
   }
 
-  function playRiseBatch(cards, cols) {
-    var stagger = CARD_RISE.stagger;
-    gsap.set(cards, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
+  function syncScrollLayout() {
+    if (window.lenis && typeof window.lenis.resize === 'function') {
+      try {
+        window.lenis.resize();
+      } catch (err) {}
+    }
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+    }
+  }
 
-    var tl = gsap.timeline({
-      defaults: { force3D: true, ease: 'power2.out' },
-    });
-
-    cards.forEach(function (card, i) {
-      var row = Math.floor(i / cols);
-      var col = i % cols;
+  function addRiseTweens(tl, row, immediateRender) {
+    row.forEach(function (card, i) {
       var iframe = isIframeCard(card);
       tl.fromTo(
         card,
@@ -86,14 +91,15 @@
   /** Scrub rise — reverses on scroll up, plays again on scroll down. */
   function bindScrubRow(row, stScroller, options) {
     options = options || {};
+    var list = row[0] && row[0].closest('.card-list-items');
     var tl = gsap.timeline({
       defaults: { force3D: true, ease: 'power2.out' },
       scrollTrigger: {
         id: 'card-rise-more-' + dynamicRiseId++,
         trigger: row[0],
         scroller: stScroller,
-        start: CARD_RISE.listStart,
-        end: CARD_RISE.listEnd,
+        start: (list && list.dataset.cardStart) || CARD_RISE.listStart,
+        end: (list && list.dataset.cardEnd) || CARD_RISE.listEnd,
         scrub: CARD_RISE.scrub,
         invalidateOnRefresh: true,
       },
@@ -119,7 +125,6 @@
       defaults: { force3D: true, ease: 'power2.out' },
     });
     row.forEach(function (card, i) {
-      var iframe = isIframeCard(card);
       intro.to(
         card,
         {
@@ -256,8 +261,10 @@
           id: 'card-rise-list-' + listIndex,
           trigger: list,
           scroller: stScroller,
-          start: CARD_RISE.listStart,
-          end: CARD_RISE.listEnd,
+          /* Optional per-list override, e.g. data-card-end="top 75%" for a list
+             that sits low in its section and would otherwise stop part-way. */
+          start: list.dataset.cardStart || CARD_RISE.listStart,
+          end: list.dataset.cardEnd || CARD_RISE.listEnd,
           scrub: CARD_RISE.scrub,
           invalidateOnRefresh: true,
         },
