@@ -222,7 +222,7 @@
                                 {
                                     <div class="mega-l3-panel"
                                         data-panel="@panelId"
-                                        data-title="@child.MenuName"
+                                        data-title="@(string.Equals(child.MenuName?.Trim(), "Overview", StringComparison.OrdinalIgnoreCase) ? (parent.MenuName ?? child.MenuName) : child.MenuName)"
                                         hidden>
 
                                         @foreach (var subChild in subChildren)
