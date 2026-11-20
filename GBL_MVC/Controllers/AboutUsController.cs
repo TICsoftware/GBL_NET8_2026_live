@@ -14,6 +14,24 @@ public class AboutUsController : Controller
         _bal = new AboutUs_BAL(configuration);
     }
 
+    public IActionResult Index(string title)
+    {
+        try
+        {
+             var data = _bal.GetAboutUs_Index_BAL("about-us",1,1);
+             return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/Index :", ex);
+            return View(new AboutModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
+
     public IActionResult AboutUs(string title)
     {
         try

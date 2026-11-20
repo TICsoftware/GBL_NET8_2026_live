@@ -26,7 +26,7 @@ public class CSRController : Controller
             pagetitle = title;
             if (string.IsNullOrWhiteSpace(pagetitle))
             {
-                pagetitle = "corporate-social-responsibility";
+                pagetitle = "CSR";
             }
             var data = _bal.GetPageData_GroupedComponents_BAL(pagetitle, 1, 1);
             if (string.IsNullOrWhiteSpace(title))

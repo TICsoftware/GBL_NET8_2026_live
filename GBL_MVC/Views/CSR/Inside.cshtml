@@ -73,7 +73,7 @@
 @foreach (var itemsection in sections)
 {
     var blocks = componentLists
-        .Where(x => x.IsBlock == 1 && x.context_master_id == itemsection.context_master_id)
+        .Where(x => x.IsBlock == 1 && x.context_parent_id == itemsection.context_parent_id)
         .OrderBy(x => x.Sequence)
         .ToList();
 
@@ -94,16 +94,13 @@
                         </div>
                         <div class="carbonCircularity-card__body">
                             <h3 class="text-h5">@Html.Raw(item.Title)</h3>
-                            @Html.Raw(item.Intro)
-                            @if (!string.IsNullOrWhiteSpace(item.Url))
-                            {
-                            <a href="@item.Url" class="site-btn site-btn--outline">
+                            <p>@Html.Raw(item.Intro)</p>
+                            <a href="@item.Url"    class="site-btn site-btn--outline">
                                 <span class="site-btn__label">@Html.Raw(item.Url_Text)</span>
                                 <span class="site-btn__arrow" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </span>
                             </a>
-                            }
                         </div>
                     </article>
                     }
