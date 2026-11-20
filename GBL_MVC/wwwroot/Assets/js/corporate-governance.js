@@ -169,36 +169,57 @@
         return match;
       }
 
-      function apply() {
+      var visibleSet = new Set();
+
+      function apply(animateIncoming) {
         var year = selectedYear();
         grid.setAttribute("data-cg-year-value", year);
         var match = matchingCards();
+        var incoming = [];
+
         cards.forEach(function (card) {
           card.hidden = true;
         });
         match.forEach(function (card, index) {
-          card.hidden = index >= shown;
+          var show = index < shown;
+          card.hidden = !show;
+          if (show && animateIncoming && !visibleSet.has(card)) {
+            incoming.push(card);
+          }
         });
+
+        visibleSet = new Set(
+          match.filter(function (card, index) {
+            return index < shown;
+          })
+        );
+
         if (empty) empty.hidden = match.length > 0;
         if (wrap) wrap.hidden = shown >= match.length;
-        if (typeof ScrollTrigger !== "undefined") {
+
+        if (incoming.length && typeof window.gblAnimateCardRise === "function") {
+          requestAnimationFrame(function () {
+            window.gblAnimateCardRise(incoming);
+          });
+        } else if (typeof ScrollTrigger !== "undefined") {
           ScrollTrigger.refresh();
         }
       }
 
-      apply();
+      apply(false);
 
       if (yearSelect) {
         yearSelect.addEventListener("change", function () {
           shown = size;
-          apply();
+          visibleSet = new Set();
+          apply(true);
         });
       }
 
       if (btn) {
         btn.addEventListener("click", function () {
           shown += size;
-          apply();
+          apply(true);
         });
       }
     });
@@ -210,18 +231,19 @@
     var sections = Array.prototype.map.call(document.querySelectorAll(".cg-jump__btn"), function (link) {
       var id = (link.getAttribute("href") || "").replace(/^#/, "");
       var section = id ? document.getElementById(id) : null;
-      return section ? { link: link, section: section } : null;
+      if (!section) return null;
+      var head = section.querySelector(".cg-docs__head") || section;
+      return { link: link, section: section, head: head };
     }).filter(Boolean);
 
     if (!sections.length) return;
 
     if (bar && sentinel && "IntersectionObserver" in window) {
       var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 88;
-      var observer = new IntersectionObserver(function (entries) {
+      var stuckObserver = new IntersectionObserver(function (entries) {
         bar.classList.toggle("is-stuck", !entries[0].isIntersecting);
       }, { rootMargin: "-" + headerH + "px 0px 0px 0px", threshold: 0 });
-
-      observer.observe(sentinel);
+      stuckObserver.observe(sentinel);
     }
 
     var nav = document.querySelector(".cg-jump__nav");
@@ -230,6 +252,15 @@
     var mobileQuery = window.matchMedia("(max-width: 640px)");
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var activeSection = null;
+
+    function headerOffset() {
+      return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 88;
+    }
+
+    function currentScroll() {
+      if (window.lenis && typeof window.lenis.scroll === "number") return window.lenis.scroll;
+      return window.scrollY || document.documentElement.scrollTop || 0;
+    }
 
     function centerLink(link) {
       if (!nav) return;
@@ -257,15 +288,34 @@
         if (item.section === section) index = i;
       });
       prev.disabled = index <= 0;
-      next.disabled = index === sections.length - 1;
+      next.disabled = index < 0 || index === sections.length - 1;
+    }
+
+    function scrollToSection(section) {
+      var jumpH = bar ? bar.offsetHeight : 0;
+      var top = section.getBoundingClientRect().top + currentScroll() - headerOffset() - jumpH - 16;
+      top = Math.max(0, top);
+      if (window.lenis && typeof window.lenis.scrollTo === "function") {
+        window.lenis.scrollTo(top, { duration: reduceMotion ? 0 : 0.9 });
+      } else {
+        window.scrollTo({ top: top, behavior: reduceMotion ? "auto" : "smooth" });
+      }
     }
 
     function goTo(index) {
       var item = sections[index];
       if (!item) return;
       centerLink(item.link);
-      item.section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      scrollToSection(item.section);
     }
+
+    sections.forEach(function (item) {
+      item.link.addEventListener("click", function (event) {
+        event.preventDefault();
+        centerLink(item.link);
+        scrollToSection(item.section);
+      });
+    });
 
     if (prev) prev.addEventListener("click", function () {
       var index = -1;
@@ -273,6 +323,7 @@
         if (item.section === activeSection) index = i;
       });
       if (index > 0) goTo(index - 1);
+      else if (index < 0) goTo(0);
     });
 
     if (next) next.addEventListener("click", function () {
@@ -280,7 +331,8 @@
       sections.forEach(function (item, i) {
         if (item.section === activeSection) index = i;
       });
-      if (index < sections.length - 1) goTo(index + 1);
+      if (index < 0) goTo(0);
+      else if (index < sections.length - 1) goTo(index + 1);
     });
 
     function moveThumb() {
@@ -314,40 +366,80 @@
       moveThumb();
     }
 
+    /*
+      Scroll-spy:
+      - Page top: first tab stays active (first section is the displayed one)
+      - When the next section head reaches ~10% / under the sticky bar: that tab activates
+      Works with Lenis via lenis.on("scroll") + native scroll + IO refresh
+    */
     var ticking = false;
-    function update() {
+
+    function updateActive() {
       ticking = false;
       if (nav && !mobileQuery.matches) {
         nav.style.paddingLeft = "";
         nav.style.paddingRight = "";
       }
-      var line = 305;
+
+      /* Activate earlier: when the section head reaches ~45% down the viewport
+         (waiting until it hits the sticky bar felt too late). */
+      var line = window.innerHeight * 0.45;
       var current = null;
       var doc = document.documentElement;
-      var atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 4;
+      var atBottom = window.innerHeight + currentScroll() >= doc.scrollHeight - 4;
 
       if (atBottom) {
         current = sections[sections.length - 1].section;
       } else {
         sections.forEach(function (item) {
-          if (item.section.getBoundingClientRect().top <= line) current = item.section;
+          if (item.head.getBoundingClientRect().top <= line) current = item.section;
         });
       }
 
-      setActive(current);
+      /* First section is shown first — keep its tab active until another section takes over. */
+      setActive(current || sections[0].section);
     }
 
     function onScroll() {
       if (ticking) return;
       ticking = true;
-      window.requestAnimationFrame(update);
+      window.requestAnimationFrame(updateActive);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+
+    function bindLenis() {
+      if (!window.lenis || typeof window.lenis.on !== "function") return false;
+      window.lenis.on("scroll", onScroll);
+      return true;
+    }
+    if (!bindLenis()) {
+      var lenisWait = setInterval(function () {
+        if (!bindLenis()) return;
+        clearInterval(lenisWait);
+        updateActive();
+      }, 50);
+      setTimeout(function () { clearInterval(lenisWait); }, 4000);
+    }
+
+    if ("IntersectionObserver" in window) {
+      var spyObserver = new IntersectionObserver(function () {
+        updateActive();
+      }, {
+        root: null,
+        rootMargin: "0px 0px -90% 0px",
+        threshold: [0, 0.1, 1]
+      });
+      sections.forEach(function (item) {
+        spyObserver.observe(item.head);
+      });
+    }
+
     if (nav) nav.addEventListener("scroll", function () { moveThumb(); }, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveThumb(); });
-    update();
+    setActive(sections[0].section);
+    updateActive();
   }
 
   function init() {
