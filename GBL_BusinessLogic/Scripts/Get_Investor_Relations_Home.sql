@@ -22,10 +22,13 @@
          SELECT * FROM content WHERE cont_parent_id = 478
          SELECT * FROM content WHERE cont_parent_id = 120
     6  Latest Updates item (cont_parent_id = 19) → Announcement card
+    7  Subsidiaries documents (cont_parent_id = 114 by default)
+         ordered by cont_displaydate DESC (NULLs last)
 
   Example:
     EXEC dbo.Get_Investor_Relations_Home
-         @ContentId = 110, @PressParentId = 3, @MediaParentId = 7, @UpdatesParentId = 19;
+         @ContentId = 110, @PressParentId = 3, @MediaParentId = 7,
+         @UpdatesParentId = 19, @SubsidiariesParentId = 114;
 */
 SET ANSI_NULLS ON;
 GO
@@ -38,7 +41,8 @@ CREATE OR ALTER PROCEDURE dbo.Get_Investor_Relations_Home
     @PressParentId             INT = 3,
     @MediaParentId             INT = 7,
     @ShareholderExtraParentId  INT = 120,
-    @UpdatesParentId           INT = 19
+    @UpdatesParentId           INT = 19,
+    @SubsidiariesParentId      INT = 114
 )
 AS
 BEGIN
@@ -50,6 +54,7 @@ BEGIN
     IF @PressParentId IS NULL OR @PressParentId < 1 SET @PressParentId = 3;
     IF @MediaParentId IS NULL OR @MediaParentId < 1 SET @MediaParentId = 7;
     IF @UpdatesParentId IS NULL OR @UpdatesParentId < 1 SET @UpdatesParentId = 19;
+    IF @SubsidiariesParentId IS NULL OR @SubsidiariesParentId < 1 SET @SubsidiariesParentId = 114;
 
     DECLARE @TagNeedle nvarchar(30) = N',' + CAST(@ContentId AS nvarchar(20)) + N',';
 
@@ -115,6 +120,33 @@ BEGIN
 
     IF @ShareholderExtraParentId IS NULL OR @ShareholderExtraParentId < 1
         SET @ShareholderExtraParentId = 120;
+
+    /* Subsidiaries lives under Shareholder Information (e.g. 478 → 114), not always as a direct IR child. */
+    DECLARE @SubsidiariesId INT =
+    (
+        SELECT TOP 1 c.cont_id
+        FROM content c
+        WHERE
+            c.cont_status = 2
+            AND (
+                c.cont_id = @SubsidiariesParentId
+                OR (
+                    (
+                        c.cont_parent_id = @ContentId
+                        OR (@ShareholderId IS NOT NULL AND c.cont_parent_id = @ShareholderId)
+                    )
+                    AND (
+                        LOWER(REPLACE(ISNULL(c.cont_pagename, N''), N' ', N'')) LIKE N'%subsidiar%'
+                        OR LOWER(REPLACE(ISNULL(c.cont_title, N''), N' ', N'')) LIKE N'%subsidiar%'
+                    )
+                )
+            )
+        ORDER BY
+            CASE WHEN c.cont_id = @SubsidiariesParentId THEN 0 ELSE 1 END,
+            CASE WHEN @ShareholderId IS NOT NULL AND c.cont_parent_id = @ShareholderId THEN 0 ELSE 1 END,
+            ISNULL(c.cont_sequence, 999999),
+            c.cont_id
+    );
 
     /* ==========================================
        0. Section children of investor-relations
@@ -553,6 +585,67 @@ BEGIN
                         OR LOWER(ISNULL(p.cont_title, N'')) = N'updates'
                   )
             )
+        )
+    ORDER BY
+        CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,
+        c.cont_displaydate DESC,
+        c.cont_id DESC;
+
+    /* ==========================================
+       7. Subsidiaries documents (latest first)
+          Default parent = 114 (under Shareholder Information)
+          ORDER BY cont_displaydate DESC (NULLs last)
+       ========================================== */
+    SELECT
+        c.cont_id,
+        c.cont_parent_id,
+        c.cont_title,
+        c.cont_hmpg_title,
+        c.cont_pagename,
+        c.language_master_id,
+        c.Geography_ID,
+        c.cont_intro,
+        c.cont_hmpg_intro,
+        c.content,
+        c.cont_displaydate,
+        c.content_type_ID,
+        c.Masthead_image_Media_id,
+        m1.file_path AS masthead_image_path,
+        c.Masthead_alt_text,
+        c.Mobile_Masthead_image_Media_id,
+        m2.file_path AS mobile_masthead_image_path,
+        c.Template_Master_ID,
+        c.Hmpg_thumbnail_Media_id,
+        m3.file_path AS Hmpg_thumbnail,
+        c.Hmpg_thumbnail_alt_text,
+        dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
+        c.cont_external_url,
+        m4.file_path AS MediafilePath,
+        c.cont_sequence,
+        c.tag_master_selected_id,
+        N'Subsidiaries' AS TagNames,
+        c.Cont_Publication,
+        c.cont_search_url,
+        p.cont_title AS SectionTitle,
+        pmbg.file_path AS section_background_image_path,
+        p.Background_alt_text AS section_background_alt_text,
+        pm3.file_path AS section_thumbnail_path,
+        p.Hmpg_thumbnail_alt_text AS section_thumbnail_alt_text
+    FROM content c
+    INNER JOIN content p
+        ON p.cont_id = c.cont_parent_id
+    LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
+    LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
+    LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+    LEFT JOIN media m4 ON c.Attach_file_Media_id = m4.id
+    LEFT JOIN media pmbg ON p.Background_image_Media_id = pmbg.id
+    LEFT JOIN media pm3 ON p.Hmpg_thumbnail_Media_id = pm3.id
+    WHERE
+        c.cont_status = 2
+        AND ISNULL(c.content_type_ID, 3) = 3
+        AND (
+            (@SubsidiariesId IS NOT NULL AND c.cont_parent_id = @SubsidiariesId)
+            OR c.cont_parent_id = @SubsidiariesParentId
         )
     ORDER BY
         CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,

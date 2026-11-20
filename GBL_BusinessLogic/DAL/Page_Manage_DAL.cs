@@ -197,7 +197,8 @@ namespace GBL_BusinessLogic.DAL
             int pressParentId = 3,
             int mediaParentId = 7,
             int shareholderExtraParentId = 120,
-            int updatesParentId = 19)
+            int updatesParentId = 19,
+            int subsidiariesParentId = 114)
         {
             SqlParameter[] sqlParams =
             {
@@ -205,7 +206,8 @@ namespace GBL_BusinessLogic.DAL
                 new SqlParameter("@PressParentId", pressParentId),
                 new SqlParameter("@MediaParentId", mediaParentId),
                 new SqlParameter("@ShareholderExtraParentId", shareholderExtraParentId),
-                new SqlParameter("@UpdatesParentId", updatesParentId)
+                new SqlParameter("@UpdatesParentId", updatesParentId),
+                new SqlParameter("@SubsidiariesParentId", subsidiariesParentId)
             };
 
             return GetDataSet("Get_Investor_Relations_Home", sqlParams);

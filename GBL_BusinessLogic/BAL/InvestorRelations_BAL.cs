@@ -27,6 +27,7 @@ namespace GBL_BusinessLogic.BAL
         private const int PressParentId = 3;
         private const int MediaParentId = 7;
         private const int UpdatesParentId = 19;
+        private const int SubsidiariesParentId = 114;
 
         private static readonly (string Display, string[] Slugs, string Url)[] ShareholderOrder =
         {
@@ -102,7 +103,7 @@ namespace GBL_BusinessLogic.BAL
             model.GovernanceLinks = BuildGovernanceLinks(cgChildren, sections, nested);
 
             MapAnnualReport(model, sections, nested);
-            MapSubsidiaries(model, sections, nested);
+            MapSubsidiaries(model, sections, nested, homeDs);
             MapLatestQuarter(model, languageId, geographyId);
             MapInvestorContactSection(model, sections, homeDs, languageId, geographyId);
 
@@ -478,41 +479,76 @@ namespace GBL_BusinessLogic.BAL
                 "Corporate Governance");
         }
 
-        private void MapSubsidiaries(InvestorRelationsModel model, List<ArticleModel> sections, List<ArticleModel> nested)
+        private void MapSubsidiaries(
+            InvestorRelationsModel model,
+            List<ArticleModel> sections,
+            List<ArticleModel> nested,
+            DataSet? homeDs)
         {
-            var section = FindSection(sections, "subsidiaries");
-            if (section == null) return;
-
-            model.SubsidiariesImage = FirstNonEmpty(section.ThumbnailImage, DefaultSubsidiariesImage);
-            model.SubsidiariesImageAlt = FirstNonEmpty(section.ThumbnailAltText, "Representatives meeting across Godavari Biorefineries subsidiaries");
-
+            // Prefer dedicated SP result (table 7): all subsidiaries docs by cont_displaydate DESC.
             List<ArticleModel> articles = new();
-            try
+            if (homeDs != null && homeDs.Tables.Count > 7 && homeDs.Tables[7].Rows.Count > 0)
             {
-                var ds = Get_Investor_Pdf_page_wise_DAL(section.ContId, 1, SubsidiaryLandingCount, null);
-                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                {
-                    articles = Config_Application_Website.MapArticleList(ds.Tables[0]);
-                }
+                articles = MapSubsidiaryArticles(homeDs.Tables[7]);
+                BindSubsidiariesSectionImage(model, homeDs.Tables[7]);
             }
-            catch
+
+            var section = FindSection(sections, "subsidiaries")
+                ?? nested.FirstOrDefault(a =>
+                    MatchesSection(a, new[] { "subsidiaries" }, "Subsidiaries")
+                    || a.ContId == SubsidiariesParentId);
+
+            if (section != null)
             {
-                articles = new List<ArticleModel>();
+                model.SubsidiariesImage = FirstNonEmpty(
+                    model.SubsidiariesImage,
+                    section.ThumbnailImage,
+                    section.BackgroundImage,
+                    section.MastheadImage,
+                    DefaultSubsidiariesImage);
+                model.SubsidiariesImageAlt = FirstNonEmpty(
+                    model.SubsidiariesImageAlt,
+                    section.ThumbnailAltText,
+                    section.BackgroundAltText,
+                    section.MastheadAltText,
+                    "Representatives meeting across Godavari Biorefineries subsidiaries");
+            }
+            else if (string.IsNullOrWhiteSpace(model.SubsidiariesImage))
+            {
+                model.SubsidiariesImage = DefaultSubsidiariesImage;
+                model.SubsidiariesImageAlt = "Representatives meeting across Godavari Biorefineries subsidiaries";
+            }
+
+            var sectionId = section?.ContId > 0 ? section.ContId : SubsidiariesParentId;
+
+            if (articles.Count == 0)
+            {
+                try
+                {
+                    var ds = Get_Investor_Pdf_page_wise_DAL(sectionId, 1, 50, null);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        articles = Config_Application_Website.MapArticleList(ds.Tables[0]);
+                    }
+                }
+                catch
+                {
+                    articles = new List<ArticleModel>();
+                }
             }
 
             if (articles.Count == 0)
             {
                 articles = nested
-                    .Where(a => a.ContParentId == section.ContId)
-                    .OrderByDescending(a => a.DisplayDate.HasValue)
-                    .ThenByDescending(a => a.DisplayDate)
-                    .ThenByDescending(a => a.ContId)
-                    .Take(SubsidiaryLandingCount)
+                    .Where(a => a.ContParentId == sectionId || a.ContParentId == SubsidiariesParentId)
                     .ToList();
             }
 
             model.SubsidiaryLinks = articles
                 .Where(a => !string.IsNullOrWhiteSpace(a.Title))
+                .OrderByDescending(a => a.DisplayDate.HasValue)
+                .ThenByDescending(a => a.DisplayDate)
+                .ThenByDescending(a => a.ContId)
                 .Take(SubsidiaryLandingCount)
                 .Select(a => new InvestorLinkModel
                 {
@@ -521,6 +557,39 @@ namespace GBL_BusinessLogic.BAL
                     UrlTarget = "_blank"
                 })
                 .ToList();
+        }
+
+        private static List<ArticleModel> MapSubsidiaryArticles(DataTable table)
+        {
+            return Config_Application_Website.MapArticleList(table)
+                .Where(a => a.ContId > 0 && !string.IsNullOrWhiteSpace(a.Title))
+                .OrderByDescending(a => a.DisplayDate.HasValue)
+                .ThenByDescending(a => a.DisplayDate)
+                .ThenByDescending(a => a.ContId)
+                .ToList();
+        }
+
+        private static void BindSubsidiariesSectionImage(InvestorRelationsModel model, DataTable table)
+        {
+            if (table == null || table.Rows.Count == 0) return;
+            var row = table.Rows[0];
+            model.SubsidiariesImage = FirstNonEmpty(
+                GetColumn(row, "section_thumbnail_path"),
+                GetColumn(row, "section_background_image_path"),
+                model.SubsidiariesImage,
+                DefaultSubsidiariesImage);
+            model.SubsidiariesImageAlt = FirstNonEmpty(
+                GetColumn(row, "section_thumbnail_alt_text"),
+                GetColumn(row, "section_background_alt_text"),
+                model.SubsidiariesImageAlt,
+                "Representatives meeting across Godavari Biorefineries subsidiaries");
+        }
+
+        private static string GetColumn(DataRow row, string column)
+        {
+            if (row?.Table == null || !row.Table.Columns.Contains(column) || row[column] == DBNull.Value)
+                return "";
+            return row[column]?.ToString()?.Trim() ?? "";
         }
 
         private void MapLatestQuarter(InvestorRelationsModel model, int languageId, int geographyId)
