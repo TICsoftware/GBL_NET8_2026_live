@@ -165,15 +165,19 @@
 .cg-docs__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem 1.5rem;
   flex-wrap: wrap;
   margin: 0 0 1.6rem;
-  justify-content:end;
 }
 
 .cg-docs__head .text-h2 {
   margin: 0;
+  margin-right: auto;
+}
+
+.cg-docs__head .cg-year-filter {
+  margin-left: auto;
 }
 
 .cg-year-filter {

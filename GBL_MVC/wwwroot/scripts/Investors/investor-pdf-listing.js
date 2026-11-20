@@ -80,6 +80,8 @@ $(function () {
             success: function (response) {
                 if (currentRequestId !== requestId) return;
 
+                var previousCount = reset ? 0 : $grid.children("li").length;
+
                 if (reset) {
                     $grid.html(response.html || "");
                 } else if (response.html && response.html.trim() !== "") {
@@ -93,6 +95,17 @@ $(function () {
 
                 initCardFill($grid[0]);
                 updateButton();
+
+                var incoming = $grid.children("li").toArray().slice(previousCount);
+                if (incoming.length && typeof window.gblAnimateCardRise === "function") {
+                    requestAnimationFrame(function () {
+                        window.gblAnimateCardRise(incoming);
+                    });
+                } else if (typeof ScrollTrigger !== "undefined") {
+                    requestAnimationFrame(function () {
+                        ScrollTrigger.refresh();
+                    });
+                }
             },
             error: function (xhr) {
                 console.error("Error loading investor documents:", xhr.responseText);
