@@ -18,21 +18,26 @@ namespace GBL_BusinessLogic.BAL
 
         private static readonly string[] PageNames =
         {
+            "investors",
             "investor-relations",
             "Investor-Relations",
             "InvestorRelations"
         };
 
+        private const int PressParentId = 3;
+        private const int MediaParentId = 7;
+        private const int UpdatesParentId = 19;
+
         private static readonly (string Display, string[] Slugs, string Url)[] ShareholderOrder =
         {
-            ("Annual Report", new[] { "annual-report", "annual-reports" }, "/investor-relations/annual-reports"),
-            ("Shareholding Pattern", new[] { "shareholding-pattern" }, "/investor-relations/shareholding-pattern"),
-            ("Subsidiaries", new[] { "subsidiaries" }, "/investor-relations/subsidiaries"),
-            ("Corporate governance", new[] { "corporate-governance" }, "/investor-relations/corporate-governance"),
-            ("General Meeting", new[] { "general-meeting", "general-meetings" }, "/investor-relations/general-meeting"),
-            ("Disclosures", new[] { "disclosures" }, "/investor-relations/disclosures"),
-            ("Quarterly Reports", new[] { "quarterly-reports", "quarterly-report" }, "/investor-relations/quarterly-reports"),
-            ("Postal Ballot", new[] { "postal-ballot" }, "/investor-relations/postal-ballot")
+            ("Annual Report", new[] { "annual-report", "annual-reports" }, "/investors/annual-reports"),
+            ("Shareholding Pattern", new[] { "shareholding-pattern" }, "/investors/shareholding-pattern"),
+            ("Subsidiaries", new[] { "subsidiaries" }, "/investors/subsidiaries"),
+            ("Corporate governance", new[] { "corporate-governance" }, "/investors/corporate-governance"),
+            ("General Meeting", new[] { "general-meeting", "general-meetings" }, "/investors/general-meeting"),
+            ("Disclosures", new[] { "disclosures" }, "/investors/disclosures"),
+            ("Quarterly Reports", new[] { "quarterly-reports", "quarterly-report" }, "/investors/quarterly-reports"),
+            ("Postal Ballot", new[] { "postal-ballot" }, "/investors/postal-ballot")
         };
 
         public InvestorRelations_BAL(IConfiguration configuration) : base(configuration)
@@ -78,6 +83,14 @@ namespace GBL_BusinessLogic.BAL
             {
                 MapWhatsNew(model, homeDs.Tables[2]);
             }
+
+            if (homeDs != null && homeDs.Tables.Count > 6 && homeDs.Tables[6].Rows.Count > 0)
+            {
+                model.WhatsNewAnnouncement = MapWhatsNewItem(homeDs.Tables[6].Rows[0]);
+            }
+
+            // Fallback when SP is old / untagged: still show latest 2 press + 1 media + updates.
+            EnsureWhatsNew(model);
 
             var cgChildren = homeDs != null && homeDs.Tables.Count > 3
                 ? Config_Application_Website.MapArticleList(homeDs.Tables[3])
@@ -221,14 +234,129 @@ namespace GBL_BusinessLogic.BAL
                 .ToList();
 
             model.WhatsNewPress = items
-                .Where(a => IsPress(a))
+                .Where(IsPress)
                 .Take(2)
                 .ToList();
 
             model.WhatsNewMedia = items
-                .Where(a => IsMedia(a))
+                .Where(IsMedia)
                 .Take(1)
                 .ToList();
+        }
+
+        /// <summary>
+        /// Ensures What's New always has latest 2 press + 1 media (+ updates announcement)
+        /// even when the home SP is outdated or articles are not investor-tagged.
+        /// </summary>
+        private void EnsureWhatsNew(InvestorRelationsModel model)
+        {
+            if (model.WhatsNewPress.Count < 2)
+            {
+                try
+                {
+                    var ds = Get_PressRelease_page_wise_DAL(PressParentId, 1, 2);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        var press = Config_Application_Website.MapArticleList(ds.Tables[0])
+                            .Where(a => a.ContId > 0)
+                            .OrderByDescending(a => a.DisplayDate.HasValue)
+                            .ThenByDescending(a => a.DisplayDate)
+                            .ThenByDescending(a => a.ContId)
+                            .Take(2)
+                            .Select(NormalizeWhatsNewPress)
+                            .ToList();
+                        if (press.Count > 0)
+                            model.WhatsNewPress = press;
+                    }
+                }
+                catch
+                {
+                    // Listing SP may not be available.
+                }
+            }
+
+            if (model.WhatsNewMedia.Count < 1)
+            {
+                try
+                {
+                    var ds = Get_PressRelease_page_wise_DAL(MediaParentId, 1, 1);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        var media = Config_Application_Website.MapArticleList(ds.Tables[0])
+                            .Where(a => a.ContId > 0)
+                            .OrderByDescending(a => a.DisplayDate.HasValue)
+                            .ThenByDescending(a => a.DisplayDate)
+                            .ThenByDescending(a => a.ContId)
+                            .Take(1)
+                            .Select(NormalizeWhatsNewMedia)
+                            .ToList();
+                        if (media.Count > 0)
+                            model.WhatsNewMedia = media;
+                    }
+                }
+                catch
+                {
+                    // Listing SP may not be available.
+                }
+            }
+
+            if (model.WhatsNewAnnouncement == null)
+            {
+                try
+                {
+                    var ds = Get_PressRelease_page_wise_DAL(UpdatesParentId, 1, 1);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        model.WhatsNewAnnouncement = Config_Application_Website.MapArticleList(ds.Tables[0])
+                            .Where(a => a.ContId > 0)
+                            .OrderByDescending(a => a.DisplayDate.HasValue)
+                            .ThenByDescending(a => a.DisplayDate)
+                            .ThenByDescending(a => a.ContId)
+                            .Select(NormalizeWhatsNewUpdate)
+                            .FirstOrDefault();
+                    }
+                }
+                catch
+                {
+                    // Updates listing may not resolve via the press-release SP.
+                }
+            }
+        }
+
+        private static ArticleModel NormalizeWhatsNewPress(ArticleModel item)
+        {
+            item.Tag_list = string.IsNullOrWhiteSpace(item.Tag_list) ? "Press Release" : item.Tag_list;
+            if (string.IsNullOrWhiteSpace(item.Url))
+            {
+                var slug = LastSegment(item.PageName);
+                item.Url = string.IsNullOrWhiteSpace(slug) ? "/media/press-release" : "/media/press-release/" + slug;
+                item.UrlTarget = "_self";
+            }
+            return item;
+        }
+
+        private static ArticleModel NormalizeWhatsNewMedia(ArticleModel item)
+        {
+            item.Tag_list = "Media Coverage";
+            if (string.IsNullOrWhiteSpace(item.Url))
+            {
+                var slug = LastSegment(item.PageName);
+                item.Url = string.IsNullOrWhiteSpace(slug) ? "/media/media-coverage" : "/media/media-coverage/" + slug;
+                item.UrlTarget = "_self";
+            }
+            return item;
+        }
+
+        private static ArticleModel NormalizeWhatsNewUpdate(ArticleModel item)
+        {
+            item.Tag_list = "Updates";
+            if (string.IsNullOrWhiteSpace(item.Url))
+            {
+                var slug = LastSegment(item.PageName);
+                item.Url = string.IsNullOrWhiteSpace(slug) ? "/media/press-release" : "/media/press-release/" + slug;
+                item.UrlTarget = "_self";
+            }
+            return item;
         }
 
         private static ArticleModel MapWhatsNewItem(DataRow row)
@@ -489,7 +617,7 @@ namespace GBL_BusinessLogic.BAL
                     : "/" + url.TrimStart('/');
             }
 
-            return string.IsNullOrWhiteSpace(slug) ? "#" : "/investor-relations/" + slug;
+            return string.IsNullOrWhiteSpace(slug) ? "#" : "/investors/" + slug;
         }
 
         private static List<InvestorLinkModel> BuildGovernanceLinks(
@@ -514,7 +642,7 @@ namespace GBL_BusinessLogic.BAL
                 .Select(a => new InvestorLinkModel
                 {
                     Title = a.Title ?? "",
-                    Url = "/investor-relations/corporate-governance#" + GovernanceAnchor(a),
+                    Url = "/investors/corporate-governance#" + GovernanceAnchor(a),
                     UrlTarget = "_self"
                 })
                 .ToList();
@@ -523,9 +651,10 @@ namespace GBL_BusinessLogic.BAL
         private static int GovernanceRank(ArticleModel item)
         {
             var hay = ((item.PageName ?? "") + " " + (item.Title ?? "")).ToLowerInvariant();
-            if (hay.Contains("polic")) return 0;
+            // Match HTML template order: Committees → Code of Conduct → Policies
+            if (hay.Contains("committee")) return 0;
             if (hay.Contains("code-of-conduct") || hay.Contains("code of conduct")) return 1;
-            if (hay.Contains("committee")) return 2;
+            if (hay.Contains("polic")) return 2;
             return 10;
         }
 
@@ -566,17 +695,28 @@ namespace GBL_BusinessLogic.BAL
 
         private static bool IsPress(ArticleModel item)
         {
+            if (item == null) return false;
+            if (item.ContParentId == MediaParentId) return false;
+            if (item.ContParentId == PressParentId) return true;
             return !IsMedia(item);
         }
 
         private static bool IsMedia(ArticleModel item)
         {
-            return IsMediaTag(item.Tag_list) || (item.PageName ?? "").IndexOf("media-coverage", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (item == null) return false;
+            if (item.ContParentId == MediaParentId) return true;
+            if (item.ContParentId == PressParentId) return false;
+            var tag = item.Tag_list ?? "";
+            if (tag.IndexOf("media coverage", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (tag.Equals("Media Coverage", StringComparison.OrdinalIgnoreCase)) return true;
+            return (item.PageName ?? "").IndexOf("media-coverage", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private static bool IsMediaTag(string? tag)
         {
-            return (tag ?? "").IndexOf("media", StringComparison.OrdinalIgnoreCase) >= 0;
+            var value = tag ?? "";
+            return value.IndexOf("media coverage", StringComparison.OrdinalIgnoreCase) >= 0
+                || value.Equals("Media Coverage", StringComparison.OrdinalIgnoreCase);
         }
 
         private static int QuarterNumber(string? code)
