@@ -22,6 +22,7 @@
   color: var(--color-gray-dark, #565b65);
   font-size: var(--text-p, 1rem);
   line-height: 1.45;
+  flex-wrap: wrap;
 }
 
 .wb-split-section .ld-split__copy .list-icon li::before {

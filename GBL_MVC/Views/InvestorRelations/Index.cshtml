@@ -8,6 +8,9 @@
     var intro = FirstText(content?.Cont_intro, content?.Cont_hmpg_intro);
     var press = Model?.WhatsNewPress ?? new List<GBL_BusinessLogic.Entity.ArticleModel>();
     var media = Model?.WhatsNewMedia ?? new List<GBL_BusinessLogic.Entity.ArticleModel>();
+    var announcement = Model?.WhatsNewAnnouncement;
+    var announcementCopy = FirstText(announcement?.HmpgIntro, announcement?.Intro, announcement?.Title);
+    var announcementHref = FirstText(announcement?.Url, announcement?.ExternalUrl, "/media/press-release");
     var quarter = Model?.LatestQuarter;
     var annual = Model?.LatestAnnualReport;
     var shareholderLinks = Model?.ShareholderLinks ?? new List<GBL_BusinessLogic.Entity.InvestorLinkModel>();
@@ -165,8 +168,11 @@ else
                 </div>
                 <article class="whatsNew__card whatsNew__card--note">
                     <h3>Announcement</h3>
-                    <p>Nam vel sapien sit amet ipsum laoreet aliquam. Donec iaculis semper est non aliquam.</p>
-                    <a href="/media/press-release" class="site-btn site-btn--line">
+                    @if (!string.IsNullOrWhiteSpace(announcementCopy))
+                    {
+                        <p>@Html.Raw(announcementCopy.CleanParagraphTags())</p>
+                    }
+                    <a href="@announcementHref" class="site-btn site-btn--line" target="@(announcement?.UrlTarget ?? "_self")">
                         <span class="site-btn__label">Learn more</span>
                         <span class="site-btn__arrow" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -231,7 +237,7 @@ else
                         }
                     </ul>
                 </div>
-                <a href="/investor-relations/quarterly-reports" class="site-btn site-btn--outline">
+                <a href="/investors/quarterly-reports" class="site-btn site-btn--outline">
                     <span class="site-btn__label">View All Quarterly</span>
                     <span class="site-btn__arrow" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -259,7 +265,7 @@ else
                         }
                     </div>
                 </div>
-                <a href="/investor-relations/annual-reports" class="site-btn site-btn--outline">
+                <a href="/investors/annual-reports" class="site-btn site-btn--outline">
                     <span class="site-btn__label">View All Reports</span>
                     <span class="site-btn__arrow" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -324,7 +330,7 @@ else
                     @foreach (var item in governanceLinks)
                     {
                         <li>
-                            <a href="@(string.IsNullOrWhiteSpace(item.Url) ? "/investor-relations/corporate-governance" : item.Url)">
+                            <a href="@(string.IsNullOrWhiteSpace(item.Url) ? "/investors/corporate-governance" : item.Url)">
                                 <span>@item.Title</span>
                                 @await Html.PartialAsync("_si_arrow")
                             </a>

@@ -54,19 +54,17 @@
     return rect.top < vh * 0.9 && rect.bottom > vh * 0.08;
   }
 
-  function syncScrollLayout() {
-    if (window.lenis && typeof window.lenis.resize === 'function') {
-      try {
-        window.lenis.resize();
-      } catch (err) {}
-    }
-    if (typeof ScrollTrigger !== 'undefined') {
-      ScrollTrigger.refresh();
-    }
-  }
+  function playRiseBatch(cards, cols) {
+    var stagger = CARD_RISE.stagger;
+    gsap.set(cards, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
 
-  function addRiseTweens(tl, row, immediateRender) {
-    row.forEach(function (card, i) {
+    var tl = gsap.timeline({
+      defaults: { force3D: true, ease: 'power2.out' },
+    });
+
+    cards.forEach(function (card, i) {
+      var row = Math.floor(i / cols);
+      var col = i % cols;
       var iframe = isIframeCard(card);
       tl.fromTo(
         card,

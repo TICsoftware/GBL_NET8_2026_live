@@ -7,6 +7,8 @@ namespace GBL_BusinessLogic.Entity
         public ContentViewModel? Content { get; set; }
         public List<ArticleModel> WhatsNewPress { get; set; } = new();
         public List<ArticleModel> WhatsNewMedia { get; set; } = new();
+        /// <summary>Latest Updates article for the What's New Announcement card.</summary>
+        public ArticleModel? WhatsNewAnnouncement { get; set; }
         public QuarterlyReportItemModel? LatestQuarter { get; set; }
         public ArticleModel? LatestAnnualReport { get; set; }
         public List<InvestorLinkModel> ShareholderLinks { get; set; } = new();
