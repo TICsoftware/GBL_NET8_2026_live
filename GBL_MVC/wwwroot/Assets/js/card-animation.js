@@ -13,6 +13,9 @@
    Story cards use stories-card-animation.js
 
    Load More / AJAX: call window.gblAnimateCardRise(cards)
+
+   Optional per-list overrides:
+   data-card-start / data-card-end on .card-list-items
 --------------------------------------- */
 (function () {
   const CARD_RISE = {
@@ -48,23 +51,25 @@
 
   var dynamicRiseId = 0;
 
-  function isNearViewport(el) {
+  function isRowInView(el) {
     var rect = el.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    return rect.top < vh * 0.92 && rect.bottom > 0;
+    return rect.top < vh * 0.9 && rect.bottom > vh * 0.08;
   }
 
-  function playRiseBatch(cards, cols) {
-    var stagger = CARD_RISE.stagger;
-    gsap.set(cards, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
+  function syncScrollLayout() {
+    if (window.lenis && typeof window.lenis.resize === 'function') {
+      try {
+        window.lenis.resize();
+      } catch (err) {}
+    }
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+    }
+  }
 
-    var tl = gsap.timeline({
-      defaults: { force3D: true, ease: 'power2.out' },
-    });
-
-    cards.forEach(function (card, i) {
-      var row = Math.floor(i / cols);
-      var col = i % cols;
+  function addRiseTweens(tl, row, immediateRender) {
+    row.forEach(function (card, i) {
       var iframe = isIframeCard(card);
       tl.fromTo(
         card,
@@ -76,68 +81,74 @@
           autoAlpha: 1,
           y: 0,
           duration: CARD_RISE.duration,
-          overwrite: 'auto',
+          immediateRender: !!immediateRender,
         },
-        row * stagger + col * stagger
+        i * CARD_RISE.stagger
       );
-      card.dataset.cardRisePlayed = '1';
     });
+  }
 
+  /** Scrub rise — reverses on scroll up, plays again on scroll down. */
+  function bindScrubRow(row, stScroller, options) {
+    options = options || {};
+    var list = row[0] && row[0].closest('.card-list-items');
+    var tl = gsap.timeline({
+      defaults: { force3D: true, ease: 'power2.out' },
+      scrollTrigger: {
+        id: 'card-rise-more-' + dynamicRiseId++,
+        trigger: row[0],
+        scroller: stScroller,
+        start: (list && list.dataset.cardStart) || CARD_RISE.listStart,
+        end: (list && list.dataset.cardEnd) || CARD_RISE.listEnd,
+        scrub: CARD_RISE.scrub,
+        invalidateOnRefresh: true,
+      },
+    });
+    addRiseTweens(tl, row, options.immediateRender !== false);
+    if (typeof options.progress === 'number') {
+      tl.progress(options.progress);
+    }
     return tl;
   }
 
-  function bindRiseOnScroll(cards, cols, stScroller) {
-    for (var r = 0; r < cards.length; r += cols) {
-      var row = cards.slice(r, r + cols);
-      var rowIndex = dynamicRiseId++;
-      var trigger = row[0];
-
-      row.forEach(function (card) {
-        var iframe = isIframeCard(card);
-        gsap.set(card, {
-          autoAlpha: iframe ? 0.25 : 0,
-          y: iframe ? CARD_RISE.yIframe : CARD_RISE.y,
-          force3D: true,
-        });
+  function playIntroThenScrub(row, stScroller) {
+    row.forEach(function (card) {
+      var iframe = isIframeCard(card);
+      gsap.set(card, {
+        autoAlpha: iframe ? 0.25 : 0,
+        y: iframe ? CARD_RISE.yIframe : CARD_RISE.y,
+        force3D: true,
       });
+    });
 
-      var tl = gsap.timeline({
-        defaults: { force3D: true, ease: 'power2.out' },
-        scrollTrigger: {
-          id: 'card-rise-more-' + rowIndex,
-          trigger: trigger,
-          scroller: stScroller,
-          start: CARD_RISE.listStart,
-          end: CARD_RISE.listEnd,
-          scrub: CARD_RISE.scrub,
-          invalidateOnRefresh: true,
+    var intro = gsap.timeline({
+      defaults: { force3D: true, ease: 'power2.out' },
+    });
+    row.forEach(function (card, i) {
+      intro.to(
+        card,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: CARD_RISE.duration,
+          overwrite: 'auto',
         },
-      });
+        i * CARD_RISE.stagger
+      );
+    });
 
-      row.forEach(function (card, i) {
-        var iframe = isIframeCard(card);
-        tl.fromTo(
-          card,
-          {
-            autoAlpha: iframe ? 0.25 : 0,
-            y: iframe ? CARD_RISE.yIframe : CARD_RISE.y,
-          },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: CARD_RISE.duration,
-            immediateRender: true,
-          },
-          i * CARD_RISE.stagger
-        );
-        card.dataset.cardRisePlayed = '1';
-      });
-    }
+    intro.eventCallback('onComplete', function () {
+      gsap.set(row, { autoAlpha: 1, y: 0 });
+      /* Arm scrub at fully-risen so scroll-up reverses and scroll-down rises again. */
+      bindScrubRow(row, stScroller, { immediateRender: false, progress: 1 });
+      syncScrollLayout();
+    });
   }
 
   /**
-   * Cards revealed by Load More / year filter / AJAX.
-   * Near-viewport cards rise immediately; below-fold cards scrub in on scroll.
+   * Load More / year filter / AJAX cards.
+   * In-view: intro rise, then scrub for up/down.
+   * Below-fold: scrub only (rise on scroll down, reverse on scroll up).
    */
   window.gblAnimateCardRise = function (nodes) {
     var cards = Array.prototype.slice.call(nodes || []).filter(function (el) {
@@ -166,7 +177,7 @@
     var isMobile = window.matchMedia('(max-width: 992px)').matches;
     var stScroller = isMobile ? window : document.documentElement;
 
-    /* Year filter / full replace: drop the original scrub so it doesn't fight the intro. */
+    /* Year filter / full replace: drop prior list + load-more triggers. */
     if (list && typeof ScrollTrigger !== 'undefined') {
       var visibleInList = Array.prototype.slice.call(list.querySelectorAll('.card-rise')).filter(function (el) {
         return !el.hidden && !isStoryCard(el);
@@ -189,33 +200,34 @@
       }
     }
 
-    /* Decide per row so column stagger stays aligned with the grid. */
-    var inViewRows = [];
-    var belowCards = [];
-    for (var r = 0; r < cards.length; r += cols) {
-      var row = cards.slice(r, r + cols);
-      if (isNearViewport(row[0])) inViewRows.push(row);
-      else belowCards = belowCards.concat(row);
+    function bindRows() {
+      syncScrollLayout();
+
+      for (var r = 0; r < cards.length; r += cols) {
+        (function (row) {
+          row.forEach(function (card) {
+            var iframe = isIframeCard(card);
+            gsap.set(card, {
+              autoAlpha: iframe ? 0.25 : 0,
+              y: iframe ? CARD_RISE.yIframe : CARD_RISE.y,
+              force3D: true,
+            });
+          });
+
+          if (isRowInView(row[0])) {
+            playIntroThenScrub(row, stScroller);
+          } else {
+            bindScrubRow(row, stScroller);
+          }
+        })(cards.slice(r, r + cols));
+      }
+
+      requestAnimationFrame(syncScrollLayout);
     }
 
-    if (inViewRows.length) {
-      var flatInView = inViewRows.reduce(function (acc, row) {
-        return acc.concat(row);
-      }, []);
-      var introTl = playRiseBatch(flatInView, cols);
-      introTl.eventCallback('onComplete', function () {
-        if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-      });
-    }
-
-    if (belowCards.length) {
-      bindRiseOnScroll(belowCards, cols, stScroller);
-      requestAnimationFrame(function () {
-        if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-      });
-    } else if (!inViewRows.length && typeof ScrollTrigger !== 'undefined') {
-      ScrollTrigger.refresh();
-    }
+    requestAnimationFrame(function () {
+      requestAnimationFrame(bindRows);
+    });
   };
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -249,8 +261,10 @@
           id: 'card-rise-list-' + listIndex,
           trigger: list,
           scroller: stScroller,
-          start: CARD_RISE.listStart,
-          end: CARD_RISE.listEnd,
+          /* Optional per-list override, e.g. data-card-end="top 75%" for a list
+             that sits low in its section and would otherwise stop part-way. */
+          start: list.dataset.cardStart || CARD_RISE.listStart,
+          end: list.dataset.cardEnd || CARD_RISE.listEnd,
           scrub: CARD_RISE.scrub,
           invalidateOnRefresh: true,
         },

@@ -27,6 +27,24 @@ document.addEventListener("DOMContentLoaded", function () {
         svg.setAttribute("focusable", "false");
         svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
         svg.setAttribute("shape-rendering", "geometricPrecision");
+
+        /* Make every icon draw the same way, whatever file the CMS gives us:
+           - add a viewBox if missing so it scales into the 48px box
+           - filled-only icons get a white stroke so the line-draw shows
+           - stroke width scaled to the icon's own size so all lines look equally thin */
+        var w = parseFloat(svg.getAttribute("width")) || 48;
+        var h = parseFloat(svg.getAttribute("height")) || 48;
+        if (!svg.getAttribute("viewBox")) svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+        svg.setAttribute("width", "48");
+        svg.setAttribute("height", "48");
+        var vb = svg.viewBox && svg.viewBox.baseVal;
+        var scale = vb && vb.width ? Math.max(vb.width, vb.height) / 48 : 1;
+        svg.querySelectorAll("path").forEach(function (path) {
+          var stroke = path.getAttribute("stroke");
+          if (!stroke || stroke === "none") path.setAttribute("stroke", "#fff");
+          path.style.strokeWidth = scale;
+        });
+
         img.replaceWith(svg);
       })
       .catch(function () {});
