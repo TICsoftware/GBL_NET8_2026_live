@@ -51,10 +51,16 @@ $(function () {
 
         $empty.prop("hidden", loadedCount > 0);
 
-        if (loadedCount >= totalCount || totalCount <= pageSize) {
-            $loadMoreWrap.prop("hidden", true).hide();
-        } else {
+        /* Hide when everything is loaded, or the last fetch was a short page. */
+        const hasMore =
+            loadedCount > 0 &&
+            totalCount > loadedCount &&
+            loadedCount >= pageSize;
+
+        if (hasMore) {
             $loadMoreWrap.prop("hidden", false).show();
+        } else {
+            $loadMoreWrap.prop("hidden", true).hide();
         }
     }
 
@@ -89,7 +95,17 @@ $(function () {
                 }
 
                 page = requestedPage;
+
+                var loadedCount = $grid.children("li").length;
+                var fetchedCount = loadedCount - previousCount;
                 totalCount = parseInt(response.totalCount, 10) || 0;
+
+                /* Year filter can return a short first page while TotalCount is stale —
+                   treat a short batch as the end of results. */
+                if (fetchedCount < pageSize) {
+                    totalCount = loadedCount;
+                }
+
                 $grid.attr("data-total-count", totalCount);
                 $grid.attr("data-year", year);
 
@@ -99,7 +115,7 @@ $(function () {
                 var incoming = $grid.children("li").toArray().slice(previousCount);
                 if (incoming.length && typeof window.gblAnimateCardRise === "function") {
                     requestAnimationFrame(function () {
-                        window.gblAnimateCardRise(incoming);
+                        window.gblAnimateCardRise(incoming, { replace: !!reset });
                     });
                 } else if (typeof ScrollTrigger !== "undefined") {
                     requestAnimationFrame(function () {
