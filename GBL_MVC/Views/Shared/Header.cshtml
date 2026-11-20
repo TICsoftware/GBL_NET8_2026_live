@@ -171,6 +171,22 @@
                                           
                     <ul class="mega-l2">
 
+                        @* "Overview" = link to the top menu item's own page ("#" until that page has a URL
+                           in the CMS). Skipped if the CMS already has a 2nd-level "Overview" item. *@
+                        @if (!children.Any(c => string.Equals(c.MenuName?.Trim(), "Overview", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            var overviewUrl = string.IsNullOrWhiteSpace(parent.Url) ? "#" : parent.Url.Trim();
+                            <li>
+                                <a href="@overviewUrl"
+                                   class="mega-l2__item mega-l2__item--overview"
+                                   data-l2
+                                   target="@(parent.Target ?? "_self")"
+                                   rel="@(parent.Target == "_blank" ? "noopener noreferrer" : null)">
+                                    Overview
+                                </a>
+                            </li>
+                        }
+
                         @foreach (var child in children)
                         {
                             var subChildren = menus
@@ -206,7 +222,7 @@
                                 {
                                     <div class="mega-l3-panel"
                                         data-panel="@panelId"
-                                        data-title="@child.MenuName"
+                                        data-title="@(string.Equals(child.MenuName?.Trim(), "Overview", StringComparison.OrdinalIgnoreCase) ? (parent.MenuName ?? child.MenuName) : child.MenuName)"
                                         hidden>
 
                                         @foreach (var subChild in subChildren)
