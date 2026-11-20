@@ -243,7 +243,97 @@ background: #ffffff;
 .press-release-mini-card {
     background: #ffffff;
     height: 100%;
-    padding: 55px 80px 95px 66px;
+    min-height: 11.5rem;
+    padding: 2rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    isolation: isolate;
+}
+
+/* Bottom shadow - same as Press Release listing cards */
+.press-release-mini-card::after {
+    content: "";
+    position: absolute;
+    left: 2%;
+    width: 96%;
+    bottom: -20px;
+    z-index: -1;
+    height: 22px;
+    pointer-events: none;
+    background: url("../images/card-shadow.png") center / 100% 100% no-repeat;
+    opacity: 0.25;
+}
+
+/* leave room so the swiper doesn't clip the shadow
+   (.swiper from swiper-bundle.min.css loads later and resets padding to 0,
+   so this needs the extra specificity) */
+.press-release-slider .swiper.press-release-swiper {
+    padding-bottom: 24px;
+}
+
+/* Desktop: swiper is inert (static 3-up row), so let cards rise in
+   from below without being clipped */
+@media (min-width: 769px) {
+    .press-release-slider .swiper.press-release-swiper {
+        overflow: visible;
+    }
+}
+
+/* Hover fill - same green circle reveal as Press Release listing cards
+   (--hx / --hy / --hr are set in more-press-release.js) */
+.press-release-mini-card {
+    --card-fill: var(--color-secondary, #67815a);
+}
+
+.press-release-mini-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+.press-release-mini-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--card-fill);
+    pointer-events: none;
+    clip-path: circle(0px at var(--hx, 50%) var(--hy, 0px));
+    transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.press-release-mini-card.is-filled::before,
+.press-release-mini-card:focus-within::before {
+    clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
+}
+
+.press-release-mini-card__date,
+.press-release-mini-card__title {
+    transition: color 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.press-release-mini-card.is-filled .press-release-mini-card__date,
+.press-release-mini-card.is-filled .press-release-mini-card__title,
+.press-release-mini-card:focus-within .press-release-mini-card__date,
+.press-release-mini-card:focus-within .press-release-mini-card__title {
+    color: #fff;
+}
+
+.press-release-mini-card.is-filled .site-btn--line,
+.press-release-mini-card:focus-within .site-btn--line {
+    color: #fff;
+    --btn-black: #fff;
+}
+
+.press-release-mini-card.is-filled .site-btn--line::after,
+.press-release-mini-card:focus-within .site-btn--line::after {
+    background: #fff;
+}
+
+/* Learn More pinned to card bottom so all cards line up */
+.press-release-mini-card > .site-btn {
+    margin-top: auto;
+    align-self: flex-start;
 }
 
 .press-release-mini-card__date {
@@ -256,7 +346,7 @@ background: #ffffff;
     font-size: var(--text-20);
     font-weight: 600;
     color: var(--color-primary, #2f6b3e);
-    margin: 0;
+    margin: 0 0 24px;
     line-height: 1.5;
 }
 
@@ -338,7 +428,7 @@ background: #ffffff;
     }
 
     .press-release-mini-card {
-        padding: 45px;
+        padding: 2rem;
     }
 
     .press-release-controls {

@@ -37,7 +37,7 @@ NEWS — tabs, filters, press + media cards
   isolation: isolate;
   overflow: visible;
   background: var(--color-white, #fff);
-  padding: 10px;
+  padding: 0;
 }
 
 .news-inside-outer .industry-product-card__media {
