@@ -3,6 +3,7 @@
 @model GBL_BusinessLogic.Entity.MediaModel
 @{
    ViewData["Title"] = Model?.Content?.ContTitle ?? "Press release";
+   ViewData["HideMediaBreadcrumbTitle"] = true;
    Layout = "~/Views/Shared/_Layout.cshtml";
    var content = Model?.Content;
 }
