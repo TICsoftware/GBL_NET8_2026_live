@@ -66,8 +66,10 @@ document.addEventListener('DOMContentLoaded', function () {
         id: 'card-rise-list-' + listIndex,
         trigger: list,
         scroller: stScroller,
-        start: CARD_RISE.listStart,
-        end: CARD_RISE.listEnd,
+        /* Optional per-list override, e.g. data-card-end="top 75%" for a list
+           that sits low in its section and would otherwise stop part-way. */
+        start: list.dataset.cardStart || CARD_RISE.listStart,
+        end: list.dataset.cardEnd || CARD_RISE.listEnd,
         scrub: CARD_RISE.scrub,
         invalidateOnRefresh: true,
       },
