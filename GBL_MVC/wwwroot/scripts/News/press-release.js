@@ -40,6 +40,16 @@ $(function () {
         }
     }
 
+    function refreshNewsCardEffects(root) {
+        if (typeof window.refreshNewsCardFill === "function") {
+            window.refreshNewsCardFill(root || $grid[0]);
+            return;
+        }
+        if (typeof window.bindNewsCardFill === "function") {
+            window.bindNewsCardFill(root || $grid[0]);
+        }
+    }
+
     function loadArticles(reset) {
         if (loading || !loadUrl) return;
 
@@ -74,6 +84,7 @@ $(function () {
                 $grid.attr("data-total-count", totalCount);
 
                 updateButton();
+                refreshNewsCardEffects($grid[0]);
             },
             error: function (xhr) {
                 console.error(

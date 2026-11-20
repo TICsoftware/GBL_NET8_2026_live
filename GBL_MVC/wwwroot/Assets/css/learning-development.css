@@ -26,7 +26,7 @@ LEARNING & DEVELOPMENT PAGE
   min-height: 26rem;
   margin: 0;
   overflow: hidden;
-   max-height:  560px;
+  aspect-ratio:4/3;
 }
 /* Small extra height keeps the zoom low; matches data-parallax-travel="5" */
 .ld-media .parallax-img {
@@ -80,7 +80,7 @@ LEARNING & DEVELOPMENT PAGE
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: start;
   padding: clamp(1.5rem, 3.4vw, 3rem);
    height: 100%;
 }

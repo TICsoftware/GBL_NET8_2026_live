@@ -379,9 +379,32 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 
 
 
-/**LEFT RIGHT SECTION**/
-.left-right-section.left-right-gray{ background: #f4f4f4; }
-.left-right-section.left-right-white{ background: #fff; }
+/** =====================================================
+    LEFT RIGHT SECTION — common text + media sections
+    Added ALONGSIDE each page's own classes (nothing replaced):
+      <section class="... left-right-section left-right-white|left-right-gray|left-right-dark">
+        <div class="... lr-row [lr-row--reverse]">      text + media pair (reverse = copy first)
+          <div class="... lr-copy">                      text side
+          <figure class="... lr-media">                  image / video side
+      lr-panel  = the element that is the coloured box (the copy block, or the whole row)
+    Phase 1: shared colours only. Layout stays in each page's own CSS.
+===================================================== **/
+.left-right-section{
+  --lr-bg-white: #fff;
+  --lr-bg-gray: #f4f4f4;
+  --lr-panel: #edf1e9;
+  --lr-heading: var(--color-secondary);
+}
+
+/* Section background */
+.left-right-section.left-right-white{ background: var(--lr-bg-white); }
+.left-right-section.left-right-gray{ background: var(--lr-bg-gray); }
+
+/* Coloured box behind the text (dark sections keep their own look) */
+.left-right-section:not(.left-right-dark) .lr-panel{ background: var(--lr-panel); }
+
+/* Headings */
+.left-right-section:not(.left-right-dark) h2{ color: var(--lr-heading); }
 
 
 

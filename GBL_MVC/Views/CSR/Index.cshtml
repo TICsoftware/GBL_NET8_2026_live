@@ -83,7 +83,7 @@
 @foreach (var itemsection in sections)
 {
     var blocks = componentLists
-        .Where(x => x.IsBlock == 1 && x.context_master_id == itemsection.context_master_id)
+        .Where(x => x.IsBlock == 1 && x.context_parent_id == itemsection.context_parent_id)
         .OrderBy(x => x.Sequence)
         .ToList();
     var sectionTitle = !string.IsNullOrWhiteSpace(itemsection.Title) ? itemsection.Title : itemsection.DisplayTitle;
@@ -105,7 +105,7 @@
                         {
                             <article class="csr-approach-card">
                                 <div>
-                                    <h3 class="csr-title">@Html.Raw(item.Title)</h3>
+                                    <h3 class="text-h3">@Html.Raw(item.Title)</h3>
                                     <p>@Html.Raw(item.Intro)</p>
                                 </div>
                                 <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText"  class="csr-approach-card__icon">
@@ -129,16 +129,22 @@
                             @foreach (var item in blocks)
                             {
                                 <article class="csr-focus-card">
-                                    <div class="csr-focus-card__media">
-                                        <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" loading="lazy" />
+                                    <div class="csr-focus-card__media parallax-wrap" data-parallax-travel="8">
+                                        <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" class="parallax-img" loading="lazy" />
                                     </div>
                                     <div class="csr-focus-card__body">
-                                        <h3 class="csr-title">@Html.Raw(item.Title)</h3>
-                                        <p>@Html.Raw(item.Intro)</p>
-                                        <a href="@item.Url" class="csr-readmore" aria-label="@Html.Raw(item.Title)>
-                                            <img src="~/Assets/images/csr/arrow-forward.svg" alt="" >
-                                            <span>@item.Url_Text</span>
-                                        </a>
+                                        <h3 class="text-h4">@Html.Raw(item.Title)</h3>
+                                        @Html.Raw(item.Intro)
+                                        @if (!string.IsNullOrWhiteSpace(item.Url))
+                                        {
+                                            var readMoreText = string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text;
+                                            <a href="@item.Url" class="site-btn site-btn--line csr-readmore" aria-label="@readMoreText: @System.Text.RegularExpressions.Regex.Replace(item.Title ?? "", "<[^>]+>", "")">
+                                                <span class="site-btn__label">@readMoreText</span>
+                                                <span class="site-btn__arrow" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </span>
+                                            </a>
+                                        }
                                     </div>
                                 </article>
                             }
@@ -152,12 +158,14 @@
     {
         <section class="csr-progress section-spacing">
             <div class="container">
-                <div class="csr-progress__panel">
-                    <img src="@sectionBackground" alt="@itemsection.ComponentbackgroundAltText" class="csr-progress__bg" loading="lazy" />
+                <div class="csr-progress__panel bg-parallax-section">
+                    <div class="parallax-wrap csr-progress__bg" data-parallax-travel="8" aria-hidden="true">
+                        <img src="@sectionBackground" alt="@itemsection.ComponentbackgroundAltText" class="parallax-img" loading="lazy" />
+                    </div>
                     <div class="csr-progress__content">
                         <div class="csr-progress__copy">
-                            <h3 class="csr-title">@Html.Raw(sectionTitle)</h3>
-                            <p> @Html.Raw(sectionIntro)</p>
+                            <h2 class="text-h2">@Html.Raw(sectionTitle)</h2>
+                            @Html.Raw(sectionIntro)
                         </div>
                         @if(blocks != null && blocks.Count > 0)
                         {
@@ -178,10 +186,12 @@
     }
     else
     {
-         <section class="csr-impact">
+         <section class="csr-impact bg-parallax-section">
             @if(!string.IsNullOrWhiteSpace(sectionBackground))
             {
-            <img src="@sectionBackground" alt="@itemsection.ComponentbackgroundAltText" class="csr-impact__bg" loading="lazy">
+            <div class="parallax-wrap csr-impact__bg" data-parallax-travel="8" aria-hidden="true">
+                <img src="@sectionBackground" alt="@itemsection.ComponentbackgroundAltText" class="parallax-img" loading="lazy">
+            </div>
             }
             <div class="container csr-impact__inner">
                 <div class="title-section">

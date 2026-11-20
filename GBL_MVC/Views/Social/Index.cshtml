@@ -80,16 +80,16 @@
     {
         <section class="social-belief left-right-section left-right-white section-spacing">
             <div class="container">
-                <div class="social-split bg-gray">
+                <div class="social-split lr-row lr-panel bg-gray">
                 @if (!string.IsNullOrWhiteSpace(philosophyImage))
                 {
-                    <figure class="social-split__media parallax-wrap parallax-sticky" data-parallax-travel="5">
+                    <figure class="social-split__media lr-media parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@philosophyImage" alt="@philosophyAlt" class="parallax-img">
                     </figure>
                 }
                 @if (hasPhilosophyCopy)
                 {
-                    <div class="social-split__copy">
+                    <div class="social-split__copy lr-copy">
                         @if (HasText(philosophyMain.Intro))
                         {
                             @Html.Raw(philosophyMain.Intro)
@@ -141,10 +141,10 @@
     {
         <section class="social-difference left-right-section left-right-gray section-spacing">
             <div class="container">
-                <div class="social-split social-split--copy-first bg-white">
+                <div class="social-split social-split--copy-first lr-row lr-row--reverse lr-panel bg-white">
                 @if (hasDifferenceCopy)
                 {
-                    <div class="social-split__copy">
+                    <div class="social-split__copy lr-copy">
                         @if (HasText(differenceMain.Title))
                         {
                             <h2 class="text-h2">@Html.Raw(differenceMain.Title.CleanParagraphTags())</h2>
@@ -157,7 +157,7 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(differenceImage))
                 {
-                    <figure class="social-split__media parallax-wrap parallax-sticky" data-parallax-travel="5">
+                    <figure class="social-split__media lr-media parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img src="@differenceImage" alt="@differenceAlt" class="parallax-img">
                     </figure>
                 }

@@ -33,7 +33,7 @@ namespace GBL_BusinessLogic.Entity
         public string popup_content { get; set; }
         public int sequence { get; set; }
         public int IsBlock { get; set; }
-        public int context_master_id { get; set; }
+        public int context_parent_id { get; set; }
     }
 
     public class ContentViewModel

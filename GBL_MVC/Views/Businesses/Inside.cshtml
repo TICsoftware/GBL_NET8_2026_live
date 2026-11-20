@@ -6,6 +6,7 @@
     var content = Model?.Content;
     var componentLists = Model?.Component_Lists ?? new Dictionary<int, List<GBL_BusinessLogic.Entity.ComponentModel>>();
     var splitIndex = 0;
+    bool hideproduct_status= false;
 }
 
 
@@ -78,6 +79,14 @@
         x.IsBlock == 1
         && string.IsNullOrWhiteSpace(x.Intro)
         && string.IsNullOrWhiteSpace(x.Componentbackground));
+    if(hideproduct_status == false)
+        {
+        hideproduct_status = items.All(x =>
+            x.IsBlock == 1
+            && x.DataValue=="hide products");
+        }
+    
+    
     if (isImageGallery) { continue; }
 
     foreach (var item in items)
@@ -87,10 +96,8 @@
         var hasBg = !string.IsNullOrWhiteSpace(item.Componentbackground);
         var hasIntro = !string.IsNullOrWhiteSpace(item.Intro);
         var isFindSection = !hasBg && !hasIntro && !string.IsNullOrWhiteSpace(thumb);
-        @* var URLval = (item.IsBlock == 0 ? item.component_Url2 : item.Url)   ;
-        var URLtextval = (item.IsBlock == 0 ? item.component_Url_Text2 : item.Url_Text)   ; *@
-        var URLval =   item.Url    ;
-        var URLtextval =    item.Url_Text    ;
+        
+
         if (hasBg)
         {
             <section class="bbc-leadership bg-parallax-section section-spacing" aria-labelledby="bbc-section-title_@seqPair.Key">
@@ -126,14 +133,18 @@
                         </div>
                         <div class="bbc-find__content card-rise">
                             <h2 id="bbc-find-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)
+                                 
                             </h2>
-                            @if (!string.IsNullOrWhiteSpace(URLval) && URLval != "#")
+                            @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
                             {
-                                <a href="@URLval" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(URLtextval) ? "Learn more" :
-                                                                                                        URLtextval)</span>
-                                    </a>
-                                }
+                                <a href="@item.Url" target="@(item.Url.StartsWith("https://")? "_blank": "_self")"  class="site-btn site-btn--fill" data-sds-download="" >
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url) ? "Learn more" : item.Url_Text)</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" 
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </span>
+                                </a>
+                            }
                             </div>
                         </div>
                     </div>
@@ -165,12 +176,15 @@
                                     @Html.Raw(item.Intro)
                                 </div>
                             }
-                            @if (!string.IsNullOrWhiteSpace(URLval) && URLval != "#")
+                            @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
                             {
-                                <a href="@item.Url" class="site-btn site-btn--outline">
-                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(URLtextval) ? "Learn more" :
-                                                                                                            URLtextval)</span>
-                                    </a>
+                                <a href="@item.Url" target="@(item.Url.StartsWith("https://")? "_blank": "_self")"  class="site-btn site-btn--fill" data-sds-download="" >
+                                    <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url) ? "Learn more" : item.Url_Text)</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" 
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </span>
+                                </a>
                             }
                         </div>
                     </div>
@@ -181,7 +195,7 @@
 }
     
 
-@if (Model?.Parent_section_Components != null && Model.Parent_section_Components.Count > 0)
+@if (hideproduct_status == false && Model?.Parent_section_Components != null && Model.Parent_section_Components.Count > 0)
 {
     foreach (var item in Model.Parent_section_Components)
     {

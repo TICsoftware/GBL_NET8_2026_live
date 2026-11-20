@@ -168,18 +168,18 @@
 
             @if (hasImage || hasBody)
             {
-                <div class="ld-split@(imageLeft ? "" : " ld-split--copy-first")">
+                <div class="ld-split lr-row@(imageLeft ? "" : " ld-split--copy-first lr-row--reverse")">
                     @if (imageLeft)
                     {
                         @if (hasImage)
                         {
-                            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                            <figure class="ld-media lr-media parallax-wrap" data-parallax-travel="5">
                                 <img src="@image" alt="@imageAlt" class="parallax-img">
                             </figure>
                         }
                         @if (hasBody)
                         {
-                            <div class="ld-split__copy @copyTone">
+                            <div class="ld-split__copy lr-copy lr-panel @copyTone">
                                 @if (HasText(body))
                                 {
                                     @Html.Raw(body)
@@ -197,7 +197,7 @@
                         }
                         else if (hasIntro && !hasTitle)
                         {
-                            <div class="ld-split__copy @copyTone">
+                            <div class="ld-split__copy lr-copy lr-panel @copyTone">
                                 <p>@Html.Raw(intro.CleanParagraphTags())</p>
                             </div>
                         }
@@ -206,7 +206,7 @@
                     {
                         @if (hasBody)
                         {
-                            <div class="ld-split__copy @copyTone">
+                            <div class="ld-split__copy lr-copy lr-panel @copyTone">
                                 @if (HasText(body))
                                 {
                                     @Html.Raw(body)
@@ -224,13 +224,13 @@
                         }
                         else if (hasIntro && !hasTitle)
                         {
-                            <div class="ld-split__copy @copyTone">
+                            <div class="ld-split__copy lr-copy lr-panel @copyTone">
                                 <p>@Html.Raw(intro.CleanParagraphTags())</p>
                             </div>
                         }
                         @if (hasImage)
                         {
-                            <figure class="ld-media parallax-wrap" data-parallax-travel="5">
+                            <figure class="ld-media lr-media parallax-wrap" data-parallax-travel="5">
                                 <img src="@image" alt="@imageAlt" class="parallax-img">
                             </figure>
                         }

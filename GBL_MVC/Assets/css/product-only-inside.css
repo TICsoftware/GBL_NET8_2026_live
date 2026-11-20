@@ -67,7 +67,7 @@ PRODUCT INSIDE — split banner
   }
 
   .product-inside-banner__media {
-    order: -1;
+    order: 0;
   }
 
   .product-inside-banner__intro {

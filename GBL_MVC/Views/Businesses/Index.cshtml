@@ -73,29 +73,35 @@
       var itemfirstcomponent = itemcomponent.FirstOrDefault(); 
       if (incr % 2 == 0)
       {
-         business_class = "reverse bg-gray";
+         business_class = "reverse bg-gray lr-row--reverse";
       }
       else
       {
          business_class = "";
       }
       incr++;
-      
-      <section class="business-section @(itemfirstcomponent?.bg_class ?? "business-section--white") section-spacing"
+
+      // Common left-right tone, from the CMS background class (dark keeps its own look)
+      var businessBg = itemfirstcomponent?.bg_class ?? "business-section--white";
+      var lrTone = businessBg.Contains("dark", StringComparison.OrdinalIgnoreCase) ? "left-right-dark"
+                 : businessBg.Contains("gray", StringComparison.OrdinalIgnoreCase) ? "left-right-gray"
+                 : "left-right-white";
+
+      <section class="business-section @businessBg left-right-section @lrTone section-spacing"
                aria-labelledby="@item.PageName">
          <div class="container">
-            <div class="business-split @business_class">
+            <div class="business-split lr-row lr-panel @business_class">
                @if (itemcomponent != null && itemcomponent.Count > 0)
                {
                   @if (itemcomponent.Count == 1)
                   {
-                     <div class="business-split__media business-media business-media--full parallax-wrap parallax-sticky" data-parallax-travel="5">
+                     <div class="business-split__media lr-media business-media business-media--full parallax-wrap parallax-sticky" data-parallax-travel="5">
                         <img class="parallax-img" src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
                      </div>
                   }
                   else
                   {
-                     <div class="business-split__media business-collage parallax-sticky">
+                     <div class="business-split__media lr-media business-collage parallax-sticky">
                         <div class="business-media business-media--wide parallax-wrap" data-parallax-travel="5">
                            <img class="parallax-img" src="@itemfirstcomponent?.ThumbnailImage" alt="@itemfirstcomponent?.ThumbnailAltText" loading="lazy" />
                         </div>
@@ -110,7 +116,7 @@
                      </div>
                   }
                }
-               <div class="business-split__copy card-rise">
+               <div class="business-split__copy lr-copy card-rise">
                   @if(!string.IsNullOrWhiteSpace(item?.BreadcrumbTitle))
                   {
                      <span class="addon-section-title">@item.BreadcrumbTitle.Trim()</span> 

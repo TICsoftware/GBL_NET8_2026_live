@@ -98,14 +98,12 @@
 .ar-reports__download {
   position: absolute;
   left: 50%;
-  bottom: 38px;
+  bottom: 28px;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  min-height: 3.4rem;
-  padding: 1rem 1.85rem;
   border-radius: 999px;
   background: var(--color-secondary, #67815a);
   color: #fff;
@@ -149,7 +147,39 @@
 
 @media (max-width: 640px) {
   .ar-reports__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1rem;
+  }
+
+  .ar-reports__card {
+    --ar-pad: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .ar-reports__download {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    align-self: center;
+    width: auto;
+    max-width: 100%;
+    min-height: 2.25rem;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8125rem;
+    transform: none;
+    --btn-pad-x: 0.85rem;
+    --btn-arrow: 0.75rem;
+    --btn-gap: 0.4rem;
+  }
+
+  .ar-reports__card:hover .ar-reports__download,
+  .ar-reports__card:focus-visible .ar-reports__download,
+  .ar-reports__card:active .ar-reports__download {
+    transform: none;
+    bottom: auto;
   }
 }
 

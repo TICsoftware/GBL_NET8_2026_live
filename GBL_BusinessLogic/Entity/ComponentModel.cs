@@ -9,7 +9,7 @@ namespace GBL_BusinessLogic.Entity
     {
         public int cont_id { get; set; }
         public string GroupId { get; set; }
-        public int context_master_id { get; set; }
+        public int context_parent_id { get; set; }
         public string Title { get; set; }
         public string Intro { get; set; }
         public string HmpgIntro { get; set; }
