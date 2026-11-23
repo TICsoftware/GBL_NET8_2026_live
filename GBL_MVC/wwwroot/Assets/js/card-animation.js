@@ -48,13 +48,13 @@
    * The link moves; the grid cell stays put so rows cannot cover each other.
    */
   var PDF_RISE = {
-    y: 56,
+    y: 40,
     duration: 0.85,
-    stagger: 0.12,
+    stagger: 0,
     rowDelay: 0.34,
     scrub: 0.85,
-    start: 'top 96%',
-    end: 'top 58%',
+    start: 'top 100%',
+    end: 'top 82%',
   };
 
   function pdfTargets(row) {
