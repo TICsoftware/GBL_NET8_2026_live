@@ -841,6 +841,73 @@
   object-fit: contain;
 }
 
+/* Website line (CMS content has no icon/class) */
+.coc-card p:has(> a[href^="http"]) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.coc-card p:has(> a[href^="http"])::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  margin-top: 0.1rem;
+  background: url("../images/investors/web-icon.svg") center / contain no-repeat;
+}
+
+/* Email + website links: text colour and underline fill left to right on hover/focus */
+.coc-card a:is([href^="mailto:"], [href^="http"]) {
+  --link-ease: var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  position: relative;
+  padding-bottom: 2px;
+  background-image: linear-gradient(to right, var(--color-secondary, #67815a) 50%, var(--color-primary, #282b31) 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background-position 0.45s var(--link-ease);
+}
+
+.coc-card a:is([href^="mailto:"], [href^="http"])::before,
+.coc-card a:is([href^="mailto:"], [href^="http"])::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #888;
+  pointer-events: none;
+}
+
+.coc-card a:is([href^="mailto:"], [href^="http"])::after {
+  background: var(--color-secondary, #67815a);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--link-ease);
+}
+
+.coc-card a:is([href^="mailto:"], [href^="http"]):hover,
+.coc-card a:is([href^="mailto:"], [href^="http"]):focus-visible {
+  text-decoration: none;
+  background-position: 0 0;
+}
+
+.coc-card a:is([href^="mailto:"], [href^="http"]):hover::after,
+.coc-card a:is([href^="mailto:"], [href^="http"]):focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coc-card a:is([href^="mailto:"], [href^="http"]),
+  .coc-card a:is([href^="mailto:"], [href^="http"])::after {
+    transition: none;
+  }
+}
+
 @media (max-width: 800px) {
   .coc-row {
     grid-template-columns: 1fr;
