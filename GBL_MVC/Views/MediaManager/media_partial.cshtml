@@ -13,7 +13,7 @@
 
     <!-- REAL FILE INPUT -->
     <input type="file" id="files" name="files" multiple hidden
-        accept=".jpg,.jpeg,.png,.webp,.pdf,.docx,.ppt,.pptx,.mp4,.svg" />
+        accept=".jpg,.jpeg,.png,.webp,.pdf,.docx,.ppt,.pptx,.mp4,.svg,.zip,.mp3" />
 
     <div class="row mt-2">
         <!-- FILE TYPE DROPDOWN -->
@@ -26,6 +26,8 @@
                 <option value="icon">Icon Image</option>
                 <option value="pdf">PDF</option>
                 <option value="video">Video</option>
+                <option value="audio">Audio</option>
+                <option value="zip">ZIP</option>
                 <option value="doc">Documents</option>
                 <option value="investors">Investors</option>
                 <option value="pressrelease">Press Release</option>
@@ -91,6 +93,8 @@
                 if (ext == "pdf") iconClass = "pdf";
                 else if (ext == "doc" || ext == "docx") iconClass = "doc";
                 else if (ext == "ppt" || ext == "pptx") iconClass = "ppt";
+                else if (ext == "mp3") iconClass = "audio";
+                else if (ext == "zip") iconClass = "zip";
                 else iconClass = "file";
 
                 <div class="col-md-3">
