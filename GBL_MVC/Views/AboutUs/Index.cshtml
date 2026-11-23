@@ -60,7 +60,7 @@
     <section class="about-intro" aria-label="Introduction">
         <div class="container">
             <div class="about-intro__copy page-intro-inner">
-                <p class="about-intro__lead">@Html.Raw(content.Cont_intro)</p>
+                 @Html.Raw(content.Cont_intro) 
                 @Html.Raw(content.Content)
             </div>
         </div>
@@ -111,7 +111,7 @@
                         {
                             <li class="about-principle card-rise">
                                 <div>
-                                    <h3 class="about-principle__title"> @Html.Raw(itemblocks.Title)/h3>
+                                    <h3 class="about-principle__title"> @Html.Raw(itemblocks.Title)</h3>
                                         @if (!string.IsNullOrWhiteSpace(itemblocks.Intro))
                                         {
                                             @Html.Raw(itemblocks.Intro)
@@ -141,15 +141,15 @@
                         @foreach (var itemblocks in blocks)
                         {
                             <li class="about-benchmark card-rise">
-                            @if (!string.IsNullOrWhiteSpace(itemsection.ComponentThumbnail))
+                            @if (!string.IsNullOrWhiteSpace(itemblocks.ThumbnailImage))
                             {
                             <div class="about-benchmark__media">
-                                <img src="@itemblocks.ComponentThumbnail" alt="@itemblocks.ComponentThumbnailAltText" loading="lazy" />
+                                <img src="@itemblocks.ThumbnailImage" alt="@itemblocks.ThumbnailAltText" loading="lazy" />
                             </div>
                             }
                             @if (!string.IsNullOrWhiteSpace(itemblocks.Intro))
                             {
-                            <p class="about-benchmark__text">@Html.Raw(itemblocks.Intro)</p>
+                            @Html.Raw(itemblocks.Intro)
                             }
                             </li>
                         }
@@ -169,9 +169,9 @@
                         {
                             <article class="about-split">
                                 <div class="about-split__copy card-rise">
-                                    @if (!string.IsNullOrWhiteSpace(itemblocks.DisplayTitle))
+                                    @if (!string.IsNullOrWhiteSpace(itemblocks.BlockDisplayTitle))
                                     {
-                                         @Html.Raw(itemblocks.DisplayTitle.Trim())
+                                         @Html.Raw(itemblocks.BlockDisplayTitle.Trim())
                                     }
                                     <h2 class="text-h2 title-animation about-title">@Html.Raw(itemblocks.Title)</h2>
                                     @Html.Raw(itemblocks.Intro)
@@ -203,9 +203,9 @@
                                 </div>
                                 }
                                 <div class="about-split__copy card-rise">
-                                    @if (!string.IsNullOrWhiteSpace(itemsection.DisplayTitle))
+                                    @if (!string.IsNullOrWhiteSpace(itemblocks.BlockDisplayTitle))
                                     {
-                                         @Html.Raw(itemblocks.DisplayTitle.Trim())
+                                         @Html.Raw(itemblocks.BlockDisplayTitle.Trim())
                                     }
                                 <h2 class="text-h2 title-animation about-title">@Html.Raw(itemblocks.Title)</h2>
                                 @Html.Raw(itemblocks.Intro)
@@ -229,21 +229,20 @@
     }
     else
     {
-        if (!string.IsNullOrWhiteSpace(itemsection.ComponentThumbnail)
-        && (!string.IsNullOrWhiteSpace(itemsection.Component_right_image)
-        || !string.IsNullOrWhiteSpace(itemsection.Component_LHS_thumbnail)))
+        <section class="about-story">
+            <div class="container">
+        @if (!string.IsNullOrWhiteSpace(itemsection.ComponentThumbnail)
+        && !string.IsNullOrWhiteSpace(itemsection.Component_right_image)
+        && !string.IsNullOrWhiteSpace(itemsection.Component_LHS_thumbnail))
         {
-            <section class="about-story">
-                <div class="container">
+            
 
                     <article class="about-split about-split--center">
                         <div class="about-split__copy card-rise">
                             <h2 class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)</h2>
                             @if (!string.IsNullOrWhiteSpace(itemsection.HmpgIntro))
                             {
-                                <blockquote class="about-verse">
                                     @Html.Raw(itemsection.HmpgIntro)
-                                </blockquote>
                             }
                             @Html.Raw(itemsection.Intro)
                         </div>
@@ -310,12 +309,11 @@
                             </div>
                         }
                     </article>
-                </div>
-            </section>
+              
 
         }
         else if (!string.IsNullOrWhiteSpace(itemsection.Component_right_image))
-        {
+        { 
             <article class="about-split">
                 <div class="about-split__copy card-rise">
                     @if (!string.IsNullOrWhiteSpace(itemsection.DisplayTitle))
@@ -350,6 +348,7 @@
                 }
 
             </article>
+               
         }
         else if (!string.IsNullOrWhiteSpace(itemsection.Componentbackground))
         {
@@ -375,5 +374,11 @@
                 </div>
             </article>
         }
+         </div>
+    </section>
     }
+}
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/aboutus.js" asp-append-version="true"></script>
 }
