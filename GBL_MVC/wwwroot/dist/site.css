@@ -234,9 +234,6 @@
   }
 }
 @layer utilities {
-  .\@container {
-    container-type: inline-size;
-  }
   .pointer-events-auto {
     pointer-events: auto;
   }
@@ -1986,6 +1983,9 @@ body {
     color: var(--color-primary);
     line-height: 1.15 !important;
     margin-bottom: 1rem;
+  }
+  .whatsNew__card h3 {
+    line-height: 1.5 !important;
   }
   p {
     font-size: var(--text-p);

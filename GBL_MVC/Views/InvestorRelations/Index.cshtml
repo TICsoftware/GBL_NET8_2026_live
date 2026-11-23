@@ -116,13 +116,13 @@ else
             {
                 var href = string.IsNullOrWhiteSpace(item.Url) ? "/media/press-release" : item.Url;
                 <article class="whatsNew__card">
-                    <p class="whatsNew__meta">
+                    <div class="whatsNew__meta">
                         <span class="whatsNew__tag">@(string.IsNullOrWhiteSpace(item.Tag_list) ? "Press Release" : item.Tag_list)</span>
                         @if (item.DisplayDate.HasValue)
                         {
                             <time datetime="@item.DisplayDate.Value.ToString("yyyy-MM-dd")">@item.DisplayDate.Value.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture)</time>
                         }
-                    </p>
+                    </div>
                     <h3>@Html.Raw((item.Title ?? "").CleanParagraphTags())</h3>
                     <a href="@href" class="site-btn site-btn--line" target="@(item.UrlTarget ?? "_self")">
                         <span class="site-btn__label">Learn more</span>
@@ -138,12 +138,6 @@ else
                 var href = string.IsNullOrWhiteSpace(item.Url) ? "/media/media-coverage" : item.Url;
                 var copy = FirstText(item.HmpgIntro, item.Intro, item.Title);
                 <article class="whatsNew__card whatsNew__card--media">
-                    @if (!string.IsNullOrWhiteSpace(item.ThumbnailImage))
-                    {
-                        <div class="whatsNew__media">
-                            <img src="@item.ThumbnailImage" alt="@(string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.Title : item.ThumbnailAltText)">
-                        </div>
-                    }
                     <p class="whatsNew__meta">
                         <span class="whatsNew__tag">@(string.IsNullOrWhiteSpace(item.Tag_list) ? "Media Coverage" : item.Tag_list)</span>
                         @if (item.DisplayDate.HasValue)
@@ -151,6 +145,12 @@ else
                             <time datetime="@item.DisplayDate.Value.ToString("yyyy-MM-dd")">@item.DisplayDate.Value.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture)</time>
                         }
                     </p>
+                    @if (!string.IsNullOrWhiteSpace(item.ThumbnailImage))
+                    {
+                        <div class="whatsNew__media">
+                            <img src="@item.ThumbnailImage" alt="@(string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.Title : item.ThumbnailAltText)">
+                        </div>
+                    }
                     <p>@Html.Raw((copy ?? "").CleanParagraphTags())</p>
                     <a href="@href" class="site-btn site-btn--line" target="@(item.UrlTarget ?? "_self")">
                         <span class="site-btn__label">Learn more</span>
@@ -167,7 +167,9 @@ else
                     <tv-single-ticker symbol="BSE:GODAVARIB"></tv-single-ticker>
                 </div>
                 <article class="whatsNew__card whatsNew__card--note">
-                    <h3>Announcement</h3>
+                    <p class="whatsNew__meta">
+                        <span class="whatsNew__tag">Announcement</span>
+                    </p>
                     @if (!string.IsNullOrWhiteSpace(announcementCopy))
                     {
                         <p>@Html.Raw(announcementCopy.CleanParagraphTags())</p>
@@ -350,7 +352,7 @@ else
 
 @if (subsidiaryLinks.Count > 0)
 {
-    <section class="subsidiaries section-spacing" aria-labelledby="subsidiaries-title">
+    <section class="subsidiaries section-spacing bg-gray" aria-labelledby="subsidiaries-title">
         <div class="container">
             <h2 id="subsidiaries-title" class="text-h2">Subsidiaries</h2>
             <div class="si-row reverse">
@@ -361,9 +363,9 @@ else
                     @foreach (var item in subsidiaryLinks)
                     {
                         <li>
-                            <a href="@(string.IsNullOrWhiteSpace(item.Url) ? "#" : item.Url)" target="@item.UrlTarget" rel="noopener noreferrer">
+                            <a href="@(string.IsNullOrWhiteSpace(item.Url) ? "#" : item.Url)" target="@item.UrlTarget" rel="noopener noreferrer" download>
                                 <span>@item.Title</span>
-                                @await Html.PartialAsync("_si_arrow")
+                                @await Html.PartialAsync("_si_download")
                             </a>
                         </li>
                     }
@@ -375,7 +377,7 @@ else
 
 @if (contactList.Count > 0)
 {
-    <section class="codeOfConduct section-spacing bg-gray" aria-labelledby="investor-contact-title">
+    <section class="codeOfConduct section-spacing " aria-labelledby="investor-contact-title">
         <div class="container">
             <h2 id="investor-contact-title" class="text-h2">@contactTitle</h2>
             <div class="coc-row">
