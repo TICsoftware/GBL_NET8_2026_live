@@ -95,6 +95,8 @@ $(function () {
 
                 if (reset && typeof window.refreshNewsCardMotion === "function") {
                     window.refreshNewsCardMotion($grid[0]);
+                } else if (typeof window.bindNewsCardScroll === "function") {
+                    window.bindNewsCardScroll(fresh);
                 } else if (typeof window.animateNewsCards === "function") {
                     window.animateNewsCards(fresh);
                 } else {

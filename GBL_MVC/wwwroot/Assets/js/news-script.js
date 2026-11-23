@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var stScroller = isMobile ? window : document.documentElement;
   var productAnims = [];
   var mediaParallax = [];
+  var riseRowSeq = 0;
 
   function columns() {
     if (window.matchMedia("(max-width: 1179px)").matches) return 1;
@@ -77,11 +78,11 @@ document.addEventListener("DOMContentLoaded", function () {
     productAnims = [];
   }
 
-  function addScrubRow(row, rowIndex) {
+  function addScrubRow(row) {
     var tl = gsap.timeline({
       defaults: { force3D: true, ease: "power3.out" },
       scrollTrigger: {
-        id: "news-card-rise-row-" + rowIndex,
+        id: "news-card-rise-row-" + (riseRowSeq++),
         trigger: row[0],
         scroller: stScroller,
         start: CARD_RISE.listStart,
@@ -126,14 +127,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     for (var r = 0; r < cards.length; r += cols) {
       var row = cards.slice(r, r + cols);
-      var rowIndex = r / cols;
 
       if (replay && isInView(row[0])) {
         introRows.push(row);
         continue;
       }
 
-      addScrubRow(row, rowIndex);
+      addScrubRow(row);
     }
 
     if (!introRows.length) return;
@@ -327,7 +327,38 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function bindAppendedCardRise(cards) {
+    var list = Array.from(cards || []).filter(function (card) {
+      return card && card.classList && card.classList.contains("industry-product-card") && !card.hidden;
+    });
+    if (!list.length) return;
+
+    if (!canAnimate) {
+      list.forEach(function (card) {
+        card.style.opacity = "1";
+        card.style.visibility = "visible";
+        card.style.transform = "none";
+      });
+      bindCardFill();
+      return;
+    }
+
+    gsap.killTweensOf(list);
+    var cols = columns();
+    for (var r = 0; r < list.length; r += cols) {
+      addScrubRow(list.slice(r, r + cols));
+    }
+    bindIncomingParallax(list);
+    bindCardFill();
+
+    if (window.lenis && typeof window.lenis.resize === "function") window.lenis.resize();
+    requestAnimationFrame(function () {
+      refreshTriggers();
+    });
+  }
+
   window.animateNewsCards = animateIncomingCards;
+  window.bindNewsCardScroll = bindAppendedCardRise;
 
   window.refreshNewsCardMotion = function (root) {
     var scope = root || activeProductPanel() || document;
