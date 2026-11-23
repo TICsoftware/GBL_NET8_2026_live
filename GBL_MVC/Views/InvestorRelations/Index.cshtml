@@ -288,8 +288,8 @@ else
         <div class="container">
             <h2 id="shareholder-info-title" class="text-h2">Shareholder Information</h2>
             <div class="si-row">
-                <div class="si-media">
-                    <img src="@shareholderImg" alt="@(string.IsNullOrWhiteSpace(Model?.ShareholderImageAlt) ? "Shareholders reviewing company documents together" : Model.ShareholderImageAlt)">
+                <div class="si-media parallax-wrap parallax-sticky" data-parallax-travel="5">
+                    <img src="@shareholderImg" alt="@(string.IsNullOrWhiteSpace(Model?.ShareholderImageAlt) ? "Shareholders reviewing company documents together" : Model.ShareholderImageAlt)" class="parallax-img">
                 </div>
                 <div class="si-links">
                     <ul class="si-list">
@@ -353,9 +353,9 @@ else
     <section class="subsidiaries section-spacing" aria-labelledby="subsidiaries-title">
         <div class="container">
             <h2 id="subsidiaries-title" class="text-h2">Subsidiaries</h2>
-            <div class="si-row">
-                <div class="si-media">
-                    <img src="@subsidiariesImg" alt="@(string.IsNullOrWhiteSpace(Model?.SubsidiariesImageAlt) ? "Representatives meeting across Godavari Biorefineries subsidiaries" : Model.SubsidiariesImageAlt)">
+            <div class="si-row reverse">
+                <div class="si-media parallax-wrap parallax-sticky" data-parallax-travel="5">
+                    <img src="@subsidiariesImg" alt="@(string.IsNullOrWhiteSpace(Model?.SubsidiariesImageAlt) ? "Representatives meeting across Godavari Biorefineries subsidiaries" : Model.SubsidiariesImageAlt)" class="parallax-img">
                 </div>
                 <ul class="si-list sub-list">
                     @foreach (var item in subsidiaryLinks)
@@ -375,7 +375,7 @@ else
 
 @if (contactList.Count > 0)
 {
-    <section class="codeOfConduct section-spacing" aria-labelledby="investor-contact-title">
+    <section class="codeOfConduct section-spacing bg-gray" aria-labelledby="investor-contact-title">
         <div class="container">
             <h2 id="investor-contact-title" class="text-h2">@contactTitle</h2>
             <div class="coc-row">
