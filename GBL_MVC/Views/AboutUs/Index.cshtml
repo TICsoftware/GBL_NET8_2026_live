@@ -41,11 +41,11 @@
 }
 
 @section Styles {
-   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="~/Assets/css/aboutus.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/Assets/css/aboutus.css" asp-append-version="true" />
 }
 
 <!-- HERO BANNER -->
@@ -56,16 +56,16 @@
 <!-- HERO BANNER END-->
 @if (!string.IsNullOrWhiteSpace(content?.Cont_intro) || !string.IsNullOrWhiteSpace(content?.Content))
 {
-   <!--PAGE INTRO OUTER-->
-   <section class="about-intro" aria-label="Introduction">
-      <div class="container">
-         <div class="about-intro__copy page-intro-inner"> 
-            <p class="about-intro__lead">@Html.Raw(content.Cont_intro)</p>
-            @Html.Raw(content.Content)
+    <!--PAGE INTRO OUTER-->
+    <section class="about-intro" aria-label="Introduction">
+        <div class="container">
+            <div class="about-intro__copy page-intro-inner">
+                 @Html.Raw(content.Cont_intro) 
+                @Html.Raw(content.Content)
+            </div>
         </div>
-      </div>
-   </section>
-   <!--PAGE INTRO OUTER END-->
+    </section>
+    <!--PAGE INTRO OUTER END-->
 }
 
 @foreach (var itemsection in sections)
@@ -74,4 +74,311 @@
         .Where(x => x.IsBlock == 1 && x.context_parent_id == itemsection.context_parent_id)
         .OrderBy(x => x.Sequence)
         .ToList();
+
+    if (blocks != null && blocks.Count > 0)
+    {
+        if (blocks.All(m => !string.IsNullOrWhiteSpace(m.Icon_Image)))
+        {
+            <section class="about-principles" aria-labelledby="about-principles-title">
+                <div class="container">
+                    <div class="about-principles__head">
+           
+                        <h2 id="about-principles-title" class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)
+                        </h2>
+                        <div>
+                            @if (!string.IsNullOrWhiteSpace(itemsection.Intro))
+                            {
+                                 
+                                    @Html.Raw(itemsection.Intro)
+                                
+                            }
+                            @if (!string.IsNullOrWhiteSpace(itemsection.Url))
+                            {
+                                <a href="@itemsection.Url" class="site-btn site-btn--outline about-btn">
+                                    <span class="site-btn__label">@Html.Raw(itemsection.Url_Text)</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none">
+                                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                                  stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                    <ul class="about-principles__grid card-list-items">
+                        @foreach (var itemblocks in blocks)
+                        {
+                            <li class="about-principle card-rise">
+                                <div>
+                                    <h3 class="about-principle__title"> @Html.Raw(itemblocks.Title)</h3>
+                                        @if (!string.IsNullOrWhiteSpace(itemblocks.Intro))
+                                        {
+                                            @Html.Raw(itemblocks.Intro)
+                                        }
+                                    </div>
+                                    <span class="about-principle__icon">
+                                        <img src="@itemblocks.Icon_Image" alt="" width="107" height="107" /></span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </section>           
+                            
+        }
+        else if(itemsection.Sequence ==1)
+        {
+            <section class="about-benchmarks" aria-labelledby="about-benchmarks-title">
+                <div class="container">
+                    <div class="about-head">
+                        <h2 id="about-benchmarks-title" class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)</h2>
+                        @if (!string.IsNullOrWhiteSpace(itemsection.Intro))
+                        {  
+                            @Html.Raw(itemsection.Intro)
+                        }
+                    </div>
+                    <ul class="about-benchmarks__grid card-list-items">
+                        @foreach (var itemblocks in blocks)
+                        {
+                            <li class="about-benchmark card-rise">
+                            @if (!string.IsNullOrWhiteSpace(itemblocks.ThumbnailImage))
+                            {
+                            <div class="about-benchmark__media">
+                                <img src="@itemblocks.ThumbnailImage" alt="@itemblocks.ThumbnailAltText" loading="lazy" />
+                            </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(itemblocks.Intro))
+                            {
+                            @Html.Raw(itemblocks.Intro)
+                            }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </section>
+            
+        }
+        else
+        {
+            int cnt=0;
+            <section class="about-rows">
+                <div class="container">
+                    @foreach (var itemblocks in blocks)
+                    {
+                        if(cnt % 2 == 0)
+                        {
+                            <article class="about-split">
+                                <div class="about-split__copy card-rise">
+                                    @if (!string.IsNullOrWhiteSpace(itemblocks.BlockDisplayTitle))
+                                    {
+                                         @Html.Raw(itemblocks.BlockDisplayTitle.Trim())
+                                    }
+                                    <h2 class="text-h2 title-animation about-title">@Html.Raw(itemblocks.Title)</h2>
+                                    @Html.Raw(itemblocks.Intro)
+                                    @if (!string.IsNullOrWhiteSpace(itemblocks.Url))
+                                    {
+                                    <a href="@itemblocks.Url" class="site-btn site-btn--outline about-btn">
+                                        <span class="site-btn__label">@itemblocks.Url_Text</span>
+                                        <span class="site-btn__arrow" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </span>
+                                    </a>
+                                    }
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(itemblocks.ThumbnailImage))
+                                {
+                                <div class="about-split__media about-parallax">
+                                    <img src="@itemblocks.ThumbnailImage" alt="@itemblocks.ThumbnailAltText" loading="lazy" />
+                                </div>
+                                }
+                            </article>
+                        }
+                        else
+                        {
+                            <article class="about-split about-split--reverse">
+                                @if (!string.IsNullOrWhiteSpace(itemblocks.ThumbnailImage))
+                                {
+                                <div class="about-split__media about-parallax">
+                                <img src="@itemblocks.ThumbnailImage" alt="@itemblocks.ThumbnailAltText" loading="lazy" />
+                                </div>
+                                }
+                                <div class="about-split__copy card-rise">
+                                    @if (!string.IsNullOrWhiteSpace(itemblocks.BlockDisplayTitle))
+                                    {
+                                         @Html.Raw(itemblocks.BlockDisplayTitle.Trim())
+                                    }
+                                <h2 class="text-h2 title-animation about-title">@Html.Raw(itemblocks.Title)</h2>
+                                @Html.Raw(itemblocks.Intro)
+                                @if (!string.IsNullOrWhiteSpace(itemblocks.Url))
+                                {
+                                <a href="@itemblocks.Url" class="site-btn site-btn--outline about-btn">
+                                    <span class="site-btn__label">@itemblocks.Url_Text</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </span>
+                                </a>
+                                }
+                                </div>
+                            </article>
+                        }
+                        ++cnt;
+                    }
+                </div>
+            </section> 
+        }
+    }
+    else
+    {
+        <section class="about-story">
+            <div class="container">
+        @if (!string.IsNullOrWhiteSpace(itemsection.ComponentThumbnail)
+        && !string.IsNullOrWhiteSpace(itemsection.Component_right_image)
+        && !string.IsNullOrWhiteSpace(itemsection.Component_LHS_thumbnail))
+        {
+            
+
+                    <article class="about-split about-split--center">
+                        <div class="about-split__copy card-rise">
+                            <h2 class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)</h2>
+                            @if (!string.IsNullOrWhiteSpace(itemsection.HmpgIntro))
+                            {
+                                    @Html.Raw(itemsection.HmpgIntro)
+                            }
+                            @Html.Raw(itemsection.Intro)
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(itemsection.ComponentThumbnail))
+                        {
+                            <div class="about-split__media about-split__media--earth about-parallax">
+                                <img src="@itemsection.ComponentThumbnail" alt="@itemsection.ComponentThumbnailAltText" loading="lazy">
+                            </div>
+                        }
+                    </article>
+                     
+                    <article class="about-prayer">
+                        <div class="about-prayer__images">
+                            @if (!string.IsNullOrWhiteSpace(itemsection.Component_LHS_thumbnail))
+                            {
+                                <div class="about-prayer__image about-prayer__image--tall about-parallax">
+                                    <img src="@itemsection.Component_LHS_thumbnail" alt="@itemsection.Component_LHS_thumbnail_image_alt"
+                                            loading="lazy">
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(itemsection.Component_right_image))
+                            {
+                                <div class="about-prayer__image about-parallax">
+                                    <img src="@itemsection.Component_right_image" alt="@itemsection.Component_Right_image_alt"
+                                            loading="lazy">
+                                </div>
+                            }
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(itemsection.Component_RHS_intro))
+                        {
+                            <div class="about-prayer__copy card-rise">
+                                @Html.Raw(itemsection.Component_RHS_intro)
+                            </div>
+                        }
+                    </article>
+                    <article class="about-vision">
+                        <div class="about-vision__card card-rise">
+                            @if (!string.IsNullOrWhiteSpace(itemsection.DisplayTitle))
+                            {
+                                @Html.Raw(itemsection.DisplayTitle.Trim())
+                            }
+                            @if (!string.IsNullOrWhiteSpace(itemsection.Content))
+                            {
+                                <p class="about-body">@Html.Raw(itemsection.Content)</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(itemsection.Url))
+                            {
+                                <a href="@itemsection.Url" class="site-btn site-btn--outline about-btn">
+                                    <span class="site-btn__label">@Html.Raw(itemsection.Url_Text)</span>
+                                    <span class="site-btn__arrow" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none">
+                                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(itemsection.Componentbackground))
+                        {
+                            <div class="about-vision__media about-parallax">
+                                <img src="@itemsection.Componentbackground" alt="@itemsection.ComponentbackgroundAltText"
+                                        loading="lazy">
+                            </div>
+                        }
+                    </article>
+              
+
+        }
+        else if (!string.IsNullOrWhiteSpace(itemsection.Component_right_image))
+        { 
+            <article class="about-split">
+                <div class="about-split__copy card-rise">
+                    @if (!string.IsNullOrWhiteSpace(itemsection.DisplayTitle))
+                    {
+                        @Html.Raw(itemsection.DisplayTitle.Trim())
+                    }
+                    <h2 class="text-h2 title-animation about-title">@Html.Raw(itemsection.Title)</h2>
+                    @if (!string.IsNullOrWhiteSpace(itemsection.Component_LHS_intro))
+                    {
+                        <div class="about-prayer__copy card-rise">
+                            @Html.Raw(itemsection.Component_LHS_intro)
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(itemsection.Url))
+                    {
+                        <a href="@itemsection.Url" class="site-btn site-btn--outline about-btn about-btn--wide">
+                            <span class="site-btn__label">@itemsection.Url_Text</span>
+                            <span class="site-btn__arrow" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
+                    }
+                </div>
+                @if (!string.IsNullOrWhiteSpace(itemsection.Component_right_image))
+                {
+                    <div class="about-split__media about-parallax">
+                        <img src="@itemsection.Component_right_image" alt="@itemsection.Component_Right_image_alt" loading="lazy" />
+                    </div>
+                }
+
+            </article>
+               
+        }
+        else if (!string.IsNullOrWhiteSpace(itemsection.Componentbackground))
+        {
+            <article class="about-feature">
+                <div class="about-feature__media about-parallax" aria-hidden="true">
+                    <img src="@itemsection.Componentbackground" alt="@itemsection.ComponentbackgroundAltText" loading="lazy" />
+                </div>
+                <div class="about-feature__copy card-rise">
+                    <h2 class="text-h2 title-animation about-title">@Html.Raw(itemsection.Title)</h2>
+                    @Html.Raw(itemsection.Component_LHS_intro)
+                    @if (!string.IsNullOrWhiteSpace(itemsection.Url))
+                    {
+                        <a href="@itemsection.Url" class="site-btn site-btn--outline-white about-btn about-btn--wide">
+                            <span class="site-btn__label">@itemsection.Url_Text</span>
+                            <span class="site-btn__arrow" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
+                    }
+                </div>
+            </article>
+        }
+         </div>
+    </section>
+    }
+}
+@section Scripts {
+   <script src="~/Assets/js/card-animation.js" asp-append-version="true"></script>
+   <script src="~/Assets/js/aboutus.js" asp-append-version="true"></script>
 }

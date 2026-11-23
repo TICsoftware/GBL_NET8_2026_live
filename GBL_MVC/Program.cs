@@ -184,6 +184,13 @@ var redirects = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     // Regulatory Environment Reports
     { "^regulatory-environment-reports/index\\.html$", "/" },
 
+    // Investors — old shareholder / general-meeting paths
+    { "^investors/shareholder-information/general-meeting/notice-of-meeting/?$", "/investors/general-meeting/notice-of-meeting" },
+    { "^investors/shareholder-information/general-meeting/outcome-of-meeting/?$", "/investors/general-meeting/outcome-of-meeting" },
+    { "^investors/shareholder-information/general-meeting/?$", "/investors/general-meeting/notice-of-meeting" },
+    { "^investors/shareholder-information/?$", "/investors" },
+    { "^investors/general-meeting/?$", "/investors/general-meeting/notice-of-meeting" },
+
     // Any other old .html URL → Home page
     { "^.*\\.html$", "/" }
 };

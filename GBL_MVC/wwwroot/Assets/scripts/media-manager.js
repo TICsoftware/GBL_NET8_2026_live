@@ -5,7 +5,7 @@
 
     // ===== VARIABLES =====
     let selectedFiles = [];
-    const allowedExtensions = ["jpg", "jpeg", "png", "webp", "pdf", "docx", "ppt", "pptx", "mp4","svg"];
+    const allowedExtensions = ["jpg", "jpeg", "png", "webp", "pdf", "docx", "ppt", "pptx", "mp4", "svg", "zip", "mp3"];
     const defaultText = "Click or Drag 'n' Drop Files here";
     let cropper = null;
     let filetypes = null;

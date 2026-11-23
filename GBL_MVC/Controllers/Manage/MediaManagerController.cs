@@ -72,6 +72,8 @@ namespace GBL_MVC.Controllers.Manage
                     "icon" => "icons",
                     "pdf" => "pdf",
                     "video" => "video",
+                    "audio" => "audio",
+                    "zip" => "zip",
                     "doc" => "documents",
                     "investors" => "investors",
                     "pressrelease" => "pressrelease",
