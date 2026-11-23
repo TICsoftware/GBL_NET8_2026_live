@@ -14,17 +14,21 @@
   Result sets:
     0  Direct children of investor-relations (published sections)
     1  Grandchildren (annual reports, subsidiary PDFs, quarterly years, CG tabs)
-    2  What's New: press-release / media-coverage tagged to this section
-    3  Corporate-governance children (Policies, Code of Conduct, Committees)
+    2  What's New: latest 2 press-release + 1 media-coverage (prefer investor-tagged)
+    3  Corporate-governance children (Committees, Code of Conduct, Policies)
     4  Investor Contact components (context_details of the 'investors contact' child, e.g. cont_id = 476)
     5  Shareholder Information subsections
          SELECT * FROM content WHERE cont_id = 478
          SELECT * FROM content WHERE cont_parent_id = 478
          SELECT * FROM content WHERE cont_parent_id = 120
+    6  Latest Updates item (cont_parent_id = 19) → Announcement card
+    7  Subsidiaries documents (cont_parent_id = 114 by default)
+         ordered by cont_displaydate DESC (NULLs last)
 
   Example:
     EXEC dbo.Get_Investor_Relations_Home
-         @ContentId = 110, @PressParentId = 3, @MediaParentId = 7;
+         @ContentId = 110, @PressParentId = 3, @MediaParentId = 7,
+         @UpdatesParentId = 19, @SubsidiariesParentId = 114;
 */
 SET ANSI_NULLS ON;
 GO
@@ -36,7 +40,9 @@ CREATE OR ALTER PROCEDURE dbo.Get_Investor_Relations_Home
     @ContentId                 INT,
     @PressParentId             INT = 3,
     @MediaParentId             INT = 7,
-    @ShareholderExtraParentId  INT = 120
+    @ShareholderExtraParentId  INT = 120,
+    @UpdatesParentId           INT = 19,
+    @SubsidiariesParentId      INT = 114
 )
 AS
 BEGIN
@@ -47,6 +53,8 @@ BEGIN
 
     IF @PressParentId IS NULL OR @PressParentId < 1 SET @PressParentId = 3;
     IF @MediaParentId IS NULL OR @MediaParentId < 1 SET @MediaParentId = 7;
+    IF @UpdatesParentId IS NULL OR @UpdatesParentId < 1 SET @UpdatesParentId = 19;
+    IF @SubsidiariesParentId IS NULL OR @SubsidiariesParentId < 1 SET @SubsidiariesParentId = 114;
 
     DECLARE @TagNeedle nvarchar(30) = N',' + CAST(@ContentId AS nvarchar(20)) + N',';
 
@@ -112,6 +120,33 @@ BEGIN
 
     IF @ShareholderExtraParentId IS NULL OR @ShareholderExtraParentId < 1
         SET @ShareholderExtraParentId = 120;
+
+    /* Subsidiaries lives under Shareholder Information (e.g. 478 → 114), not always as a direct IR child. */
+    DECLARE @SubsidiariesId INT =
+    (
+        SELECT TOP 1 c.cont_id
+        FROM content c
+        WHERE
+            c.cont_status = 2
+            AND (
+                c.cont_id = @SubsidiariesParentId
+                OR (
+                    (
+                        c.cont_parent_id = @ContentId
+                        OR (@ShareholderId IS NOT NULL AND c.cont_parent_id = @ShareholderId)
+                    )
+                    AND (
+                        LOWER(REPLACE(ISNULL(c.cont_pagename, N''), N' ', N'')) LIKE N'%subsidiar%'
+                        OR LOWER(REPLACE(ISNULL(c.cont_title, N''), N' ', N'')) LIKE N'%subsidiar%'
+                    )
+                )
+            )
+        ORDER BY
+            CASE WHEN c.cont_id = @SubsidiariesParentId THEN 0 ELSE 1 END,
+            CASE WHEN @ShareholderId IS NOT NULL AND c.cont_parent_id = @ShareholderId THEN 0 ELSE 1 END,
+            ISNULL(c.cont_sequence, 999999),
+            c.cont_id
+    );
 
     /* ==========================================
        0. Section children of investor-relations
@@ -215,69 +250,133 @@ BEGIN
         c.cont_id DESC;
 
     /* ==========================================
-       2. What's New — press (3) + media (7)
-          tagged to investor-relations
+       2. What's New — latest 2 press (3) + 1 media (7)
+          Prefer investor-tagged rows; fill with absolute latest.
        ========================================== */
+    ;WITH NewsPool AS
+    (
+        SELECT
+            c.cont_id,
+            c.cont_parent_id,
+            c.cont_title,
+            c.cont_hmpg_title,
+            c.cont_pagename,
+            c.language_master_id,
+            c.Geography_ID,
+            c.cont_intro,
+            c.cont_hmpg_intro,
+            c.content,
+            c.cont_displaydate,
+            c.content_type_ID,
+            c.Masthead_image_Media_id,
+            m1.file_path AS masthead_image_path,
+            c.Masthead_alt_text,
+            c.Mobile_Masthead_image_Media_id,
+            m2.file_path AS mobile_masthead_image_path,
+            c.Template_Master_ID,
+            c.Hmpg_thumbnail_Media_id,
+            m3.file_path AS Hmpg_thumbnail,
+            c.Hmpg_thumbnail_alt_text,
+            dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
+            c.cont_external_url,
+            CAST(NULL AS NVARCHAR(MAX)) AS MediafilePath,
+            c.cont_sequence,
+            c.tag_master_selected_id,
+            CASE
+                WHEN c.cont_parent_id = @MediaParentId
+                  OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%media-coverage%'
+                    THEN N'Media Coverage'
+                ELSE N'Press Release'
+            END AS TagNames,
+            c.Cont_Publication,
+            c.cont_search_url,
+            CASE
+                WHEN c.cont_parent_id = @MediaParentId
+                  OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%media-coverage%'
+                    THEN 1
+                ELSE 0
+            END AS IsMedia,
+            CASE
+                WHEN TRY_CONVERT(int, CONVERT(nvarchar(50), c.cont_section_tagid)) = @ContentId
+                  OR (
+                        N',' + REPLACE(REPLACE(ISNULL(CONVERT(nvarchar(200), c.cont_section_tagid), N''), N' ', N''), N';', N',') + N','
+                     ) LIKE N'%' + @TagNeedle + N'%'
+                    THEN 0
+                ELSE 1
+            END AS TagRank,
+            ROW_NUMBER() OVER (
+                PARTITION BY
+                    CASE
+                        WHEN c.cont_parent_id = @MediaParentId
+                          OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%media-coverage%'
+                            THEN 1
+                        ELSE 0
+                    END
+                ORDER BY
+                    CASE
+                        WHEN TRY_CONVERT(int, CONVERT(nvarchar(50), c.cont_section_tagid)) = @ContentId
+                          OR (
+                                N',' + REPLACE(REPLACE(ISNULL(CONVERT(nvarchar(200), c.cont_section_tagid), N''), N' ', N''), N';', N',') + N','
+                             ) LIKE N'%' + @TagNeedle + N'%'
+                            THEN 0
+                        ELSE 1
+                    END,
+                    CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,
+                    c.cont_displaydate DESC,
+                    c.cont_id DESC
+            ) AS rn
+        FROM content c
+        INNER JOIN content p
+            ON p.cont_id = c.cont_parent_id
+        LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
+        LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
+        LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+        WHERE
+            c.cont_status = 2
+            AND ISNULL(c.content_type_ID, 3) = 3
+            AND (
+                c.cont_parent_id IN (@PressParentId, @MediaParentId)
+                OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%press-release%'
+                OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%media-coverage%'
+            )
+    )
     SELECT
-        c.cont_id,
-        c.cont_parent_id,
-        c.cont_title,
-        c.cont_hmpg_title,
-        c.cont_pagename,
-        c.language_master_id,
-        c.Geography_ID,
-        c.cont_intro,
-        c.cont_hmpg_intro,
-        c.content,
-        c.cont_displaydate,
-        c.content_type_ID,
-        c.Masthead_image_Media_id,
-        m1.file_path AS masthead_image_path,
-        c.Masthead_alt_text,
-        c.Mobile_Masthead_image_Media_id,
-        m2.file_path AS mobile_masthead_image_path,
-        c.Template_Master_ID,
-        c.Hmpg_thumbnail_Media_id,
-        m3.file_path AS Hmpg_thumbnail,
-        c.Hmpg_thumbnail_alt_text,
-        dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
-        c.cont_external_url,
-        CAST(NULL AS NVARCHAR(MAX)) AS MediafilePath,
-        c.cont_sequence,
-        c.tag_master_selected_id,
-        CASE
-            WHEN LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%media-coverage%' THEN N'Media Coverage'
-            WHEN LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%press%' THEN N'Press Release'
-            WHEN c.cont_parent_id = @MediaParentId THEN N'Media Coverage'
-            WHEN c.cont_parent_id = @PressParentId THEN N'Press Release'
-            ELSE ISNULL(p.cont_title, N'News')
-        END AS TagNames,
-        c.Cont_Publication,
-        c.cont_search_url
-    FROM content c
-    INNER JOIN content p
-        ON p.cont_id = c.cont_parent_id
-    LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
-    LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
-    LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+        cont_id,
+        cont_parent_id,
+        cont_title,
+        cont_hmpg_title,
+        cont_pagename,
+        language_master_id,
+        Geography_ID,
+        cont_intro,
+        cont_hmpg_intro,
+        content,
+        cont_displaydate,
+        content_type_ID,
+        Masthead_image_Media_id,
+        masthead_image_path,
+        Masthead_alt_text,
+        Mobile_Masthead_image_Media_id,
+        mobile_masthead_image_path,
+        Template_Master_ID,
+        Hmpg_thumbnail_Media_id,
+        Hmpg_thumbnail,
+        Hmpg_thumbnail_alt_text,
+        pageurl,
+        cont_external_url,
+        MediafilePath,
+        cont_sequence,
+        tag_master_selected_id,
+        TagNames,
+        Cont_Publication,
+        cont_search_url
+    FROM NewsPool
     WHERE
-        c.cont_status = 2
-        AND ISNULL(c.content_type_ID, 3) = 3
-        AND (
-            c.cont_parent_id IN (@PressParentId, @MediaParentId)
-            OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%press-release%'
-            OR LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%media-coverage%'
-        )
-        AND (
-            TRY_CONVERT(int, CONVERT(nvarchar(50), c.cont_section_tagid)) = @ContentId
-            OR (
-                N',' + REPLACE(REPLACE(ISNULL(CONVERT(nvarchar(200), c.cont_section_tagid), N''), N' ', N''), N';', N',') + N','
-            ) LIKE N'%' + @TagNeedle + N'%'
-        )
+        (IsMedia = 0 AND rn <= 2)
+        OR (IsMedia = 1 AND rn <= 1)
     ORDER BY
-        CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,
-        c.cont_displaydate DESC,
-        c.cont_id DESC;
+        IsMedia,
+        rn;
 
     /* ==========================================
        3. Corporate governance children
@@ -434,5 +533,123 @@ BEGIN
     ORDER BY
         ISNULL(c.cont_sequence, 999999),
         c.cont_id;
+
+    /* ==========================================
+       6. Latest Updates item → What's New Announcement
+          cont_parent_id = 19 (Updates)
+       ========================================== */
+    SELECT TOP (1)
+        c.cont_id,
+        c.cont_parent_id,
+        c.cont_title,
+        c.cont_hmpg_title,
+        c.cont_pagename,
+        c.language_master_id,
+        c.Geography_ID,
+        c.cont_intro,
+        c.cont_hmpg_intro,
+        c.content,
+        c.cont_displaydate,
+        c.content_type_ID,
+        c.Masthead_image_Media_id,
+        m1.file_path AS masthead_image_path,
+        c.Masthead_alt_text,
+        c.Mobile_Masthead_image_Media_id,
+        m2.file_path AS mobile_masthead_image_path,
+        c.Template_Master_ID,
+        c.Hmpg_thumbnail_Media_id,
+        m3.file_path AS Hmpg_thumbnail,
+        c.Hmpg_thumbnail_alt_text,
+        dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
+        c.cont_external_url,
+        CAST(NULL AS NVARCHAR(MAX)) AS MediafilePath,
+        c.cont_sequence,
+        c.tag_master_selected_id,
+        N'Updates' AS TagNames,
+        c.Cont_Publication,
+        c.cont_search_url
+    FROM content c
+    LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
+    LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
+    LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+    WHERE
+        c.cont_status = 2
+        AND (
+            c.cont_parent_id = @UpdatesParentId
+            OR EXISTS (
+                SELECT 1
+                FROM content p
+                WHERE p.cont_id = c.cont_parent_id
+                  AND (
+                        LOWER(ISNULL(p.cont_pagename, N'')) LIKE N'%updates%'
+                        OR LOWER(ISNULL(p.cont_title, N'')) = N'updates'
+                  )
+            )
+        )
+    ORDER BY
+        CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,
+        c.cont_displaydate DESC,
+        c.cont_id DESC;
+
+    /* ==========================================
+       7. Subsidiaries documents (latest first)
+          Default parent = 114 (under Shareholder Information)
+          ORDER BY cont_displaydate DESC (NULLs last)
+       ========================================== */
+    SELECT
+        c.cont_id,
+        c.cont_parent_id,
+        c.cont_title,
+        c.cont_hmpg_title,
+        c.cont_pagename,
+        c.language_master_id,
+        c.Geography_ID,
+        c.cont_intro,
+        c.cont_hmpg_intro,
+        c.content,
+        c.cont_displaydate,
+        c.content_type_ID,
+        c.Masthead_image_Media_id,
+        m1.file_path AS masthead_image_path,
+        c.Masthead_alt_text,
+        c.Mobile_Masthead_image_Media_id,
+        m2.file_path AS mobile_masthead_image_path,
+        c.Template_Master_ID,
+        c.Hmpg_thumbnail_Media_id,
+        m3.file_path AS Hmpg_thumbnail,
+        c.Hmpg_thumbnail_alt_text,
+        dbo.GetCanonicalUrl(c.cont_id) AS pageurl,
+        c.cont_external_url,
+        m4.file_path AS MediafilePath,
+        c.cont_sequence,
+        c.tag_master_selected_id,
+        N'Subsidiaries' AS TagNames,
+        c.Cont_Publication,
+        c.cont_search_url,
+        p.cont_title AS SectionTitle,
+        pmbg.file_path AS section_background_image_path,
+        p.Background_alt_text AS section_background_alt_text,
+        pm3.file_path AS section_thumbnail_path,
+        p.Hmpg_thumbnail_alt_text AS section_thumbnail_alt_text
+    FROM content c
+    INNER JOIN content p
+        ON p.cont_id = c.cont_parent_id
+    LEFT JOIN media m1 ON c.Masthead_image_Media_id = m1.id
+    LEFT JOIN media m2 ON c.Mobile_Masthead_image_Media_id = m2.id
+    LEFT JOIN media m3 ON c.Hmpg_thumbnail_Media_id = m3.id
+    LEFT JOIN media m4 ON c.Attach_file_Media_id = m4.id
+    LEFT JOIN media pmbg ON p.Background_image_Media_id = pmbg.id
+    LEFT JOIN media pm3 ON p.Hmpg_thumbnail_Media_id = pm3.id
+    WHERE
+        c.cont_status = 2
+        AND ISNULL(c.content_type_ID, 3) = 3
+        AND (
+            (@SubsidiariesId IS NOT NULL AND c.cont_parent_id = @SubsidiariesId)
+            OR c.cont_parent_id = @SubsidiariesParentId
+        )
+    ORDER BY
+        CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,
+        c.cont_displaydate DESC,
+        c.cont_id DESC;
 END
 GO

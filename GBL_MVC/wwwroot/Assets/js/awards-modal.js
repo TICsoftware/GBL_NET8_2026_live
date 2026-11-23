@@ -35,6 +35,8 @@
     if (nameEl) {
       var title = card.querySelector("[data-award-name]");
       nameEl.textContent = title ? title.textContent.trim() : "";
+      // Long award names drop one heading size so they don't fill the popup
+      nameEl.classList.toggle("is-long", nameEl.textContent.length > 55);
     }
     if (roleEl) {
       var role = card.querySelector("[data-award-role]");

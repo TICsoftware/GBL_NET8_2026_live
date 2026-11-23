@@ -192,14 +192,22 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("Get_Investor_Section_Children", sqlParams);
         }
 
-        public DataSet Get_Investor_Relations_Home_DAL(int contentId, int pressParentId = 3, int mediaParentId = 7, int shareholderExtraParentId = 120)
+        public DataSet Get_Investor_Relations_Home_DAL(
+            int contentId,
+            int pressParentId = 3,
+            int mediaParentId = 7,
+            int shareholderExtraParentId = 120,
+            int updatesParentId = 19,
+            int subsidiariesParentId = 114)
         {
             SqlParameter[] sqlParams =
             {
                 new SqlParameter("@ContentId", contentId),
                 new SqlParameter("@PressParentId", pressParentId),
                 new SqlParameter("@MediaParentId", mediaParentId),
-                new SqlParameter("@ShareholderExtraParentId", shareholderExtraParentId)
+                new SqlParameter("@ShareholderExtraParentId", shareholderExtraParentId),
+                new SqlParameter("@UpdatesParentId", updatesParentId),
+                new SqlParameter("@SubsidiariesParentId", subsidiariesParentId)
             };
 
             return GetDataSet("Get_Investor_Relations_Home", sqlParams);

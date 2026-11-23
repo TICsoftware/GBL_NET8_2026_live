@@ -113,6 +113,7 @@ BEGIN
             )
         )
     ORDER BY
+        CASE WHEN c.cont_displaydate IS NULL THEN 1 ELSE 0 END,
         c.cont_displaydate DESC,
         c.cont_id DESC
     OFFSET (@PageNumber - 1) * @PageSize ROWS

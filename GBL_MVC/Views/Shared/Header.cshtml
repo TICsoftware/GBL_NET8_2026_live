@@ -289,7 +289,17 @@
                       </div>
 
                       @* Feature Card *@
-                      @if (!string.IsNullOrWhiteSpace(parent.FeatureImage)
+                      @{
+                        var featureImage = parent.FeatureImage;
+                        // Business mega menu: use a fallback image when CMS has no FeatureImage.
+                        if (string.IsNullOrWhiteSpace(featureImage)
+                            && !string.IsNullOrWhiteSpace(parent.MenuName)
+                            && parent.MenuName.Contains("Business", StringComparison.OrdinalIgnoreCase))
+                        {
+                            featureImage = Url.Content("~/Assets/images/banners/business-banner.webp");
+                        }
+                      }
+                      @if (!string.IsNullOrWhiteSpace(featureImage)
                           || !string.IsNullOrWhiteSpace(parent.FeatureTitle)
                           || !string.IsNullOrWhiteSpace(parent.FeatureDescription)
                           || !string.IsNullOrWhiteSpace(parent.FeatureButtonText))
@@ -298,11 +308,11 @@
 
                           <article class="mega-featured">
 
-                            @if (!string.IsNullOrWhiteSpace(parent.FeatureImage))
+                            @if (!string.IsNullOrWhiteSpace(featureImage))
                             {
                               <div class="mega-featured__media">
 
-                                <img src="@parent.FeatureImage" alt="@(parent.FeatureTitle ?? parent.MenuName ?? "")">
+                                <img src="@featureImage" alt="@(parent.FeatureTitle ?? parent.MenuName ?? "")">
 
                               </div>
                             }
@@ -323,7 +333,7 @@
 
                             @if (!string.IsNullOrWhiteSpace(parent.FeatureButtonText))
                             {
-                              <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" class="site-btn site-btn--fill mega-featured__cta"
+                              <a href="@(parent.FeatureButtonUrl ?? parent.Url ?? "#")" class="site-btn site-btn--line mega-featured__cta"
                                  target="@(parent.FeatureButtonTarget ?? "_self")"
                                  rel="@(parent.FeatureButtonTarget == "_blank" ? "noopener noreferrer" : null)">
 

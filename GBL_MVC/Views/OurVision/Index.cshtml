@@ -213,7 +213,7 @@
 
          @if (principleItems.Any())
          {
-            <ul class="guiding-principles__panel card-list-items">
+            <ul class="guiding-principles__panel card-list-items" data-card-start="top 100%" data-card-end="top 70%">
                @foreach (var item in principleItems)
                {
                   var cardTitle = item.Title?.CleanParagraphTags() ?? "";
