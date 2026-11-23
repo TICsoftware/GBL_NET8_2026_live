@@ -874,14 +874,7 @@
   gap: 0.55rem;
 }
 
-.coc-card p:has(> a[href^="http"])::before {
-  content: "";
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
-  margin-top: 0.1rem;
-  background: url("../images/investors/web-icon.svg") center / contain no-repeat;
-}
+
 
 /* Email + website links: text colour and underline fill left to right on hover/focus */
 .coc-card a:is([href^="mailto:"], [href^="http"]) {
