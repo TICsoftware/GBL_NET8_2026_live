@@ -142,7 +142,7 @@ else
                                             @await Html.PartialAsync("_qr_file_link", (item.ResultsPresentationUrl, $"Results presentation, {quarterLabel} {year.Title}", "pdf"))
                                         </td>
                                         <td>
-                                            @await Html.PartialAsync("_qr_file_link", (item.TranscriptUrl, $"Earning call transcript, {quarterLabel} {year.Title}", "audio"))
+                                            @await Html.PartialAsync("_qr_file_link", (item.TranscriptUrl, $"Earning call transcript, {quarterLabel} {year.Title}", "pdf"))
                                         </td>
                                         <td>
                                             @await Html.PartialAsync("_qr_file_link", (item.AudioUrl, $"Earning call audio, {quarterLabel} {year.Title}", "audio"))
