@@ -438,8 +438,33 @@
 
     if (nav) nav.addEventListener("scroll", function () { moveThumb(); }, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveThumb(); });
-    setActive(sections[0].section);
-    updateActive();
+
+    function applyHash() {
+      var hash = (window.location.hash || "").replace(/^#/, "");
+      if (!hash) return false;
+      var match = null;
+      sections.forEach(function (item) {
+        if (item.section.id === hash) match = item;
+      });
+      if (!match) return false;
+      centerLink(match.link);
+      scrollToSection(match.section);
+      setActive(match.section);
+      return true;
+    }
+
+    window.addEventListener("hashchange", function () {
+      applyHash();
+    });
+
+    if (!applyHash()) {
+      setActive(sections[0].section);
+      updateActive();
+    } else {
+      // Re-apply after layout / Lenis init so deep links from /investors land on the right tab
+      setTimeout(applyHash, 120);
+      setTimeout(applyHash, 450);
+    }
   }
 
   function init() {

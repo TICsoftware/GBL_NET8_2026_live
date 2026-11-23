@@ -172,7 +172,13 @@ else
                     {
                         <p>@Html.Raw(announcementCopy.CleanParagraphTags())</p>
                     }
-                    <a href="@announcementHref" class="site-btn site-btn--line" target="@(announcement?.UrlTarget ?? "_self")">
+                    @* <a href="@announcementHref" class="site-btn site-btn--line" target="@(announcement?.UrlTarget ?? "_self")">
+                        <span class="site-btn__label">Learn more</span>
+                        <span class="site-btn__arrow" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </a> *@
+                    <a href="#" class="site-btn site-btn--line" >
                         <span class="site-btn__label">Learn more</span>
                         <span class="site-btn__arrow" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -195,7 +201,7 @@ else
     <div class="container">
         <div class="qr-row">
             <div class="qr-col">
-                <h2 class="text-h2">Quarterly results</h2>
+                <h2 class="text-h2">Quarterly Reports</h2>
                 <div class="qr-panel">
                     <span class="qr-panel__mark" aria-hidden="true">@(string.IsNullOrWhiteSpace(quarter?.QuarterCode) ? "Q1" : quarter.QuarterCode)</span>
                     <ul class="qr-files">
@@ -238,7 +244,7 @@ else
                     </ul>
                 </div>
                 <a href="/investors/quarterly-reports" class="site-btn site-btn--outline">
-                    <span class="site-btn__label">View All Quarterly</span>
+                    <span class="site-btn__label">View All Quarterly Reports</span>
                     <span class="site-btn__arrow" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
@@ -246,7 +252,7 @@ else
             </div>
 
             <div class="qr-col">
-                <h2 class="text-h2">Annual report</h2>
+                <h2 class="text-h2">Annual Reports</h2>
                 <div class="qr-panel qr-panel--report">
                     <img src="@annualThumb" alt="@(string.IsNullOrWhiteSpace(annual?.ThumbnailAltText) ? annual?.Title : annual.ThumbnailAltText)">
                     <div class="qr-report__copy">
