@@ -1453,3 +1453,13 @@ select.cf-field__control:valid ~ .cf-field__label {
     transition: none;
   }
 }
+
+.office-group,
+#submit-query {
+  scroll-margin-top: calc(var(--header-bar-h, 88px) + 1rem);
+}
+
+.office-group,
+#submit-query {
+  scroll-margin-top: calc(var(--header-bar-h, 88px) + 1rem);
+}

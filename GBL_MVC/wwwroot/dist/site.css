@@ -1026,6 +1026,9 @@
   .h-170 {
     height: calc(var(--spacing) * 170);
   }
+  .h-\[60vh\] {
+    height: 60vh;
+  }
   .h-\[75vh\] {
     height: 75vh;
   }
@@ -1842,6 +1845,9 @@
     }
     .sm\:h-10 {
       height: calc(var(--spacing) * 10);
+    }
+    .sm\:h-120 {
+      height: calc(var(--spacing) * 120);
     }
     .sm\:h-131\.25 {
       height: calc(var(--spacing) * 131.25);

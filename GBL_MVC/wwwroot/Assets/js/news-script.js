@@ -9,12 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
   var panels = Array.from(contentRoot.querySelectorAll("[data-tab-panel]"));
 
   var CARD_RISE = {
-    y: 140,
-    duration: 1.15,
-    stagger: 0.28,
-    scrub: 1.15,
-    listStart: "top 90%",
-    listEnd: "top 38%"
+    y: 96,
+    duration: 0.85,
+    stagger: 0.1,
+    rowDelay: 0.18,
+    scrub: 0.85,
+    listStart: "top 92%",
+    listEnd: "top 46%"
   };
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -78,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function addScrubRow(row, rowIndex) {
     var tl = gsap.timeline({
-      defaults: { force3D: true, ease: "power2.out" },
+      defaults: { force3D: true, ease: "power3.out" },
       scrollTrigger: {
         id: "news-card-rise-row-" + rowIndex,
         trigger: row[0],
@@ -121,46 +122,42 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!cards.length) return;
 
     var cols = columns();
+    var introRows = [];
 
     for (var r = 0; r < cards.length; r += cols) {
       var row = cards.slice(r, r + cols);
       var rowIndex = r / cols;
-      var playIntro = replay && isInView(row[0]);
 
-      if (playIntro) {
-        gsap.set(row, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
-
-        var introTl = gsap.timeline({
-          defaults: { force3D: true, ease: "power2.out" }
-        });
-
-        row.forEach(function (card, i) {
-          introTl.to(
-            card,
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: CARD_RISE.duration
-            },
-            i * CARD_RISE.stagger
-          );
-        });
-
-        productAnims.push(introTl);
-
-        (function (rowCards, idx) {
-          introTl.eventCallback("onComplete", function () {
-            addScrubRow(rowCards, idx);
-            refreshTriggers();
-          });
-        })(row, rowIndex);
+      if (replay && isInView(row[0])) {
+        introRows.push(row);
         continue;
       }
 
       addScrubRow(row, rowIndex);
     }
 
-    refreshTriggers();
+    if (!introRows.length) return;
+
+    var introTl = gsap.timeline({
+      defaults: { force3D: true, ease: "power3.out" }
+    });
+
+    introRows.forEach(function (row, rowIndex) {
+      gsap.set(row, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
+      row.forEach(function (card, i) {
+        introTl.to(
+          card,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: CARD_RISE.duration
+          },
+          rowIndex * CARD_RISE.rowDelay + i * CARD_RISE.stagger
+        );
+      });
+    });
+
+    productAnims.push(introTl);
   }
 
   function refreshTriggers() {
@@ -232,10 +229,22 @@ document.addEventListener("DOMContentLoaded", function () {
     return tab.classList.contains("is-active");
   }) || tabs[0];
 
-  if (startTab) activateTab(startTab, false);
+  if (startTab) moveThumb(startTab, false);
 
-  window.addEventListener("load", refreshTriggers);
-  window.setTimeout(refreshTriggers, 400);
+  var cardsStarted = false;
+
+  function beginCardMotion() {
+    if (cardsStarted) return;
+    cardsStarted = true;
+    refreshTriggers();
+    var panel = activeProductPanel();
+    if (!panel) return;
+    bindProductRise(panel, true);
+    bindMediaParallax(panel);
+  }
+
+  if (document.readyState === "complete") beginCardMotion();
+  else window.addEventListener("load", beginCardMotion);
 
   window.addEventListener("resize", function () {
     var active = tabs.find(function (tab) {
@@ -244,79 +253,88 @@ document.addEventListener("DOMContentLoaded", function () {
     if (active) moveThumb(active, false);
   });
 
-  bindMediaParallax(activeProductPanel());
-
-  document.querySelectorAll("[data-news-grid]").forEach(function (grid) {
-    var size = parseInt(grid.getAttribute("data-page-size") || "12", 10);
-    var wrap = grid.parentElement.querySelector("[data-news-load-more-wrap]");
-    var btn = wrap && wrap.querySelector("[data-news-load-more]");
-    var cards = Array.prototype.slice.call(grid.children).filter(function (el) {
-      return el.classList.contains("industry-product-card");
+  function animateIncomingCards(cards) {
+    var list = Array.from(cards || []).filter(function (card) {
+      return card && card.classList && card.classList.contains("industry-product-card");
     });
-    var shown = size;
+    if (!list.length) return;
 
-    function apply() {
-      cards.forEach(function (card, index) {
-        card.hidden = index >= shown;
+    if (!canAnimate) {
+      list.forEach(function (card) {
+        card.style.opacity = "1";
+        card.style.visibility = "visible";
+        card.style.transform = "none";
       });
-      if (wrap) wrap.hidden = shown >= cards.length;
+      bindCardFill();
+      return;
     }
 
-    apply();
+    gsap.killTweensOf(list);
+    var cols = columns();
+    gsap.set(list, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
 
-    if (!btn) return;
-    btn.addEventListener("click", function () {
-      var start = shown;
-      shown += size;
-      var incoming = cards.slice(start, shown);
-      incoming.forEach(function (card) {
-        card.hidden = false;
-      });
-      if (wrap) wrap.hidden = shown >= cards.length;
-
-      var panel = activeProductPanel();
-      bindMediaParallax(panel);
-      bindCardFill();
-      refreshCardFill(panel);
-
-      if (!canAnimate) {
-        incoming.forEach(function (card) {
-          card.style.opacity = "1";
-          card.style.transform = "none";
-        });
-        refreshTriggers();
-        return;
-      }
-
-      var cols = columns();
-      gsap.set(incoming, { autoAlpha: 0, y: CARD_RISE.y, force3D: true });
-
-      var introTl = gsap.timeline({
-        defaults: { force3D: true, ease: "power2.out" }
-      });
-
-      incoming.forEach(function (card, i) {
-        var row = Math.floor(i / cols);
-        var col = i % cols;
-        introTl.to(
-          card,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: CARD_RISE.duration
-          },
-          row * CARD_RISE.stagger + col * CARD_RISE.stagger
-        );
-      });
-
-      productAnims.push(introTl);
-
-      introTl.eventCallback("onComplete", function () {
-        bindProductRise(panel, false);
-        bindMediaParallax(panel);
-      });
+    var introTl = gsap.timeline({
+      defaults: { force3D: true, ease: "power3.out" }
     });
-  });
+
+    list.forEach(function (card, i) {
+      var row = Math.floor(i / cols);
+      var col = i % cols;
+      introTl.to(
+        card,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: CARD_RISE.duration
+        },
+        row * CARD_RISE.rowDelay + col * CARD_RISE.stagger
+      );
+    });
+
+    productAnims.push(introTl);
+    introTl.eventCallback("onComplete", function () {
+      bindIncomingParallax(list);
+    });
+    bindCardFill();
+  }
+
+  function bindIncomingParallax(cards) {
+    if (!canAnimate) return;
+    cards.forEach(function (card) {
+      var wrap = card.querySelector(".industry-product-card__media");
+      var img = wrap && wrap.querySelector("img");
+      if (!img) return;
+
+      var tween = gsap.fromTo(
+        img,
+        { yPercent: -13 },
+        {
+          yPercent: 13,
+          ease: "none",
+          force3D: true,
+          scrollTrigger: {
+            trigger: wrap,
+            scroller: stScroller,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+            invalidateOnRefresh: true
+          }
+        }
+      );
+
+      if (tween.scrollTrigger) mediaParallax.push(tween.scrollTrigger);
+    });
+  }
+
+  window.animateNewsCards = animateIncomingCards;
+
+  window.refreshNewsCardMotion = function (root) {
+    var scope = root || activeProductPanel() || document;
+    killProductAnims();
+    killMediaParallax();
+    animateIncomingCards(scope.querySelectorAll(".industry-product-card"));
+  };
 
   var toolbar = document.querySelector(".news-toolbar");
   if (toolbar) {

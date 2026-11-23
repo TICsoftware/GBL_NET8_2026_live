@@ -22,6 +22,69 @@
       ViewContext.RouteData.Values["action"]?.ToString() == "Index";
 }
 
+@functions {
+  private static List<(string Name, string Url)> UtilityFallbackLinks(string? menuName)
+  {
+    var name = (menuName ?? "").Trim().ToLowerInvariant();
+
+    if (name.Contains("media"))
+    {
+      return new()
+      {
+        ("Press Releases", "/media/press-release"),
+        ("Media Coverage", "/media/media-coverage")
+      };
+    }
+
+    if (name.Contains("career"))
+    {
+      return new()
+      {
+        ("Work With Us", "/careers/work-with-us"),
+        ("Learning & Development", "/careers/learning-and-development"),
+        ("Diversity & Inclusion", "/careers/diversity-and-inclusion"),
+        ("Wellbeing & Benefits", "/careers/wellbeing-and-benefits")
+      };
+    }
+
+    if (name.Contains("contact"))
+    {
+      return new()
+      {
+        ("Registered and Corporate Office", "/contact-us#registered-office"),
+        ("Marketing Office", "/contact-us#marketing-office"),
+        ("Products", "/contact-us#products"),
+        ("India Offices", "/contact-us#india-offices"),
+        ("International Offices", "/contact-us#international-offices"),
+        ("Submit your query", "/contact-us#submit-query")
+      };
+    }
+
+    return new();
+  }
+
+  private bool UtilityLinkIsCurrent(string? url)
+  {
+    if (string.IsNullOrWhiteSpace(url) || url == "#") return false;
+    var hashAt = url.IndexOf('#');
+    if (hashAt >= 0) return false;
+
+    var path = url;
+    if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+    {
+      if (!Uri.TryCreate(path, UriKind.Absolute, out var absolute)) return false;
+      path = absolute.AbsolutePath;
+    }
+
+    path = path.Trim().TrimEnd('/').ToLowerInvariant();
+    if (string.IsNullOrEmpty(path)) path = "/";
+
+    var requestPath = (Context.Request.Path.Value ?? "/").Trim().TrimEnd('/').ToLowerInvariant();
+    if (string.IsNullOrEmpty(requestPath)) requestPath = "/";
+    return path == requestPath;
+  }
+}
+
 <header class="site-header @(isHomePage ? "site-header--home is-dark" : "site-header--inner is-dark")" id="header"
         data-theme="@(isHomePage ? "home" : "inner")">
 
@@ -50,11 +113,56 @@
 
             @foreach (var menu in topMenus)
             {
-              <li>
+              var utilityChildren = menus
+                  .Where(x => x.ParentMenuId == menu.MenuId)
+                  .OrderBy(x => x.Sequence)
+                  .ToList();
+              var utilityLinks = new List<(string Name, string Url, string Target)>();
+              var seenUtilityUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+              string UtilityUrlKey(string url) => (url ?? "").Trim().TrimEnd('/').ToLowerInvariant();
+              foreach (var child in utilityChildren)
+              {
+                var childUrl = string.IsNullOrWhiteSpace(child.Url) ? "#" : child.Url.Trim();
+                seenUtilityUrls.Add(UtilityUrlKey(childUrl));
+                utilityLinks.Add((child.MenuName ?? "", childUrl, child.Target ?? "_self"));
+              }
+              foreach (var extra in UtilityFallbackLinks(menu.MenuName))
+              {
+                if (!seenUtilityUrls.Add(UtilityUrlKey(extra.Url))) continue;
+                utilityLinks.Add((extra.Name, extra.Url, "_self"));
+              }
+              var hasUtilityDropdown = utilityLinks.Any();
+              var utilityAlignEnd = menu == topMenus.Last();
+              var utilityIsCurrent = UtilityLinkIsCurrent(menu.Url) || utilityLinks.Any(link => UtilityLinkIsCurrent(link.Url));
+
+              <li class="@((hasUtilityDropdown ? "site-header__media-item" : "") + (utilityIsCurrent ? " is-current" : null))">
                 <a href="@(menu.Url ?? "#")" target="@(menu.Target ?? "_self")"
-                   rel="@(menu.Target == "_blank" ? "noopener noreferrer" : null)">
+                   rel="@(menu.Target == "_blank" ? "noopener noreferrer" : null)"
+                   aria-haspopup="@(hasUtilityDropdown ? "true" : null)"
+                   aria-expanded="@(hasUtilityDropdown ? "false" : null)">
                   @menu.MenuName
+                  @if (hasUtilityDropdown)
+                  {
+                    <span class="site-header__caret" aria-hidden="true"></span>
+                  }
                 </a>
+                @if (hasUtilityDropdown)
+                {
+                  <ul class="site-header__media-dd@(utilityAlignEnd ? " site-header__media-dd--end" : null)">
+                    @foreach (var child in utilityLinks)
+                    {
+                      var childIsCurrent = UtilityLinkIsCurrent(child.Url);
+                      <li>
+                        <a href="@child.Url" target="@child.Target"
+                           class="@(childIsCurrent ? "is-active" : null)"
+                           aria-current="@(childIsCurrent ? "page" : null)"
+                           rel="@(child.Target == "_blank" ? "noopener noreferrer" : null)">
+                          @child.Name
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                }
               </li>
             }
 
@@ -66,9 +174,9 @@
             <div class="site-header__search-wrap">
 
               <button type="button" class="site-header__search-btn" data-search-toggle aria-label="Open search" aria-expanded="false" aria-controls="headerSearch">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2.2"/>
+                  <path d="M16.2 16.2L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
                 </svg>
               </button>
 

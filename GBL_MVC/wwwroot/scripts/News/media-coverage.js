@@ -72,11 +72,19 @@ $(function () {
             success: function (response) {
                 if (currentRequestId !== requestId) return;
 
+                const previous = reset ? [] : $grid.children().toArray();
+
                 if (reset) {
                     $grid.html(response.html);
                 } else {
                     $grid.append(response.html);
                 }
+
+                const fresh = reset
+                    ? $grid.find(".industry-product-card").toArray()
+                    : $grid.children().toArray().filter(function (el) {
+                        return previous.indexOf(el) === -1;
+                    });
 
                 page = requestedPage;
                 totalCount = parseInt(response.totalCount, 10) || 0;
@@ -84,7 +92,14 @@ $(function () {
                 $grid.attr("data-total-count", totalCount);
 
                 updateButton();
-                refreshNewsCardEffects($grid[0]);
+
+                if (reset && typeof window.refreshNewsCardMotion === "function") {
+                    window.refreshNewsCardMotion($grid[0]);
+                } else if (typeof window.animateNewsCards === "function") {
+                    window.animateNewsCards(fresh);
+                } else {
+                    refreshNewsCardEffects($grid[0]);
+                }
             },
             error: function (xhr) {
                 console.error(
