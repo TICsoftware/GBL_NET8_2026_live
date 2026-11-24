@@ -116,6 +116,7 @@ else
             {
                 var href = string.IsNullOrWhiteSpace(item.Url) ? "/media/press-release" : item.Url;
                 <article class="whatsNew__card">
+                    <div class="whatsNew__card-clip">
                     <div class="whatsNew__meta">
                         <span class="whatsNew__tag">@(string.IsNullOrWhiteSpace(item.Tag_list) ? "Press Release" : item.Tag_list)</span>
                         @if (item.DisplayDate.HasValue)
@@ -130,6 +131,7 @@ else
                             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </a>
+                    </div>
                 </article>
             }
 
@@ -138,6 +140,7 @@ else
                 var href = string.IsNullOrWhiteSpace(item.Url) ? "/media/media-coverage" : item.Url;
                 var copy = FirstText(item.HmpgIntro, item.Intro, item.Title);
                 <article class="whatsNew__card whatsNew__card--media">
+                    <div class="whatsNew__card-clip">
                     <p class="whatsNew__meta">
                         <span class="whatsNew__tag">@(string.IsNullOrWhiteSpace(item.Tag_list) ? "Media Coverage" : item.Tag_list)</span>
                         @if (item.DisplayDate.HasValue)
@@ -158,6 +161,7 @@ else
                             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </a>
+                    </div>
                 </article>
             }
 
@@ -167,6 +171,7 @@ else
                     <tv-single-ticker symbol="BSE:GODAVARIB"></tv-single-ticker>
                 </div>
                 <article class="whatsNew__card whatsNew__card--note">
+                    <div class="whatsNew__card-clip">
                     <p class="whatsNew__meta">
                         <span class="whatsNew__tag">Announcement</span>
                     </p>
@@ -186,6 +191,7 @@ else
                             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </a>
+                    </div>
                 </article>
             </div>
         </div>
