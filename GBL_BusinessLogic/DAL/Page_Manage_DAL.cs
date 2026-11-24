@@ -223,7 +223,7 @@ namespace GBL_BusinessLogic.DAL
                 new SqlParameter("@CompanyName", string.IsNullOrWhiteSpace(model.CompanyName) ? (object)DBNull.Value : model.CompanyName),
                 new SqlParameter("@PhoneNumber", string.IsNullOrWhiteSpace(model.PhoneNumber) ? (object)DBNull.Value : model.PhoneNumber),
                 new SqlParameter("@EmailAddress", string.IsNullOrWhiteSpace(model.EmailAddress) ? (object)DBNull.Value : model.EmailAddress),
-                new SqlParameter("@CountryId", model.CountryId), 
+                new SqlParameter("@CountryId", model.CountryId),
                 new SqlParameter("@SiteLocation",  string.IsNullOrWhiteSpace(model.SiteLocation)                        ? (object)DBNull.Value : model.SiteLocation),
                 new SqlParameter("@Query", string.IsNullOrWhiteSpace(model.Query)  ? (object)DBNull.Value : model.Query),
                 new SqlParameter("@IPAddress", string.IsNullOrWhiteSpace(model.IPAddress) ? (object)DBNull.Value : model.IPAddress),
@@ -234,7 +234,7 @@ namespace GBL_BusinessLogic.DAL
         }
 
 
- public DataTable GetStateMaster()
+        public DataTable GetStateMaster()
         {
             return GetDataSet("GetStateMaster").Tables[0];
         }
@@ -247,10 +247,10 @@ namespace GBL_BusinessLogic.DAL
 
         public DataSet GetSubSectionFirstComponentData_DAL(int ContentId, int LanguageID)
         {
-             SqlParameter[] sqlParams =
-            {
+            SqlParameter[] sqlParams =
+           {
                 new ("@ContentId",ContentId.ToString()),
-                new ("@LanguageID", LanguageID >0 ? LanguageID : null),               
+                new ("@LanguageID", LanguageID >0 ? LanguageID : null),
             };
 
             return GetDataSet("sp_GetSubSectionFirstComponentData", sqlParams);
@@ -304,5 +304,17 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("sp_GetParentComponentData", sqlParams);
         }
 
+
+
+        public DataSet GetSubSections_AllComponents_DAL(int ContentId, int LanguageID)
+        {
+            SqlParameter[] sqlParams =
+           {
+                new ("@ContentId",ContentId.ToString()),
+                new ("@LanguageID", LanguageID >0 ? LanguageID : null),
+            };
+
+            return GetDataSet("sp_GetSubSections_AllComponents", sqlParams);
+        }
     }
 }

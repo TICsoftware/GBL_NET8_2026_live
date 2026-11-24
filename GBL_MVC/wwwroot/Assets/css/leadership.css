@@ -15,7 +15,6 @@
   margin-inline: auto;
 }
 .leadership-intro__copy p {
-  margin: 0;
   font-size: var(--text-p);
   line-height: 1.7778;
   color: var(--color-primary);

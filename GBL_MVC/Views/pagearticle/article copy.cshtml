@@ -3,11 +3,9 @@
 @{
     ViewData["Title"] = "Article";
     var hasContent = Model?.Content != null;
-    var pageKey = ViewContext.RouteData.Values["id"] as string ?? "";
-    var isPrivacyPolicy = pageKey.Equals("privacy-policy", StringComparison.OrdinalIgnoreCase);
-    var isDisclaimer = pageKey.Equals("disclaimer", StringComparison.OrdinalIgnoreCase);
-    var isPlainLegal = isPrivacyPolicy || isDisclaimer;
 }
+
+
 
 @section head {
     @if (hasContent)
@@ -68,52 +66,6 @@
 }
 
 @if (hasContent)
-{
-    @if (isPlainLegal) {
-        <section class="pp-mast">
-            <div class="container">
-                <div class="pp-mast__inner">
-                    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                        @Html.Raw(Model.Content.BreadcrumPath)
-                    </nav>
-                    <h1 class="pp-mast__title text-h1">@Html.Raw(Model.Content.ContTitle)</h1>
-                </div>
-            </div>
-        </section>
-        @Html.Raw(Model.Content.Content)
-    }
-    else
-    {
-    <section class="relative inside-banner-outer overflow-hidden blank-template-banner">
-        <div class="inside-banner-inner banner-animation relative blank-template-banner-inner">
-
-            <!-- Content (no banner image) -->
-            <div class="innerbanner-caption blank-template-banner-caption">
-                <div class="container">
-                    <div class="max-w-4xl text-left">
-
-                        <h1 class="innerbanner-title innerbanner-title-heading text-h1">
-                            @Html.Raw(Model.Content.ContTitle)
-                        </h1>
-
-                        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                            @Html.Raw(Model.Content.BreadcrumPath)
-                        </nav>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-        <section class="section-pb section-spacing blank-template-section relative">
-            <div class="container">
-                <div class="blank-template-inner">
-                    @Html.Raw(Model.Content.Content)
-                </div>
-            </div>
-        </section>
-    }
 { 
     <!-- HERO BANNER -->
     @if (Model?.Content != null)
@@ -153,8 +105,6 @@ else
 }
 
 @section Scripts {
-    @if (!isPlainLegal)
-    {
-        <script src="~/Assets/js/blanktemplate-script.js"></script>
-    }
+    <script src="~/Assets/js/blanktemplate-script.js"></script>
+
 }
