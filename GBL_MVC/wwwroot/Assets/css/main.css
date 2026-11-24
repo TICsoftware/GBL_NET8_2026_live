@@ -135,6 +135,7 @@ h1, h2, h3, h4, h5 {
   line-height: 1.15 !important;
   margin-bottom: 1rem;
 }
+.whatsNew__card h3 { line-height: 1.5 !important; }
 
 p{ font-size: var(--text-p); margin-bottom: 1rem;}
  strong,  b{ font-family: var(--font-uniNeueBold);}

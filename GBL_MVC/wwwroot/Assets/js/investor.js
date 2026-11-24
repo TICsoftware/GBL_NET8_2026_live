@@ -20,7 +20,7 @@
         var media = card.querySelector(".whatsNew__media");
         var rect = card.getBoundingClientRect();
         var mediaRect = media ? media.getBoundingClientRect() : null;
-        var top = mediaRect ? Math.max(0, mediaRect.bottom - rect.top) : 0;
+        var top = mediaRect && card.firstElementChild === media ? Math.max(0, mediaRect.bottom - rect.top) : 0;
         var fillW = rect.width;
         var fillH = Math.max(0, rect.height - top);
         var x = e ? e.clientX - rect.left : fillW / 2;

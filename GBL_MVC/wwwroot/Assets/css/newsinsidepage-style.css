@@ -7,6 +7,10 @@
 
 .news-inside-banner-caption{ top:inherit; bottom:80px; position: absolute; padding-bottom: 0rem; }
 
+
+
+
+
 /* Detail pages: keep title + breadcrumbs; no dangling trailing slash */
 .news-inside-banner-outer--detail .news-inside-banner-caption {
   bottom: 80px;
