@@ -1,11 +1,17 @@
+.disclaimer-page.section-spacing {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
 .disclaimer-page__inner {
-  max-width: 52rem;
+  width: calc(100% * 10 / 12);
+  max-width: none;
   margin-inline: auto;
   text-align: left;
 }
 
 .disclaimer-page__inner .text-h2 {
-  margin: clamp(2.5rem, 5vw, 3.5rem) 0 1.15rem;
+  margin: 30px 0 1.15rem;
 }
 
 .disclaimer-page__inner p {
@@ -40,4 +46,10 @@
 .disclaimer-terms p {
   font-size: var(--text-small, 0.875rem);
   line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .disclaimer-page__inner {
+    width: 100%;
+  }
 }
