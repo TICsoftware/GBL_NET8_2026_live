@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Article";
     var hasContent = Model?.Content != null;
+    var content = Model?.Content;
+    var crumbFromCms = !string.IsNullOrWhiteSpace(content?.BreadcrumPath) ? content.BreadcrumPath.CleanParagraphTags() : "";
 }
 
 
@@ -41,8 +43,7 @@
         <meta property="og:image" content="@Model.Content.MastheadImage" />
         <meta property="og:url" content="https://www.godavaribiorefineries.com//" />
         @if (!string.IsNullOrWhiteSpace(Model.Content.page_schema))
-        {
-
+        { 
             @Html.Raw(Model.Content.page_schema.Replace("<p>", "").Replace("</p>", ""))
 
         }
@@ -71,15 +72,9 @@
     <section class="relative overflow-hidden inner-without-banner-outer">
         <div class="container">
         <div class="inner-banner-copy text-start">
-            <h1 class="text-h1 inner-banner-title">@Html.Raw(Model.Content.ContTitle)</h1>
+            <h1 class="text-h1 inner-banner-title">@Html.Raw(content?.ContTitle)</h1>
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 text-sm">
-                    <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>
-                    <li class="text-white/60">/</li>
-                    <li><a href="/about-us" class="text-white/70 hover:text-white transition">About us</a></li>
-                    <li class="text-white/60">/</li>
-                    <li class="text-white">Our Strategy</li>
-                </ol>
+                @Html.Raw(crumbFromCms)
             </nav>
         </div>
         </div>
@@ -88,21 +83,21 @@
     <!-- HERO BANNER FOR TITLE  END-->
  
     <!--PAGE INTRO OUTER-->
-    @if (!string.IsNullOrWhiteSpace(Model.Content?.Cont_intro))
+    @if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
     {
         <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
             <div class="container">
                 <div class="page-intro-inner intro-lg text-center">
-                    @Html.Raw(Model.Content.Cont_intro)
+                    @Html.Raw(content?.Cont_intro)
                 </div>
             </div>
         </section>
     }
     <!--PAGE INTRO OUTER END-->
  
-    @if (!string.IsNullOrWhiteSpace(Model.Content?.Content))
+    @if (!string.IsNullOrWhiteSpace(content?.Content))
     { 
-        @Html.Raw(Model.Content.Content) 
+        @Html.Raw(content.Content) 
     }
              
 }

@@ -10,7 +10,7 @@ using GBL_BusinessLogic;
 
 namespace GBL_BusinessLogic.BAL
 {
-    public class Media_BAL : BasePageBAL
+    public class Media_BAL : Media_DAL
     {
         public Media_BAL(IConfiguration configuration) : base(configuration)
         {
@@ -189,7 +189,7 @@ namespace GBL_BusinessLogic.BAL
             {
                 model.Content = MapContent(ds.Tables[0].Rows[0]);
 
-                var ds_subsection = GetSubSectionFirstComponentData_DAL(model.Content.ContId, languageId);
+                var ds_subsection = GetSubSections_AllComponents_DAL(model.Content.ContId, languageId);
 
                 if (ds_subsection.Tables.Count >= 1 && ds_subsection.Tables[0].Rows.Count > 0)
                 {
@@ -198,10 +198,11 @@ namespace GBL_BusinessLogic.BAL
                     if (ds_subsection.Tables.Count >= 2 && ds_subsection.Tables[1].Rows.Count > 0)
                     {
                         var groupedData = GetGroupedComponents(ds_subsection.Tables[1]);
-                        Component_Lists = MapComponentsBySequence(groupedData);
-                        model.Subsections_Components = Component_Lists.TryGetValue(1, out var seq1)
-                            ? seq1
-                            : MapComponents(groupedData, 1);
+                        Component_Lists = MapComponentsByContextMasterId(groupedData);
+                        model.Subsections_Components = Component_Lists
+                                .OrderBy(kv => kv.Key)
+                                .SelectMany(kv => kv.Value)
+                                .ToList();
                     }
                 }
             }
