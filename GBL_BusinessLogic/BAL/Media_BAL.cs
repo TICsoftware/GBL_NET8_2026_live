@@ -205,6 +205,22 @@ namespace GBL_BusinessLogic.BAL
                                 .ToList();
                     }
                 }
+
+
+
+            }
+            Component_Lists = [];
+            var ds_leadership = GetLeadershipComponents_DAL(502, languageId, geographyId);
+            if (ds_leadership.Tables.Count >= 1 && ds_leadership.Tables[0].Rows.Count > 0)
+            {
+                var groupedData = GetGroupedComponents(ds_leadership.Tables[0]);
+                Component_Lists = MapComponentsBySequence(groupedData);
+
+                // Flat ordered list (all sequences) for views that still use Subsections_Components
+                model.Leadership_Components = Component_Lists
+                    .OrderBy(kv => kv.Key)
+                    .SelectMany(kv => kv.Value)
+                    .ToList();
             }
 
             return model;

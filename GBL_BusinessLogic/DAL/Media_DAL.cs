@@ -15,12 +15,12 @@ namespace GBL_BusinessLogic.DAL
         {
              SqlParameter[] sqlParams =
             {
-                new ("@cont_id", cont_id),
+                new ("@ContentID", cont_id),
                 new ("@LanguageID", LanguageID >0 ? LanguageID : null),
                 new ("@GeographyID", GeographyID >0 ? GeographyID : null),
             };
 
-            return GetDataSet("GetLeadershipComponents", sqlParams);
+            return GetDataSet("sp_GetComponentData", sqlParams);
         }
 
         public DataSet Get_Annual_Sustainability_Reports_Components_DAL(int LanguageID, int GeographyID)

@@ -20,6 +20,7 @@ namespace GBL_BusinessLogic.Entity
         public List<DropdownModel> Year_List { get; set; } = new();
 
         public List<ComponentModel> Subsections_Components { get; set; } = new();
+        public List<ComponentModel> Leadership_Components { get; set; } = new();
 
         public int TotalCount { get; set; }
 
