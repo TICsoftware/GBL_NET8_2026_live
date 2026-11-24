@@ -1,6 +1,8 @@
- @model GBL_BusinessLogic.Entity.MediaModel
+@using Core_project_BusinessLogic.BAL
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.MediaModel
 
- @{
+@{
     ViewData["Title"] = Model?.Content?.ContTitle ?? "CSR";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var content = Model?.Content;
@@ -39,9 +41,9 @@
     <link rel="canonical" href="@(content?.CanonicalUrl)" />
 }
 
- @section Styles {
-   <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
-   <link rel="stylesheet" href="~/Assets/css/media-kit.css" asp-append-version="true" />
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/media-kit.css" asp-append-version="true" />
 }
 
 <!-- HERO BANNER -->
@@ -52,41 +54,215 @@
 <!-- HERO BANNER END-->
 
 @if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
-{       
-   <!--PAGE INTRO OUTER-->
-   <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
-       <div class="container">
-         <div class="page-intro-inner intro-lg text-center">
-            @Html.Raw(content.Cont_intro)
-         </div>      
-      </div>
-   </section>
-   <!--PAGE INTRO OUTER END-->
-}
-
- <div class="mk-page">
-      <div class="mk-jump-sentinel" aria-hidden="true"></div>
-
-@if (Model?.Section_List != null && Model.Section_List.Any())
 {
-     <section class="mk-jump" aria-label="Media kit sections">
-         <div class="container">
-            <div class="mk-jump__track">
-                <button type="button" class="mk-jump__arrow mk-jump__arrow--prev" aria-label="Previous section">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <nav class="mk-jump__nav">
-                @foreach(var item in Model.Section_List)
-                {
-                    <a class="mk-jump__btn" href="#@item.PageName"> @Html.Raw(item.Title)</a>
-                }
-                </nav>
-                <button type="button" class="mk-jump__arrow mk-jump__arrow--next" aria-label="Next section">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 6 15.5 12l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+    <!--PAGE INTRO OUTER-->
+    <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+        <div class="container">
+            <div class="page-intro-inner intro-lg text-center">
+                @Html.Raw(content.Cont_intro)
             </div>
-         </div>
-      </section>
+        </div>
+    </section>
+    <!--PAGE INTRO OUTER END-->
 }
 
-   </div>
+<div class="mk-page">
+    <div class="mk-jump-sentinel" aria-hidden="true"></div>
+
+    @if (Model?.Section_List != null && Model.Section_List.Any())
+    {
+        <section class="mk-jump" aria-label="Media kit sections">
+            <div class="container">
+                <div class="mk-jump__track">
+                    <button type="button" class="mk-jump__arrow mk-jump__arrow--prev" aria-label="Previous section">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M14.5 6 8.5 12l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                    <nav class="mk-jump__nav">
+                        @foreach (var item in Model.Section_List)
+                        {
+                            <a class="mk-jump__btn" href="#@item.PageName"> @Html.Raw(item.Title)</a>
+                        }
+                    </nav>
+                    <button type="button" class="mk-jump__arrow mk-jump__arrow--next" aria-label="Next section">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M9.5 6 15.5 12l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+        string section_class = "";
+        int incr = 0;
+        foreach (var item in Model.Section_List)
+        {
+           
+            var itemcomponent = Model.Subsections_Components.Where(m => m.cont_id == item.ContId && m.IsBlock == 0).OrderBy(x
+    => x.Sequence).ToList();
+            var itemdirectblocks = Model.Subsections_Components.Where(m => m.cont_id == item.ContId && m.IsBlock == 1
+            ).OrderBy(x => x.Sequence).ToList();
+            if (incr % 2 == 0)
+            {
+                section_class = "bg-gray";
+            }
+            else
+            {
+                section_class = "";
+            }
+
+            <section class="mk-section section-spacing @(section_class)" id="@item.PageName"
+                     aria-labelledby="@item.PageName-title">
+                <div class="container">
+                    <div class="mk-head">
+                        <h2 id="logos-title" class="text-h2 title-animation">@Html.Raw(item.Title)</h2>
+                        @Html.Raw(item.HmpgIntro)
+                    </div>
+                    
+                    @if (itemcomponent != null && itemcomponent.Count > 0)
+                    {
+                        foreach (var objcomp in itemcomponent)
+                        {
+                            if (objcomp.Sequence > 1)
+                            {
+                                <h3 class="mk-subhead">@Html.Raw(objcomp.Title)</h3>
+                            }
+                            var itemblocks = Model.Subsections_Components.Where(m => m.cont_id == item.ContId && m.IsBlock == 1 &&
+                                m.context_parent_id == objcomp.context_parent_id).OrderBy(x => x.Sequence).ToList();
+                            if (itemblocks != null && itemblocks.Count > 0)
+                            {
+                                var blockmediafilesextn = string.Join(", ", itemblocks
+                                    .Where(b => !string.IsNullOrWhiteSpace(b.MediafilePath))
+                                    .Select(b => System.IO.Path.GetExtension(b.MediafilePath.Split('?')[0])?.TrimStart('.').ToUpperInvariant())
+                                    .Where(ext => !string.IsNullOrWhiteSpace(ext))
+                                    .Distinct());
+                                if (string.IsNullOrWhiteSpace(blockmediafilesextn))
+                                {
+                                    <ul class="mk-swatches">
+                                        @foreach (var objblock in itemblocks)
+                                        {
+                                            <li>
+                                                <span class="mk-swatch" style="background:@Html.Raw(objblock.Intro.CleanParagraphTags())"></span>
+                                                <span class="mk-swatch__name">@Html.Raw(objblock.Title)</span>
+                                                <span class="mk-swatch__hex">@Html.Raw(objblock.Intro.CleanParagraphTags())</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                
+                                else
+                                {
+                                     
+                                    <ul class="mk-grid mk-grid--4">
+                                        @foreach (var objblock in itemblocks)
+                                        {
+                                            <li class="mk-card">
+                                                @if (!string.IsNullOrWhiteSpace(objblock.ThumbnailImage) &&
+                                                !string.IsNullOrWhiteSpace(objblock.MediafilePath))
+                                                {
+                                                    <div class="mk-stage mk-stage--logo">
+                                                        <img src="@objblock.ThumbnailImage" alt="@objblock.ThumbnailAltText">
+                                                    </div>
+                                        
+                                                    <div class="mk-card__meta">
+                                                        <div>
+                                                            <h3 class="mk-card__title">@Html.Raw(objblock.Title)</h3>
+                                                            <p class="mk-card__type">@Html.Raw(objblock.Intro.CleanParagraphTags())</p>
+                                                        </div>
+                                            
+                                                        @{
+                                                            var thumbPath = objblock.MediafilePath.Split('?')[0];
+                                                            var thumbFileName = System.IO.Path.GetFileName(thumbPath);
+                                                            var thumbExtension = System.IO.Path.GetExtension(thumbFileName)?.TrimStart('.').ToUpper() ?? "";
+                                                        }
+                                                        <a class="mk-dl" href="@objblock.MediafilePath" download="@thumbFileName"
+                                                           aria-label="Download @(objblock.Title), @thumbExtension">
+                                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                                <path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor"
+                                                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                            
+                                                }
+                                            </li>
+                                        }
+                                    </ul>                                   
+                                    
+                                }
+                                
+                            }
+                        }
+                    }
+                    else if (itemdirectblocks != null && itemdirectblocks.Count > 0)
+                    {
+                        var mediafilesextn = string.Join(", ", itemdirectblocks
+                                    .Where(b => !string.IsNullOrWhiteSpace(b.MediafilePath))
+                                    .Select(b => System.IO.Path.GetExtension(b.MediafilePath.Split('?')[0])?.TrimStart('.').ToUpperInvariant())
+                                    .Where(ext => !string.IsNullOrWhiteSpace(ext))
+                                    .Distinct());
+                        if (!string.IsNullOrWhiteSpace(mediafilesextn) &&  mediafilesextn.ToLower().Contains("mp4"))
+                        {
+                            <ul class="mk-grid mk-grid--2">
+                                @foreach (var objblock in itemdirectblocks)
+                                {
+                                    <li class="mk-card mk-card--video">
+                                        <video class="mk-video" controls playsinline preload="metadata" poster="@objblock.ThumbnailImage">
+                                            <source src="@objblock.MediafilePath" type="video/mp4">
+                                        </video>
+                                        <div class="mk-card__meta">
+                                            <div>
+                                                <h3 class="mk-card__title">@Html.Raw(objblock.Title)</h3>
+                                                <p class="mk-card__type">@Html.Raw(objblock.Intro.CleanParagraphTags())</p>
+                                            </div>
+                                            @{
+                                                var thumbPath = objblock.MediafilePath.Split('?')[0];
+                                                var thumbFileName = System.IO.Path.GetFileName(thumbPath);
+                                                var thumbExtension = System.IO.Path.GetExtension(thumbFileName)?.TrimStart('.').ToUpper() ?? "";
+                                            }
+                                            <a class="mk-dl" href="@thumbPath" download="thumbFileName"
+                                               aria-label="Download brand film, @thumbExtension">
+                                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor"
+                                                          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <div class="mk-contacts">
+                                @foreach (var objblock in itemdirectblocks)
+                                {
+                                    <address class="mk-contact">
+                                        <p class="mk-contact__label">@Html.Raw(objblock.Intro.CleanParagraphTags())</p>
+                                        <h3>@Html.Raw(objblock.Title)</h3>
+                                        @Html.Raw(objblock.Content)
+                                    </address>
+                                }
+                            </div>
+                        }                        
+                    }
+                    else
+                    {
+                        
+                    }
+                </div>
+            </section>
+            incr++;
+        }
+    }
+
+</div>
+
+@section Scripts {
+    <script src="~/Assets/js/media-kit.js" asp-append-version="true"></script>
+}

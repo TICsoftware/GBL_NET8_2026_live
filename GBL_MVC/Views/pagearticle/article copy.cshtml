@@ -1,0 +1,110 @@
+@using GBL_MVC.Helpers
+@model GBL_BusinessLogic.Entity.PageViewModel
+@{
+    ViewData["Title"] = "Article";
+    var hasContent = Model?.Content != null;
+}
+
+
+
+@section head {
+    @if (hasContent)
+    {
+        <title>@Model.Content.cont_window_title</title>
+
+        <meta content="@Model.Content.cont_metatag" name="keywords" />
+        <meta content="@Model.Content.cont_metadesc" name="description" />
+
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="" />
+        <meta name="twitter:title" content="@Model.Content.ContTitle" />
+        <meta name="twitter:description" content="@Model.Content.cont_metadesc" />
+        <link rel="canonical" href="" />
+
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Godavari Biorefineries" />
+        <meta property="og:title" content="@Model.Content.ContTitle" />
+        <meta property="og:description" content="@Model.Content.cont_metadesc" />
+        <meta property="og:url" content="https://www.godavaribiorefineries.com//" />
+        <meta property="og:image" content="@Model.Content.MastheadImage" />
+
+        <meta itemprop="name" content="Godavari Biorefineries" />
+        <meta itemprop="description" content="@Model.Content.cont_metadesc" />
+        <meta itemprop="image" content="@Model.Content.MastheadImage" />
+
+        <!-- Facebook / Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Godavari Biorefineries" />
+        <meta property="og:title" content="@Model.Content.ContTitle" />
+        <meta property="og:description" content="@Model.Content.cont_metadesc" />
+        <meta property="og:image" content="@Model.Content.MastheadImage" />
+        <meta property="og:url" content="https://www.godavaribiorefineries.com//" />
+        @if (!string.IsNullOrWhiteSpace(Model.Content.page_schema))
+        {
+
+            @Html.Raw(Model.Content.page_schema.Replace("<p>", "").Replace("</p>", ""))
+
+        }
+    }
+}
+
+@section Styles {
+    
+    @if (hasContent)
+    {
+        <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+        if (!string.IsNullOrWhiteSpace(ViewBag.pagetitle))
+        {
+            <link rel="stylesheet" href="~/Assets/css/@(ViewBag.pagetitle).css" asp-append-version="true" />
+        }
+    }
+    else
+    {
+        <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+    }
+}
+
+@if (hasContent)
+{ 
+    <!-- HERO BANNER -->
+    @if (Model?.Content != null)
+    {
+        @await Html.PartialAsync("~/Views/CommonComponent/_page_banner.cshtml", Model.Content)
+    }
+    <!-- HERO BANNER END-->
+ 
+    <!--PAGE INTRO OUTER-->
+    @if (!string.IsNullOrWhiteSpace(Model.Content?.Cont_intro))
+    {
+        <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+            <div class="container">
+                <div class="page-intro-inner intro-lg text-center">
+                    @Html.Raw(Model.Content.Cont_intro)
+                </div>
+            </div>
+        </section>
+    }
+    <!--PAGE INTRO OUTER END-->
+ 
+    @if (!string.IsNullOrWhiteSpace(Model.Content?.Content))
+    { 
+        @Html.Raw(Model.Content.Content) 
+    }
+             
+}
+else
+{
+    <section class="section-spacing blank-template-section relative">
+        <div class="container">
+            <div class="blank-template-inner">
+                <p>Content is currently unavailable for this page.</p>
+            </div>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script src="~/Assets/js/blanktemplate-script.js"></script>
+
+}
