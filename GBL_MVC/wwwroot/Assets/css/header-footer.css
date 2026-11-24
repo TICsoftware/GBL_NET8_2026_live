@@ -1518,6 +1518,26 @@ html.is-header-locked.is-header-lock-scroll .site-header{
     height: 12px;
   }
 
+  /* Scrolled (compact, 68px) header: tighten the two rows so the search button
+     isn't pushed against / past the top edge of the bar */
+  .site-header.is-compact .site-header__utility{
+    padding-bottom: 2px;
+  }
+
+  .site-header.is-compact .site-header__search-btn{
+    width: 24px;
+    height: 24px;
+  }
+
+  .site-header.is-compact .site-header__search-btn svg{
+    width: 13px;
+    height: 13px;
+  }
+
+  .site-header.is-compact .site-header__nav{
+    padding-top: 3px;
+  }
+
   /* Primary row */
   .site-header__nav{
     border-top-color: rgba(255,255,255,0.25);
@@ -1527,7 +1547,7 @@ html.is-header-locked.is-header-lock-scroll .site-header{
   }
 
   .site-header.is-compact .site-header__nav{
-    padding-bottom: 6px;
+    padding-bottom: 3px;
   }
 
   .site-header.is-light .site-header__nav{
