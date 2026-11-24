@@ -104,7 +104,7 @@
             <!-- Registered and Corporate Office -->
             @if (Model?.Registered_Corporate_Office_List != null && Model.Registered_Corporate_Office_List.Any())
             {
-               <div class="office-group" style="--span:1">
+               <div class="office-group" id="registered-office" style="--span:1">
                   @foreach (var item in Model.Registered_Corporate_Office_List.Where(x => x.IsBlock == 0))
                   {
                      <h2 class="office-group__title">@item.Title</h2>
@@ -141,7 +141,7 @@
             <!-- Marketing Office -->
             @if (Model?.Marketing_Office_List != null && Model.Marketing_Office_List.Any())
             {
-               <div class="office-group" style="--span:1">
+               <div class="office-group" id="marketing-office" style="--span:1">
                   @foreach (var item in Model.Marketing_Office_List.Where(x => x.IsBlock == 0))
                   {
                      <h2 class="office-group__title">@item.Title</h2>
@@ -177,7 +177,7 @@
             <!-- Products -->
             @if (Model?.Products_List != null && Model.Products_List.Any())
             {
-               <div class="office-group" style="--span:2">
+               <div class="office-group" id="products" style="--span:2">
                   @foreach (var item in Model.Products_List.Where(x => x.IsBlock == 0))
                   {
                      <h2 class="office-group__title">@item.Title</h2>
@@ -220,7 +220,7 @@
             <!-- India Offices -->
             @if (Model?.India_Offices_List != null && Model.India_Offices_List.Any())
             {
-               <div class="office-group" style="--span:2">
+               <div class="office-group" id="india-offices" style="--span:2">
                   @foreach (var item in Model.India_Offices_List.Where(x => x.IsBlock == 0))
                   {
                      <h2 class="office-group__title">@item.Title</h2>
@@ -257,7 +257,7 @@
             <!-- International Offices -->
             @if (Model?.InternationalOffices_List != null && Model.InternationalOffices_List.Any())
             {
-               <div class="office-group" style="--span:2">
+               <div class="office-group" id="international-offices" style="--span:2">
                   @foreach (var item in Model.InternationalOffices_List.Where(x => x.IsBlock == 0))
                   {
                      <h2 class="office-group__title">@item.Title</h2>
@@ -303,7 +303,9 @@
 
 
 <!-- CONTACT QUERY FORM -->
+<div id="submit-query">
 @await Html.PartialAsync("_SubmitQuery", new ContactUsModel())
+</div>
 <!-- CONTACT QUERY FORM END -->
    
 

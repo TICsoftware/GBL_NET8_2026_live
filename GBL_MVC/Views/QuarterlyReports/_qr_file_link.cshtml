@@ -1,8 +1,13 @@
 @model (string Url, string Label, string Kind)
-@if (!string.IsNullOrWhiteSpace(Model.Url))
+@{
+    var url = Model.Url ?? "";
+    var kind = ResolveFileKind(url, Model.Kind);
+}
+
+@if (!string.IsNullOrWhiteSpace(url))
 {
-<a class="qr-file qr-file-@(Model.Kind)" href="@Model.Url" target="_blank" rel="noopener noreferrer" aria-label="@Model.Label">
-    @if (Model.Kind == "zip")
+<a class="qr-file qr-file-@kind" href="@url" target="_blank" rel="noopener noreferrer" aria-label="@Model.Label">
+    @if (kind == "zip")
     {
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M31.3281 39.9219H3.98438V3.98438H25.4018L31.3281 9.9107V20.3906H29.7656V10.558L24.7545 5.54688H5.54688V38.3594H29.7656V32.8906H31.3281V39.9219Z" fill="currentColor"/>
@@ -18,7 +23,7 @@
             <path d="M30.9355 27.4219H27.8105V22.7344H30.9355C32.2279 22.7344 33.2793 23.7858 33.2793 25.0781C33.2793 26.3705 32.2279 27.4219 30.9355 27.4219ZM29.373 25.8594H30.9355C31.3663 25.8594 31.7168 25.5089 31.7168 25.0781C31.7168 24.6473 31.3663 24.2969 30.9355 24.2969H29.373V25.8594Z" fill="currentColor"/>
         </svg>
     }
-    else if (Model.Kind == "audio")
+    else if (kind == "audio")
     {
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M12.6204 21.6279H16.041L20.3835 25.9704C20.5973 26.1848 20.881 26.2979 21.1704 26.2979C21.3135 26.2979 21.4585 26.2698 21.5966 26.2123C22.0135 26.0398 22.2829 25.636 22.2829 25.1835V10.5848C22.2829 10.1329 22.0135 9.72914 21.5966 9.55601C21.1798 9.38476 20.7035 9.47851 20.3835 9.79914L16.041 14.1416H12.6204C11.9216 14.1416 11.3535 14.711 11.3535 15.411V20.3585C11.3535 21.0585 11.9216 21.6279 12.6204 21.6279ZM21.0329 10.9173V24.8523L16.9248 20.7441V15.0254L21.0329 10.9173ZM12.6204 15.3916H15.6748V20.3748L12.6035 20.3585L12.6204 15.3916Z" fill="currentColor"/>
@@ -40,4 +45,26 @@
         </svg>
     }
 </a>
+}
+
+@functions {
+    private static string ResolveFileKind(string url, string? fallback)
+    {
+        var path = url ?? "";
+        var q = path.IndexOf('?', StringComparison.Ordinal);
+        if (q >= 0) path = path[..q];
+        var hash = path.IndexOf('#', StringComparison.Ordinal);
+        if (hash >= 0) path = path[..hash];
+        path = path.Trim().ToLowerInvariant();
+
+        if (path.EndsWith(".pdf")) return "pdf";
+        if (path.EndsWith(".zip") || path.EndsWith(".rar") || path.EndsWith(".7z")) return "zip";
+        if (path.EndsWith(".mp3") || path.EndsWith(".wav") || path.EndsWith(".m4a")
+            || path.EndsWith(".aac") || path.EndsWith(".ogg") || path.EndsWith(".wma")
+            || path.EndsWith(".flac") || path.EndsWith(".mp4") || path.EndsWith(".mpeg"))
+            return "audio";
+
+        var kind = (fallback ?? "").Trim().ToLowerInvariant();
+        return kind is "pdf" or "zip" or "audio" ? kind : "pdf";
+    }
 }

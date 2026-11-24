@@ -38,6 +38,30 @@ document.addEventListener("DOMContentLoaded", function () {
   if (typeof MQ.addEventListener === "function") MQ.addEventListener("change", placeHeaderTools);
   else MQ.addListener(placeHeaderTools);
 
+  const markUtilityCurrent = () => {
+    const path = (location.pathname || "/").replace(/\/+$/, "").toLowerCase() || "/";
+    const hash = (location.hash || "").toLowerCase();
+    header.querySelectorAll(".site-header__media-item").forEach((item) => {
+      let any = false;
+      item.querySelectorAll(".site-header__media-dd a").forEach((link) => {
+        let url;
+        try { url = new URL(link.getAttribute("href") || "", location.origin); }
+        catch (error) { return; }
+        const linkPath = (url.pathname || "/").replace(/\/+$/, "").toLowerCase() || "/";
+        const linkHash = (url.hash || "").toLowerCase();
+        const active = linkPath === path && linkHash === hash;
+        link.classList.toggle("is-active", active);
+        if (active) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+        if (active) any = true;
+      });
+      item.classList.toggle("is-current", any);
+    });
+  };
+
+  markUtilityCurrent();
+  window.addEventListener("hashchange", markUtilityCurrent);
+
   header.querySelectorAll(".mega-l3-panel").forEach((panel) => {
     l3Homes.set(panel, panel.parentElement);
   });
@@ -58,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Hover fill (same as the corporate governance doc cards): circle grows from where the mouse enters
   header.addEventListener("mouseover", (e) => {
-    const item = e.target.closest && e.target.closest(".mega-l2__item, .mega-l3-item > .mega-l3");
+    const item = e.target.closest && e.target.closest(".mega-l2__item, .mega-l3-item > .mega-l3, .site-header__media-dd a");
     if (!item || item.contains(e.relatedTarget)) return;
     const rect = item.getBoundingClientRect();
     const x = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
@@ -297,12 +321,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
+  const closeUtilityMenus = () => {
+    header.querySelectorAll(".site-header__media-item.is-open").forEach((el) => {
+      el.classList.remove("is-open");
+      el.querySelector(":scope > a")?.setAttribute("aria-expanded", "false");
+    });
+  };
+
   const closeMobileNav = () => {
     header.classList.remove("is-nav-open");
     if (toggleBtn) {
       toggleBtn.setAttribute("aria-expanded", "false");
       toggleBtn.setAttribute("aria-label", "Open menu");
     }
+    closeUtilityMenus();
     closeMega();
     lockPage(header.classList.contains("is-search-open"));
   };
@@ -373,10 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!already) openMega(trigger);
         return;
       }
-      if (activeMenu && !activeMenu.hidden && item.classList.contains("is-open")) {
-        closeMega();
-        return;
-      }
+      // Hover already opens the menu. A click on that same item must keep it open.
       openMega(trigger);
     });
 
@@ -396,15 +425,59 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  const mediaItem = header.querySelector(".site-header__media-item");
-  if (mediaItem) {
+  let utilityTimer = 0;
+
+  const openUtilityMenu = (mediaItem) => {
+    clearTimeout(utilityTimer);
+    header.querySelectorAll(".site-header__media-item.is-open").forEach((el) => {
+      if (el === mediaItem) return;
+      el.classList.remove("is-open");
+      el.querySelector(":scope > a")?.setAttribute("aria-expanded", "false");
+    });
+    if (!isMobile()) closeMega(true);
+    mediaItem.classList.add("is-open");
+    mediaItem.querySelector(":scope > a")?.setAttribute("aria-expanded", "true");
+  };
+
+  const scheduleCloseUtility = (mediaItem) => {
+    clearTimeout(utilityTimer);
+    utilityTimer = window.setTimeout(() => {
+      mediaItem.classList.remove("is-open");
+      mediaItem.querySelector(":scope > a")?.setAttribute("aria-expanded", "false");
+    }, 140);
+  };
+
+  header.querySelectorAll(".site-header__media-item").forEach((mediaItem) => {
+    const trigger = mediaItem.querySelector(":scope > a");
+
     mediaItem.addEventListener("mouseenter", () => {
-      if (!isMobile()) closeMega(true);
+      if (isMobile()) return;
+      openUtilityMenu(mediaItem);
+    });
+    mediaItem.addEventListener("mouseleave", () => {
+      if (isMobile()) return;
+      scheduleCloseUtility(mediaItem);
     });
     mediaItem.addEventListener("focusin", () => {
-      closeMega(true);
+      openUtilityMenu(mediaItem);
     });
-  }
+    mediaItem.addEventListener("focusout", (event) => {
+      if (mediaItem.contains(event.relatedTarget)) return;
+      scheduleCloseUtility(mediaItem);
+    });
+
+    trigger?.addEventListener("click", (event) => {
+      if (!isMobile()) return;
+      const already = mediaItem.classList.contains("is-open");
+      closeUtilityMenus();
+      closeMega();
+      if (!already) {
+        event.preventDefault();
+        mediaItem.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
 
   menus.forEach((menu) => {
     menu.addEventListener("mouseenter", () => {
@@ -422,7 +495,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (item.getAttribute("href") === "#") event.preventDefault();
         if (item.hasAttribute("data-panel")) {
           event.preventDefault();
-          if (item.classList.contains("is-active")) {
+          // Desktop hover already reveals the submenu. Only mobile tap toggles it shut.
+          if (isMobile() && item.classList.contains("is-active")) {
             closeAllL2(item.closest(".mega-menu"));
             return;
           }

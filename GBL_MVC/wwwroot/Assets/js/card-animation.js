@@ -38,6 +38,37 @@
     return el.classList.contains('latest-li-card') || !!el.querySelector('iframe');
   }
 
+  function isPdfGrid(list) {
+    return !!(list && list.classList.contains('cg-docs__grid'));
+  }
+
+  /*
+   * Investor PDF grids match the press-release rows: each row of 3 is its own
+   * scroll scrub, so it rises on the way down and travels back on the way up.
+   * The link moves; the grid cell stays put so rows cannot cover each other.
+   */
+  var PDF_RISE = {
+    y: 40,
+    duration: 0.85,
+    stagger: 0,
+    rowDelay: 0.34,
+    scrub: 0.85,
+    start: 'top 100%',
+    end: 'top 82%',
+  };
+
+  function pdfTargets(row) {
+    return row.map(function (li) {
+      return li.querySelector('.cg-doc') || li;
+    });
+  }
+
+  function visiblePdfCards(list) {
+    return Array.prototype.slice.call(list.children).filter(function (el) {
+      return el.nodeType === 1 && el.classList.contains('card-rise') && !el.hidden;
+    });
+  }
+
   function gridColumns(list) {
     if (list && list.classList.contains('cg-docs__grid')) {
       if (window.matchMedia('(max-width: 640px)').matches) return 1;
@@ -273,13 +304,106 @@
   function killListRiseTriggers(list) {
     if (!list || typeof ScrollTrigger === 'undefined') return;
     ScrollTrigger.getAll().forEach(function (st) {
-      if (st.trigger === list) {
-        st.kill();
-        return;
-      }
       var id = String((st.vars && st.vars.id) || st.id || '');
-      if (id.indexOf('card-rise-more-') !== 0) return;
-      if (st.trigger && list.contains(st.trigger)) st.kill();
+      var trigger = st.trigger;
+      var inList = trigger && (trigger === list || list.contains(trigger));
+      if (!inList) return;
+      if (trigger === list || id.indexOf('card-rise-') === 0) st.kill(false);
+    });
+  }
+
+  function clearPdfRow(row) {
+    var targets = pdfTargets(row);
+    gsap.killTweensOf(targets);
+    row.forEach(function (li) {
+      gsap.killTweensOf(li);
+      gsap.set(li, { clearProps: 'transform,opacity,visibility' });
+    });
+    gsap.set(targets, { clearProps: 'transform,opacity,visibility' });
+    return targets;
+  }
+
+  function chunkRows(cards, cols) {
+    var rows = [];
+    for (var r = 0; r < cards.length; r += cols) {
+      rows.push(cards.slice(r, r + cols));
+    }
+    return rows;
+  }
+
+  /**
+   * One scrubbed timeline per row of 3. The trigger is the li (stable).
+   * The animated node is the inner link, so a rising card cannot shift the grid.
+   * Rows already settled in view play in one after another, then the same
+   * scrub stays attached so a later pass from the top plays them again.
+   */
+  function bindPdfScrubRows(rows, stScroller, playSettledIntro) {
+    var created = [];
+
+    rows.forEach(function (row) {
+      if (!row.length || !row[0]) return;
+      var targets = clearPdfRow(row);
+      var tl = gsap.timeline({
+        paused: true,
+        defaults: { force3D: true, ease: 'power2.out' },
+      });
+
+      targets.forEach(function (el, i) {
+        tl.fromTo(
+          el,
+          { autoAlpha: 0, y: PDF_RISE.y },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: PDF_RISE.duration,
+            immediateRender: false,
+          },
+          i * PDF_RISE.stagger
+        );
+      });
+
+      gsap.set(targets, { autoAlpha: 0, y: PDF_RISE.y, force3D: true });
+
+      var st = ScrollTrigger.create({
+        id: 'card-rise-pdf-' + dynamicRiseId++,
+        trigger: row[0],
+        scroller: stScroller,
+        start: PDF_RISE.start,
+        end: PDF_RISE.end,
+        scrub: PDF_RISE.scrub,
+        animation: tl,
+        invalidateOnRefresh: false,
+        immediateRender: false,
+      });
+
+      created.push({ row: row, targets: targets, tl: tl, st: st });
+    });
+
+    if (window.lenis && typeof window.lenis.resize === 'function') {
+      try {
+        window.lenis.resize();
+      } catch (err) {}
+    }
+    ScrollTrigger.refresh();
+
+    if (!playSettledIntro) return;
+
+    var introIndex = 0;
+    created.forEach(function (item) {
+      if (!item.st || item.st.progress < 0.92) return;
+      if (!isRowInView(item.row[0])) return;
+
+      var delay = introIndex * PDF_RISE.rowDelay;
+      introIndex += 1;
+      item.st.disable(false);
+      item.tl.pause(0);
+      item.tl.delay(delay);
+      gsap.set(item.targets, { autoAlpha: 0, y: PDF_RISE.y, force3D: true });
+      item.tl.play(0);
+      item.tl.eventCallback('onComplete', function () {
+        item.tl.delay(0);
+        if (item.st && typeof item.st.enable === 'function') item.st.enable();
+      });
     });
   }
 
@@ -332,6 +456,19 @@
     }
 
     function bindRows() {
+      if (isPdfGrid(list)) {
+        var colsNow = gridColumns(list);
+        if (replacingAll) killListRiseTriggers(list);
+        /* Appended rows stay on the scroll: one row rises on the way down
+           and travels back down on the way up. No one-shot intro. */
+        bindPdfScrubRows(
+          chunkRows(replacingAll ? visiblePdfCards(list) : cards, colsNow),
+          stScroller,
+          !!replacingAll
+        );
+        return;
+      }
+
       syncScrollLayout();
 
       if (replacingAll) {
@@ -382,6 +519,14 @@
     document.querySelectorAll('.card-list-items').forEach(function (list, listIndex) {
       const cards = listCards(list);
       if (!cards.length) return;
+
+      if (isPdfGrid(list)) {
+        bindPdfScrubRows(chunkRows(cards, gridColumns(list)), stScroller, true);
+        cards.forEach(function (card) {
+          card.dataset.cardRisePlayed = '1';
+        });
+        return;
+      }
 
       const tl = gsap.timeline({
         defaults: { force3D: true, ease: 'power2.out' },

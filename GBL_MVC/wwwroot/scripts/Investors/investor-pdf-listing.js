@@ -51,7 +51,6 @@ $(function () {
 
         $empty.prop("hidden", loadedCount > 0);
 
-        /* Hide when everything is loaded, or the last fetch was a short page. */
         const hasMore =
             loadedCount > 0 &&
             totalCount > loadedCount &&

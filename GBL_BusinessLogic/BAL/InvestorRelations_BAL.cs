@@ -720,10 +720,10 @@ namespace GBL_BusinessLogic.BAL
         private static int GovernanceRank(ArticleModel item)
         {
             var hay = ((item.PageName ?? "") + " " + (item.Title ?? "")).ToLowerInvariant();
-            // Match HTML template order: Committees → Code of Conduct → Policies
-            if (hay.Contains("committee")) return 0;
+            // Policies → Code of Conduct → Committees of the Board
+            if (hay.Contains("polic")) return 0;
             if (hay.Contains("code-of-conduct") || hay.Contains("code of conduct")) return 1;
-            if (hay.Contains("polic")) return 2;
+            if (hay.Contains("committee")) return 2;
             return 10;
         }
 

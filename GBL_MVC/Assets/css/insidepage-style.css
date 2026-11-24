@@ -36,6 +36,10 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
   .innerbanner-image-wrapper {
     height: min(700px, 80vh) !important;
   }
+
+  .news-innerbanner-image-wrapper {
+    height: min(500px, 60vh) !important;
+  }
 }
 
 .page-intro-inner{ max-width:min(75vw, 1100px); margin: 0 auto; width: 100%; text-align:left;}
@@ -222,7 +226,8 @@ background: linear-gradient(0deg,  rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 70%,rgba(0,
 }
 
 @media all and (max-width: 1179px) {
-  .innerbanner-image-wrapper{ height:auto !important;}
+  .innerbanner-image-wrapper,
+  .news-innerbanner-image-wrapper{ height:auto !important;}
   .inside-banner-outer .innerbanner-image{ position: relative;}
   .innerbanner-caption{bottom: inherit; transform: none; position: relative; padding:20px 0; text-align: center; background:#fff}
   .innerbanner-caption *{ color: var(--text-black);}

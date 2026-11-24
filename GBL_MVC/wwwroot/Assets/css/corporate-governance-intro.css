@@ -249,7 +249,13 @@
   /* padding-bottom: 22px; */
 }
 
-.cg-docs__grid > .card-rise::after {
+.cg-docs__grid > .card-rise > .cg-doc {
+  overflow: visible;
+}
+
+/* Shadow sits on the link, which is the piece that rises, so the
+   shadow stays under the card after Load More. */
+.cg-docs__grid > .card-rise > .cg-doc::after {
   content: "";
   position: absolute;
   left: 2%;

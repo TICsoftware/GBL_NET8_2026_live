@@ -29,7 +29,7 @@ namespace GBL_MVC.Routes
             app.MapControllerRoute(
                     name: "aboutus",
                     pattern: "about-us",
-                    defaults: new { controller = "AboutUs", action = "AboutUs", title = "about-us" }
+                    defaults: new { controller = "AboutUs", action = "Index", title = "about-us" }
                 );
 
             app.MapControllerRoute(

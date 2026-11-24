@@ -19,12 +19,15 @@
     @* var isExternal = !string.IsNullOrWhiteSpace(item.ExternalUrl)
                      && linkUrl == item.ExternalUrl; *@
 
+    var defaultThumbnail = "/uploads/thumbnail/godavari-biorefineries-q4-fy25-profit-rises-200-klpd-grain.webp";
+    var thumbnailSrc = string.IsNullOrWhiteSpace(item.ThumbnailImage) ? defaultThumbnail : item.ThumbnailImage;
+    var thumbnailAlt = string.IsNullOrWhiteSpace(item.ThumbnailAltText) ? item.Title : item.ThumbnailAltText;
+
     <article class="industry-product-card">
         <div class="industry-product-card__media">
-            @if (!string.IsNullOrWhiteSpace(item.ThumbnailImage))
-            {
-                <img src="@item.ThumbnailImage" alt="@item.ThumbnailAltText">
-            }
+            <img src="@thumbnailSrc"
+                 alt="@thumbnailAlt"
+                 onerror="this.onerror=null;this.src='@defaultThumbnail';">
 
             @if (!string.IsNullOrWhiteSpace(item.Tag_list))
             {
@@ -61,7 +64,7 @@
 
             <a href="@linkUrl" target="@(isExternal ? "_blank" : "_self")"
                rel="@(isExternal ? "noopener noreferrer" : null)" class="site-btn site-btn--line">
-                <span class="site-btn__label">Learn More</span>
+                <span class="site-btn__label">Learn more</span>
                 <span class="site-btn__arrow" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none">
                         <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
