@@ -537,9 +537,10 @@ font-weight: 400;
   visibility: hidden;
 }
 
+/* open state keeps the normal look (white circle, green icon); only the icon changes to ✕ */
 .site-header.is-search-open .site-header__search-btn{
-  background: var(--so-bg, #1f4d2b);
-  color: #fff;
+  background: #fff;
+  color: var(--header-accent);
 }
 
 .search-overlay__eyebrow{
@@ -563,14 +564,21 @@ font-weight: 400;
   padding: 0 12px 0 24px;
   border-radius: 14px;
   background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.35);
+  border: 0;
   box-sizing: border-box;
-  transition: border-color .2s ease, background .2s ease;
+  transition: background .2s ease;
 }
 
 .search-overlay__field:focus-within{
-  border-color: #fff;
   background: rgba(255,255,255,0.14);
+}
+
+.search-overlay .search-overlay__input,
+.search-overlay .search-overlay__input:focus,
+.search-overlay .search-overlay__input:focus-visible{
+  border: 0;
+  outline: 0;
+  box-shadow: none;
 }
 
 .search-overlay__field-icon{
@@ -1489,14 +1497,25 @@ html.is-header-locked.is-header-lock-scroll .site-header{
     background: #fff var(--mega-arrow-accent) center / 11px no-repeat;
   }
 
+  /* breathing room between the utility row (Media / Careers / search) and the nav divider */
+  .site-header__utility{
+    padding-bottom: 6px;
+  }
+
+  /* compact so it sits inside the utility row instead of touching the nav divider */
   .site-header__search-btn{
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
   }
 
   .site-header__search-btn svg{
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .site-header.is-search-open .site-header__search-btn .site-header__search-ico--close{
+    width: 12px;
+    height: 12px;
   }
 
   /* Primary row */
