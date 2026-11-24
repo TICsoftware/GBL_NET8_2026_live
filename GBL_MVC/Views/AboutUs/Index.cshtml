@@ -81,7 +81,7 @@
         {
             <section class="about-principles" aria-labelledby="about-principles-title">
                 <div class="container">
-                    <div class="about-principles__head">
+                    <div class="about-principles__head ld-head">
            
                         <h2 id="about-principles-title" class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)
                         </h2>
@@ -130,13 +130,15 @@
         {
             <section class="about-benchmarks" aria-labelledby="about-benchmarks-title">
                 <div class="container">
-                    <div class="about-head">
+                    <div class="about-head ld-head">
                         <h2 id="about-benchmarks-title" class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)</h2>
                         @if (!string.IsNullOrWhiteSpace(itemsection.Intro))
                         {  
                             @Html.Raw(itemsection.Intro)
                         }
                     </div>
+
+
                     <ul class="about-benchmarks__grid card-list-items">
                         @foreach (var itemblocks in blocks)
                         {
