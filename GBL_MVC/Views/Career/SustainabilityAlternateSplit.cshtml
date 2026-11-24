@@ -141,9 +141,9 @@
     if (!hasTitle && !hasIntro && !hasImage && !hasBody) { continue; }
 
     var isGray = sectionIndex % 2 == 0;
-    var sectionTone = isGray ? "left-right-gray" : "left-right-white";
+    var sectionTone = isGray ? "left-right-white" : "left-right-gray";
     var imageLeft = sectionIndex % 2 == 0;
-    var copyTone = isGray ? "ld-split__copy--white" : "ld-split__copy--gray";
+    var copyTone = isGray ? "ld-split__copy--gray" : "ld-split__copy--white";
     sectionIndex++;
 
     <section class="left-right-section @sectionTone wb-split-section section-spacing">
