@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Article";
     var hasContent = Model?.Content != null;
+    var pageKey = ViewContext.RouteData.Values["id"] as string ?? "";
+    var isPrivacyPolicy = pageKey.Equals("privacy-policy", StringComparison.OrdinalIgnoreCase);
+    var isDisclaimer = pageKey.Equals("disclaimer", StringComparison.OrdinalIgnoreCase);
+    var isPlainLegal = isPrivacyPolicy || isDisclaimer;
 }
 
 
@@ -51,11 +55,34 @@
 
 @section Styles {
     <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+    @if (isPrivacyPolicy || isDisclaimer)
+    {
+        <link rel="stylesheet" href="~/Assets/css/privacy-policy.css" asp-append-version="true" />
+    }
+    @if (isDisclaimer)
+    {
+        <link rel="stylesheet" href="~/Assets/css/disclaimer.css" asp-append-version="true" />
+    }
 }
 
 @if (hasContent)
 {
-
+    @if (isPlainLegal)
+    {
+        <section class="pp-mast">
+            <div class="container">
+                <div class="pp-mast__inner">
+                    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                        @Html.Raw(Model.Content.BreadcrumPath)
+                    </nav>
+                    <h1 class="pp-mast__title text-h1">@Html.Raw(Model.Content.ContTitle)</h1>
+                </div>
+            </div>
+        </section>
+        @Html.Raw(Model.Content.Content)
+    }
+    else
+    {
     <section class="relative inside-banner-outer overflow-hidden blank-template-banner">
         <div class="inside-banner-inner banner-animation relative blank-template-banner-inner">
 
@@ -78,15 +105,14 @@
 
         </div>
     </section>
-
-
-    <section class="section-pb section-spacing blank-template-section relative">
-        <div class="container">
-            <div class="blank-template-inner">
-                @Html.Raw(Model.Content.Content)
+        <section class="section-pb section-spacing blank-template-section relative">
+            <div class="container">
+                <div class="blank-template-inner">
+                    @Html.Raw(Model.Content.Content)
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    }
 }
 else
 {
@@ -100,6 +126,8 @@ else
 }
 
 @section Scripts {
-    <script src="~/Assets/js/blanktemplate-script.js"></script>
-
+    @if (!isPlainLegal)
+    {
+        <script src="~/Assets/js/blanktemplate-script.js"></script>
+    }
 }

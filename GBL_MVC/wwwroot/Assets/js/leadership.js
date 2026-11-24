@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var stScroller = window.matchMedia("(max-width: 992px)").matches
     ? window
     : document.documentElement;
-  var CARD_RISE = { y: 140, scrub: 1.15, start: 92, end: 58, columnDelay: 5 };
+  var CARD_RISE = { y: 140, scrub: 0.85, start: 92, end: 58, columnDelay: 5 };
 
   /** Position in the row, read on each refresh so it follows the responsive columns. */
   function columnOf(card) {

@@ -37,9 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   var CARD_RISE = {
     y: 140,
-    duration: 1.15,
-    stagger: 0.28,
-    scrub: 1.15,
+    duration: 0.85,
+    stagger: 0.1,
+    scrub: 0.85,
     listStart: "top 90%",
     listEnd: "top 38%"
   };

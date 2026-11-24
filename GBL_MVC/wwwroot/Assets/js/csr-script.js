@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
       scroller: stScroller,
       start: "top 90%",
       end: "top 38%",
-      scrub: 1.15,
+      scrub: 0.85,
       invalidateOnRefresh: true
     }
   });
@@ -157,8 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
     tl.fromTo(
       card,
       { autoAlpha: 0, y: 140 },
-      { autoAlpha: 1, y: 0, duration: 1.15, immediateRender: true },
-      i * 0.28
+      { autoAlpha: 1, y: 0, duration: 0.85, immediateRender: true },
+      i * 0.1
     );
   });
 });
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
         scroller: stScroller,
         start: "top 90%",
         end: "top 38%",
-        scrub: 1.15,
+        scrub: 0.85,
         invalidateOnRefresh: true
       }
     });
@@ -230,8 +230,8 @@ document.addEventListener("DOMContentLoaded", function () {
       riseTl.fromTo(
         card,
         { autoAlpha: 0, y: 140 },
-        { autoAlpha: 1, y: 0, duration: 1.15, immediateRender: true },
-        i * 0.28
+        { autoAlpha: 1, y: 0, duration: 0.85, immediateRender: true },
+        i * 0.1
       );
     });
   }

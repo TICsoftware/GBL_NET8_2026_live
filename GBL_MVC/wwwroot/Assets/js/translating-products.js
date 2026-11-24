@@ -116,8 +116,8 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           autoAlpha: 1,
           y: 0,
-          duration: 1.15,
-          delay: i * 0.28,
+          duration: 0.85,
+          delay: i * 0.1,
           ease: "power2.out",
           overwrite: "auto",
           force3D: true,
