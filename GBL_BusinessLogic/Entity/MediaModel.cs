@@ -19,6 +19,7 @@ namespace GBL_BusinessLogic.Entity
         public List<DropdownModel> Tag_List { get; set; } = new();
         public List<DropdownModel> Year_List { get; set; } = new();
 
+        public List<ComponentModel> Subsections_Components { get; set; } = new();
 
         public int TotalCount { get; set; }
 

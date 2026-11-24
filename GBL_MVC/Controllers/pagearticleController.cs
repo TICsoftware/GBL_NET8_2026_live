@@ -12,12 +12,16 @@ namespace GBL_MVC.Controllers
             objconfig = configuration;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string title)
         {
             try
             {
                 Page_Manage_BAL _bal = new Page_Manage_BAL(objconfig);
-                var data = _bal.GetPageData_BAL("contact", 1, 1);
+                if(string.IsNullOrWhiteSpace(title))
+                {
+                    title="contact";
+                }
+                var data = _bal.GetPageData_BAL(title, 1, 1);
                 return View(data);
             }
             catch (Exception ex)
@@ -30,17 +34,18 @@ namespace GBL_MVC.Controllers
                 // _bal.Dispose();
             }
         }
-        public IActionResult article(string id)
+        public IActionResult article(string title)
         {
             try
             {
+                ViewBag.pagetitle= title;
                 Page_Manage_BAL _bal = new Page_Manage_BAL(objconfig);
-                var data = _bal.GetPageData_BAL(id, 1, 1);
+                var data = _bal.GetPageData_BAL(title, 1, 1);
                 return View(data);
             }
             catch (Exception ex)
             {
-                FileLogger.LogError("/pagearticle/article :" + id, ex);
+                FileLogger.LogError("/pagearticle/article :" + title, ex);
                 return View(new PageViewModel());
             }
             finally
