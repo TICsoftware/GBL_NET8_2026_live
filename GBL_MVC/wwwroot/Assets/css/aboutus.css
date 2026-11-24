@@ -366,6 +366,26 @@
   overflow: visible;
 }
 
+.ld-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 3rem);
+  align-items: start;
+  margin-bottom: clamp(1.5rem, 3vw, 1.5rem);
+}
+.ld-head .text-h2 {
+  max-width: 15.5em;
+  margin: 0;
+}
+.ld-head p {
+  margin: 0;
+  font-size: var(--text-22);
+  line-height: 1.45;
+  color: var(--color-gray-dark);
+}
+
+
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1279px) {
   .about-principles__grid {
