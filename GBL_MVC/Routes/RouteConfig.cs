@@ -401,6 +401,12 @@ app.MapControllerRoute(
             );
 
             app.MapControllerRoute(
+                name: "SearchSuggest",
+                pattern: "search/suggest",
+                defaults: new { controller = "Search", action = "Suggest" }
+            );
+
+            app.MapControllerRoute(
                 name: "search",
                 pattern: "search/{id?}",
                 defaults: new { controller = "Search", action = "Index" }

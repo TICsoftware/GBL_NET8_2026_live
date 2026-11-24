@@ -115,6 +115,109 @@ namespace GBL_BusinessLogic.BAL
 
 
 
+        // ---------- Header overlay: quick results ----------
+
+        // Site sections used by the overlay's category chips, matched on the first URL segment.
+        private static readonly Dictionary<string, string[]> SuggestCategories = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Investors",      new[] { "investors", "investor", "investor-relations", "annualreports", "annual-reports", "quarterly-reports", "quarterlyreports", "financial-highlights", "corporate-governance" } },
+            { "Businesses",     new[] { "businesses", "products", "industries", "industries-we-serve", "industriesinside" } },
+            { "Sustainability", new[] { "sustainability", "csr", "resource-circularity" } },
+            { "Media",          new[] { "media", "awards" } },
+            { "Careers",        new[] { "careers", "career", "learningdevelopment" } }
+        };
+
+        private const int SuggestFetchSize = 60;
+
+        public SearchSuggestResult search_suggest(string keyword, string category, int take = 8)
+        {
+            var result = new SearchSuggestResult
+            {
+                q = (keyword ?? "").Trim(),
+                cat = string.IsNullOrWhiteSpace(category) || !SuggestCategories.ContainsKey(category) ? "All" : category
+            };
+
+            if (result.q.Length < 2) return result;
+
+            string strKeywordFinal = FullText_Search.FullText_Search_String(result.q, FullText_Search_Operators.NEAR, true);
+            DataSet ds = GetSearch__DAL(strKeywordFinal, 1, SuggestFetchSize);
+
+            if (ds == null || ds.Tables.Count == 0) return result;
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var matches = new List<SearchSuggestItem>();
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                string url = dr["PageUrl"]?.ToString()?.Trim();
+                if (string.IsNullOrWhiteSpace(url) || !seen.Add(url)) continue;
+
+                string itemCat = CategoryForUrl(url);
+                if (result.cat != "All" && itemCat != result.cat) continue;
+
+                string title = FullText_Search.Remove_All_Tags(dr["cont_title"]?.ToString() ?? "").Trim();
+                if (string.IsNullOrWhiteSpace(title)) title = dr["cont_pagename"]?.ToString() ?? url;
+
+                string section = dr.Table.Columns.Contains("ComponentName") ? dr["ComponentName"]?.ToString() : "";
+
+                matches.Add(new SearchSuggestItem
+                {
+                    title = System.Net.WebUtility.HtmlDecode(title),
+                    url = url,
+                    type = url.IndexOf(".pdf", StringComparison.OrdinalIgnoreCase) >= 0 ? "PDF" : "Page",
+                    path = BreadcrumbForUrl(url, section),
+                    cat = itemCat
+                });
+            }
+
+            result.total = matches.Count;
+            result.items = matches.Take(take).ToList();
+            return result;
+        }
+
+        private static string FirstSegment(string url)
+        {
+            string path = url;
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri abs)) path = abs.AbsolutePath;
+            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "";
+        }
+
+        private static string CategoryForUrl(string url)
+        {
+            string first = FirstSegment(url);
+            foreach (var pair in SuggestCategories)
+            {
+                if (pair.Value.Any(v => string.Equals(v, first, StringComparison.OrdinalIgnoreCase))) return pair.Key;
+            }
+            return "All";
+        }
+
+        private static string BreadcrumbForUrl(string url, string section)
+        {
+            string path = url;
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri abs)) path = abs.AbsolutePath;
+
+            var parts = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Where(p => p.IndexOf('.') < 0) // drop file names such as report.pdf
+                            .Take(3)
+                            .Select(Prettify)
+                            .ToList();
+
+            if (parts.Count == 0) return string.IsNullOrWhiteSpace(section) ? "Home" : section;
+            return string.Join(" › ", parts);
+        }
+
+        private static string Prettify(string segment)
+        {
+            string s = Uri.UnescapeDataString(segment).Replace('-', ' ').Replace('_', ' ').Trim();
+            if (s.Length == 0) return s;
+            var words = s.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                         .Select(w => w.Length > 3 || w.Length == 1 ? char.ToUpperInvariant(w[0]) + w.Substring(1).ToLowerInvariant() : w.ToLowerInvariant());
+            string joined = string.Join(" ", words);
+            return char.ToUpperInvariant(joined[0]) + joined.Substring(1);
+        }
+
+
         private string GetURl(string pdfUrl, string Path, string extURL)
         {
             try
