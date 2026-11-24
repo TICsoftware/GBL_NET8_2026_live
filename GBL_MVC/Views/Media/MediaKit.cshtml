@@ -64,11 +64,29 @@
    <!--PAGE INTRO OUTER END-->
 }
 
+ <div class="mk-page">
+      <div class="mk-jump-sentinel" aria-hidden="true"></div>
 
 @if (Model?.Section_List != null && Model.Section_List.Any())
 {
-    foreach(var item in Model.Section_List)
-    {
-        
-    }
+     <section class="mk-jump" aria-label="Media kit sections">
+         <div class="container">
+            <div class="mk-jump__track">
+                <button type="button" class="mk-jump__arrow mk-jump__arrow--prev" aria-label="Previous section">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <nav class="mk-jump__nav">
+                @foreach(var item in Model.Section_List)
+                {
+                    <a class="mk-jump__btn" href="#@item.PageName"> @Html.Raw(item.Title)</a>
+                }
+                </nav>
+                <button type="button" class="mk-jump__arrow mk-jump__arrow--next" aria-label="Next section">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 6 15.5 12l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+         </div>
+      </section>
 }
+
+   </div>
