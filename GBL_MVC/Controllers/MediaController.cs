@@ -154,7 +154,23 @@ public class MediaController : Controller
 
 
 
-
+    public IActionResult MediaKit()
+    {
+       try
+        {             
+            var data = _bal.GetMediaKit_BAL("media-kit", 1, 1);
+            return View(data);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.LogError("/MediaKit :", ex);
+            return View(new MediaModel());
+        }
+        finally
+        {
+            _bal.Dispose();
+        }
+    }
 
 
 

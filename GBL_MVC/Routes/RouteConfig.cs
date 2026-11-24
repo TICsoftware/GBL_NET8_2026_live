@@ -503,24 +503,24 @@ app.MapControllerRoute(
             app.MapControllerRoute(
                 name: "legal-disclaimer",
                 pattern: "disclaimer",
-                defaults: new { controller = "pagearticle", action = "article", id = "disclaimer" }
+                defaults: new { controller = "pagearticle", action = "article", title = "disclaimer" }
             );
 
             app.MapControllerRoute(
                 name: "privacy-policy",
                 pattern: "privacy-policy",
-                defaults: new { controller = "pagearticle", action = "article", id = "privacy-policy" }
+                defaults: new { controller = "pagearticle", action = "article", title = "privacy-policy" }
             );
 
             app.MapControllerRoute(
              name: "terms-of-use",
              pattern: "terms-of-use",
-             defaults: new { controller = "pagearticle", action = "article", id = "terms-of-use" }
+             defaults: new { controller = "pagearticle", action = "article", title = "terms-of-use" }
          );
             app.MapControllerRoute(
               name: "sitemap",
               pattern: "sitemap",
-              defaults: new { controller = "pagearticle", action = "article", id = "sitemap" }
+              defaults: new { controller = "pagearticle", action = "article", title = "sitemap" }
           );
 
 

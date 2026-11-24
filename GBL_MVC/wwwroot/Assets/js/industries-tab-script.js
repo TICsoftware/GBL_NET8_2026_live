@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var CARD_RISE = {
     y: 140,           /* start offset (px) below the rest position */
-    duration: 1.15,   /* rise length on the scrub timeline */
-    stagger: 0.28,    /* delay between cards in the same row */
-    scrub: 1.15,      /* catch-up so motion follows the scrollbar */
+    duration: 0.85,   /* rise length on the scrub timeline */
+    stagger: 0.1,    /* delay between cards in the same row */
+    scrub: 0.85,      /* catch-up so motion follows the scrollbar */
     listStart: "top 90%",
     listEnd: "top 38%"
   };

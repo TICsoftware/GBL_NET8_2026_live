@@ -74,8 +74,11 @@
 }
 
 /* ---------- Drop-in Substitutes ---------- */
-.bbc-substitutes { 
-  background: var(--color-white, #fff);
+.bbc-substitutes.left-right-white {
+  background: #fff;
+}
+.bbc-substitutes.left-right-gray {
+  background: #f4f4f4;
 }
 .bbc-split {
   display: grid;

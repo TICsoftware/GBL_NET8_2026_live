@@ -43,6 +43,7 @@
 }
 @section Styles {
     <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+      <link rel="stylesheet" href="~/Assets/css/learning-development.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Assets/css/bio-based-chemicals.css" asp-append-version="true" />
 }
@@ -56,7 +57,7 @@
 
 
 <!--PAGE INTRO OUTER-->
-<section class="bbc-intro" aria-label="Introduction">
+<section class="bbc-intro section-spacing" aria-label="Introduction">
     <div class="container">
         <div class="bbc-intro__copy page-intro-inner">
             @if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
@@ -107,7 +108,7 @@
                 </div>
                 <div class="bbc-leadership__veil" aria-hidden="true"></div>
                 <div class="container">
-                    <div class="bbc-leadership__copy card-rise">
+                    <div class="bbc-leadership__copy ">
                         @if (!string.IsNullOrWhiteSpace(item.DisplayTitle))
                         {
                             <span class="addon-section-title">@item.DisplayTitle.Trim()</span>
@@ -127,11 +128,11 @@
         {
             <section class="bbc-find section-spacing" aria-labelledby="bbc-find-title_@seqPair.Key">
                 <div class="container">
-                    <div class="bbc-find__card">
+                    <div class="bbc-find__card lr-panel">
                         <div class="bbc-find__bg" aria-hidden="true">
                             <img src="@thumb" alt="@thumbAlt" loading="lazy" />
                         </div>
-                        <div class="bbc-find__content card-rise">
+                        <div class="bbc-find__content ">
                             <h2 id="bbc-find-title_@seqPair.Key" class="text-h2 title-animation bbc-title">@Html.Raw(item.Title)
                                  
                             </h2>
@@ -152,9 +153,10 @@
         }
         else
         {
+            @* var sectionTone = splitIndex % 2 == 0 ? "left-right-white" : "left-right-gray";
             var imageLeft = splitIndex % 2 == 0;
             splitIndex++;
-            <section class="bbc-substitutes section-spacing" aria-labelledby="bbc-split-title_@seqPair.Key">
+            <section class="bbc-substitutes left-right-section @sectionTone section-spacing" aria-labelledby="bbc-split-title_@seqPair.Key">
                 <div class="container">
                     <div class="bbc-split@(imageLeft ? "" : " reverse")">
                         <div class="bbc-split__media bbc-parallax">
@@ -189,7 +191,81 @@
                         </div>
                     </div>
                 </div>
+            </section> *@
+
+@* deepti code *@
+
+
+ var isGray = splitIndex % 2 == 0;
+            var sectionTone = isGray ? "left-right-white" : "left-right-gray";
+            var imageLeft = isGray;
+            var copyTone = isGray ? "ld-split__copy--gray" : "ld-split__copy--white";
+            splitIndex++;
+            <section class="left-right-section @sectionTone section-spacing" aria-labelledby="bbc-split-title_@seqPair.Key">
+                <div class="container">
+                    <div class="ld-split lr-row@(imageLeft ? "" : " ld-split--copy-first lr-row--reverse")">
+                        @if (!imageLeft)
+                        {
+                            <div class="ld-split__copy lr-copy lr-panel @copyTone">
+                                @if (!string.IsNullOrWhiteSpace(item.DisplayTitle))
+                                {
+                                    <span class="addon-section-title">@item.DisplayTitle.Trim()</span>
+                                }
+                                <h2 id="bbc-split-title_@seqPair.Key" class="text-h2 title-animation">@Html.Raw(item.Title)</h2>
+                                @if (hasIntro)
+                                {
+                                    <div class="bbc-body bbc-body--muted">
+                                        @Html.Raw(item.Intro)
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
+                                {
+                                    <a href="@item.Url" class="site-btn site-btn--outline">
+                                        <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                        <span class="site-btn__arrow" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(thumb))
+                        {
+                            <figure class="ld-media lr-media parallax-wrap parallax-sticky" data-parallax-travel="5">
+                                <img src="@thumb" alt="@thumbAlt" class="parallax-img" loading="lazy" />
+                            </figure>
+                        }
+                        @if (imageLeft)
+                        {
+                            <div class="ld-split__copy lr-copy lr-panel @copyTone ">
+                                @if (!string.IsNullOrWhiteSpace(item.DisplayTitle))
+                                {
+                                    <span class="addon-section-title">@item.DisplayTitle.Trim()</span>
+                                }
+                                <h2 id="bbc-split-title_@seqPair.Key" class="text-h2 title-animation">@Html.Raw(item.Title)</h2>
+                                @if (hasIntro)
+                                {
+                                    <div class="bbc-body bbc-body--muted">
+                                        @Html.Raw(item.Intro)
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(item.Url) && item.Url != "#")
+                                {
+                                    <a href="@item.Url" class="site-btn site-btn--outline">
+                                        <span class="site-btn__label">@(string.IsNullOrWhiteSpace(item.Url_Text) ? "Learn more" : item.Url_Text)</span>
+                                        <span class="site-btn__arrow" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
             </section>
+
+
+
         }
     }
 }
