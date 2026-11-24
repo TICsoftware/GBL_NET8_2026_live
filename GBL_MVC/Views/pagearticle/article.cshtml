@@ -3,10 +3,8 @@
 @{
     ViewData["Title"] = "Article";
     var hasContent = Model?.Content != null;
-    var pageKey = ViewContext.RouteData.Values["id"] as string ?? "";
-    var isPrivacyPolicy = pageKey.Equals("privacy-policy", StringComparison.OrdinalIgnoreCase);
-    var isDisclaimer = pageKey.Equals("disclaimer", StringComparison.OrdinalIgnoreCase);
-    var isPlainLegal = isPrivacyPolicy || isDisclaimer;
+    var content = Model?.Content;
+    var crumbFromCms = !string.IsNullOrWhiteSpace(content?.BreadcrumPath) ? content.BreadcrumPath.CleanParagraphTags() : "";
 }
 
 
@@ -45,8 +43,7 @@
         <meta property="og:image" content="@Model.Content.MastheadImage" />
         <meta property="og:url" content="https://www.godavaribiorefineries.com//" />
         @if (!string.IsNullOrWhiteSpace(Model.Content.page_schema))
-        {
-
+        { 
             @Html.Raw(Model.Content.page_schema.Replace("<p>", "").Replace("</p>", ""))
 
         }
@@ -54,43 +51,55 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+    
+    @if (hasContent)
+    {
+        <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+        if (!string.IsNullOrWhiteSpace(ViewBag.pagetitle))
+        {
+            <link rel="stylesheet" href="~/Assets/css/@(ViewBag.pagetitle).css" asp-append-version="true" />
+        }
+    }
+    else
+    {
+        <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+    }
 }
 
 @if (hasContent)
-{
-
-    <section class="relative inside-banner-outer overflow-hidden blank-template-banner">
-        <div class="inside-banner-inner banner-animation relative blank-template-banner-inner">
-
-            <!-- Content (no banner image) -->
-            <div class="innerbanner-caption blank-template-banner-caption">
-                <div class="container">
-                    <div class="max-w-4xl text-left">
-
-                        <h1 class="innerbanner-title innerbanner-title-heading text-h1">
-                            @Html.Raw(Model.Content.ContTitle)
-                        </h1>
-
-                        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                            @Html.Raw(Model.Content.BreadcrumPath)
-                        </nav>
-
-                    </div>
+{ 
+    <!-- HERO BANNER FOR TITLE -->
+    <section class="relative overflow-hidden inner-without-banner-outer">
+        <div class="container">
+        <div class="inner-banner-copy text-start">
+            <h1 class="text-h1 inner-banner-title">@Html.Raw(content?.ContTitle)</h1>
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                @Html.Raw(crumbFromCms)
+            </nav>
+        </div>
+        </div>
+    </section>
+   
+    <!-- HERO BANNER FOR TITLE  END-->
+ 
+    <!--PAGE INTRO OUTER-->
+    @if (!string.IsNullOrWhiteSpace(content?.Cont_intro))
+    {
+        <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+            <div class="container">
+                <div class="page-intro-inner intro-lg text-center">
+                    @Html.Raw(content?.Cont_intro)
                 </div>
             </div>
-
-        </div>
-    </section>
-
-
-    <section class="section-pb section-spacing blank-template-section relative">
-        <div class="container">
-            <div class="blank-template-inner">
-                @Html.Raw(Model.Content.Content)
-            </div>
-        </div>
-    </section>
+        </section>
+    }
+    <!--PAGE INTRO OUTER END-->
+ 
+    @if (!string.IsNullOrWhiteSpace(content?.Content))
+    { 
+        @Html.Raw(content.Content) 
+    }
+             
 }
 else
 {
@@ -104,8 +113,6 @@ else
 }
 
 @section Scripts {
-    @if (!isPlainLegal)
-    {
-        <script src="~/Assets/js/blanktemplate-script.js"></script>
-    }
+    <script src="~/Assets/js/blanktemplate-script.js"></script>
+
 }

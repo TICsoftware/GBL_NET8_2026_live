@@ -46,10 +46,34 @@
 
   !function(e,r,a){if(!e.__Marker){e.__Marker={};var t=[],n={__cs:t};["show","hide","isVisible","capture","cancelCapture","unload","reload","isExtensionInstalled","setReporter","clearReporter","setCustomData","on","off"].forEach(function(e){n[e]=function(){var r=Array.prototype.slice.call(arguments);r.unshift(e),t.push(r)}}),e.Marker=n;var s=r.createElement("script");s.async=1,s.src="https://edge.marker.io/latest/shim.js";var i=r.getElementsByTagName("script")[0];i.parentNode.insertBefore(s,i)}}(window,document);
 </script>
+  <!-- Page loader -->
+  <link rel="stylesheet" href="~/Assets/css/page-loader.css" asp-append-version="true">
+  <script nonce="@nonce">document.documentElement.classList.add('gbl-lock');</script>
 
 </head>
 
 <body>
+
+  
+ <!-- Page loader -->
+  <div id="gbl-loader" role="status" aria-label="Loading Godavari Biorefineries Ltd">
+    <div class="gl-scene" aria-hidden="true"><img class="gl-sun" data-src="@Url.Content("~/Assets/images/loader/loader-sun.svg")" alt=""></div>
+    <div class="gl-ground" aria-hidden="true"></div>
+    <div class="gl-scene" aria-hidden="true"><img class="gl-cane" data-src="@Url.Content("~/Assets/images/loader/loader-cane.svg")" alt=""></div>
+    <div class="gl-grid" aria-hidden="true">
+      <div><div class="gl-counter"><span class="gl-count">00</span><span class="gl-total">/100</span></div></div>
+      <div class="gl-stack">
+        <div class="gl-item"><div class="gl-item-inner"><div class="gl-item-image"><img data-src="@Url.Content("~/Assets/images/homepage/banner/banner-img-4.webp")" alt=""></div></div></div>
+        <div class="gl-item"><div class="gl-item-inner"><div class="gl-item-image"><img data-src="@Url.Content("~/Assets/images/homepage/banner/banner-img-5.webp")" alt=""></div></div></div>
+        <div class="gl-item"><div class="gl-item-inner"><div class="gl-item-image"><img data-src="@Url.Content("~/Assets/images/homepage/banner/banner-img-8.webp")" alt=""></div></div></div>
+        <div class="gl-item"><div class="gl-item-inner"><div class="gl-item-image"><img data-src="@Url.Content("~/Assets/images/homepage/banner/banner-img-9.webp")" alt=""></div></div></div>
+        <div class="gl-item"><div class="gl-item-inner"><div class="gl-item-image"><img data-src="@Url.Content("~/Assets/images/homepage/banner/banner-img-6.webp")" alt=""></div></div></div>
+      </div>
+      <div></div>
+    </div>
+    <div class="gl-cover" aria-hidden="true"><img data-src="@Url.Content("~/Assets/images/homepage/banner/banner-img-1.webp")" alt=""></div>
+  </div>
+  <script src="~/Assets/js/page-loader.js" asp-append-version="true"></script>
 
   
   @{
@@ -57,7 +81,6 @@
     ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
     ViewContext.RouteData.Values["action"]?.ToString() == "Index";
   }
-
 
 
   @* @Html.Partial("~/Views/Shared/_Header.cshtml") *@

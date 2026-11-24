@@ -3,6 +3,7 @@
   padding: clamp(1.75rem, 3vw, 2.75rem) 0 0;
 }
 
+.inner-banner-copy,
 .pp-mast__inner,
 .pp-body {
   width: calc(100% * 10 / 12);
@@ -160,6 +161,7 @@
 
 @media (max-width: 700px) {
   .pp-mast__inner,
+  .inner-banner-copy,
   .pp-body {
     width: 100%;
   }
@@ -181,3 +183,9 @@
   }
 }
 
+
+/* Banner breadcrumb on white background: theme black */
+.inner-without-banner-outer .breadcrumb-nav a,
+.inner-without-banner-outer .breadcrumb-nav li {
+  color: var(--color-primary, #282b31);
+}

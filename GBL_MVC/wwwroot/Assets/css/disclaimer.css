@@ -3,6 +3,7 @@
   padding-bottom: 30px;
 }
 
+.inner-banner-copy,
 .disclaimer-page__inner {
   width: calc(100% * 10 / 12);
   max-width: none;
@@ -49,7 +50,14 @@
 }
 
 @media (max-width: 700px) {
+  .inner-banner-copy,
   .disclaimer-page__inner {
     width: 100%;
   }
+}
+
+/* Banner breadcrumb on white background: theme black */
+.inner-without-banner-outer .breadcrumb-nav a,
+.inner-without-banner-outer .breadcrumb-nav li {
+  color: var(--color-primary, #282b31);
 }
