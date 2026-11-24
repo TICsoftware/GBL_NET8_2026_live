@@ -9,8 +9,6 @@
     var isPlainLegal = isPrivacyPolicy || isDisclaimer;
 }
 
-
-
 @section head {
     @if (hasContent)
     {
@@ -54,16 +52,6 @@
 }
 
 @section Styles {
-<<<<<<< HEAD
-    <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
-    @if (isPrivacyPolicy || isDisclaimer)
-    {
-        <link rel="stylesheet" href="~/Assets/css/privacy-policy.css" asp-append-version="true" />
-    }
-    @if (isDisclaimer)
-    {
-        <link rel="stylesheet" href="~/Assets/css/disclaimer.css" asp-append-version="true" />
-=======
     
     @if (hasContent)
     {
@@ -76,15 +64,12 @@
     else
     {
         <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
->>>>>>> 474857cabfbcfef59654b2e94b5c9108a964b8b8
     }
 }
 
 @if (hasContent)
-<<<<<<< HEAD
 {
-    @if (isPlainLegal)
-    {
+    @if (isPlainLegal) {
         <section class="pp-mast">
             <div class="container">
                 <div class="pp-mast__inner">
@@ -129,7 +114,6 @@
             </div>
         </section>
     }
-=======
 { 
     <!-- HERO BANNER -->
     @if (Model?.Content != null)
@@ -156,7 +140,6 @@
         @Html.Raw(Model.Content.Content) 
     }
              
->>>>>>> 474857cabfbcfef59654b2e94b5c9108a964b8b8
 }
 else
 {

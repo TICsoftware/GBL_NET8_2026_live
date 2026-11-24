@@ -3,10 +3,6 @@
 @{
     ViewData["Title"] = "Article";
     var hasContent = Model?.Content != null;
-    var pageKey = ViewContext.RouteData.Values["id"] as string ?? "";
-    var isPrivacyPolicy = pageKey.Equals("privacy-policy", StringComparison.OrdinalIgnoreCase);
-    var isDisclaimer = pageKey.Equals("disclaimer", StringComparison.OrdinalIgnoreCase);
-    var isPlainLegal = isPrivacyPolicy || isDisclaimer;
 }
 
 
@@ -54,43 +50,61 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+    
+    @if (hasContent)
+    {
+        <link rel="stylesheet" href="~/Assets/css/insidepage-style.css" asp-append-version="true" />
+        if (!string.IsNullOrWhiteSpace(ViewBag.pagetitle))
+        {
+            <link rel="stylesheet" href="~/Assets/css/@(ViewBag.pagetitle).css" asp-append-version="true" />
+        }
+    }
+    else
+    {
+        <link rel="stylesheet" href="/Assets/css/blanktemplate-style.css" />
+    }
 }
 
 @if (hasContent)
-{
-
-    <section class="relative inside-banner-outer overflow-hidden blank-template-banner">
-        <div class="inside-banner-inner banner-animation relative blank-template-banner-inner">
-
-            <!-- Content (no banner image) -->
-            <div class="innerbanner-caption blank-template-banner-caption">
-                <div class="container">
-                    <div class="max-w-4xl text-left">
-
-                        <h1 class="innerbanner-title innerbanner-title-heading text-h1">
-                            @Html.Raw(Model.Content.ContTitle)
-                        </h1>
-
-                        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                            @Html.Raw(Model.Content.BreadcrumPath)
-                        </nav>
-
-                    </div>
+{ 
+    <!-- HERO BANNER FOR TITLE -->
+    <section class="relative overflow-hidden section-tp inner-without-banner-outer">
+        <div class="container">
+        <div class="inner-banner-copy text-start">
+            <h1 class="text-h1 inner-banner-title">@Html.Raw(Model.Content.ContTitle)</h1>
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-sm">
+                    <li><a href="/" class="text-white/70 hover:text-white transition">Home</a></li>
+                    <li class="text-white/60">/</li>
+                    <li><a href="/about-us" class="text-white/70 hover:text-white transition">About us</a></li>
+                    <li class="text-white/60">/</li>
+                    <li class="text-white">Our Strategy</li>
+                </ol>
+            </nav>
+        </div>
+        </div>
+    </section>
+   
+    <!-- HERO BANNER FOR TITLE  END-->
+ 
+    <!--PAGE INTRO OUTER-->
+    @if (!string.IsNullOrWhiteSpace(Model.Content?.Cont_intro))
+    {
+        <section class="relative overflow-hidden section-spacing page-intro-outer bg-gray">
+            <div class="container">
+                <div class="page-intro-inner intro-lg text-center">
+                    @Html.Raw(Model.Content.Cont_intro)
                 </div>
             </div>
-
-        </div>
-    </section>
-
-
-    <section class="section-pb section-spacing blank-template-section relative">
-        <div class="container">
-            <div class="blank-template-inner">
-                @Html.Raw(Model.Content.Content)
-            </div>
-        </div>
-    </section>
+        </section>
+    }
+    <!--PAGE INTRO OUTER END-->
+ 
+    @if (!string.IsNullOrWhiteSpace(Model.Content?.Content))
+    { 
+        @Html.Raw(Model.Content.Content) 
+    }
+             
 }
 else
 {
@@ -104,8 +118,6 @@ else
 }
 
 @section Scripts {
-    @if (!isPlainLegal)
-    {
-        <script src="~/Assets/js/blanktemplate-script.js"></script>
-    }
+    <script src="~/Assets/js/blanktemplate-script.js"></script>
+
 }
