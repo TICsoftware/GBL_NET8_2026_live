@@ -19,7 +19,7 @@
   background: #f3f3f3;
 }
 
-.whatsNew__card:has(> a) {
+.whatsNew__card:has(a) {
   position: relative;
   isolation: isolate;
   overflow: visible;
@@ -28,7 +28,24 @@
   --card-fill: var(--color-secondary, #67815a);
 }
 
-.whatsNew__card:has(> a)::before {
+/* Clip the sliding Learn more button at the card edge.
+   Shadow stays on the card (::after + clip-path), outside this box. */
+.whatsNew__card:has(> .whatsNew__card-clip) {
+  padding: 0;
+}
+
+.whatsNew__card-clip {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  position: relative;
+  z-index: 2;
+  min-height: 100%;
+  overflow: hidden;
+  padding: 1.15rem 1.1rem 3.75rem;
+}
+
+.whatsNew__card:has(a)::before {
   content: "";
   position: absolute;
   left: 0;
@@ -42,12 +59,12 @@
   transition: clip-path 0.65s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.whatsNew__card:has(> a).is-filled::before,
-.whatsNew__card:has(> a):focus-within::before {
+.whatsNew__card:has(a).is-filled::before,
+.whatsNew__card:has(a):focus-within::before {
   clip-path: circle(var(--hr, 150%) at var(--hx, 50%) var(--hy, 0px));
 }
 
-.whatsNew__card:has(> a)::after {
+.whatsNew__card:has(a)::after {
   content: "";
   position: absolute;
   left: 2%;
@@ -60,47 +77,47 @@
   opacity: 0.25;
 }
 
-.whatsNew__card:has(> a) > * {
+.whatsNew__card:has(a) > * {
   position: relative;
   z-index: 2;
 }
 
-.whatsNew__card:has(> a):hover,
-.whatsNew__card:has(> a):focus-within {
+.whatsNew__card:has(a):hover,
+.whatsNew__card:has(a):focus-within {
   z-index: 1;
 }
 
-.whatsNew__card:has(> a).is-filled,
-.whatsNew__card:has(> a):focus-within {
+.whatsNew__card:has(a).is-filled,
+.whatsNew__card:has(a):focus-within {
   color: #fff;
 }
 
-.whatsNew__card:has(> a).is-filled h3,
-.whatsNew__card:has(> a):focus-within h3,
-.whatsNew__card:has(> a).is-filled p,
-.whatsNew__card:has(> a):focus-within p {
+.whatsNew__card:has(a).is-filled h3,
+.whatsNew__card:has(a):focus-within h3,
+.whatsNew__card:has(a).is-filled p,
+.whatsNew__card:has(a):focus-within p {
   color: #fff;
 }
 
-.whatsNew__card:has(> a).is-filled .whatsNew__tag,
-.whatsNew__card:has(> a):focus-within .whatsNew__tag {
+.whatsNew__card:has(a).is-filled .whatsNew__tag,
+.whatsNew__card:has(a):focus-within .whatsNew__tag {
   background: rgba(255, 255, 255, 0.22);
   color: #fff;
 }
 
-.whatsNew__card:has(> a).is-filled time,
-.whatsNew__card:has(> a):focus-within time {
+.whatsNew__card:has(a).is-filled time,
+.whatsNew__card:has(a):focus-within time {
   color: rgba(255, 255, 255, 0.82);
 }
 
-.whatsNew__card:has(> a).is-filled .site-btn--line,
-.whatsNew__card:has(> a):focus-within .site-btn--line {
+.whatsNew__card:has(a).is-filled .site-btn--line,
+.whatsNew__card:has(a):focus-within .site-btn--line {
   color: #fff;
   --btn-black: #fff;
 }
 
-.whatsNew__card:has(> a).is-filled .site-btn--line::after,
-.whatsNew__card:has(> a):focus-within .site-btn--line::after {
+.whatsNew__card:has(a).is-filled .site-btn--line::after,
+.whatsNew__card:has(a):focus-within .site-btn--line::after {
   background: #fff;
 }
 
@@ -117,7 +134,7 @@
   color: #3a3f46;
 }
 
-.whatsNew__card:has(> a) a.site-btn {
+.whatsNew__card:has(a) a.site-btn {
   position: absolute;
   left: 1.1rem;
   bottom: 1.15rem;
@@ -131,16 +148,16 @@
               transform 0.4s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.whatsNew__card:has(> a):hover a.site-btn,
-.whatsNew__card:has(> a):focus-within a.site-btn,
-.whatsNew__card:has(> a).is-filled a.site-btn {
+.whatsNew__card:has(a):hover a.site-btn,
+.whatsNew__card:has(a):focus-within a.site-btn,
+.whatsNew__card:has(a).is-filled a.site-btn {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
 @media (hover: none) {
-  .whatsNew__card:has(> a) a.site-btn {
+  .whatsNew__card:has(a) a.site-btn {
     opacity: 1;
     transform: none;
     pointer-events: auto;
@@ -940,9 +957,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .whatsNew__card:has(> a)::before,
-  .whatsNew__card:has(> a),
-  .whatsNew__card:has(> a) a.site-btn,
+  .whatsNew__card:has(a)::before,
+  .whatsNew__card:has(a),
+  .whatsNew__card:has(a) a.site-btn,
   .qr-files a::before,
   .qr-files a,
   .si-list a::before,
