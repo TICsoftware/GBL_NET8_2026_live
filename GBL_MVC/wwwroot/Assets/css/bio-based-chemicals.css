@@ -25,7 +25,6 @@
 
 /* ---------- Intro ---------- */
 .bbc-intro {
-  padding-block: clamp(2.5rem, 3.3vw, 4rem) clamp(3rem, 6.25vw, 7.5rem);
   background: var(--color-gray);
 }
 

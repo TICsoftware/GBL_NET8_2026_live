@@ -277,7 +277,7 @@
 .milestone-slide__title {
   font-family: var(--font-uniNeueBold);
   font-weight: normal;
-  font-size: clamp(0.9375rem, 0.85rem + 0.25vw, 1.125rem);
+  font-size: var(--text-h4);
   line-height: 1.35;
   color: var(--color-primary);
   margin-bottom: 0.75rem;
