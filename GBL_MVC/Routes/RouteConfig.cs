@@ -118,8 +118,8 @@ app.MapControllerRoute(
 
   app.MapControllerRoute(
                    name: "Subsidiaries",
-                   pattern: "about-us/our-subsidiaries",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-subsidiaries" }
+                   pattern: "about-us/manufacturing/our-subsidiaries",
+                   defaults: new { controller = "CSR", action = "Index", title = "our-subsidiaries"}
            );
 
 
