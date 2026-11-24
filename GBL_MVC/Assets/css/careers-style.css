@@ -91,6 +91,7 @@
   flex: 1 1 auto;
   position: relative;
   padding: 1.25rem 1.25rem 5.25rem;
+  overflow: hidden;
 }
 
 .whyJoin-card__body h3 {
