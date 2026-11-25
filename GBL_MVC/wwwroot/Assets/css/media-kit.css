@@ -177,7 +177,7 @@
 }
 
 .mk-head {
-  max-width: 52rem;
+  /* max-width: 52rem; */
   margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
 }
 

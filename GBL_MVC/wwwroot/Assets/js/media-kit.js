@@ -187,3 +187,124 @@
     init();
   }
 })();
+
+/**
+ * Media kit cards — same row rise as the annual report cards
+ * (annual-reports.js). Each row scrubs in as it reaches the viewport,
+ * staggered left to right. Rows already on screen at load play once.
+ */
+(function () {
+  var CARD_RISE = {
+    y: 140,
+    duration: 0.85,
+    stagger: 0.1,
+    scrub: 0.85,
+    start: "top 90%",
+    end: "top 38%"
+  };
+  var triggerPrefix = "mk-card-rise-";
+
+  function init() {
+    var grids = Array.prototype.slice.call(document.querySelectorAll(".mk-grid"));
+    if (!grids.length) return;
+    if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    var stScroller = window.matchMedia("(max-width: 992px)").matches ? window : document.documentElement;
+    var played = false;
+
+    // Group a grid's cards into rows by where they sit, so the column count
+    // follows the CSS at every breakpoint.
+    function rowsOf(grid) {
+      var rows = [];
+      var lastTop = null;
+      Array.prototype.forEach.call(grid.children, function (card) {
+        if (card.offsetParent === null) return;
+        var top = card.offsetTop;
+        if (lastTop === null || Math.abs(top - lastTop) > 4) {
+          rows.push([]);
+          lastTop = top;
+        }
+        rows[rows.length - 1].push(card);
+      });
+      return rows;
+    }
+
+    function addRise(tl, row) {
+      row.forEach(function (card, i) {
+        tl.fromTo(
+          card,
+          { autoAlpha: 0, y: CARD_RISE.y },
+          { autoAlpha: 1, y: 0, duration: CARD_RISE.duration, immediateRender: true },
+          i * CARD_RISE.stagger
+        );
+      });
+    }
+
+    function setup() {
+      ScrollTrigger.getAll().forEach(function (st) {
+        var id = (st.vars && st.vars.id) || "";
+        if (String(id).indexOf(triggerPrefix) === 0) st.kill();
+      });
+
+      var all = [];
+      grids.forEach(function (grid) {
+        Array.prototype.forEach.call(grid.children, function (card) { all.push(card); });
+      });
+      gsap.killTweensOf(all);
+      gsap.set(all, { clearProps: "transform,opacity,visibility" });
+
+      grids.forEach(function (grid, g) {
+        rowsOf(grid).forEach(function (row, r) {
+          var onScreen = row[0].getBoundingClientRect().top < window.innerHeight * 0.98;
+          if (onScreen && !played) {
+            gsap.fromTo(row, { autoAlpha: 0, y: 36 }, {
+              autoAlpha: 1, y: 0, duration: 0.32, stagger: 0.04,
+              ease: "power2.out", force3D: true
+            });
+            return;
+          }
+          if (onScreen) return; // already revealed; leave it in place on rebuild
+
+          var tl = gsap.timeline({
+            defaults: { force3D: true, ease: "power2.out" },
+            scrollTrigger: {
+              id: triggerPrefix + g + "-" + r,
+              // The first card is translated, so the grid triggers the first row.
+              trigger: r === 0 ? grid : row[0],
+              scroller: stScroller,
+              start: CARD_RISE.start,
+              end: CARD_RISE.end,
+              scrub: CARD_RISE.scrub,
+              invalidateOnRefresh: true
+            }
+          });
+          addRise(tl, row);
+        });
+      });
+      played = true;
+      requestAnimationFrame(function () { ScrollTrigger.refresh(); });
+    }
+
+    setup();
+    window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+
+    // Columns change at breakpoints, so regroup rows when the width changes.
+    var lastWidth = window.innerWidth;
+    var resizeTimer = null;
+    window.addEventListener("resize", function () {
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(setup, 250);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
