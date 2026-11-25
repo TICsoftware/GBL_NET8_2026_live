@@ -81,9 +81,12 @@
                         </svg>
                     </button>
                     <nav class="mk-jump__nav">
+                        <span class="mk-jump__thumb" aria-hidden="true"></span>
+                        @{ var firstTab = true; }
                         @foreach (var item in Model.Section_List)
                         {
-                            <a class="mk-jump__btn" href="#@item.PageName"> @Html.Raw(item.Title)</a>
+                            <a class="mk-jump__btn@(firstTab ? " is-active" : "")" href="#@item.PageName">@Html.Raw(item.Title)</a>
+                            firstTab = false;
                         }
                     </nav>
                     <button type="button" class="mk-jump__arrow mk-jump__arrow--next" aria-label="Next section">
