@@ -523,6 +523,8 @@ document.addEventListener("DOMContentLoaded", function () {
     menu.querySelectorAll("[data-l2]").forEach((item) => {
       item.addEventListener("click", (event) => {
         if (item.getAttribute("href") === "#") event.preventDefault();
+        // Desktop: an item with a submenu that has its own page links there (hover already opens the submenu)
+        if (item.hasAttribute("data-panel") && !isMobile() && item.getAttribute("href") !== "#") return;
         if (item.hasAttribute("data-panel")) {
           event.preventDefault();
           // Desktop hover already reveals the submenu. Only mobile tap toggles it shut.

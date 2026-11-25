@@ -288,17 +288,22 @@
 
                             var panelId = $"panel-{child.MenuId}";
 
+                            @* Items with a submenu still link to their own page when the CMS has a URL:
+                               desktop click goes there (hover opens the submenu); on mobile a tap opens
+                               the submenu, whose "Overview" link below goes to the page. *@
+                            var childUrl = string.IsNullOrWhiteSpace(child.Url) ? "#" : child.Url.Trim();
+
                             <li>
 
-                                <a href="@(subChildren.Any() ? "#" : (child.Url ?? "#"))"
+                                <a href="@childUrl"
                                   class="mega-l2__item"
                                   data-l2
                                   @if (subChildren.Any())
                                   {
                                       <text>data-panel="@panelId" aria-expanded="false"</text>
                                   }
-                                  target="@(subChildren.Any() ? null : (child.Target ?? "_self"))"
-                                  rel="@(child.Target == "_blank" && !subChildren.Any() ? "noopener noreferrer" : null)">
+                                  target="@(childUrl == "#" ? null : (child.Target ?? "_self"))"
+                                  rel="@(child.Target == "_blank" && childUrl != "#" ? "noopener noreferrer" : null)">
 
                                     @child.MenuName
 
@@ -316,6 +321,19 @@
                                         data-panel="@panelId"
                                         data-title="@(string.Equals(child.MenuName?.Trim(), "Overview", StringComparison.OrdinalIgnoreCase) ? (parent.MenuName ?? child.MenuName) : child.MenuName)"
                                         hidden>
+
+                                        @* Mobile only (hidden on desktop in header-footer.css): the parent's own page *@
+                                        @if (childUrl != "#")
+                                        {
+                                            <div class="mega-l3-item mega-l3-item--overview">
+                                                <a href="@childUrl"
+                                                  class="mega-l3"
+                                                  target="@(child.Target ?? "_self")"
+                                                  rel="@(child.Target == "_blank" ? "noopener noreferrer" : null)">
+                                                    Overview
+                                                </a>
+                                            </div>
+                                        }
 
                                         @foreach (var subChild in subChildren)
                                         {
