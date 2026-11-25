@@ -57,6 +57,7 @@
 
     <link rel="preload" href="~/Assets/css/translating-products.css" as="style">
     <link rel="stylesheet" href="~/Assets/css/translating-products.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Assets/css/industries-filter.css" asp-append-version="true" />
 
     <link rel="preload" href="~/Assets/css/philosophy-principles.css" as="style">
     <link rel="stylesheet" href="~/Assets/css/philosophy-principles.css" asp-append-version="true" />
@@ -102,169 +103,11 @@
     @await Html.PartialAsync("_healthier_tomorrow", Model.HealthierTomorrow_List)
 }
 
-@* Our Performance — intentionally not CMS-bound *@
-<section class="section-spacing ourPerformance">
-  <div class="container">
-      <div class="title-section">
-        <h2 class="text-h2">Our Performance</h2>
-      </div>
+@await Html.PartialAsync("_our_performance", Model)
 
-      <div class="performance-row card-list-items">
-        <article class="performance-card card-rise">
-          <h3 class="text-h5">Investor Call</h3>
-          <ul class="doc-list">
-            <li>
-              <a href="#">
-                <span class="doc-icon" aria-hidden="true">
-                    <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
-                </span>
-                Transcript Q3 FY 26
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="doc-icon" aria-hidden="true">
-                  <img src="/Assets/images/homepage/our-performance/voice-icon.svg" />
-                </span>
-                Audio of Investor Call &ndash; December-2025
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="doc-icon" aria-hidden="true">
-                  <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
-                </span>
-                Investor Presentation for Q3 9M FY 26
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="doc-icon" aria-hidden="true">
-                  <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
-                </span>
-                Investor Presentation Q2 H1 FY 26
-              </a>
-            </li>
-          </ul>
-        </article>
+@await Html.PartialAsync("_latest_at_gbl", Model)
 
-        <article class="performance-card card-rise">
-          <h3 class="text-h5">Quarterly Results: Godavari Biorefineries Q3 FY26</h3>
-          <ul class="doc-list">
-            <li>
-              <a href="#">
-                <span class="doc-icon" aria-hidden="true">
-                  <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
-                </span>
-                Earnings Release
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="doc-icon" aria-hidden="true">
-                    <img src="/Assets/images/homepage/our-performance/pdf-icon.svg" />
-                </span>
-                Analyst presentation
-              </a>
-            </li>
-          </ul>
-        </article>
-
-        <article class="performance-card performance-card--report card-rise">
-          <div class="performance-card__copy">
-            <h3 class="text-h5">Godavari Biorefineries Annual Report FY25</h3>
-            <a href="#" class="site-link">
-              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-              Download
-            </a>
-          </div>
-          <div class="performance-card__media">
-            <img src="/Assets/images/homepage/performance/annual-report-fy25.png" alt="Godavari Biorefineries Annual Report FY25 cover">
-          </div>
-        </article>
-      </div>
-
-      <div class="flex justify-center">
-        <a href="#" class="fill-site-link">
-          <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-          Learn more
-        </a>
-      </div>
-  </div>
-</section>
-
-@if (Model?.Latest_List != null && Model.Latest_List.Any())
-{
-    @await Html.PartialAsync("_latest_at_gbl", Model.Latest_List)
-}
-
-@* Stories of Change — intentionally not CMS-bound *@
-<section class="section-spacing storiesofChange">
-  <div class="container">
-      <div class="title-section">
-        <h2 class="text-h2">Stories of Change</h2>
-      </div>
-
-      <div class="stories-grid">
-        <article class="story-card ">
-          <div class="story-card__media parallax-wrap">
-            <img src="/Assets/images/homepage/stories/stories-img1.webp" alt="Shankar Jadhav standing in his sugarcane field" class="parallax-img img-fluid">
-          </div>
-          <div class="story-card__content">
-            <h3 class="story-card__title text-h5">More Than a Better Harvest</h3>
-            <p class="story-card__desc">Sugarcane farming no longer means uncertain returns for Shankar Jadhav</p>
-            <a href="#" class="site-link story-card__link">
-              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-              Learn More
-            </a>
-          </div>
-        </article>
-
-        <article class="story-card story-card--reverse">
-          <div class="story-card__media parallax-wrap">
-            <img src="/Assets/images/homepage/stories/stories-img2.webp" alt="His Place in the Story" class="parallax-img img-fluid">
-          </div>
-
-          <div class="story-card__content">
-            <h3 class="story-card__title text-h5">His Place in the Story</h3>
-            <p class="story-card__desc">Vishnu&rsquo;s barbershop shows how growth is measured in relationships at Godavari Biorefineries</p>
-            <a href="#" class="site-link story-card__link">
-              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-              Learn More
-            </a>
-          </div>
-        </article>
-
-        <article class="story-card">
-          <div class="story-card__media  parallax-wrap">
-            <img src="/Assets/images/homepage/stories/stories-img3.webp" alt="Scientists reviewing samples in a Godavari Biorefineries lab" class="parallax-img img-fluid" />
-          </div>
-          <div class="story-card__content">
-            <h3 class="story-card__title text-h5">Enabling a Low-Carbon Future</h3>
-            <p class="story-card__desc">As industries look to reduce their carbon footprint, partnerships matter</p>
-            <a href="#" class="site-link story-card__link">
-              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-              Learn More
-            </a>
-          </div>
-        </article>
-
-        <article class="story-card story-card--reverse">
-          <div class="story-card__media  parallax-wrap">
-            <img src="/Assets/images/homepage/stories/stories-img4.webp" alt="Woman applying perfume" class="parallax-img img-fluid" />
-          </div>
-          <div class="story-card__content">
-            <h3 class="story-card__title text-h5">Not just a cosmetic make-over</h3>
-            <p class="story-card__desc">Godavari Biorefineries&rsquo; bio-based chemicals are the go-to ingredients in personal care products</p>
-            <a href="#" class="site-link story-card__link">
-              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-              Learn More
-            </a>
-          </div>
-        </article>
-      </div>
-  </div>
-</section>
+@await Html.PartialAsync("_stories_of_change", Model)
 
 @if (Model?.GlobalStandards_List != null && Model.GlobalStandards_List.Any())
 {
@@ -276,6 +119,7 @@
   <script src="~/Assets/js/hero-banner.js" asp-append-version="true"></script>
   <script src="~/Assets/js/homepage-script.js" asp-append-version="true"></script>
   <script src="~/Assets/js/translating-products.js" asp-append-version="true"></script>
+  <script src="~/Assets/js/industries-filter.js" asp-append-version="true"></script>
   <script src="~/Assets/js/philosophy-principles.js" asp-append-version="true"></script>
   <script src="~/Assets/js/logo-marquee-script.js" asp-append-version="true"></script>
   <script src="~/Assets/js/giveback-animation.js" asp-append-version="true"></script>

@@ -1,93 +1,142 @@
+@using System.Globalization
 @using GBL_BusinessLogic.Entity
 @using GBL_MVC.Helpers
-@model List<HomeCommonModel>
-
+@model HomePageModel
 @{
-    var Component = Model
+    var components = Model?.Latest_List ?? new List<HomeCommonModel>();
+    var component = components
         .Where(x => x.IsBlock == 0)
         .OrderBy(x => x.Sequence)
         .FirstOrDefault();
 
-    var items = Model
-        .Where(x => x.IsBlock == 1)
+    var linkedInItems = components
+        .Where(x => x.IsBlock == 1
+            && !string.IsNullOrWhiteSpace(x.Url)
+            && x.Url.Contains("linkedin.com/embed", StringComparison.OrdinalIgnoreCase))
         .OrderBy(x => x.Sequence)
         .ToList();
 
-    var newsItems = items
-        .Where(x => string.IsNullOrWhiteSpace(x.Url)
-            || !x.Url.Contains("linkedin.com/embed", StringComparison.OrdinalIgnoreCase))
+    var embedHtml = new[] { component?.Lhs_Intro, component?.Rhs_Intro }
+        .Where(x => !string.IsNullOrWhiteSpace(x) && x.Contains("<iframe", StringComparison.OrdinalIgnoreCase))
         .ToList();
 
-    var linkedInItems = items
-        .Where(x => !string.IsNullOrWhiteSpace(x.Url)
-            && x.Url.Contains("linkedin.com/embed", StringComparison.OrdinalIgnoreCase))
-        .ToList();
+    var press = Model?.LatestPress;
+    var media = Model?.LatestMedia;
+    var sectionTitle = component == null
+        ? "Latest at GBL"
+        : (!string.IsNullOrWhiteSpace(component.DisplayTitle)
+            ? component.DisplayTitle
+            : component.Title);
+    var showSection = press != null || media != null || linkedInItems.Count > 0 || embedHtml.Count > 0;
 }
 
-@if (Component != null)
+@if (showSection)
 {
 <section class="section-spacing latestatGBL bg-gray">
   <div class="container">
       <div class="title-section">
         <h2 class="text-h2">
-          @Html.Raw(
-              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
-                  ? Component.DisplayTitle.CleanParagraphTags()
-                  : Component.Title)
+          @Html.Raw((sectionTitle ?? "Latest at GBL").CleanParagraphTags())
         </h2>
       </div>
 
- <div class="latest-grid card-list-items">
-            <div class="latest-news">
+      <div class="latest-grid card-list-items">
+        @if (media != null || press != null)
+        {
+        <div class="latest-news">
+          @if (media != null)
+          {
+              var href = FirstText(media.Url, "/media/media-coverage");
+              var copy = FirstText(media.HmpgIntro, media.Intro, media.Title);
               <article class="latest-news-card card-rise">
                 <div class="latest-news-card__meta">
-                  <span class="latest-badge">Story</span>
-                  <span class="latest-news-card__date">Mar 09, 2026 | chinimandi.com</span>
+                  <span class="latest-badge">@(string.IsNullOrWhiteSpace(media.Tag_list) ? "Media Coverage" : media.Tag_list)</span>
+                  <span class="latest-news-card__date">@NewsDate(media)</span>
                 </div>
-
-                <p>GBL subsidiary Solar Magic&rsquo;s premium sugarcane seedlings are shortening the crop cycle for farmers</p>
-
-                <a href="#" class="site-link">
-                  <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-                  Learn More
+                <p>@Html.Raw((copy ?? "").CleanParagraphTags())</p>
+                <a href="@href" class="site-btn site-btn--line" target="@(string.IsNullOrWhiteSpace(media.UrlTarget) ? "_self" : media.UrlTarget)">
+                  <span class="site-btn__label">Learn More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
                 </a>
               </article>
+          }
 
+          @if (press != null)
+          {
+              var href = FirstText(press.Url, "/media/press-release");
+              var copy = FirstText(press.Title, press.HmpgIntro, press.Intro);
               <article class="latest-news-card card-rise">
                 <div class="latest-news-card__meta">
-                  <span class="latest-badge">Press Release</span>
-                  <span class="latest-news-card__date">Feb 07, 2026</span>
+                  <span class="latest-badge">@(string.IsNullOrWhiteSpace(press.Tag_list) ? "Press Release" : press.Tag_list)</span>
+                  @if (press.DisplayDate.HasValue)
+                  {
+                      <span class="latest-news-card__date">@press.DisplayDate.Value.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture)</span>
+                  }
                 </div>
-                <p>Sathgen Therapeutics Division of Godavari Biorefineries Ltd expands to the US with launch of Princeton-based subsidiary</p>
-
-                <a href="#" class="site-link">
-                  <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-                  Learn More
+                <p>@Html.Raw((copy ?? "").CleanParagraphTags())</p>
+                <a href="@href" class="site-btn site-btn--line" target="@(string.IsNullOrWhiteSpace(press.UrlTarget) ? "_self" : press.UrlTarget)">
+                  <span class="site-btn__label">Learn More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
                 </a>
               </article>
-            </div>
+          }
+        </div>
+        }
 
-            @* Top 2 posts from linkedin.com/company/godavari-biorefineries-limited *@
-            <article class="latest-li-card card-rise">
-              <div class="latest-li-card__feed">
-                <iframe
-                  src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7496430911568367617"
-                  title="Godavari Biorefineries Limited — Sean Reagan board appointment"
-                  loading="lazy"
-                  allowfullscreen=""></iframe>
-              </div>
-            </article>
-
-            <article class="latest-li-card card-rise">
-              <div class="latest-li-card__feed">
-                <iframe
-                  src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7496082346551660544"
-                  title="Godavari Biorefineries Limited — European patent grant"
-                  loading="lazy"
-                  allowfullscreen=""></iframe>
-              </div>
-            </article>
-          </div>
+        @if (embedHtml.Count > 0)
+        {
+            foreach (var html in embedHtml)
+            {
+                <article class="latest-li-card card-rise">
+                  @Html.Raw(html)
+                </article>
+            }
+        }
+        else
+        {
+            foreach (var item in linkedInItems)
+            {
+                var frameTitle = FirstText(item.Title, item.DisplayTitle, "Godavari Biorefineries Limited");
+                <article class="latest-li-card card-rise">
+                  <div class="latest-li-card__feed">
+                    <iframe
+                      src="@item.Url"
+                      title="@frameTitle"
+                      loading="lazy"
+                      allowfullscreen=""></iframe>
+                  </div>
+                </article>
+            }
+        }
+      </div>
   </div>
 </section>
+}
+
+@functions {
+    private static string FirstText(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                return value.Trim();
+        }
+        return "";
+    }
+
+    private static string NewsDate(ArticleModel item)
+    {
+        var date = item.DisplayDate.HasValue
+            ? item.DisplayDate.Value.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture)
+            : "";
+        if (string.IsNullOrWhiteSpace(item.Publication))
+            return date;
+        if (string.IsNullOrWhiteSpace(date))
+            return item.Publication;
+        return date + " | " + item.Publication;
+    }
 }

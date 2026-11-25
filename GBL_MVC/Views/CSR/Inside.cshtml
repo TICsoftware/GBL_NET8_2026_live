@@ -135,7 +135,7 @@
                             <img src="@item.ComponentThumbnail" alt="@item.ComponentThumbnailAltText" class="parallax-img">
                         </div>
                         <div class="carbonCircularity-card__body">
-                            <h3 class="text-h5">test for 4</h3>
+                            <h3 class="text-h5">@Html.Raw(item.Title)</h3>
                             <p>@Html.Raw(item.Intro)</p>
                             @if(!string.IsNullOrWhiteSpace(item.Url))
                             {

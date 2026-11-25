@@ -284,7 +284,16 @@
     position: sticky;
   }
   .inset-0 {
-    inset: 0px;
+    inset: calc(var(--spacing) * 0);
+  }
+  .\!start {
+    inset-inline-start: var(--spacing) !important;
+  }
+  .-start {
+    inset-inline-start: calc(var(--spacing) * -1);
+  }
+  .inset-s-0 {
+    inset-inline-start: 0px;
   }
   .start-0 {
     inset-inline-start: calc(var(--spacing) * 0);
@@ -333,6 +342,9 @@
   }
   .left-0 {
     left: 0px;
+  }
+  .left-1 {
+    left: var(--spacing);
   }
   .left-1\/2 {
     left: calc(1 / 2 * 100%);
@@ -1676,6 +1688,10 @@
     -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
   }
+  .backdrop-filter {
+    -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+    backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+  }
   .transition {
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -1730,6 +1746,12 @@
     }
   }
   @media (width >= 40rem) {
+    .sm\:mt-10 {
+      margin-top: calc(var(--spacing) * 10);
+    }
+    .sm\:mt-12 {
+      margin-top: calc(var(--spacing) * 12);
+    }
     .sm\:h-10 {
       height: calc(var(--spacing) * 10);
     }
@@ -1745,11 +1767,20 @@
     .sm\:w-10 {
       width: calc(var(--spacing) * 10);
     }
+    .sm\:w-auto {
+      width: auto;
+    }
     .sm\:max-w-\[60vw\] {
       max-width: 60vw;
     }
     .sm\:max-w-\[85vw\] {
       max-width: 85vw;
+    }
+    .sm\:grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .sm\:gap-12 {
+      gap: calc(var(--spacing) * 12);
     }
     .sm\:pb-10 {
       padding-bottom: calc(var(--spacing) * 10);
@@ -1763,16 +1794,42 @@
     .md\:top-\[30\%\] {
       top: 30%;
     }
+    .md\:w-\[52\%\] {
+      width: 52%;
+    }
+    .md\:gap-3 {
+      gap: calc(var(--spacing) * 3);
+    }
+    :where(.md\:space-y-8 > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 8) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 8) * calc(1 - var(--tw-space-y-reverse)));
+    }
     .md\:px-8 {
       padding-inline: calc(var(--spacing) * 8);
+    }
+    .md\:pb-5 {
+      padding-bottom: calc(var(--spacing) * 5);
     }
     .md\:pb-15 {
       padding-bottom: calc(var(--spacing) * 15);
     }
   }
   @media (width >= 64rem) {
+    .lg\:col-span-5 {
+      grid-column: span 5 / span 5;
+    }
+    .lg\:col-span-7 {
+      grid-column: span 7 / span 7;
+    }
     .lg\:mt-\[153px\] {
       margin-top: 153px;
+    }
+    .lg\:grid {
+      display: grid;
+    }
+    .lg\:hidden {
+      display: none;
     }
     .lg\:max-w-\[35vw\] {
       max-width: 35vw;
@@ -1780,8 +1837,26 @@
     .lg\:max-w-\[65vw\] {
       max-width: 65vw;
     }
+    .lg\:grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .lg\:grid-cols-12 {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .lg\:items-start {
+      align-items: flex-start;
+    }
+    .lg\:gap-16 {
+      gap: calc(var(--spacing) * 16);
+    }
+    .lg\:pt-16 {
+      padding-top: calc(var(--spacing) * 16);
+    }
     .lg\:pb-0 {
       padding-bottom: 0px;
+    }
+    .lg\:pb-6 {
+      padding-bottom: calc(var(--spacing) * 6);
     }
   }
   @media (width >= 80rem) {

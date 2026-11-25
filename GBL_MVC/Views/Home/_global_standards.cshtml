@@ -12,6 +12,18 @@
         .Where(x => x.IsBlock == 1)
         .OrderBy(x => x.Sequence)
         .ToList();
+
+    var heading = Component == null
+        ? ""
+        : (!string.IsNullOrWhiteSpace(Component.DisplayTitle) ? Component.DisplayTitle : Component.Title);
+    var headingText = (heading ?? "").CleanParagraphTags().Trim();
+    var headingIsLogo = logos.Any(item =>
+    {
+        var caption = !string.IsNullOrWhiteSpace(item.BlockDisplayTitle) ? item.BlockDisplayTitle : item.Title;
+        return string.Equals((caption ?? "").CleanParagraphTags().Trim(), headingText, StringComparison.OrdinalIgnoreCase);
+    });
+    if (string.IsNullOrWhiteSpace(headingText) || headingIsLogo)
+        heading = "Global compliance and operational standards";
 }
 
 @if (Component != null)
@@ -20,10 +32,7 @@
   <div class="container">
       <div class="title-section">
         <h2 class="text-h2">
-          @Html.Raw(
-              !string.IsNullOrWhiteSpace(Component.DisplayTitle)
-                  ? Component.DisplayTitle.CleanParagraphTags()
-                  : Component.Title)
+          @Html.Raw((heading ?? "").CleanParagraphTags())
         </h2>
       </div>
 

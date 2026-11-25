@@ -35,11 +35,23 @@ namespace GBL_BusinessLogic.Entity
         // Seq 8 – Creating a Healthier Tomorrow
         public List<HomeCommonModel> HealthierTomorrow_List { get; set; } = new();
 
-        // Seq 9 – Latest at GBL
+        // Seq 10 – Latest at GBL (LinkedIn embeds; news cards come from press and media)
         public List<HomeCommonModel> Latest_List { get; set; } = new();
 
-        // Seq 10 – Global compliance and operational standards
+        // Seq 12 – Global compliance and operational standards
         public List<HomeCommonModel> GlobalStandards_List { get; set; } = new();
+
+        // Our Performance — same latest quarter and annual report as /investors
+        public QuarterlyReportItemModel? LatestQuarter { get; set; }
+        public ArticleModel? LatestAnnualReport { get; set; }
+
+        // Latest at GBL — newest press release and newest media coverage
+        public ArticleModel? LatestPress { get; set; }
+        public ArticleModel? LatestMedia { get; set; }
+
+        // Stories of Change — child pages from the content table
+        public string StoriesTitle { get; set; } = "Stories of Change";
+        public List<ArticleModel> Stories_List { get; set; } = new();
 
         // Legacy lists kept for Index-old.cshtml compile compatibility
         public List<HomeCommonModel> Products_List { get; set; } = new();
@@ -55,6 +67,8 @@ namespace GBL_BusinessLogic.Entity
         public string Title { get; set; }
         public string Intro { get; set; }
          public string Landing_Intro { get; set; }
+        public string Lhs_Intro { get; set; }
+        public string Rhs_Intro { get; set; }
         public string HmpgIntro { get; set; }
         public string DisplayTitle { get; set; }
          public string BlockDisplayTitle { get; set; }
