@@ -223,6 +223,23 @@ namespace GBL_BusinessLogic.BAL
                     .ToList();
             }
 
+            var ds_reports = Get_Annual_Sustainability_Reports_DAL(languageId, geographyId);
+            List<ArticleModel> articles = [];
+            if (ds_reports.Tables.Count >= 1 && ds_reports.Tables[0].Rows.Count > 0)
+            {
+                articles = Config_Application_Website.MapArticleList(ds_reports.Tables[0]);
+                model.Annual_sustainability_reports = articles;
+                if (ds_reports.Tables[1].Rows.Count > 0)
+                {
+                    articles = Config_Application_Website.MapArticleList(ds_reports.Tables[1]);
+                    foreach(var item in articles)
+                    {
+                        model.Annual_sustainability_reports.Add(item);
+                    }
+                }
+
+            }
+
             return model;
         }
 

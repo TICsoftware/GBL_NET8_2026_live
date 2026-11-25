@@ -9,7 +9,9 @@
     var sections = Array.prototype.map.call(document.querySelectorAll(".mk-jump__btn"), function (link) {
       var id = (link.getAttribute("href") || "").replace(/^#/, "");
       var section = id ? document.getElementById(id) : null;
-      return section ? { link: link, section: section } : null;
+      if (!section) return null;
+      var head = section.querySelector("h2") || section;
+      return { link: link, section: section, head: head };
     }).filter(Boolean);
 
     if (!bar || !sections.length) return;
@@ -25,7 +27,7 @@
     var nav = document.querySelector(".mk-jump__nav");
     var prev = document.querySelector(".mk-jump__arrow--prev");
     var next = document.querySelector(".mk-jump__arrow--next");
-    var mobileQuery = window.matchMedia("(max-width: 760px)");
+    var mobileQuery = window.matchMedia("(max-width: 1199px)");
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var activeSection = null;
 
@@ -55,7 +57,7 @@
         if (item.section === section) index = i;
       });
       prev.disabled = index <= 0;
-      next.disabled = index === sections.length - 1;
+      next.disabled = index < 0 || index === sections.length - 1;
     }
 
     function currentScroll() {
@@ -96,6 +98,7 @@
         if (item.section === activeSection) index = i;
       });
       if (index > 0) goTo(index - 1);
+      else if (index < 0) goTo(0);
     });
 
     if (next) next.addEventListener("click", function () {
@@ -103,7 +106,8 @@
       sections.forEach(function (item, i) {
         if (item.section === activeSection) index = i;
       });
-      if (index < sections.length - 1) goTo(index + 1);
+      if (index < 0) goTo(0);
+      else if (index < sections.length - 1) goTo(index + 1);
     });
 
     function setActive(section) {
@@ -118,8 +122,28 @@
       });
       if (!section && changed) centerLink(null);
       syncArrows(section);
+      moveThumb();
     }
 
+    // Green pill that slides under the active tab (same as .cg-jump__thumb)
+    function moveThumb() {
+      if (!nav) return;
+      var thumb = nav.querySelector(".mk-jump__thumb");
+      if (!thumb) return;
+      var link = nav.querySelector(".mk-jump__btn.is-active");
+      if (!link) {
+        thumb.style.opacity = "0";
+        nav.classList.remove("is-ready");
+        return;
+      }
+      nav.classList.add("is-ready");
+      thumb.style.opacity = "1";
+      thumb.style.width = link.offsetWidth + "px";
+      thumb.style.transform = "translateX(" + link.offsetLeft + "px)";
+    }
+
+    /* Scroll-spy (same rules as corporate governance): the first tab is active at the top;
+       a tab activates when its section heading reaches ~45% down the viewport. */
     var ticking = false;
     function update() {
       ticking = false;
@@ -127,20 +151,20 @@
         nav.style.paddingLeft = "";
         nav.style.paddingRight = "";
       }
-      var line = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 88) + bar.offsetHeight + 24;
+      var line = window.innerHeight * 0.45;
       var current = null;
       var doc = document.documentElement;
-      var atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 4;
+      var atBottom = window.innerHeight + currentScroll() >= doc.scrollHeight - 4;
 
       if (atBottom) {
         current = sections[sections.length - 1].section;
       } else {
         sections.forEach(function (item) {
-          if (item.section.getBoundingClientRect().top <= line) current = item.section;
+          if (item.head.getBoundingClientRect().top <= line) current = item.section;
         });
       }
 
-      setActive(current);
+      setActive(current || sections[0].section);
     }
 
     function onScroll() {

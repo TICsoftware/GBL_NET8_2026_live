@@ -81,9 +81,12 @@
                         </svg>
                     </button>
                     <nav class="mk-jump__nav">
+                        <span class="mk-jump__thumb" aria-hidden="true"></span>
+                        @{ var firstTab = true; }
                         @foreach (var item in Model.Section_List)
                         {
-                            <a class="mk-jump__btn" href="#@item.PageName"> @Html.Raw(item.Title)</a>
+                            <a class="mk-jump__btn@(firstTab ? " is-active" : "")" href="#@item.PageName">@Html.Raw(item.Title)</a>
+                            firstTab = false;
                         }
                     </nav>
                     <button type="button" class="mk-jump__arrow mk-jump__arrow--next" aria-label="Next section">
@@ -158,7 +161,7 @@
                                     <ul class="mk-grid mk-grid--4">
                                         @foreach (var objblock in itemblocks)
                                         {
-                                            <li class="mk-card">
+                                            <li class="mk-card mk-card--download">
                                                 @if (!string.IsNullOrWhiteSpace(objblock.ThumbnailImage) &&
                                                 !string.IsNullOrWhiteSpace(objblock.MediafilePath))
                                                 {
@@ -225,13 +228,44 @@
                                                 var thumbFileName = System.IO.Path.GetFileName(thumbPath);
                                                 var thumbExtension = System.IO.Path.GetExtension(thumbFileName)?.TrimStart('.').ToUpper() ?? "";
                                             }
-                                            <a class="mk-dl" href="@thumbPath" download="thumbFileName"
+                                            <a class="mk-dl" href="@thumbPath" download="@thumbFileName"
                                                aria-label="Download brand film, @thumbExtension">
                                                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                     <path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor"
                                                           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
                                             </a>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(mediafilesextn))
+                        {
+                            <ul class="mk-grid mk-grid--4">
+                                @foreach (var objblock in itemdirectblocks)
+                                {
+                                    @* Whole card downloads: .mk-dl's ::before covers the card (media-kit.css) *@
+                                    <li class="mk-card mk-card--download">
+                                        <div class="mk-pub" >
+                                            <span class="mk-stage mk-stage--pub">
+                                                <img src="@objblock.ThumbnailImage" alt="@objblock.ThumbnailAltText">
+                                            </span>
+                                            @{
+                                                    var thumbPath = objblock.MediafilePath.Split('?')[0];
+                                                    var thumbFileName = System.IO.Path.GetFileName(thumbPath);
+                                                    var thumbExtension = System.IO.Path.GetExtension(thumbFileName)?.TrimStart('.').ToUpper() ?? "";
+                                                }
+                                            <span class="mk-card__meta">
+                                                <span>
+                                                <span class="mk-card__title">@objblock.Title</span>
+                                                <span class="mk-card__type">@thumbExtension</span>
+                                                </span>
+                                                
+                                                <a class="mk-dl" href="@thumbPath" download="@thumbFileName" aria-label="Download @(objblock.Title), @thumbExtension" rel="noopener noreferrer">
+                                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </a>
+                                            </span>
                                         </div>
                                     </li>
                                 }
@@ -260,25 +294,30 @@
                             {
                                 if(objblock.IsBlock == 1 && !string.IsNullOrWhiteSpace(objblock.Designation))
                                 {
-                                <li class="mk-card">
-                                    <div class="mk-stage mk-stage--portrait">
-                                        <img src="@objblock.ThumbnailImage" alt="@objblock.ThumbnailAltText" />
-                                    </div>
-                                    <div class="mk-card__meta">
-                                        <div>
-                                            <h3 class="mk-card__title">@Html.Raw(objblock.Title)</h3>
-                                            <p class="mk-card__type">@Html.Raw(objblock.Designation.CleanParagraphTags())</p>
+                                    var portraitPath = (objblock.ThumbnailImage ?? "").Split('?')[0];
+                                    var portraitFileName = System.IO.Path.GetFileName(portraitPath);
+                                    var thumbExtension = System.IO.Path.GetExtension(portraitFileName)?.TrimStart('.').ToUpper() ?? "";
+                                    @* Whole card downloads: .mk-dl's ::before covers the card (media-kit.css) *@
+                                    <li class="mk-card mk-card--download">
+                                        <div class="mk-stage mk-stage--portrait">
+                                            <img src="@objblock.ThumbnailImage" alt="@objblock.ThumbnailAltText" />
                                         </div>
-                                        <a class="mk-dl" href="@objblock.ThumbnailImage" download="samir-s-somaiya.webp" aria-label="Download photograph of @Html.Raw(objblock.Title)">
-                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </a>
-                                    </div>
-                                </li>
+                                        <div class="mk-card__meta">
+                                            <div>
+                                                <h3 class="mk-card__title">@Html.Raw(objblock.Title)</h3>
+                                                <p class="mk-card__type">@Html.Raw(objblock.Designation.CleanParagraphTags())</p>
+                                            </div>
+                                            <a class="mk-dl" href="@objblock.ThumbnailImage" download="@portraitFileName" aria-label="Download photograph of @Html.Raw(objblock.Title), @thumbExtension">
+                                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </a>
+                                        </div>
+                                    </li>
                                 }
                             }
                              </ul>
                         }
                     }
+                     
                 </div>
             </section>
             incr++;
