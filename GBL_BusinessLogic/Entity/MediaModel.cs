@@ -22,6 +22,8 @@ namespace GBL_BusinessLogic.Entity
         public List<ComponentModel> Subsections_Components { get; set; } = new();
         public List<ComponentModel> Leadership_Components { get; set; } = new();
 
+        public List<ArticleModel> Annual_sustainability_reports { get; set; } = new();
+
         public int TotalCount { get; set; }
 
     }

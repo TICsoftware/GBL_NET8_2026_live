@@ -23,7 +23,7 @@ namespace GBL_BusinessLogic.DAL
             return GetDataSet("sp_GetComponentData", sqlParams);
         }
 
-        public DataSet Get_Annual_Sustainability_Reports_Components_DAL(int LanguageID, int GeographyID)
+        public DataSet Get_Annual_Sustainability_Reports_DAL(int LanguageID, int GeographyID)
         {
             SqlParameter[] sqlParams =
             {                 
@@ -31,7 +31,7 @@ namespace GBL_BusinessLogic.DAL
                 new ("@GeographyID", GeographyID >0 ? GeographyID : null),
             };
 
-            return GetDataSet("Get_Annual_Sustainability_Reports_Components", sqlParams);
+            return GetDataSet("Get_Annual_Sustainability_Reports", sqlParams);
         }
 
     }
