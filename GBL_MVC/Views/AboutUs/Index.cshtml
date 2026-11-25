@@ -241,6 +241,10 @@
 
                     <article class="about-split about-split--center">
                         <div class="about-split__copy card-rise">
+                            @if (!string.IsNullOrWhiteSpace(itemsection.DisplayTitle))
+                            {
+                                @Html.Raw(itemsection.DisplayTitle.Trim())
+                            }
                             <h2 class="text-h2 title-animation about-title"> @Html.Raw(itemsection.Title)</h2>
                             @if (!string.IsNullOrWhiteSpace(itemsection.HmpgIntro))
                             {
@@ -282,10 +286,7 @@
                     </article>
                     <article class="about-vision">
                         <div class="about-vision__card card-rise">
-                            @if (!string.IsNullOrWhiteSpace(itemsection.DisplayTitle))
-                            {
-                                @Html.Raw(itemsection.DisplayTitle.Trim())
-                            }
+                            
                             @if (!string.IsNullOrWhiteSpace(itemsection.Content))
                             {
                                 <p class="about-body">@Html.Raw(itemsection.Content)</p>
