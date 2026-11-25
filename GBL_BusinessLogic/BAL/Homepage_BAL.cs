@@ -51,14 +51,159 @@ namespace GBL_BusinessLogic.BAL
                 model.SoilToTable_List = MapComponentCommon(groupedData, 6);
                 model.GiveBack_List = MapComponentCommon(groupedData, 7);
                 model.HealthierTomorrow_List = MapComponentCommon(groupedData, 8);
-                model.Latest_List = MapComponentCommon(groupedData, 9);
-                model.GlobalStandards_List = MapComponentCommon(groupedData, 10);
+                model.Latest_List = MapComponentCommon(groupedData, 10);
+                model.GlobalStandards_List = MapComponentCommon(groupedData, 12);
             }
 
-            // Our team
-
+            BindInvestorHighlights(model, languageId, geographyId);
+            BindStories(model, languageId, geographyId);
 
             return model;
+        }
+
+        /// <summary>
+        /// First and second Our Performance boxes match /investors:
+        /// the latest quarterly report, then the latest annual report.
+        /// Latest at GBL uses the newest press release and newest media coverage.
+        /// </summary>
+        private void BindInvestorHighlights(HomePageModel model, int languageId, int geographyId)
+        {
+            try
+            {
+                using var investors = new InvestorRelations_BAL(_configuration);
+                var data = investors.GetInvestorRelations_BAL("investors", languageId, geographyId);
+                model.LatestQuarter = data.LatestQuarter;
+                model.LatestAnnualReport = data.LatestAnnualReport;
+                model.LatestPress = data.WhatsNewPress.FirstOrDefault();
+                model.LatestMedia = data.WhatsNewMedia.FirstOrDefault();
+            }
+            catch
+            {
+                // Homepage still renders when investor or media lists are unavailable.
+            }
+
+            if (model.LatestAnnualReport == null || string.IsNullOrWhiteSpace(model.LatestAnnualReport.Title))
+            {
+                try
+                {
+                    using var annualBal = new Investors_BAL(_configuration);
+                    foreach (var name in new[] { "annual-report", "annual-reports" })
+                    {
+                        var page = annualBal.GetAnnualReports_BAL(name, languageId, geographyId, 1);
+                        var top = page.SectionArticles_List?
+                            .FirstOrDefault(a => !string.IsNullOrWhiteSpace(a.Title));
+                        if (top == null) continue;
+                        model.LatestAnnualReport = top;
+                        break;
+                    }
+                }
+                catch
+                {
+                    // Annual report list is optional on the homepage.
+                }
+            }
+        }
+
+        private static readonly string[] StoryPageNames =
+        {
+            "stories-of-change",
+            "stories",
+            "our-stories",
+            "story-of-change",
+            "Stories-of-Change"
+        };
+
+        private void BindStories(HomePageModel model, int languageId, int geographyId)
+        {
+            try
+            {
+                using var pages = new Page_Manage_BAL(_configuration);
+                using var media = new Media_BAL(_configuration);
+
+                foreach (var name in StoryPageNames)
+                {
+                    DataSet ds;
+                    try
+                    {
+                        ds = pages.GetContentComponentData_DAL(name, languageId, geographyId);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                        continue;
+
+                    var parent = ds.Tables[0].Rows[0];
+                    var parentId = parent.Table.Columns.Contains("cont_id") && parent["cont_id"] != DBNull.Value
+                        ? Convert.ToInt32(parent["cont_id"])
+                        : 0;
+                    if (parentId <= 0)
+                        continue;
+
+                    var title = parent.Table.Columns.Contains("cont_title")
+                        ? parent["cont_title"]?.ToString()
+                        : "";
+                    if (!string.IsNullOrWhiteSpace(title))
+                        model.StoriesTitle = title;
+
+                    var stories = LoadStoryArticles(pages, media, parentId, languageId);
+                    if (stories.Count == 0)
+                        continue;
+
+                    model.Stories_List = stories;
+                    return;
+                }
+            }
+            catch
+            {
+                // Stories stay empty when the content parent cannot be resolved.
+            }
+        }
+
+        private static List<ArticleModel> LoadStoryArticles(
+            Page_Manage_BAL pages,
+            Media_BAL media,
+            int parentId,
+            int languageId)
+        {
+            try
+            {
+                var listed = media.GetPressReleases_page_wise_BAL(parentId, 1, 12);
+                if (listed.SectionArticles_List.Count > 0)
+                    return OrderStories(listed.SectionArticles_List);
+            }
+            catch
+            {
+                // Listing SP may not apply to this content parent.
+            }
+
+            try
+            {
+                var sub = pages.GetSubSections_AllComponents_DAL(parentId, languageId);
+                if (sub != null && sub.Tables.Count > 0 && sub.Tables[0].Rows.Count > 0)
+                {
+                    var articles = Config_Application_Website.MapArticleList(sub.Tables[0]);
+                    if (articles.Count > 0)
+                        return OrderStories(articles);
+                }
+            }
+            catch
+            {
+                // Subsection SP may not be deployed for this parent.
+            }
+
+            return new List<ArticleModel>();
+        }
+
+        private static List<ArticleModel> OrderStories(List<ArticleModel> articles)
+        {
+            return articles
+                .Where(a => a.ContId > 0 && !string.IsNullOrWhiteSpace(a.Title))
+                .OrderBy(a => a.Sequence <= 0 ? int.MaxValue : a.Sequence)
+                .ThenBy(a => a.ContId)
+                .ToList();
         }
 
 
@@ -126,6 +271,8 @@ namespace GBL_BusinessLogic.BAL
                 Title = Config_Application_Website.GetValue(dict, "Title", "Component Title"),
                 Intro = Config_Application_Website.GetValue(dict, "Intro", "Component Intro"),
                  Landing_Intro = Config_Application_Website.GetValue(dict, "Landing_Intro", "Landing intro"),
+                Lhs_Intro = Config_Application_Website.GetValue(dict, "Component LHS intro"),
+                Rhs_Intro = Config_Application_Website.GetValue(dict, "Component RHS intro"),
                 DisplayTitle = Config_Application_Website.GetValue(dict, "Component Display title"),
                 BlockDisplayTitle = Config_Application_Website.GetValue(dict, "Display title"),
                 Content = Config_Application_Website.GetValue(dict, "Content", "Component Content"),

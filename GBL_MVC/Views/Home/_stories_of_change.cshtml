@@ -1,0 +1,70 @@
+@using GBL_BusinessLogic.Entity
+@using GBL_MVC.Helpers
+@model HomePageModel
+@{
+    var stories = Model?.Stories_List ?? new List<ArticleModel>();
+    var title = string.IsNullOrWhiteSpace(Model?.StoriesTitle) ? "Stories of Change" : Model.StoriesTitle;
+}
+
+@if (stories.Count > 0)
+{
+<section class="section-spacing storiesofChange">
+  <div class="container">
+      <div class="title-section">
+        <h2 class="text-h2">@Html.Raw(title.CleanParagraphTags())</h2>
+      </div>
+
+      <div class="stories-grid">
+        @for (var i = 0; i < stories.Count; i++)
+        {
+            var item = stories[i];
+            var cardClass = i % 2 == 1 ? "story-card story-card--reverse" : "story-card";
+            var img = FirstText(item.ThumbnailImage, item.MastheadImage, item.BackgroundImage);
+            var alt = FirstText(item.ThumbnailAltText, item.Title);
+            var copy = FirstText(item.HmpgIntro, item.Intro);
+            var href = FirstText(item.Url, item.ExternalUrl, item.PageName);
+            if (!string.IsNullOrWhiteSpace(href) && !href.StartsWith("/") && !href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                href = "/" + href.TrimStart('/');
+            }
+            <article class="@cardClass">
+              <div class="story-card__media parallax-wrap">
+                @if (!string.IsNullOrWhiteSpace(img))
+                {
+                    <img src="@img" alt="@alt" class="parallax-img img-fluid">
+                }
+              </div>
+              <div class="story-card__content">
+                <h3 class="story-card__title text-h5">@Html.Raw((item.Title ?? "").CleanParagraphTags())</h3>
+                @if (!string.IsNullOrWhiteSpace(copy))
+                {
+                    <p class="story-card__desc">@Html.Raw(copy.CleanParagraphTags())</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(href))
+                {
+                <a href="@href" class="site-btn site-btn--line story-card__link" target="@(string.IsNullOrWhiteSpace(item.UrlTarget) ? "_self" : item.UrlTarget)">
+                  <span class="site-btn__label">Learn More</span>
+                  <span class="site-btn__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </a>
+                }
+              </div>
+            </article>
+        }
+      </div>
+  </div>
+</section>
+}
+
+@functions {
+    private static string FirstText(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                return value.Trim();
+        }
+        return "";
+    }
+}
