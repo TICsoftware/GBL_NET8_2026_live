@@ -13,6 +13,24 @@ public class Search
 }
 
 
+public class SearchSuggestResult
+{
+    public string q { get; set; }
+    public string cat { get; set; }
+    public int total { get; set; }
+    public List<SearchSuggestItem> items { get; set; } = new List<SearchSuggestItem>();
+}
+
+public class SearchSuggestItem
+{
+    public string title { get; set; }
+    public string url { get; set; }
+    public string type { get; set; }
+    public string path { get; set; }
+    public string cat { get; set; }
+}
+
+
 public class Content_Search_Display
 {
 
