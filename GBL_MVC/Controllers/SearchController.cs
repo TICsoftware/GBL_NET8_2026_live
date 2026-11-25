@@ -44,6 +44,21 @@ namespace GBL_MVC.Controllers
         }
 
 
+        // Quick results for the header search overlay: GET /search/suggest?q=...&cat=Investors
+        [HttpGet]
+        public IActionResult Suggest(string q, string cat)
+        {
+            try
+            {
+                return Json(_bal.search_suggest(q, cat));
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError("/Search/Suggest :", ex);
+                return Json(new SearchSuggestResult { q = q, cat = cat ?? "All" });
+            }
+        }
+
         public ActionResult LoadMoreSearch(string keyword, int page)
         {
             try

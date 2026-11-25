@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const backdrop = header.querySelector("[data-header-backdrop]");
   const toggleBtn = header.querySelector("[data-nav-toggle]");
-  const searchPanel = header.querySelector("#headerSearch");
+  const searchPanel = document.getElementById("searchOverlay");
   const searchToggle = header.querySelector("[data-search-toggle]");
-  const searchInput = header.querySelector("#headerSearchInput");
+  const searchInput = searchPanel ? searchPanel.querySelector("#headerSearchInput") : null;
   const triggers = Array.from(header.querySelectorAll("[data-mega-trigger]"));
   const menus = Array.from(header.querySelectorAll(".mega-menu"));
   const navWrap = header.querySelector(".site-header__nav-wrap");
@@ -349,10 +349,28 @@ document.addEventListener("DOMContentLoaded", function () {
     lockPage(true);
   };
 
-  const closeSearch = () => {
+  let searchReturnFocus = null;
+
+  // The search panel drops down right under the visible header bar.
+  const positionSearch = () => {
     if (!searchPanel) return;
+    const bar = header.querySelector(".site-header__bar");
+    const bottom = bar ? Math.max(0, Math.round(bar.getBoundingClientRect().bottom)) : 0;
+    if (bottom) searchPanel.style.setProperty("--search-top", bottom + "px");
+  };
+
+  const setSearchToggleLabel = (open) => {
+    if (!searchToggle) return;
+    searchToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    searchToggle.setAttribute("aria-label", open ? "Close search" : "Open search");
+  };
+
+  const closeSearch = () => {
+    if (!searchPanel || !header.classList.contains("is-search-open")) return;
     header.classList.remove("is-search-open");
-    if (searchToggle) searchToggle.setAttribute("aria-expanded", "false");
+    searchPanel.classList.remove("is-open");
+    document.body.classList.remove("is-search-overlay-open");
+    setSearchToggleLabel(false);
     window.setTimeout(() => {
       if (!header.classList.contains("is-search-open")) searchPanel.hidden = true;
     }, 320);
@@ -360,17 +378,29 @@ document.addEventListener("DOMContentLoaded", function () {
       lockPage(false);
     }
     updateTheme();
+    if (searchReturnFocus && typeof searchReturnFocus.focus === "function") searchReturnFocus.focus();
+    searchReturnFocus = null;
   };
 
   const openSearch = () => {
     if (!searchPanel) return;
     if (isMobile()) closeMobileNav();
     closeMega();
+    searchReturnFocus = document.activeElement;
     searchPanel.hidden = false;
     header.classList.add("is-search-open");
-    if (searchToggle) searchToggle.setAttribute("aria-expanded", "true");
+    document.body.classList.add("is-search-overlay-open");
+    setSearchToggleLabel(true);
     lockPage(true);
     updateTheme();
+    positionSearch();
+    if (window.GBLSearchOverlay) window.GBLSearchOverlay.onOpen();
+    requestAnimationFrame(() => {
+      positionSearch();
+      searchPanel.classList.add("is-open");
+    });
+    // the header bar may animate its height (compact/light); follow it
+    window.setTimeout(positionSearch, 450);
     window.setTimeout(() => searchInput && searchInput.focus(), 80);
   };
 
@@ -385,7 +415,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    if (header.classList.contains("is-nav-open")) {
+    if (header.classList.contains("is-nav-open") || header.classList.contains("is-search-open")) {
       header.classList.add("is-light");
       header.classList.remove("is-dark");
       return;
@@ -493,6 +523,8 @@ document.addEventListener("DOMContentLoaded", function () {
     menu.querySelectorAll("[data-l2]").forEach((item) => {
       item.addEventListener("click", (event) => {
         if (item.getAttribute("href") === "#") event.preventDefault();
+        // Desktop: an item with a submenu that has its own page links there (hover already opens the submenu)
+        if (item.hasAttribute("data-panel") && !isMobile() && item.getAttribute("href") !== "#") return;
         if (item.hasAttribute("data-panel")) {
           event.preventDefault();
           // Desktop hover already reveals the submenu. Only mobile tap toggles it shut.
@@ -539,17 +571,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  header.querySelector("[data-search-close]")?.addEventListener("click", closeSearch);
-
-  header.querySelector(".site-header__search-form")?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const q = (searchInput && searchInput.value || "").trim();
-    if (!q) {
-      searchInput && searchInput.focus();
-      return;
-    }
-    window.location.href = "/search/" + encodeURIComponent(q);
-  });
+  if (searchPanel) {
+    window.GBLSearchOverlay = initSearchOverlay(searchPanel, searchInput, closeSearch, searchToggle);
+    window.addEventListener("resize", () => {
+      if (header.classList.contains("is-search-open")) positionSearch();
+    });
+    // A click on the dimmed page (outside the panel and the header) closes search.
+    document.addEventListener("mousedown", (event) => {
+      if (!header.classList.contains("is-search-open")) return;
+      if (searchPanel.contains(event.target) || header.contains(event.target)) return;
+      closeSearch();
+    });
+    header.querySelector(".site-header__bar")?.addEventListener("transitionend", (event) => {
+      if (event.propertyName === "height" && header.classList.contains("is-search-open")) positionSearch();
+    });
+  }
 
   backdrop?.addEventListener("click", () => {
     closeSearch();
@@ -617,3 +653,248 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   updateTheme();
 });
+
+/* =========================
+   Full-screen search overlay
+   (live results from /search/suggest, section chips, recent searches)
+========================= */
+function initSearchOverlay(panel, input, close, toggle) {
+  const suggestUrl = panel.getAttribute("data-suggest-url") || "/search/suggest";
+  const resultsBox = panel.querySelector("[data-search-results]");
+  const list = panel.querySelector("[data-search-list]");
+  const countEl = panel.querySelector("[data-search-count]");
+  const emptyEl = panel.querySelector("[data-search-empty]");
+  const allLink = panel.querySelector("[data-search-all]");
+  const defaultBox = panel.querySelector("[data-search-default]");
+  const clearBtn = panel.querySelector("[data-search-clear]");
+  const recentCol = panel.querySelector("[data-search-recent-col]");
+  const recentList = panel.querySelector("[data-search-recent]");
+  const chips = Array.from(panel.querySelectorAll("[data-search-cat]"));
+  const form = panel.querySelector("[data-search-form]");
+
+  const RECENT_KEY = "gbl.recentSearches";
+  const RECENT_MAX = 5;
+  const MIN_CHARS = 2;
+
+  let cat = "All";
+  let timer = 0;
+  let controller = null;
+  let activeIndex = -1;
+  let requestId = 0;
+
+  const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  const escapeHtml = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ESC[c]);
+  const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const highlight = (text, term) => {
+    const safe = escapeHtml(text);
+    const words = term.split(/\s+/).filter((w) => w.length > 1).map((w) => escapeRegex(escapeHtml(w)));
+    if (!words.length) return safe;
+    return safe.replace(new RegExp("(" + words.join("|") + ")", "gi"), "<mark>$1</mark>");
+  };
+
+  const searchPageUrl = (q) => "/search/" + encodeURIComponent(q);
+
+  /* ---- recent searches (kept in this browser only) ---- */
+  const readRecent = () => {
+    try {
+      const v = JSON.parse(window.localStorage.getItem(RECENT_KEY) || "[]");
+      return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
+    } catch (e) { return []; }
+  };
+  const writeRecent = (items) => {
+    try { window.localStorage.setItem(RECENT_KEY, JSON.stringify(items.slice(0, RECENT_MAX))); } catch (e) { /* storage blocked */ }
+  };
+  const saveRecent = (q) => {
+    const term = (q || "").trim();
+    if (term.length < MIN_CHARS) return;
+    writeRecent([term].concat(readRecent().filter((x) => x.toLowerCase() !== term.toLowerCase())));
+  };
+
+  const renderRecent = () => {
+    if (!recentList || !recentCol) return;
+    const items = readRecent();
+    recentCol.hidden = items.length === 0;
+    recentList.innerHTML = items.map((term, i) =>
+      '<li>' +
+        '<button type="button" class="search-overlay__recent-use" data-recent-use="' + i + '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2"/></svg>' +
+          escapeHtml(term) +
+        '</button>' +
+        '<button type="button" class="search-overlay__recent-remove" data-recent-remove="' + i + '" aria-label="Remove ' + escapeHtml(term) + ' from recent searches">' +
+          '<svg width="10" height="10" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>' +
+        '</button>' +
+      '</li>'
+    ).join("");
+  };
+
+  /* ---- results ---- */
+  const getItems = () => Array.from(list.querySelectorAll(".search-overlay__result"));
+
+  const setActive = (index) => {
+    const items = getItems();
+    activeIndex = items.length ? Math.max(-1, Math.min(index, items.length - 1)) : -1;
+    items.forEach((el, i) => {
+      const on = i === activeIndex;
+      el.classList.toggle("is-active", on);
+      el.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) el.scrollIntoView({ block: "nearest" });
+    });
+    if (activeIndex >= 0) input.setAttribute("aria-activedescendant", items[activeIndex].id);
+    else input.removeAttribute("aria-activedescendant");
+  };
+
+  const showDefault = (on) => {
+    if (defaultBox) defaultBox.hidden = !on;
+    resultsBox.hidden = on;
+    input.setAttribute("aria-expanded", on ? "false" : "true");
+    if (on) {
+      list.innerHTML = "";
+      activeIndex = -1;
+      input.removeAttribute("aria-activedescendant");
+      renderRecent();
+    }
+  };
+
+  const render = (data, term) => {
+    const items = (data && Array.isArray(data.items)) ? data.items : [];
+    const total = (data && data.total) || items.length;
+    countEl.textContent = total + (total === 1 ? " result" : " results") + (cat === "All" ? "" : " in " + cat);
+    list.innerHTML = items.map((r, i) => {
+      const isPdf = r.type === "PDF";
+      return '<li role="presentation">' +
+        '<a href="' + escapeHtml(r.url) + '" class="search-overlay__result" id="searchOverlayOpt' + i + '" role="option" aria-selected="false"' + (isPdf ? ' target="_blank" rel="noopener"' : '') + '>' +
+          '<span class="search-overlay__result-main">' +
+            '<span class="search-overlay__badge' + (isPdf ? ' search-overlay__badge--pdf' : '') + '">' + escapeHtml(r.type || "Page") + '</span>' +
+            '<span class="search-overlay__result-title">' + highlight(r.title, term) + '</span>' +
+          '</span>' +
+          '<span class="search-overlay__result-path">' + escapeHtml(r.path || "") + '</span>' +
+        '</a>' +
+      '</li>';
+    }).join("");
+    emptyEl.hidden = items.length > 0;
+    countEl.hidden = items.length === 0;
+    allLink.hidden = items.length === 0;
+    allLink.href = searchPageUrl(term);
+    activeIndex = -1;
+    input.removeAttribute("aria-activedescendant");
+  };
+
+  const runSearch = () => {
+    const term = input.value.trim();
+    clearBtn.hidden = input.value.length === 0;
+    clearTimeout(timer);
+    setActive(-1); // a stale highlight must not be opened by Enter once the text changes
+    if (term.length < MIN_CHARS) {
+      requestId++;
+      if (controller) controller.abort();
+      showDefault(true);
+      return;
+    }
+    timer = window.setTimeout(() => {
+      if (controller) controller.abort();
+      controller = typeof AbortController === "function" ? new AbortController() : null;
+      const myId = ++requestId;
+      showDefault(false);
+      resultsBox.classList.add("is-loading");
+      const url = suggestUrl + "?q=" + encodeURIComponent(term) + "&cat=" + encodeURIComponent(cat);
+      fetch(url, { headers: { Accept: "application/json" }, signal: controller ? controller.signal : undefined })
+        .then((res) => (res.ok ? res.json() : { items: [], total: 0 }))
+        .then((data) => { if (myId === requestId) render(data, term); })
+        .catch((err) => { if (err && err.name !== "AbortError" && myId === requestId) render({ items: [], total: 0 }, term); })
+        .finally(() => { if (myId === requestId) resultsBox.classList.remove("is-loading"); });
+    }, 220);
+  };
+
+  const setTerm = (term) => {
+    input.value = term;
+    input.focus();
+    runSearch();
+  };
+
+  /* ---- events ---- */
+  input.addEventListener("input", runSearch);
+
+  input.addEventListener("keydown", (event) => {
+    if (resultsBox.hidden) return;
+    if (event.key === "ArrowDown") { event.preventDefault(); setActive(activeIndex + 1); }
+    else if (event.key === "ArrowUp") { event.preventDefault(); setActive(activeIndex - 1); }
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const term = input.value.trim();
+    const items = getItems();
+    if (activeIndex >= 0 && items[activeIndex]) {
+      saveRecent(term);
+      items[activeIndex].click();
+      return;
+    }
+    if (!term) { input.focus(); return; }
+    saveRecent(term);
+    window.location.href = searchPageUrl(term);
+  });
+
+  clearBtn.addEventListener("click", () => setTerm(""));
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      cat = chip.getAttribute("data-search-cat") || "All";
+      chips.forEach((c) => {
+        const on = c === chip;
+        c.classList.toggle("is-active", on);
+        c.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      runSearch();
+    });
+  });
+
+  panel.querySelectorAll("[data-search-term]").forEach((btn) => {
+    btn.addEventListener("click", () => setTerm((btn.getAttribute("data-search-term") || "").trim()));
+  });
+
+  if (recentList) {
+    recentList.addEventListener("click", (event) => {
+      const use = event.target.closest("[data-recent-use]");
+      const remove = event.target.closest("[data-recent-remove]");
+      const items = readRecent();
+      if (use) setTerm(items[+use.getAttribute("data-recent-use")] || "");
+      if (remove) {
+        const idx = +remove.getAttribute("data-recent-remove");
+        writeRecent(items.filter((_, i) => i !== idx));
+        renderRecent();
+        input.focus();
+      }
+    });
+  }
+
+  list.addEventListener("click", (event) => {
+    if (event.target.closest(".search-overlay__result")) saveRecent(input.value);
+  });
+  allLink.addEventListener("click", () => saveRecent(input.value));
+
+  panel.querySelectorAll("[data-search-close]").forEach((btn) => btn.addEventListener("click", close));
+
+  // While open, Tab cycles between the header's close button and the panel.
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab" || panel.hidden || !panel.classList.contains("is-open")) return;
+    const inPanel = Array.from(panel.querySelectorAll('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => el.offsetParent !== null);
+    const focusables = (toggle ? [toggle] : []).concat(inPanel);
+    if (!focusables.length) return;
+    if (!focusables.includes(document.activeElement)) { event.preventDefault(); focusables[event.shiftKey ? focusables.length - 1 : 0].focus(); return; }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+
+  renderRecent();
+
+  return {
+    onOpen: () => {
+      renderRecent();
+      if (input.value.trim().length < MIN_CHARS) showDefault(true);
+    }
+  };
+}

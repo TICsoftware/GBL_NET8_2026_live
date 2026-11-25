@@ -1,0 +1,68 @@
+@* Search panel: drops down under the header (header stays visible; the header's search button becomes the close button). Behaviour in header.js *@
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-labelledby="searchOverlayTitle" data-suggest-url="@Url.Content("~/search/suggest")" hidden>
+  <div class="search-overlay__inner">
+    <div class="search-overlay__body">
+      <p class="search-overlay__eyebrow" id="searchOverlayTitle">Search Godavari Biorefineries</p>
+
+      <form class="search-overlay__form" action="/search/" method="get" role="search" data-search-form>
+        <label class="search-overlay__field" for="headerSearchInput">
+          <svg class="search-overlay__field-icon" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2"/></svg>
+          <input type="search" id="headerSearchInput" name="q" class="search-overlay__input" aria-label="Search the site" placeholder="Search reports, products, people, places…" autocomplete="off" spellcheck="false"
+                 role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchOverlayResults">
+          <button type="button" class="search-overlay__clear" data-search-clear hidden>Clear</button>
+          <button type="submit" class="search-overlay__submit">Search</button>
+        </label>
+      </form>
+
+      <div class="search-overlay__chips" role="group" aria-label="Filter by section">
+        <button type="button" class="search-overlay__chip is-active" data-search-cat="All" aria-pressed="true">All</button>
+        <button type="button" class="search-overlay__chip" data-search-cat="Investors" aria-pressed="false">Investors</button>
+        <button type="button" class="search-overlay__chip" data-search-cat="Businesses" aria-pressed="false">Businesses</button>
+        <button type="button" class="search-overlay__chip" data-search-cat="Sustainability" aria-pressed="false">Sustainability</button>
+        <button type="button" class="search-overlay__chip" data-search-cat="Media" aria-pressed="false">Media</button>
+        <button type="button" class="search-overlay__chip" data-search-cat="Careers" aria-pressed="false">Careers</button>
+      </div>
+
+      @* Live results (filled by header.js) *@
+      <div class="search-overlay__results" id="searchOverlayResults" data-search-results hidden>
+        <p class="search-overlay__count" data-search-count aria-live="polite"></p>
+        <ul class="search-overlay__list" role="listbox" aria-label="Search results" data-search-list></ul>
+        <p class="search-overlay__empty" data-search-empty hidden>No matches. Try another word, or <a href="/contact-us">contact us</a>.</p>
+        <a class="search-overlay__all" href="#" data-search-all hidden>See all results <span aria-hidden="true">→</span></a>
+      </div>
+
+      @* Shown before the visitor types *@
+      <div class="search-overlay__default" data-search-default>
+        <div class="search-overlay__col" data-search-recent-col hidden>
+          <p class="search-overlay__col-title">Recent searches</p>
+          <ul class="search-overlay__recent" data-search-recent></ul>
+        </div>
+        <div class="search-overlay__col">
+          <p class="search-overlay__col-title">Popular searches</p>
+          <div class="search-overlay__popular">
+            @foreach (var term in new[] { "Annual report", "Subsidiaries", "Financial statements", "Sustainability", "Job openings" })
+            {
+              <button type="button" class="search-overlay__pill" data-search-term="@term">
+                <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                @term
+              </button>
+            }
+          </div>
+        </div>
+        <div class="search-overlay__col">
+          <p class="search-overlay__col-title">Featured</p>
+          <div class="search-overlay__featured">
+            <a href="/about-us/manufacturing" class="search-overlay__card">
+              <span><span class="search-overlay__card-kicker">About Us</span><span class="search-overlay__card-title">Our Manufacturing Ecosystem</span></span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="/investors/shareholding-pattern" class="search-overlay__card">
+              <span><span class="search-overlay__card-kicker">Investors</span><span class="search-overlay__card-title">Shareholder Information</span></span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

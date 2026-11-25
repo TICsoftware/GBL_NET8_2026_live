@@ -52,35 +52,50 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     });
 
-    var iconTl = gsap.timeline({
-      paused: true,
-      defaults: { ease: "power1.inOut" }
-    });
-
-    items.forEach(function (item, i) {
-      var paths = item.querySelectorAll(".csr-stat__icon path");
-      paths.forEach(function (path, p) {
-        var len = path.getTotalLength();
-        if (!len) return;
-        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-        iconTl.fromTo(
-          path,
-          { strokeDashoffset: len },
-          { strokeDashoffset: 0, duration: 0.7 },
-          i * 0.12 + p * 0.08
-        );
+    // Line-draw of the icons. Desktop: one row, all icons draw together once the row is in view.
+    // Mobile: the stats stack into rows (taller than the screen), so each stat draws as it enters;
+    // a single "bottom 85%" trigger would fire only after the top row had scrolled away.
+    function buildIconTl(group) {
+      var iconTl = gsap.timeline({
+        paused: true,
+        defaults: { ease: "power1.inOut" }
       });
-    });
+      group.forEach(function (item, i) {
+        var paths = item.querySelectorAll(".csr-stat__icon path");
+        paths.forEach(function (path, p) {
+          var len = path.getTotalLength();
+          if (!len) return;
+          gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+          iconTl.fromTo(
+            path,
+            { strokeDashoffset: len },
+            { strokeDashoffset: 0, duration: 0.7 },
+            i * 0.12 + p * 0.08
+          );
+        });
+      });
+      return iconTl;
+    }
 
-    ScrollTrigger.create({
-      id: "csr-impact-icons",
-      trigger: stats,
-      scroller: stScroller,
-      start: "bottom 85%",
-      onEnter: function () { iconTl.restart(); },
-      onEnterBack: function () { iconTl.restart(); },
-      onLeaveBack: function () { iconTl.pause(0); }
-    });
+    function triggerIcons(id, trigger, start, iconTl) {
+      ScrollTrigger.create({
+        id: id,
+        trigger: trigger,
+        scroller: stScroller,
+        start: start,
+        onEnter: function () { iconTl.restart(); },
+        onEnterBack: function () { iconTl.restart(); },
+        onLeaveBack: function () { iconTl.pause(0); }
+      });
+    }
+
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      items.forEach(function (item, i) {
+        triggerIcons("csr-impact-icons-" + i, item, "top 85%", buildIconTl([item]));
+      });
+    } else {
+      triggerIcons("csr-impact-icons", stats, "bottom 85%", buildIconTl(Array.from(items)));
+    }
   });
 });
 

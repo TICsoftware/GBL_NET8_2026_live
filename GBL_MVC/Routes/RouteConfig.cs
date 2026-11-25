@@ -118,8 +118,8 @@ app.MapControllerRoute(
 
   app.MapControllerRoute(
                    name: "Subsidiaries",
-                   pattern: "about-us/our-subsidiaries",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "about-us/our-subsidiaries" }
+                   pattern: "about-us/manufacturing/our-subsidiaries",
+                   defaults: new { controller = "CSR", action = "Index", title = "our-subsidiaries"}
            );
 
 
@@ -398,6 +398,12 @@ app.MapControllerRoute(
                 name: "LoadMoreSearch",
                 pattern: "Search/LoadMoreSearch",
                 defaults: new { controller = "Search", action = "LoadMoreSearch" }
+            );
+
+            app.MapControllerRoute(
+                name: "SearchSuggest",
+                pattern: "search/suggest",
+                defaults: new { controller = "Search", action = "Suggest" }
             );
 
             app.MapControllerRoute(

@@ -164,3 +164,17 @@
     innerBannerTitleAnimation();
   }
 });
+
+// Sitemap: hover fill grows as a circle from where the mouse enters the row
+// (same effect as the header mega-menu items; CSS in sitemap.css)
+document.addEventListener("mouseover", (e) => {
+  const row = e.target.closest && e.target.closest(".sitemap-block .list-icon li");
+  if (!row || !row.querySelector(":scope > a") || row.contains(e.relatedTarget)) return;
+  const rect = row.getBoundingClientRect();
+  const x = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
+  const y = Math.min(Math.max(e.clientY - rect.top, 0), rect.height);
+  const radius = Math.ceil(Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y))) + 16;
+  row.style.setProperty("--hx", x + "px");
+  row.style.setProperty("--hy", y + "px");
+  row.style.setProperty("--hr", radius + "px");
+});
