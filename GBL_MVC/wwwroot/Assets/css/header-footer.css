@@ -3252,3 +3252,11 @@ body:has(.cookie-bar:not([hidden])) .back-to-top {
     -webkit-backdrop-filter: none;
   }
 }
+
+/* Submenu "Overview" (link to the parent item's own page): mobile only.
+   On desktop the parent item itself is clickable, since hover opens its submenu. */
+@media (min-width: 1200px){
+  .mega-l3-item--overview{
+    display: none;
+  }
+}
