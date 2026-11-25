@@ -251,6 +251,33 @@
   outline-offset: 3px;
 }
 
+/* Whole card downloads (leadership portraits): the button's link is stretched over the card */
+.mk-card--download .mk-dl::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.mk-card--download .mk-stage img {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mk-card--download:hover .mk-stage img {
+  transform: scale(1.04);
+}
+
+.mk-card--download:hover .mk-dl {
+  background: var(--color-primary, #282b31);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-card--download .mk-stage img {
+    transition: none;
+  }
+}
+
 .mk-subhead {
   margin: 2.5rem 0 1rem;
   color: var(--color-primary, #282b31);
