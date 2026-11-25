@@ -138,7 +138,12 @@
             <div class="max-w-4xl text-left">
                <h1 class="innerbanner-title text-h1 text-white title-animation">
                   @Html.Raw(bannerTitle.CleanParagraphTags())
+
                </h1>
+                @if (!string.IsNullOrWhiteSpace(landingTitle)  )
+               {
+                  <h2 class="page-intro-mantra__sanskrit text-h1">@Html.Raw(landingTitle.CleanParagraphTags())</h2>
+               }
                <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                   @if (!string.IsNullOrWhiteSpace(content?.BreadcrumPath))
                   {
@@ -171,12 +176,7 @@
                {
                   @Html.Raw(landingIntro)
                }
-               @if (!string.IsNullOrWhiteSpace(landingTitle)
-                    && (string.IsNullOrWhiteSpace(landingIntro)
-                        || !landingIntro.Contains(landingTitle, StringComparison.Ordinal)))
-               {
-                  <h2 class="page-intro-mantra__sanskrit text-h1">@Html.Raw(landingTitle.CleanParagraphTags())</h2>
-               }
+             
             </blockquote>
             @if (!string.IsNullOrWhiteSpace(pageIntroCopy))
             {
