@@ -1,15 +1,16 @@
+/* Section tabs: same pill bar as the corporate governance page (.cg-jump):
+   white rounded bar, green "thumb" that slides to the active tab (media-kit.js) */
 .mk-jump {
   position: sticky;
   top: var(--header-h, 88px);
   z-index: 40;
-  background: #fff;
-  padding-block: clamp(1.25rem, 2.4vw, 2rem);
-  border-bottom: 1px solid rgba(40, 43, 49, 0.08);
+  background: var(--color-gray, #f4f4f4);
+  padding-block: clamp(1.75rem, 3vw, 3rem);
   transition: padding-block 0.3s ease;
 }
 
 .mk-jump.is-stuck {
-  padding-block: 0.85rem;
+  padding-block: calc(clamp(1.125rem, 2vw, 2rem) - 10px);
 }
 
 .mk-jump-sentinel {
@@ -26,31 +27,64 @@
 }
 
 .mk-jump__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0;
+  max-width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(40, 43, 49, 0.16);
+  border-radius: 999px;
+  background: var(--color-white, #fff);
+  vertical-align: middle;
+}
+
+.mk-jump__thumb {
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  z-index: 0;
+  height: calc(100% - 1rem);
+  border-radius: 999px;
+  background: var(--color-secondary, #67815a);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
 }
 
 .mk-jump__btn {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
-  padding: 0.85rem 1.35rem;
-  background: var(--color-secondary, #67815a);
-  color: #fff;
-  font-size: 1rem;
-  line-height: 1.2;
-  text-align: center;
+  min-height: 2.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary, #282b31);
+  font-size: var(--text-22);
+  font-weight: 400;
+  line-height: 1.15;
+  white-space: nowrap;
   text-decoration: none;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.35s ease;
 }
 
 .mk-jump__btn:hover,
-.mk-jump__btn:focus-visible,
+.mk-jump__btn:focus-visible {
+  background: transparent;
+  color: var(--color-primary, #282b31);
+}
+
 .mk-jump__btn.is-active {
-  background: var(--color-primary, #282b31);
+  background: var(--color-secondary, #67815a);
   color: #fff;
+}
+
+.mk-jump__nav.is-ready .mk-jump__btn.is-active {
+  background: transparent;
 }
 
 .mk-jump__btn:focus-visible {
@@ -58,20 +92,88 @@
   outline-offset: 3px;
 }
 
-@media (min-width: 980px) {
+/* Small desktops: slightly tighter tabs so all five fit on one line */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .mk-jump__btn {
+    padding: 0.7rem 1rem;
+    font-size: 1.0625rem;
+  }
+}
+
+/* Five tabs don't fit one line below desktop: scrollable bar with arrows (as .cg-jump on mobile) */
+@media (max-width: 1199px) {
+  .mk-jump__track {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mk-jump__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.15rem;
+    height: 2.15rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-secondary, #67815a);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .mk-jump__arrow svg {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .mk-jump__arrow:disabled {
+    cursor: default;
+  }
+
+  .mk-jump__arrow:focus-visible {
+    outline: 2px solid var(--color-primary, #282b31);
+    outline-offset: 3px;
+  }
+
   .mk-jump__nav {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    align-items: stretch;
+    flex: 1;
+    min-width: 0;
+    padding: 0.375rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mk-jump__thumb {
+    top: 0.375rem;
+    height: calc(100% - 0.75rem);
+  }
+
+  .mk-jump__nav::-webkit-scrollbar {
+    display: none;
   }
 
   .mk-jump__btn {
-    height: 100%;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
   }
 }
 
 .mk-section {
   scroll-margin-top: calc(var(--header-h, 88px) + 12rem);
+}
+
+/* First section sits right under the tab bar (which has its own bottom padding):
+   no extra top padding. (pt-0 isn't in the compiled site.css, so it's done here.) */
+.mk-jump + .mk-section {
+  padding-top: 0;
 }
 
 .mk-head {
@@ -251,6 +353,33 @@
   outline-offset: 3px;
 }
 
+/* Whole card downloads (leadership portraits): the button's link is stretched over the card */
+.mk-card--download .mk-dl::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.mk-card--download .mk-stage img {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mk-card--download:hover .mk-stage img {
+  transform: scale(1.04);
+}
+
+.mk-card--download:hover .mk-dl {
+  background: var(--color-primary, #282b31);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-card--download .mk-stage img {
+    transition: none;
+  }
+}
+
 .mk-subhead {
   margin: 2.5rem 0 1rem;
   color: var(--color-primary, #282b31);
@@ -381,64 +510,6 @@
   .mk-contacts {
     grid-template-columns: 1fr;
   }
-
-  .mk-jump__track {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .mk-jump__arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    width: 2.15rem;
-    height: 2.15rem;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: var(--color-secondary, #67815a);
-    color: #fff;
-    cursor: pointer;
-  }
-
-  .mk-jump__arrow svg {
-    width: 0.95rem;
-    height: 0.95rem;
-  }
-
-  .mk-jump__arrow:disabled {
-    opacity: 0.45;
-    cursor: default;
-  }
-
-  .mk-jump__arrow:focus-visible {
-    outline: 2px solid var(--color-primary, #282b31);
-    outline-offset: 3px;
-  }
-
-  .mk-jump__nav {
-    position: relative;
-    flex: 1;
-    flex-wrap: nowrap;
-    min-width: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .mk-jump__nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .mk-jump__btn {
-    flex: 0 0 auto;
-    scroll-snap-align: center;
-    white-space: nowrap;
-  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -451,6 +522,7 @@
 @media (prefers-reduced-motion: reduce) {
   .mk-jump,
   .mk-jump__btn,
+  .mk-jump__thumb,
   .mk-dl {
     transition: none;
   }

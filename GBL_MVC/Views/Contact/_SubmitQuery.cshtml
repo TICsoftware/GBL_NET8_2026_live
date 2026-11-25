@@ -9,6 +9,14 @@
     <div class="container">
         <h2 class="text-h2 contact-query__title">Submit your query</h2>
 
+        <div class="contact-query__layout">
+
+            @* Image placeholder: replace with the final photo (portrait, 4:5, ~1200x1500).
+               Fills the form height on desktop (object-fit: cover), 16:9 above the form on mobile. *@
+            <div class="contact-query__media">
+                <img src="~/Assets/images/dummy-rectangle-big.webp" alt="" loading="lazy" decoding="async" />
+            </div>
+
         <div class="contact-form-card">
             <form id="contact-form" class="contact-form" asp-controller="Contact" asp-action="SubmitQuery" method="post"
                   novalidate>
@@ -122,6 +130,7 @@
             </form>
 
            
+        </div>
         </div>
     </div>
 </section>
