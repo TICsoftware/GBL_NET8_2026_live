@@ -161,7 +161,7 @@
                                     <ul class="mk-grid mk-grid--4">
                                         @foreach (var objblock in itemblocks)
                                         {
-                                            <li class="mk-card">
+                                            <li class="mk-card mk-card--download">
                                                 @if (!string.IsNullOrWhiteSpace(objblock.ThumbnailImage) &&
                                                 !string.IsNullOrWhiteSpace(objblock.MediafilePath))
                                                 {
@@ -245,7 +245,8 @@
                             <ul class="mk-grid mk-grid--4">
                                 @foreach (var objblock in itemdirectblocks)
                                 {
-                                    <li class="mk-card">
+                                    @* Whole card downloads: .mk-dl's ::before covers the card (media-kit.css) *@
+                                    <li class="mk-card mk-card--download">
                                         <div class="mk-pub" >
                                             <span class="mk-stage mk-stage--pub">
                                                 <img src="@objblock.ThumbnailImage" alt="@objblock.ThumbnailAltText">
@@ -261,8 +262,8 @@
                                                 <span class="mk-card__type">@thumbExtension</span>
                                                 </span>
                                                 
-                                                <a class="mk-dl"  href="@thumbPath" download="@thumbFileName" aria-hidden="true"  rel="noopener noreferrer">
-                                                <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                <a class="mk-dl" href="@thumbPath" download="@thumbFileName" aria-label="Download @(objblock.Title), @thumbExtension" rel="noopener noreferrer">
+                                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7.5 11.5 12 16l4.5-4.5M6 20h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </a>
                                             </span>
                                         </div>
