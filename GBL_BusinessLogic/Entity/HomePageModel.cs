@@ -35,6 +35,9 @@ namespace GBL_BusinessLogic.Entity
         // Seq 8 – Creating a Healthier Tomorrow
         public List<HomeCommonModel> HealthierTomorrow_List { get; set; } = new();
 
+        // Seq 9 – Our Performance (component title, block title, and URL)
+        public List<HomeCommonModel> Performance_List { get; set; } = new();
+
         // Seq 10 – Latest at GBL (LinkedIn embeds; news cards come from press and media)
         public List<HomeCommonModel> Latest_List { get; set; } = new();
 

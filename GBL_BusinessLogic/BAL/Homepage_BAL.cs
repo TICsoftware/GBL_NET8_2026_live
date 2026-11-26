@@ -51,6 +51,7 @@ namespace GBL_BusinessLogic.BAL
                 model.SoilToTable_List = MapComponentCommon(groupedData, 6);
                 model.GiveBack_List = MapComponentCommon(groupedData, 7);
                 model.HealthierTomorrow_List = MapComponentCommon(groupedData, 8);
+                model.Performance_List = MapComponentCommon(groupedData, 9);
                 model.Latest_List = MapComponentCommon(groupedData, 10);
                 model.GlobalStandards_List = MapComponentCommon(groupedData, 12);
             }
@@ -62,8 +63,8 @@ namespace GBL_BusinessLogic.BAL
         }
 
         /// <summary>
-        /// First and second Our Performance boxes match /investors:
-        /// the latest quarterly report, then the latest annual report.
+        /// Our Performance second box uses the same latest quarter as /investors.
+        /// The third box uses the latest annual report.
         /// Latest at GBL uses the newest press release and newest media coverage.
         /// </summary>
         private void BindInvestorHighlights(HomePageModel model, int languageId, int geographyId)
@@ -282,7 +283,7 @@ namespace GBL_BusinessLogic.BAL
                 Component_background_image_alt = Config_Application_Website.GetValue(dict, "Component background image alt"),
                 ThumbnailImage = Config_Application_Website.GetPath(group, "Thumbnail Image"),
                 ThumbnailAltText = Config_Application_Website.GetValue(dict, "thumbnail image alt"),
-                Url = Config_Application_Website.GetValue(dict, "Url", "Component URL"),
+                Url = ResolveComponentUrl(group, dict),
                 Url_Text = Config_Application_Website.GetValue(dict, "Url text", "Component URL text"),
                 component_Url2 = Config_Application_Website.GetValue(dict, "component url 2"),
                 component_Url_Text2 = Config_Application_Website.GetValue(dict, "component url text2"),
@@ -310,6 +311,31 @@ namespace GBL_BusinessLogic.BAL
                 Block_Company_Name=Config_Application_Website.GetValue(dict, "Block Company Name"),
                   bg_class = Config_Application_Website.GetValue(dict, "bg class"),
             });
+        }
+
+        /// <summary>
+        /// Text URL fields win. A media picker stored on the same URL field is used when the value is only a media id.
+        /// </summary>
+        private static string ResolveComponentUrl(ComponentGroup group, Dictionary<string, ComponentField> dict)
+        {
+            var text = Config_Application_Website.GetValue(dict, "Url", "Component URL", "Block URL", "Block Url");
+            if (IsUsableHref(text))
+                return text.Trim();
+
+            var path = Config_Application_Website.GetPath(group, "Url", "Component URL", "Block URL", "Block Url");
+            return string.IsNullOrWhiteSpace(path) ? "" : path;
+        }
+
+        private static bool IsUsableHref(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            var text = value.Trim();
+            if (text.Contains('<'))
+                return false;
+
+            return !int.TryParse(text, out _);
         }
 
 

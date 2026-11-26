@@ -698,6 +698,11 @@
   padding: 2rem;
   background-color: var(--color-gray);
 }
+
+.performance-card > .site-btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
 .doc-list {
   list-style: none;
   margin: 0;

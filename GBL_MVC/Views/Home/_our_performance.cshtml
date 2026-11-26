@@ -3,58 +3,84 @@
 @using GBL_MVC.Helpers
 @model HomePageModel
 @{
+    var performance = Model?.Performance_List ?? new List<HomeCommonModel>();
+    var component = performance
+        .Where(x => x.IsBlock == 0)
+        .OrderBy(x => x.Sequence)
+        .FirstOrDefault();
+    var blocks = performance
+        .Where(x => x.IsBlock == 1)
+        .OrderBy(x => x.Sequence)
+        .Where(x => !string.IsNullOrWhiteSpace(BlockLabel(x)) || !string.IsNullOrWhiteSpace(x.Url))
+        .ToList();
+
+    var sectionTitle = component == null
+        ? "Our Performance"
+        : FirstText(component.DisplayTitle, component.Title, "Our Performance");
+    var componentTitle = component == null
+        ? ""
+        : FirstText(component.Title, component.DisplayTitle);
+
     var quarter = Model?.LatestQuarter;
     var annual = Model?.LatestAnnualReport;
     var annualHref = FirstText(annual?.MediafilePath, annual?.Url, annual?.ExternalUrl);
     var annualThumb = FirstText(annual?.ThumbnailImage, "/Assets/images/homepage/performance/annual-report-fy25.png");
     var annualTitle = FirstText(annual?.Title, "Annual Report");
     var quarterHeading = QuarterHeading(quarter);
-    var hasCall = quarter != null && (
-        !string.IsNullOrWhiteSpace(quarter.TranscriptUrl) ||
-        !string.IsNullOrWhiteSpace(quarter.AudioUrl));
-    var hasResults = quarter != null && (
-        !string.IsNullOrWhiteSpace(quarter.FinancialResultsUrl) ||
-        !string.IsNullOrWhiteSpace(quarter.ResultsPresentationUrl));
+    var quarterLinks = QuarterLinks(quarter);
+    var hasBlocks = blocks.Count > 0;
+    var hasResults = quarterLinks.Count > 0;
     var hasAnnual = annual != null && (
         !string.IsNullOrWhiteSpace(annual.Title) ||
         !string.IsNullOrWhiteSpace(annualHref));
+    var learnMoreHref = FirstText(component?.Url, "/investors");
+    var learnMoreLabel = FirstText(component?.Url_Text, "Learn more");
 }
 
-@if (hasCall || hasResults || hasAnnual)
+@if (hasBlocks || hasResults || hasAnnual)
 {
 <section class="section-spacing ourPerformance">
   <div class="container">
       <div class="title-section">
-        <h2 class="text-h2">Our Performance</h2>
+        <h2 class="text-h2">@Html.Raw(sectionTitle.CleanParagraphTags())</h2>
       </div>
 
       <div class="performance-row card-list-items">
-        @if (hasCall)
+        @if (hasBlocks)
         {
         <article class="performance-card card-rise">
-          <h3 class="text-h5">Investor Call</h3>
+          @if (!string.IsNullOrWhiteSpace(componentTitle))
+          {
+          <h3 class="text-h5">@Html.Raw(componentTitle.CleanParagraphTags())</h3>
+          }
           <ul class="doc-list">
-            @if (!string.IsNullOrWhiteSpace(quarter!.TranscriptUrl))
+            @foreach (var block in blocks)
             {
-            <li>
-              <a href="@quarter.TranscriptUrl" target="_blank" rel="noopener noreferrer">
-                <span class="doc-icon" aria-hidden="true">
-                    <img src="@Url.Content("~/Assets/images/homepage/our-performance/pdf-icon.svg")" alt="" />
-                </span>
-                Transcript @(string.IsNullOrWhiteSpace(quarter.QuarterCode) ? "" : quarter.QuarterCode)
-              </a>
-            </li>
-            }
-            @if (!string.IsNullOrWhiteSpace(quarter.AudioUrl))
-            {
-            <li>
-              <a href="@quarter.AudioUrl" target="_blank" rel="noopener noreferrer">
-                <span class="doc-icon" aria-hidden="true">
-                  <img src="@Url.Content("~/Assets/images/homepage/our-performance/voice-icon.svg")" alt="" />
-                </span>
-                Audio of Investor Call@(AudioLabel(quarter))
-              </a>
-            </li>
+                var label = BlockLabel(block);
+                var href = block.Url?.Trim() ?? "";
+                var icon = IsAudio(href)
+                    ? "~/Assets/images/homepage/our-performance/voice-icon.svg"
+                    : "~/Assets/images/homepage/our-performance/pdf-icon.svg";
+                <li>
+                  @if (!string.IsNullOrWhiteSpace(href))
+                  {
+                  <a href="@href" target="@LinkTarget(href)" rel="@(OpensNewTab(href) ? "noopener noreferrer" : null)">
+                    <span class="doc-icon" aria-hidden="true">
+                        <img src="@Url.Content(icon)" alt="" />
+                    </span>
+                    @Html.Raw((string.IsNullOrWhiteSpace(label) ? "Download" : label).CleanParagraphTags())
+                  </a>
+                  }
+                  else
+                  {
+                  <span>
+                    <span class="doc-icon" aria-hidden="true">
+                        <img src="@Url.Content(icon)" alt="" />
+                    </span>
+                    @Html.Raw(label.CleanParagraphTags())
+                  </span>
+                  }
+                </li>
             }
           </ul>
         </article>
@@ -65,29 +91,24 @@
         <article class="performance-card card-rise">
           <h3 class="text-h5">@quarterHeading</h3>
           <ul class="doc-list">
-            @if (!string.IsNullOrWhiteSpace(quarter!.FinancialResultsUrl))
+            @foreach (var link in quarterLinks)
             {
             <li>
-              <a href="@quarter.FinancialResultsUrl" target="_blank" rel="noopener noreferrer">
+              <a href="@link.Href" target="_blank" rel="noopener noreferrer">
                 <span class="doc-icon" aria-hidden="true">
-                  <img src="@Url.Content("~/Assets/images/homepage/our-performance/pdf-icon.svg")" alt="" />
+                  <img src="@Url.Content(link.Icon)" alt="" />
                 </span>
-                Earnings Release
-              </a>
-            </li>
-            }
-            @if (!string.IsNullOrWhiteSpace(quarter.ResultsPresentationUrl))
-            {
-            <li>
-              <a href="@quarter.ResultsPresentationUrl" target="_blank" rel="noopener noreferrer">
-                <span class="doc-icon" aria-hidden="true">
-                    <img src="@Url.Content("~/Assets/images/homepage/our-performance/pdf-icon.svg")" alt="" />
-                </span>
-                Analyst presentation
+                @link.Label
               </a>
             </li>
             }
           </ul>
+          <a href="/investors/quarterly-reports" class="site-btn site-btn--line">
+            <span class="site-btn__label">View All Quarterly Reports</span>
+            <span class="site-btn__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
         </article>
         }
 
@@ -114,8 +135,8 @@
       </div>
 
       <div class="flex justify-center">
-        <a href="/investors" class="site-btn site-btn--fill">
-          <span class="site-btn__label">Learn more</span>
+        <a href="@learnMoreHref" class="site-btn site-btn--fill">
+          <span class="site-btn__label">@learnMoreLabel</span>
           <span class="site-btn__arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
@@ -136,6 +157,11 @@
         return "";
     }
 
+    private static string BlockLabel(HomeCommonModel block)
+    {
+        return FirstText(block.Section_title, block.BlockDisplayTitle, block.Title);
+    }
+
     private static string QuarterHeading(QuarterlyReportItemModel? quarter)
     {
         var title = (quarter?.Title ?? "").Trim();
@@ -146,17 +172,64 @@
         return "Quarterly Results: " + title;
     }
 
-    private static string AudioLabel(QuarterlyReportItemModel quarter)
+    private static List<(string Label, string Href, string Icon)> QuarterLinks(QuarterlyReportItemModel? quarter)
     {
-        if (!string.IsNullOrWhiteSpace(quarter.PublishedOn))
-        {
-            var published = quarter.PublishedOn.Trim();
-            if (published.StartsWith("Published on ", StringComparison.OrdinalIgnoreCase))
-                published = published.Substring("Published on ".Length).Trim();
-            return " \u2013 " + published;
-        }
-        if (!string.IsNullOrWhiteSpace(quarter.QuarterRange))
-            return " \u2013 " + quarter.QuarterRange.Trim();
-        return "";
+        var links = new List<(string Label, string Href, string Icon)>();
+        if (quarter == null)
+            return links;
+
+        AddQuarterLink(links, "Financial Results", quarter.FinancialResultsUrl, false);
+        AddQuarterLink(links, "Transcript", quarter.TranscriptUrl, false);
+        AddQuarterLink(links, "Presentations", quarter.ResultsPresentationUrl, false);
+        AddQuarterLink(links, "Audio", quarter.AudioUrl, true);
+        return links;
+    }
+
+    private static void AddQuarterLink(
+        List<(string Label, string Href, string Icon)> links,
+        string label,
+        string? href,
+        bool audio)
+    {
+        if (string.IsNullOrWhiteSpace(href))
+            return;
+
+        var icon = audio || IsAudio(href)
+            ? "~/Assets/images/homepage/our-performance/voice-icon.svg"
+            : "~/Assets/images/homepage/our-performance/pdf-icon.svg";
+        links.Add((label, href.Trim(), icon));
+    }
+
+    private static bool IsAudio(string? href)
+    {
+        if (string.IsNullOrWhiteSpace(href))
+            return false;
+
+        var path = href.Split('?', '#')[0];
+        return path.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".m4a", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".aac", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".wma", StringComparison.OrdinalIgnoreCase)
+            || path.Contains("/audio", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool OpensNewTab(string? href)
+    {
+        if (string.IsNullOrWhiteSpace(href))
+            return false;
+
+        if (href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var path = href.Split('?', '#')[0];
+        return path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+            || IsAudio(href);
+    }
+
+    private static string LinkTarget(string? href)
+    {
+        return OpensNewTab(href) ? "_blank" : "_self";
     }
 }
