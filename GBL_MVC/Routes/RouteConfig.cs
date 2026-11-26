@@ -73,7 +73,8 @@ namespace GBL_MVC.Routes
     app.MapControllerRoute(
                    name: "diversity-and-inclusion",
                    pattern: "careers/diversity-and-inclusion",
-                   defaults: new { controller = "Career", action = "LearningDevelopment", title = "careers/diversity-and-inclusion" }
+                      defaults: new { controller = "CSR", action = "Index", title = "diversity-and-inclusion"}
+               
            );
  app.MapControllerRoute(
                    name: "wellbeing-and-benefits",
