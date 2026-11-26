@@ -100,6 +100,8 @@ CSR PAGE
   color: var(--color-gray-dark);
 }
 .csr-approach-card__icon {
+  display: block;
+  overflow: visible;
   flex: none;
   width: 106.79px;
   height: 106.79px;

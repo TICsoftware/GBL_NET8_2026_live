@@ -361,3 +361,105 @@ document.addEventListener("DOMContentLoaded", function () {
     resizeTimer = window.setTimeout(apply, 120);
   });
 });
+
+/* "Three beliefs" icons: stroke draw then fill, same as the About Us guiding principles */
+document.addEventListener("DOMContentLoaded", function () {
+  var grid = document.querySelector(".csr-approach .csr-grid");
+  if (!grid) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+
+  var cards = Array.from(grid.querySelectorAll(".csr-approach-card"));
+  if (!cards.length) return;
+  var ICON_COLOR = "#67815a";
+
+  function inlineIcon(img) {
+    return fetch(img.currentSrc || img.src)
+      .then(function (res) { return res.text(); })
+      .then(function (text) {
+        var holder = document.createElement("div");
+        holder.innerHTML = text.trim();
+        var svg = holder.querySelector("svg");
+        if (!svg) return;
+        svg.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
+        svg.querySelectorAll("[clip-path]").forEach(function (el) { el.removeAttribute("clip-path"); });
+        svg.setAttribute("class", img.getAttribute("class") || "csr-approach-card__icon");
+        svg.setAttribute("aria-hidden", "true");
+        svg.setAttribute("focusable", "false");
+        svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        img.replaceWith(svg);
+      })
+      .catch(function () {});
+  }
+
+  function createIconDraw(group, trigger, stScroller) {
+    var iconTl = gsap.timeline({ paused: true, defaults: { ease: "power1.inOut" } });
+    var allPaths = [];
+
+    group.forEach(function (card, i) {
+      card.querySelectorAll(".csr-approach-card__icon path").forEach(function (path, p) {
+        var len = path.getTotalLength();
+        if (!len) return;
+        var cs = window.getComputedStyle(path);
+        /* Line icons (stroked, no fill) keep their own stroke; filled outline icons get
+           a thin trace that is filled in at the end. */
+        var isLine = cs.fill === "none" && cs.stroke !== "none";
+        if (isLine) {
+          gsap.set(path, { strokeDasharray: len, strokeDashoffset: len, strokeOpacity: 0 });
+        } else {
+          allPaths.push(path);
+          gsap.set(path, {
+            stroke: ICON_COLOR,
+            strokeWidth: 1,
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeDasharray: len,
+            strokeDashoffset: len,
+            strokeOpacity: 0,
+            fillOpacity: 0
+          });
+        }
+        /* Round caps show as dots while the dash is hidden, so keep the stroke off until it draws. */
+        iconTl.set(path, { strokeOpacity: 1 }, i * 0.12 + p * 0.08);
+        iconTl.fromTo(
+          path,
+          { strokeDashoffset: len },
+          { strokeDashoffset: 0, duration: 0.7 },
+          i * 0.12 + p * 0.08
+        );
+      });
+    });
+
+    if (!iconTl.getChildren().length) return;
+
+    /* Outlined shapes: filling at the end turns the traced edges into solid lines. */
+    if (allPaths.length) {
+      iconTl.to(allPaths, { fillOpacity: 1, duration: 0.35, ease: "none" }, iconTl.duration() - 0.1);
+    }
+
+    ScrollTrigger.create({
+      trigger: trigger,
+      scroller: stScroller,
+      start: "top 70%",
+      onEnter: function () { iconTl.restart(); },
+      onEnterBack: function () { iconTl.restart(); },
+      onLeaveBack: function () { iconTl.pause(0); }
+    });
+  }
+
+  Promise.all(Array.from(grid.querySelectorAll("img.csr-approach-card__icon")).map(inlineIcon)).then(function () {
+    gsap.registerPlugin(ScrollTrigger);
+    var stScroller = window.matchMedia("(max-width: 992px)").matches
+      ? window
+      : document.documentElement;
+
+    /* Stacked on small screens: each icon draws as its own card arrives. */
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      cards.forEach(function (card) { createIconDraw([card], card, stScroller); });
+    } else {
+      createIconDraw(cards, grid, stScroller);
+    }
+
+    ScrollTrigger.refresh();
+  });
+});
