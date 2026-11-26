@@ -72,6 +72,7 @@ namespace GBL_MVC.Controllers
                     return Content("");
                 }
 
+                ViewData["SearchKeyword"] = keyword;
                 return PartialView("_LoadMoreSearch", model.objsearchdisplay);
             }
             catch (Exception ex)

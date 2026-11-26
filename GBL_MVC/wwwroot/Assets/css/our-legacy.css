@@ -155,7 +155,7 @@
 /* ---------- Sizes (desktop) ---------- */
 .milestones {
   --ms-img-w: clamp(300px, 34vw, 640px);     /* image width (every slide) */
-  --ms-content-w: clamp(240px, 21vw, 380px); /* white text panel (active slide) */
+  --ms-content-w: clamp(240px, 24vw, 380px); /* white text panel (active slide) */
   --ms-img-h: clamp(320px, 31vw, 580px);     /* slide height */
   --ms-gap: clamp(16px, 1.8vw, 30px);
   --ms-speed: 0.7s;
@@ -736,4 +736,8 @@
     transition: none !important;
   }
 }
+@media (min-width: 1200px) and (max-width: 1366px) {
 
+.milestone-slide__text p { font-size: 1rem;}
+.milestone-slide__content-inner {padding: clamp(1.25rem, 1.75vw, 2.25rem);}
+}

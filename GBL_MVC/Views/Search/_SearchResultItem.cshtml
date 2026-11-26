@@ -1,0 +1,74 @@
+@using System.Net
+@using System.Text.RegularExpressions
+@model GBL_BusinessLogic.Entity.Content_Search_Display
+@{
+    var keyword = (ViewData["SearchKeyword"] as string ?? "").Trim();
+
+    string PlainText(string? html)
+    {
+        if (string.IsNullOrWhiteSpace(html)) return "";
+        var text = Regex.Replace(html, "<(script|style)[^>]*>.*?</\\1>", " ", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        text = Regex.Replace(text, "<[^>]+>", " ");
+        text = WebUtility.HtmlDecode(text);
+        return Regex.Replace(text, "\\s+", " ").Trim();
+    }
+
+    string Truncate(string text, int max)
+    {
+        if (text.Length <= max) return text;
+        var cut = text.LastIndexOf(' ', max);
+        return text.Substring(0, cut > max / 2 ? cut : max).TrimEnd(',', '.', ';', ':', ' ') + "…";
+    }
+
+    // HTML-encodes the text and wraps each keyword match in <mark>
+    string Highlight(string text)
+    {
+        var encoded = WebUtility.HtmlEncode(text);
+        if (keyword.Length < 2) return encoded;
+        var pattern = Regex.Escape(WebUtility.HtmlEncode(keyword));
+        return Regex.Replace(encoded, pattern, m => $"<mark>{m.Value}</mark>", RegexOptions.IgnoreCase);
+    }
+
+    // "/about-us/our-legacy" -> "About Us › Our Legacy"
+    string Crumbs(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return "";
+        var path = url;
+        if (Uri.TryCreate(url, UriKind.Absolute, out var abs)) path = abs.AbsolutePath;
+        path = path.Split('?', '#')[0];
+        var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries)
+            .Select(p => Regex.Replace(WebUtility.UrlDecode(p), "[-_]+", " ").Trim())
+            .Where(p => p.Length > 0)
+            .Select(p => System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(p.ToLowerInvariant()))
+            .ToList();
+        // The title already names the page: show only its parent sections
+        if (parts.Count > 1) parts.RemoveAt(parts.Count - 1);
+        var result = string.Join(" › ", parts);
+        return result.Length == 0 ? "Home" : result;
+    }
+
+    var title = PlainText(Model.cont_title);
+    var snippetSource = !string.IsNullOrWhiteSpace(Model.intro) ? Model.intro
+        : !string.IsNullOrWhiteSpace(Model.hmpg_intro) ? Model.hmpg_intro
+        : Model.content;
+    var snippet = Truncate(PlainText(snippetSource), 240);
+    var crumbs = Crumbs(Model.URL);
+}
+
+<li class="search-list-group search-result-item">
+    <a href="@Model.URL" class="search-result-link">
+        @if (!string.IsNullOrWhiteSpace(crumbs))
+        {
+            <span class="search-result-path">@crumbs</span>
+        }
+        <h3 class="search-result-item-title">@Html.Raw(Highlight(title))</h3>
+        @if (!string.IsNullOrWhiteSpace(snippet))
+        {
+            <p class="search-result-item-desc">@Html.Raw(Highlight(snippet))</p>
+        }
+        <span class="search-result-more" aria-hidden="true">
+            View page
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </span>
+    </a>
+</li>

@@ -2,25 +2,5 @@
 
 @foreach (var item in Model)
 {
-    <li class="search-list-group search-result-item dark-bglight">
-
-        <div class="flex flex-col">
-
-            <a href="@item.URL" class="search-result-link">
-
-                <h3 class="search-result-item-title dark-textwhite">
-
-                    @Html.Raw(item.cont_title)
-
-                </h3>
-
-                <p class="search-result-item-desc">
-                    @Html.Raw(item.intro)
-                </p>
-
-            </a>
-
-        </div>
-
-    </li>
+    <partial name="_SearchResultItem" model="item" view-data="ViewData" />
 }
