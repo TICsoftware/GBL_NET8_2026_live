@@ -1,26 +1,26 @@
 ﻿@using GBL_MVC.Helpers
 @model GBL_BusinessLogic.Entity.Search
 @{
-    ViewData["Title"] = "Search Results | TCCF Labs";
+    ViewData["Title"] = "Search Results | Godavari Biorefineries";
 }
 
 @section head {
-    <title>Search Results for "@Model.keyword" | TCCF Lab</title>
+    <title>Search Results for "@Model.keyword" | Godavari Biorefineries</title>
 
     <meta content="" name="keywords" />
     <meta content="" name="description" />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="" />
-    <meta name="twitter:title" content="Search Results | TCCF Labs" />
+    <meta name="twitter:title" content="Search Results | Godavari Biorefineries" />
     <meta name="twitter:description" content="" />
-    <link rel="canonical" href="https://www.godavaribiorefineries.com//search" />
+    <link rel="canonical" href="https://www.godavaribiorefineries.com/search" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Godavari Biorefineries" />
-    <meta property="og:title" content="Search Results | TCCF Labs" />
+    <meta property="og:title" content="Search Results | Godavari Biorefineries" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://www.godavaribiorefineries.com//" />
+    <meta property="og:url" content="https://www.godavaribiorefineries.com/" />
     <meta property="og:image" content="" />
 
     <meta itemprop="name" content="Godavari Biorefineries" />
@@ -66,108 +66,86 @@
     </div>
 </section>
 
-<section class="section-pb search-page-section blank-template-section">
+@{
+    var keyword = Model.keyword ?? "";
+    var results = Model.objsearchdisplay ?? new List<GBL_BusinessLogic.Entity.Content_Search_Display>();
+    var total = Model.totalrecords > 0 ? Model.totalrecords : results.Count;
+    ViewData["SearchKeyword"] = keyword;
+}
+
+<section class="search-page-section">
     <div class="container">
-        <div class="blank-template-inner">
-            <div class="search-page-inner">
-                <div class="search-page-main">
-                    <!-- Search Bar -->
-                    <section class="searchFilter-content">
-                        <form class="search-page-form" id="frmSearchPage">
-                            <div class="search-form-field">
-                                <label for="search" class="sr-only">Search</label>
+        <div class="search-page-inner">
 
-                                <input id="search" type="text" placeholder="Search..." name="Id" value="@Model.keyword"
-                                    class="search-input dark-textwhite" />
-                            </div>
-
-                            <button type="submit" id="btnSearch" class="search-btn dark-bglight">
-                                Search
-                            </button>
-                        </form>
-                    </section>
-
-                    <!-- Results Section -->
-                    <section class="searchResult-container">
-                        <div class="searchResult-content">
-                            <!-- Result Header -->
-                            <div class="search-result-header">
-                                <h2 class="search-result-title dark-textwhite">
-                                    Showing results for <span class="search-result-keyword dark-textwhite">
-                                        @Model.keyword</span>
-                                </h2>
-                            </div>
-
-                            <!-- Results List -->
-                            <ul class="search_list" id="SearchResultDiv">
-                                @if (Model.objsearchdisplay != null && Model.objsearchdisplay.Count > 0)
-                                {
-                                    foreach (var item in Model.objsearchdisplay)
-                                    {
-                                        <li class="search-list-group search-result-item dark-bglight">
-
-                                            <div class="flex flex-col">
-
-                                                <a href="@item.URL" class="search-result-link">
-
-                                                    <h3 class="search-result-item-title dark-textwhite">
-
-                                                        @Html.Raw(item.cont_title)
-
-                                                    </h3>
-
-                                                    @if (!string.IsNullOrWhiteSpace(item.intro))
-                                                    {
-                                                        <p class="search-result-item-desc">
-                                                            @Html.Raw(item.intro)
-                                                        </p>
-                                                    }
-                                                    else if (!string.IsNullOrWhiteSpace(item.hmpg_intro))
-                                                    {
-                                                        <p class="search-result-item-desc">
-                                                            @Html.Raw(item.hmpg_intro)
-                                                        </p>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p class="search-result-item-desc">
-                                                            @Html.Raw(item.content)
-                                                        </p>
-                                                    }
-
-                                                </a>
-
-                                            </div>
-
-                                        </li>
-                                    }
-                                }
-                                else
-                                {
-                                    <li class="search-no-results dark-bglight">
-
-                                        <p class="dark-textwhite">
-                                            No search results found.
-                                        </p>
-
-                                    </li>
-                                }
-                            </ul>
-
-                            @if (Model.count > Model.currentpage)
-                            {
-                                <div class="btn-wrap search-load-more-wrap">
-                                    <a id="btnLoadMore" class="themeht-btn color-btn">
-                                        Load more
-                                    </a>
-                                </div>
-                            }
-
-                        </div>
-
-                    </section>
-
+            <!-- Search bar -->
+            <form class="search-page-form" id="frmSearchPage" role="search">
+                <label for="search" class="sr-only">Search the site</label>
+                <div class="search-form-field">
+                    <svg class="search-form-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+                        <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                    <input id="search" type="search" placeholder="Search products, businesses, reports…" name="Id"
+                           value="@keyword" class="search-input" autocomplete="off" />
                 </div>
+                <button type="submit" id="btnSearch" class="search-btn">
+                    <span>Search</span>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+            </form>
+
+            <!-- Results -->
+            <div class="searchResult-container">
+                @if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    <div class="search-result-header">
+                        <h2 class="search-result-title">
+                            Results for <span class="search-result-keyword">&ldquo;@keyword&rdquo;</span>
+                        </h2>
+                        @if (results.Any())
+                        {
+                            <p class="search-result-count">@total @(total == 1 ? "result" : "results") found</p>
+                        }
+                    </div>
+                }
+
+                @if (results.Any())
+                {
+                    <ol class="search_list" id="SearchResultDiv">
+                        @foreach (var item in results)
+                        {
+                            <partial name="_SearchResultItem" model="item" view-data="ViewData" />
+                        }
+                    </ol>
+
+                    @if (Model.count > Model.currentpage)
+                    {
+                        <div class="search-load-more-wrap">
+                            <a href="#" id="btnLoadMore" class="search-load-more">Load more</a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="search-no-results">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M20 20l-3.5-3.5M8.5 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                        <h3>@(string.IsNullOrWhiteSpace(keyword) ? "What are you looking for?" : "No results found")</h3>
+                        <p>
+                            @(string.IsNullOrWhiteSpace(keyword)
+                                ? "Type a word or phrase above to search the site."
+                                : "Try a different or more general keyword, or check the spelling.")
+                        </p>
+                        <a href="/" class="site-btn site-btn--line">
+                            <span class="site-btn__label">Back to Home</span>
+                            <span class="site-btn__arrow" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </span>
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -180,5 +158,5 @@
 
 @section Scripts {
     <script src="~/Assets/js/blanktemplate-script.js"></script>
-    <script src="~/scripts/Search/Search.js"></script>
+    <script src="~/scripts/Search/Search.js" asp-append-version="true"></script>
 }

@@ -43,7 +43,7 @@ $(document).ready(function () {
                 button.css("pointer-events", "auto");
     
                 // Total loaded items
-                var loadedItems = $("#SearchResultDiv .search-list-group").length;
+                var loadedItems = $("#SearchResultDiv > .search-list-group").length;
 
                 // Hide button when completed
                 if (loadedItems >= totalCount) {
