@@ -77,10 +77,17 @@
       return { x: x, y: y };
     }
 
+    // Several slides can share one year button (data-ms-group on each slide)
+    function yearIndexFor(i) {
+      var g = slides[i] ? parseInt(slides[i].getAttribute('data-ms-group'), 10) : NaN;
+      return isNaN(g) ? i : g;
+    }
+
     function updateProgress() {
       if (!progress) return;
       var first = years[0].querySelector('.milestones-year__label');
-      var current = years[index] && years[index].querySelector('.milestones-year__label');
+      var currentYear = years[yearIndexFor(index)];
+      var current = currentYear && currentYear.querySelector('.milestones-year__label');
       if (!first || !current) return;
       var gap = parseFloat(window.getComputedStyle(timeline || root).getPropertyValue('--ms-line-gap')) || 14;
       var a = offsetWithin(first, yearsList);   // offsets ignore transforms, so the lift doesn't matter
@@ -115,7 +122,7 @@
     function mod(n) { return ((n % count) + count) % count; }
 
     function centerYear(smooth) {
-      var year = years[index];
+      var year = years[yearIndexFor(index)];
       if (!year || !timeline) return;
       var left = year.offsetLeft - (timeline.clientWidth - year.offsetWidth) / 2;
       timeline.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' });
@@ -132,8 +139,9 @@
       slides.forEach(function (slide, n) {
         slide.setAttribute('aria-hidden', n === index ? 'false' : 'true');
       });
+      var activeYear = yearIndexFor(index);
       years.forEach(function (year, n) {
-        var active = n === index;
+        var active = n === activeYear;
         year.classList.toggle('is-active', active);
         if (active) year.setAttribute('aria-current', 'step');
         else year.removeAttribute('aria-current');

@@ -67,9 +67,11 @@
 
         @if (!string.IsNullOrWhiteSpace(Component.Url))
         {
-            <a href="@Component.Url" class="site-link ataglance-cta">
-              <span class="site-link-arrow" aria-hidden="true">&rarr;</span>
-              @(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "About us")
+            <a href="@Component.Url" class="site-btn site-btn--line">
+              <span class="site-btn__label">@(!string.IsNullOrWhiteSpace(Component.Url_Text) ? Component.Url_Text : "About us")</span>
+              <span class="site-btn__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
             </a>
         }
       </aside>

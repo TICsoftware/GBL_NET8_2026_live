@@ -46,6 +46,17 @@
     @if (cells.Any())
     {
     <div class="giveback-grid">
+      @{
+          // Layout defaults for image cells when the CMS gives no bg_class:
+          // the 2nd and 3rd images span two tracks of the 7-column grid.
+          var mediaDefaults = new[]
+          {
+              "arrow-right-bottom",
+              "giveback-cell--wide arrow-center-bottom",
+              "giveback-cell--wide arrow-right-bottom"
+          };
+          var mediaIndex = 0;
+      }
       @foreach (var item in cells)
       {
           var img = !string.IsNullOrWhiteSpace(item.ComponentThumbnail)
@@ -60,6 +71,11 @@
 
           if (isMedia)
           {
+              if (string.IsNullOrWhiteSpace(extraClass) && mediaIndex < mediaDefaults.Length)
+              {
+                  extraClass = mediaDefaults[mediaIndex];
+              }
+              mediaIndex++;
               var mediaClass = string.IsNullOrWhiteSpace(extraClass)
                   ? "giveback-cell giveback-cell--media"
                   : $"giveback-cell giveback-cell--media {extraClass}";

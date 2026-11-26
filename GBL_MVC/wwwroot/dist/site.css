@@ -286,6 +286,7 @@
   .inset-0 {
     inset: calc(var(--spacing) * 0);
   }
+<<<<<<< HEAD
   .\!start {
     inset-inline-start: var(--spacing) !important;
   }
@@ -298,6 +299,8 @@
   .start\! {
     inset-inline-start: var(--spacing) !important;
   }
+=======
+>>>>>>> 5f6f5f76981adef09f78bb3f3050b9d8d0ad7fa2
   .start-0 {
     inset-inline-start: calc(var(--spacing) * 0);
   }
