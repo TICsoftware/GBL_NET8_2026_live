@@ -288,6 +288,9 @@
   color: var(--color-gray-dark);
   margin: 0;
 }
+.milestone-slide__text p {
+    font-size: 1rem;
+}
 
 /* ---------- Arrows (desktop: outside the container) ---------- */
 .milestones-arrow {
