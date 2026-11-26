@@ -136,13 +136,19 @@
       <div class="innerbanner-caption absolute inset-0 z-30 flex items-center">
          <div class="container">
             <div class="max-w-4xl text-left">
+                @if(!string.IsNullOrWhiteSpace(content.BreadcrumbTitle))
+                        {
+                          <span class="addon-section-title">@content.BreadcrumbTitle.Trim()</span> 
+                        }
                <h1 class="innerbanner-title text-h1 text-white title-animation">
+
+                   
                   @Html.Raw(bannerTitle.CleanParagraphTags())
 
                </h1>
                 @if (!string.IsNullOrWhiteSpace(landingTitle)  )
                {
-                  <h2 class="page-intro-corinthia text-h1">@Html.Raw(landingTitle.CleanParagraphTags())</h2>
+                   <h2 class="page-intro-corinthia text-h1">@Html.Raw(landingTitle.CleanParagraphTags())</h2>
                }
                <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                   @if (!string.IsNullOrWhiteSpace(content?.BreadcrumPath))
