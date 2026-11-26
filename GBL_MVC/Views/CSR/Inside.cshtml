@@ -79,9 +79,12 @@
 
     <section class="carbonCircularity section-spacing">
         <div class="container">
+            @if( blocks.Count <=3)
+           {
         <div class="title-section">
             <h2 class="text-h2">@Html.Raw(itemsection?.Title)</h2>
          </div>
+         }
         @if(blocks != null && blocks.Count > 0)
         {
               if( blocks.Count <=3)
