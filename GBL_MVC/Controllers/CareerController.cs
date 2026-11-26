@@ -61,11 +61,11 @@ public class CareerController : Controller
                 return View("LearningDevelopment", data);
             }
 
-            if (slug.Equals("wellbeing-and-benefits", StringComparison.OrdinalIgnoreCase)
-                || slug.Equals("wellbeing", StringComparison.OrdinalIgnoreCase))
-            {
-                return View("WellbeingAndBenefits", data);
-            }
+            // if (slug.Equals("wellbeing-and-benefits", StringComparison.OrdinalIgnoreCase)
+            //     || slug.Equals("wellbeing", StringComparison.OrdinalIgnoreCase))
+            // {
+            //     return View("WellbeingAndBenefits", data);
+            // }
 
             if (slug.Equals("social", StringComparison.OrdinalIgnoreCase))
             {
@@ -222,7 +222,8 @@ public class CareerController : Controller
             || slug.Equals("our-subsidiaries", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("subsidiaries", StringComparison.OrdinalIgnoreCase)
             || slug.Equals("our-strategy", StringComparison.OrdinalIgnoreCase)
-            || slug.Equals("strategy", StringComparison.OrdinalIgnoreCase);
+            || slug.Equals("strategy", StringComparison.OrdinalIgnoreCase)
+            || slug.Equals("wellbeing-and-benefits", StringComparison.OrdinalIgnoreCase);
     }
 
     private string GetClientIpAddress()
