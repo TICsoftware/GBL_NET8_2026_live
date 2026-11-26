@@ -288,9 +288,6 @@
   color: var(--color-gray-dark);
   margin: 0;
 }
-.milestone-slide__text p {
-    font-size: 1rem;
-}
 
 /* ---------- Arrows (desktop: outside the container) ---------- */
 .milestones-arrow {
@@ -739,4 +736,7 @@
     transition: none !important;
   }
 }
-
+@media (min-width: 1200px) and (max-width: 1366px) {
+.milestone-slide__text p { font-size: 0.875rem;}
+.milestone-slide__content-inner {padding: clamp(1.25rem, 1.75vw, 2.25rem);}
+}
