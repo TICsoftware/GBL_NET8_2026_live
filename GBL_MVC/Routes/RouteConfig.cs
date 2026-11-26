@@ -389,6 +389,11 @@ app.MapControllerRoute(
 
 
             app.MapControllerRoute(
+                 name: "stories-inside",
+                 pattern: "media/stories-of-change/{title?}",
+                 defaults: new { controller = "Media", action = "PressReleasesInside" }
+            );
+            app.MapControllerRoute(
                     name: "careers",
                     pattern: "careers",
                     defaults: new { controller = "Careers", action = "Index", title = "careers" }
