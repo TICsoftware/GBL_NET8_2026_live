@@ -24,7 +24,9 @@
   font-weight: 400;
 }
 .page-intro-outer--vision .page-intro-mantra__quote .page-intro-mantra__meaning {
-  font-size: var(--text-p);
+  /* font-size: var(--text-p); */
+  font-size: var(--text-intro);
+  font-family: var(--font-uniNeueBold);
 }
 .page-intro-outer--vision .page-intro-mantra__copy p {
   margin-bottom: 1.3em;
