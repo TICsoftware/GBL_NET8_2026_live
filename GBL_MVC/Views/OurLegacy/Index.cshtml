@@ -30,6 +30,30 @@
         var t = value.CleanParagraphTags().Trim();
         return t.Length >= 4 && t.Take(4).All(char.IsDigit);
     }
+
+    string TimelineYear(GBL_BusinessLogic.Entity.ComponentModel item, int i)
+    {
+        var rawTitle = item.Title?.CleanParagraphTags() ?? "";
+        var yearText = item.year?.CleanParagraphTags() ?? "";
+        if (string.IsNullOrWhiteSpace(yearText) && LooksLikeYear(rawTitle)) yearText = rawTitle;
+        if (string.IsNullOrWhiteSpace(yearText)) yearText = FirstNonEmpty(rawTitle, (i + 1).ToString());
+        return yearText.Trim();
+    }
+
+    // Several milestones can share a year: the timeline shows each year once
+    // (consecutive slides with the same year form one group).
+    var milestoneGroupOf = new List<int>();
+    var milestoneYearGroups = new List<(string Year, int FirstIndex)>();
+    for (var gi = 0; gi < milestoneItems.Count; gi++)
+    {
+        var y = TimelineYear(milestoneItems[gi], gi);
+        if (milestoneYearGroups.Count == 0
+            || !string.Equals(milestoneYearGroups[^1].Year, y, StringComparison.OrdinalIgnoreCase))
+        {
+            milestoneYearGroups.Add((y, gi));
+        }
+        milestoneGroupOf.Add(milestoneYearGroups.Count - 1);
+    }
 }
 
 @section head {
@@ -228,6 +252,7 @@ else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
 
                      <article class="milestone-slide@(isFirst ? " is-active" : "")"
                               data-ms-slide="@i"
+                              data-ms-group="@milestoneGroupOf[i]"
                               role="group"
                               aria-roledescription="slide"
                               aria-label="@label"
@@ -267,29 +292,20 @@ else if (!string.IsNullOrWhiteSpace(Model?.Content?.Content))
 
             <div class="milestones-timeline">
                <ol class="milestones-years">
-                  @for (var i = 0; i < milestoneItems.Count; i++)
+                  @for (var g = 0; g < milestoneYearGroups.Count; g++)
                   {
-                     var item = milestoneItems[i];
-                     var rawTitle = item.Title?.CleanParagraphTags() ?? "";
-                     var yearText = item.year?.CleanParagraphTags() ?? "";
-                     if (string.IsNullOrWhiteSpace(yearText) && LooksLikeYear(rawTitle))
-                     {
-                        yearText = rawTitle;
-                     }
-                     if (string.IsNullOrWhiteSpace(yearText))
-                     {
-                        yearText = FirstNonEmpty(rawTitle, (i + 1).ToString());
-                     }
-                     var isFirst = i == 0;
+                     var yearText = milestoneYearGroups[g].Year;
+                     var firstIndex = milestoneYearGroups[g].FirstIndex;
+                     var isFirst = g == 0;
 
                      <li>
                         @if (isFirst)
                         {
-                           <button type="button" class="milestones-year is-active" data-ms-year="@i" aria-label="Go to @yearText" aria-current="step">@Html.Raw(yearText)</button>
+                           <button type="button" class="milestones-year is-active" data-ms-year="@firstIndex" aria-label="Go to @yearText" aria-current="step">@Html.Raw(yearText)</button>
                         }
                         else
                         {
-                           <button type="button" class="milestones-year" data-ms-year="@i" aria-label="Go to @yearText">@Html.Raw(yearText)</button>
+                           <button type="button" class="milestones-year" data-ms-year="@firstIndex" aria-label="Go to @yearText">@Html.Raw(yearText)</button>
                         }
                      </li>
                   }

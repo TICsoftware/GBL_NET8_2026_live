@@ -286,9 +286,6 @@
   .inset-0 {
     inset: 0px;
   }
-  .inset-s-0 {
-    inset-inline-start: 0px;
-  }
   .start-0 {
     inset-inline-start: calc(var(--spacing) * 0);
   }
