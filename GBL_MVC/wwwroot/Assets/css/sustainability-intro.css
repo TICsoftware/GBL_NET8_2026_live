@@ -83,11 +83,11 @@
 
 .page-intro-mantra__sanskrit {
   margin: 0 0 0.65rem;
-  font-family: "Noto Serif Devanagari", "Noto Serif", Georgia, serif;
-  font-size: var(--text-h1);
-  font-weight: 700;
-  line-height: 1.35;
-  color: #212121;
+    font-family: "Noto Sans Devanagari", sans-serif;
+    font-weight: 400;
+    line-height: 1.37;
+    color: var(--color-primary);
+    overflow-wrap: normal;
   overflow-wrap: anywhere;
 }
 
