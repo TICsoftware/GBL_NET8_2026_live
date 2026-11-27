@@ -22,7 +22,7 @@ namespace GBL_MVC.Controllers
             _bal = new Search_BAL(configuration);
         }
 
-        public IActionResult Index(string Id)
+        public IActionResult Index(string Id, string cat)
         {
             Search model = new Search();
 
@@ -31,7 +31,7 @@ namespace GBL_MVC.Controllers
                 try
                 {
                     model.txttitle = Id.ToString();
-                    model = _bal.search_display(Id.Replace("of ", ""), 1);
+                    model = _bal.search_display(Id.Replace("of ", ""), 1, cat);
                 }
                 catch (Exception ex)
                 {
@@ -59,11 +59,57 @@ namespace GBL_MVC.Controllers
             }
         }
 
-        public ActionResult LoadMoreSearch(string keyword, int page)
+        // Sections and articles for a chip, before a keyword is typed.
+        [HttpGet]
+        public IActionResult Browse(string cat)
         {
             try
             {
-                Search model = _bal.search_display(keyword, page);
+                return Json(_bal.search_browse(cat));
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError("/Search/Browse :", ex);
+                return Json(new SearchSuggestResult { q = "", cat = cat ?? "All" });
+            }
+        }
+
+        // Most searched keywords, and the sections or articles people open.
+        [HttpGet]
+        public IActionResult Popular()
+        {
+            try
+            {
+                return Json(_bal.search_popular());
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError("/Search/Popular :", ex);
+                return Json(new SearchPopularResult());
+            }
+        }
+
+        // Records a search and the result that was opened.
+        [HttpGet]
+        public IActionResult Track(string q, string cat, string title, string url, string type, string section)
+        {
+            try
+            {
+                _bal.search_track(q, cat, title, url, type, section);
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError("/Search/Track :", ex);
+            }
+
+            return Json(new { ok = true });
+        }
+
+        public ActionResult LoadMoreSearch(string keyword, int page, string cat)
+        {
+            try
+            {
+                Search model = _bal.search_display(keyword, page, cat);
 
                 if (model == null ||
                     model.objsearchdisplay == null ||

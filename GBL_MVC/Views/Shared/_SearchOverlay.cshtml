@@ -1,5 +1,5 @@
 @* Search panel: drops down under the header (header stays visible; the header's search button becomes the close button). Behaviour in header.js *@
-<div class="search-overlay" id="searchOverlay" role="dialog" aria-labelledby="searchOverlayTitle" data-suggest-url="@Url.Content("~/search/suggest")" hidden>
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-labelledby="searchOverlayTitle" data-suggest-url="@Url.Content("~/search/suggest")" data-popular-url="@Url.Content("~/search/popular")" data-browse-url="@Url.Content("~/search/browse")" data-track-url="@Url.Content("~/search/track")" hidden>
   <div class="search-overlay__inner">
     <div class="search-overlay__body">
       <p class="search-overlay__eyebrow" id="searchOverlayTitle">Search Godavari Biorefineries</p>
@@ -39,7 +39,7 @@
         </div>
         <div class="search-overlay__col">
           <p class="search-overlay__col-title">Popular searches</p>
-          <div class="search-overlay__popular">
+          <div class="search-overlay__popular" data-search-popular>
             @foreach (var term in new[] { "Annual report", "Subsidiaries", "Financial statements", "Sustainability", "Job openings" })
             {
               <button type="button" class="search-overlay__pill" data-search-term="@term">
@@ -50,13 +50,13 @@
           </div>
         </div>
         <div class="search-overlay__col">
-          <p class="search-overlay__col-title">Featured</p>
-          <div class="search-overlay__featured">
-            <a href="/about-us/manufacturing" class="search-overlay__card">
+          <p class="search-overlay__col-title">Popular pages</p>
+          <div class="search-overlay__featured" data-search-featured>
+            <a href="/about-us/manufacturing" class="search-overlay__card" data-result-title="Our Manufacturing Ecosystem" data-result-type="Article" data-result-path="About Us" data-result-cat="About Us">
               <span><span class="search-overlay__card-kicker">About Us</span><span class="search-overlay__card-title">Our Manufacturing Ecosystem</span></span>
               <span aria-hidden="true">→</span>
             </a>
-            <a href="/investors/shareholding-pattern" class="search-overlay__card">
+            <a href="/investors/shareholding-pattern" class="search-overlay__card" data-result-title="Shareholder Information" data-result-type="Article" data-result-path="Investors" data-result-cat="Investors">
               <span><span class="search-overlay__card-kicker">Investors</span><span class="search-overlay__card-title">Shareholder Information</span></span>
               <span aria-hidden="true">→</span>
             </a>

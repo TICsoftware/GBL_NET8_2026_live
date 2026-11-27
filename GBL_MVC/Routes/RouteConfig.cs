@@ -413,6 +413,24 @@ app.MapControllerRoute(
             );
 
             app.MapControllerRoute(
+                name: "SearchPopular",
+                pattern: "search/popular",
+                defaults: new { controller = "Search", action = "Popular" }
+            );
+
+            app.MapControllerRoute(
+                name: "SearchBrowse",
+                pattern: "search/browse",
+                defaults: new { controller = "Search", action = "Browse" }
+            );
+
+            app.MapControllerRoute(
+                name: "SearchTrack",
+                pattern: "search/track",
+                defaults: new { controller = "Search", action = "Track" }
+            );
+
+            app.MapControllerRoute(
                 name: "search",
                 pattern: "search/{id?}",
                 defaults: new { controller = "Search", action = "Index" }

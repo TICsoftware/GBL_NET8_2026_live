@@ -660,6 +660,9 @@ document.addEventListener("DOMContentLoaded", function () {
 ========================= */
 function initSearchOverlay(panel, input, close, toggle) {
   const suggestUrl = panel.getAttribute("data-suggest-url") || "/search/suggest";
+  const popularUrl = panel.getAttribute("data-popular-url") || "/search/popular";
+  const browseUrl = panel.getAttribute("data-browse-url") || "/search/browse";
+  const trackUrl = panel.getAttribute("data-track-url") || "/search/track";
   const resultsBox = panel.querySelector("[data-search-results]");
   const list = panel.querySelector("[data-search-list]");
   const countEl = panel.querySelector("[data-search-count]");
@@ -694,6 +697,21 @@ function initSearchOverlay(panel, input, close, toggle) {
   };
 
   const searchPageUrl = (q) => "/search/" + encodeURIComponent(q);
+  const landingFor = (name) => ({
+    Investors: "/investors",
+    Businesses: "/businesses",
+    Sustainability: "/sustainability",
+    Media: "/media",
+    Careers: "/careers"
+  })[name] || "/";
+  const badgeClass = (type) => {
+    const key = String(type || "Page").toLowerCase();
+    if (key === "pdf") return " search-overlay__badge--pdf";
+    if (key === "product") return " search-overlay__badge--product";
+    if (key === "industry") return " search-overlay__badge--industry";
+    if (key === "section") return " search-overlay__badge--section";
+    return "";
+  };
 
   /* ---- recent searches (kept in this browser only) ---- */
   const readRecent = () => {
@@ -763,9 +781,11 @@ function initSearchOverlay(panel, input, close, toggle) {
     list.innerHTML = items.map((r, i) => {
       const isPdf = r.type === "PDF";
       return '<li role="presentation">' +
-        '<a href="' + escapeHtml(r.url) + '" class="search-overlay__result" id="searchOverlayOpt' + i + '" role="option" aria-selected="false"' + (isPdf ? ' target="_blank" rel="noopener"' : '') + '>' +
+        '<a href="' + escapeHtml(r.url) + '" class="search-overlay__result" id="searchOverlayOpt' + i + '" role="option" aria-selected="false"' +
+          ' data-result-title="' + escapeHtml(r.title) + '" data-result-type="' + escapeHtml(r.type || "Page") + '" data-result-path="' + escapeHtml(r.path || "") + '"' +
+          (isPdf ? ' target="_blank" rel="noopener"' : '') + '>' +
           '<span class="search-overlay__result-main">' +
-            '<span class="search-overlay__badge' + (isPdf ? ' search-overlay__badge--pdf' : '') + '">' + escapeHtml(r.type || "Page") + '</span>' +
+            '<span class="search-overlay__badge' + badgeClass(r.type) + '">' + escapeHtml(r.type || "Page") + '</span>' +
             '<span class="search-overlay__result-title">' + highlight(r.title, term) + '</span>' +
           '</span>' +
           '<span class="search-overlay__result-path">' + escapeHtml(r.path || "") + '</span>' +
@@ -774,8 +794,13 @@ function initSearchOverlay(panel, input, close, toggle) {
     }).join("");
     emptyEl.hidden = items.length > 0;
     countEl.hidden = items.length === 0;
+    const termText = (term || "").trim();
+    if (termText.length >= MIN_CHARS) {
+      allLink.href = searchPageUrl(termText) + (cat === "All" ? "" : ("?cat=" + encodeURIComponent(cat)));
+    } else {
+      allLink.href = landingFor(cat);
+    }
     allLink.hidden = items.length === 0;
-    allLink.href = searchPageUrl(term);
     activeIndex = -1;
     input.removeAttribute("aria-activedescendant");
   };
@@ -788,6 +813,10 @@ function initSearchOverlay(panel, input, close, toggle) {
     if (term.length < MIN_CHARS) {
       requestId++;
       if (controller) controller.abort();
+      if (cat !== "All") {
+        browseCategory();
+        return;
+      }
       showDefault(true);
       return;
     }
@@ -804,6 +833,61 @@ function initSearchOverlay(panel, input, close, toggle) {
         .catch((err) => { if (err && err.name !== "AbortError" && myId === requestId) render({ items: [], total: 0 }, term); })
         .finally(() => { if (myId === requestId) resultsBox.classList.remove("is-loading"); });
     }, 220);
+  };
+
+  const browseCategory = () => {
+    if (controller) controller.abort();
+    controller = typeof AbortController === "function" ? new AbortController() : null;
+    const myId = ++requestId;
+    showDefault(false);
+    resultsBox.classList.add("is-loading");
+    fetch(browseUrl + "?cat=" + encodeURIComponent(cat), { headers: { Accept: "application/json" }, signal: controller ? controller.signal : undefined })
+      .then((res) => (res.ok ? res.json() : { items: [], total: 0 }))
+      .then((data) => { if (myId === requestId) render(data, ""); })
+      .catch((err) => { if (err && err.name !== "AbortError" && myId === requestId) render({ items: [], total: 0 }, ""); })
+      .finally(() => { if (myId === requestId) resultsBox.classList.remove("is-loading"); });
+  };
+
+  const track = (fields) => {
+    const params = new URLSearchParams();
+    Object.keys(fields).forEach((key) => {
+      if (fields[key]) params.set(key, fields[key]);
+    });
+    fetch(trackUrl + "?" + params.toString(), { method: "GET", keepalive: true, headers: { Accept: "application/json" } }).catch(() => {});
+  };
+
+  const loadPopular = () => {
+    fetch(popularUrl, { headers: { Accept: "application/json" } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data) return;
+        const terms = Array.isArray(data.terms) ? data.terms.filter((t) => typeof t === "string" && t.trim()) : [];
+        const featured = Array.isArray(data.featured) ? data.featured.filter((item) => item && item.title && item.url) : [];
+        const popularBox = panel.querySelector("[data-search-popular]");
+        const featuredBox = panel.querySelector("[data-search-featured]");
+        if (popularBox && terms.length) {
+          popularBox.innerHTML = terms.map((term) =>
+            '<button type="button" class="search-overlay__pill" data-search-term="' + escapeHtml(term) + '">' +
+              '<svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2"/></svg>' +
+              escapeHtml(term) +
+            '</button>'
+          ).join("");
+        }
+        if (featuredBox && featured.length) {
+          featuredBox.innerHTML = featured.map((item) => {
+            const kicker = item.cat && item.cat !== "All" ? item.cat : (item.path || item.type || "");
+            return '<a href="' + escapeHtml(item.url) + '" class="search-overlay__card"' +
+              ' data-result-title="' + escapeHtml(item.title) + '"' +
+              ' data-result-type="' + escapeHtml(item.type || "Article") + '"' +
+              ' data-result-path="' + escapeHtml(item.path || "") + '"' +
+              ' data-result-cat="' + escapeHtml(item.cat || "") + '">' +
+              '<span><span class="search-overlay__card-kicker">' + escapeHtml(kicker) + '</span>' +
+              '<span class="search-overlay__card-title">' + escapeHtml(item.title) + '</span></span>' +
+              '<span aria-hidden="true">→</span></a>';
+          }).join("");
+        }
+      })
+      .catch(() => {});
   };
 
   const setTerm = (term) => {
@@ -849,8 +933,21 @@ function initSearchOverlay(panel, input, close, toggle) {
     });
   });
 
-  panel.querySelectorAll("[data-search-term]").forEach((btn) => {
-    btn.addEventListener("click", () => setTerm((btn.getAttribute("data-search-term") || "").trim()));
+  panel.addEventListener("click", (event) => {
+    const termBtn = event.target.closest("[data-search-term]");
+    if (termBtn && panel.contains(termBtn)) {
+      setTerm((termBtn.getAttribute("data-search-term") || "").trim());
+      return;
+    }
+    const card = event.target.closest("a.search-overlay__card");
+    if (!card || !panel.contains(card)) return;
+    track({
+      cat: card.getAttribute("data-result-cat") || "",
+      title: card.getAttribute("data-result-title") || "",
+      url: card.getAttribute("href") || "",
+      type: card.getAttribute("data-result-type") || "Article",
+      section: card.getAttribute("data-result-path") || ""
+    });
   });
 
   if (recentList) {
@@ -869,7 +966,17 @@ function initSearchOverlay(panel, input, close, toggle) {
   }
 
   list.addEventListener("click", (event) => {
-    if (event.target.closest(".search-overlay__result")) saveRecent(input.value);
+    const link = event.target.closest(".search-overlay__result");
+    if (!link) return;
+    saveRecent(input.value);
+    track({
+      q: input.value.trim(),
+      cat: cat,
+      title: link.getAttribute("data-result-title") || "",
+      url: link.getAttribute("href") || "",
+      type: link.getAttribute("data-result-type") || "Page",
+      section: link.getAttribute("data-result-path") || ""
+    });
   });
   allLink.addEventListener("click", () => saveRecent(input.value));
 
@@ -890,11 +997,16 @@ function initSearchOverlay(panel, input, close, toggle) {
   });
 
   renderRecent();
+  loadPopular();
 
   return {
     onOpen: () => {
       renderRecent();
-      if (input.value.trim().length < MIN_CHARS) showDefault(true);
+      loadPopular();
+      if (input.value.trim().length < MIN_CHARS) {
+        if (cat !== "All") runSearch();
+        else showDefault(true);
+      }
     }
   };
 }

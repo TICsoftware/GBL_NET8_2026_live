@@ -104,7 +104,7 @@
                         </h2>
                         @if (results.Any())
                         {
-                            <p class="search-result-count">@total @(total == 1 ? "result" : "results") found</p>
+                            <p class="search-result-count">@total @(total == 1 ? "result" : "results") found@(string.IsNullOrWhiteSpace(Model.category) || Model.category == "All" ? "" : " in " + Model.category)</p>
                         }
                     </div>
                 }
@@ -155,6 +155,7 @@
 <input type="hidden" id="SearchPageSize" value="10" />
 <input type="hidden" id="SearchTotalCount" value="@Model.totalrecords" />
 <input type="hidden" id="SearchKeyword" value="@Model.keyword" />
+<input type="hidden" id="SearchCategory" value="@(Model.category ?? "All")" />
 
 @section Scripts {
     <script src="~/Assets/js/blanktemplate-script.js"></script>

@@ -10,6 +10,14 @@ public class Search
     public int totalrecords { get; set; }
     public string keyword { get; set; }
     public string txttitle { get; set; }
+    public string category { get; set; }
+}
+
+
+public class SearchPopularResult
+{
+    public List<string> terms { get; set; } = new List<string>();
+    public List<SearchSuggestItem> featured { get; set; } = new List<SearchSuggestItem>();
 }
 
 
@@ -51,6 +59,8 @@ public class Content_Search_Display
     public string cont_loc { get; set; }
     public string cont_publishdate { get; set; }
     public string section_name { get; set; }
+    public string result_type { get; set; }
+    public string section_path { get; set; }
 
 
 }

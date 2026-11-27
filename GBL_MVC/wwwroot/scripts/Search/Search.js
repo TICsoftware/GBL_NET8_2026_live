@@ -12,6 +12,9 @@ $(document).ready(function () {
     
         var keyword =
             $("#SearchKeyword").val();
+
+        var category =
+            ($("#SearchCategory").val() || "").trim();
     
         var totalCount =
             parseInt($("#SearchTotalCount").val());
@@ -25,7 +28,8 @@ $(document).ready(function () {
             data:
             {
                 keyword: keyword,
-                page: page
+                page: page,
+                cat: category
             },
     
             success: function (response) {
@@ -79,7 +83,12 @@ $(document).ready(function () {
             return false;
         }
     
-        window.location.href = "/search/" + encodeURIComponent(keyword);
+        var category = ($("#SearchCategory").val() || "").trim();
+        var target = "/search/" + encodeURIComponent(keyword);
+        if (category && category.toLowerCase() !== "all") {
+            target += "?cat=" + encodeURIComponent(category);
+        }
+        window.location.href = target;
     });
 
     

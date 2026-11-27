@@ -22,17 +22,21 @@ namespace GBL_BusinessLogic.BAL
 
         protected int articlepagecount = 10;
 
-        public Search search_display(string keyword, int page)
+        public Search search_display(string keyword, int page, string category = null)
         {
             Search model = new Search();
 
             model.txttitle = keyword;
             model.keyword = keyword;
             model.currentpage = page;
+            model.category = NormalizeCategory(category);
 
-            string strKeywordFinal = FullText_Search.FullText_Search_String(keyword, FullText_Search_Operators.NEAR, true);
+            string rawKeyword = (keyword ?? "").Trim();
+            string strKeywordFinal = rawKeyword.Length == 0
+                ? ""
+                : FullText_Search.FullText_Search_String(rawKeyword, FullText_Search_Operators.NEAR, true);
 
-            DataSet dsSearchDisplay = GetSearch__DAL(strKeywordFinal, page, articlepagecount);
+            DataSet dsSearchDisplay = GetSearch__DAL(strKeywordFinal, page, articlepagecount, rawKeyword, model.category);
 
             model.objsearchdisplay = new List<Content_Search_Display>();
 
@@ -76,6 +80,10 @@ namespace GBL_BusinessLogic.BAL
 
                         section_name = dr.Table.Columns.Contains("ComponentName") ? dr["ComponentName"]?.ToString() : "",
 
+                        result_type = ResultTypeOf(dr),
+
+                        section_path = Cell(dr, "SectionPath"),
+
                         hmpg_intro = Highlight
                         (
                             keyword,
@@ -108,6 +116,9 @@ namespace GBL_BusinessLogic.BAL
                 model.count = 0;
             }
 
+            if (page <= 1)
+                TryLog(rawKeyword, model.category, "Keyword", null, "", null);
+
             return model;
         }
 
@@ -134,45 +145,143 @@ namespace GBL_BusinessLogic.BAL
             var result = new SearchSuggestResult
             {
                 q = (keyword ?? "").Trim(),
-                cat = string.IsNullOrWhiteSpace(category) || !SuggestCategories.ContainsKey(category) ? "All" : category
+                cat = NormalizeCategory(category)
             };
 
             if (result.q.Length < 2) return result;
 
             string strKeywordFinal = FullText_Search.FullText_Search_String(result.q, FullText_Search_Operators.NEAR, true);
-            DataSet ds = GetSearch__DAL(strKeywordFinal, 1, SuggestFetchSize);
+            DataSet ds = GetSearch__DAL(strKeywordFinal, 1, SuggestFetchSize, result.q, result.cat);
 
+            return MapSuggest(ds, result, take);
+        }
+
+        public SearchSuggestResult search_browse(string category, int take = 8)
+        {
+            var result = new SearchSuggestResult
+            {
+                q = "",
+                cat = NormalizeCategory(category)
+            };
+
+            if (result.cat == "All") return result;
+            if (take < 1) take = 8;
+            if (take > 20) take = 20;
+
+            DataSet ds = GetBrowse__DAL(result.cat, take);
+            return MapSuggest(ds, result, take);
+        }
+
+        public SearchPopularResult search_popular()
+        {
+            var result = new SearchPopularResult();
+            DataSet ds = GetPopular__DAL();
             if (ds == null || ds.Tables.Count == 0) return result;
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                string term = Cell(dr, "Keyword");
+                if (!string.IsNullOrWhiteSpace(term)) result.terms.Add(term);
+            }
+
+            if (ds.Tables.Count > 1)
+            {
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    string title = Cell(dr, "ItemTitle");
+                    string url = Cell(dr, "ItemUrl");
+                    if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(url)) continue;
+
+                    result.featured.Add(new SearchSuggestItem
+                    {
+                        title = title,
+                        url = url,
+                        type = Cell(dr, "ItemType"),
+                        path = Cell(dr, "SectionName"),
+                        cat = Cell(dr, "Category")
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        public void search_track(string keyword, string category, string title, string url, string type, string section)
+        {
+            string term = NormalizeTerm(keyword);
+            string cat = CleanCategory(category);
+            string safeUrl = SafeUrl(url);
+            string itemTitle = NormalizeTerm(title);
+            if (itemTitle.Length > 500) itemTitle = itemTitle.Substring(0, 500);
+            string itemType = NormalizeItemType(type);
+            string sectionName = NormalizeTerm(section);
+            if (sectionName.Length > 300) sectionName = sectionName.Substring(0, 300);
+
+            if (term.Length >= 2)
+                TryLog(term, NormalizeCategory(cat), "Keyword", null, "", null);
+
+            if (itemTitle.Length >= 2 && safeUrl.Length > 1 && itemType != "Keyword")
+                TryLog(itemTitle, cat, itemType, itemTitle, safeUrl, sectionName);
+        }
+
+        private SearchSuggestResult MapSuggest(DataSet ds, SearchSuggestResult result, int take)
+        {
+            if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+            {
+                result.total = 0;
+                result.items = new List<SearchSuggestItem>();
+                return result;
+            }
 
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var matches = new List<SearchSuggestItem>();
 
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                string url = dr["PageUrl"]?.ToString()?.Trim();
-                if (string.IsNullOrWhiteSpace(url) || !seen.Add(url)) continue;
+                var item = MapSuggestItem(dr);
+                if (item == null || !seen.Add(item.url)) continue;
 
-                string itemCat = CategoryForUrl(url);
-                if (result.cat != "All" && itemCat != result.cat) continue;
+                // Keyword search keeps the chip filter. Browsing a chip trusts the section query.
+                if (!string.IsNullOrEmpty(result.q) && result.cat != "All" && item.cat != result.cat) continue;
 
-                string title = FullText_Search.Remove_All_Tags(dr["cont_title"]?.ToString() ?? "").Trim();
-                if (string.IsNullOrWhiteSpace(title)) title = dr["cont_pagename"]?.ToString() ?? url;
-
-                string section = dr.Table.Columns.Contains("ComponentName") ? dr["ComponentName"]?.ToString() : "";
-
-                matches.Add(new SearchSuggestItem
-                {
-                    title = System.Net.WebUtility.HtmlDecode(title),
-                    url = url,
-                    type = url.IndexOf(".pdf", StringComparison.OrdinalIgnoreCase) >= 0 ? "PDF" : "Page",
-                    path = BreadcrumbForUrl(url, section),
-                    cat = itemCat
-                });
+                matches.Add(item);
             }
 
-            result.total = matches.Count;
+            int sqlTotal = matches.Count;
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0 && ds.Tables[1].Columns.Contains("TotalCount"))
+                sqlTotal = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalCount"]);
+
+            result.total = Math.Max(sqlTotal, matches.Count);
             result.items = matches.Take(take).ToList();
             return result;
+        }
+
+        private SearchSuggestItem MapSuggestItem(DataRow dr)
+        {
+            string url = Cell(dr, "PageUrl").Trim();
+            if (string.IsNullOrWhiteSpace(url)) return null;
+
+            string title = FullText_Search.Remove_All_Tags(Cell(dr, "cont_title")).Trim();
+            if (string.IsNullOrWhiteSpace(title)) title = Cell(dr, "cont_pagename");
+            if (string.IsNullOrWhiteSpace(title)) title = url;
+
+            string sectionPath = Cell(dr, "SectionPath");
+            string component = Cell(dr, "ComponentName");
+            string itemCat = CategoryForUrl(url);
+            if (itemCat == "All")
+            {
+                string typeCat = ResultTypeOf(dr);
+                if (typeCat == "Product" || typeCat == "Industry") itemCat = "Businesses";
+            }
+
+            return new SearchSuggestItem
+            {
+                title = System.Net.WebUtility.HtmlDecode(title),
+                url = url,
+                type = ResultTypeOf(dr),
+                path = !string.IsNullOrWhiteSpace(sectionPath) ? sectionPath : BreadcrumbForUrl(url, component),
+                cat = itemCat
+            };
         }
 
         private static string FirstSegment(string url)
@@ -217,6 +326,92 @@ namespace GBL_BusinessLogic.BAL
             return char.ToUpperInvariant(joined[0]) + joined.Substring(1);
         }
 
+
+        private static string NormalizeCategory(string category)
+        {
+            if (string.IsNullOrWhiteSpace(category)) return "All";
+            foreach (var key in SuggestCategories.Keys)
+            {
+                if (string.Equals(key, category.Trim(), StringComparison.OrdinalIgnoreCase))
+                    return key;
+            }
+            return "All";
+        }
+
+        private static string CleanCategory(string category)
+        {
+            if (string.IsNullOrWhiteSpace(category)) return "All";
+            string value = category.Trim();
+            return value.Length > 100 ? value.Substring(0, 100) : value;
+        }
+
+        private static string NormalizeTerm(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return "";
+            string term = string.Join(" ", value.Trim().Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            return term.Length > 200 ? term.Substring(0, 200) : term;
+        }
+
+        private static string NormalizeItemType(string type)
+        {
+            switch ((type ?? "").Trim().ToLowerInvariant())
+            {
+                case "product": return "Product";
+                case "industry": return "Industry";
+                case "section": return "Section";
+                case "article": return "Article";
+                case "pdf": return "PDF";
+                case "page": return "Page";
+                default: return "Page";
+            }
+        }
+
+        private static string SafeUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return "";
+            url = url.Trim();
+            if (url.StartsWith("//", StringComparison.Ordinal)) return "";
+
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri abs))
+            {
+                if (abs.Scheme != Uri.UriSchemeHttp && abs.Scheme != Uri.UriSchemeHttps) return "";
+                url = abs.AbsolutePath;
+            }
+
+            if (!url.StartsWith("/", StringComparison.Ordinal)) return "";
+            int cut = url.IndexOfAny(new[] { '?', '#' });
+            if (cut >= 0) url = url.Substring(0, cut);
+            if (url.Contains("..")) return "";
+            return url.Length > 1000 ? url.Substring(0, 1000) : url;
+        }
+
+        private void TryLog(string keyword, string category, string itemType, string itemTitle, string itemUrl, string sectionName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(keyword)) return;
+                LogSearch__DAL(keyword, category, itemType, itemTitle, itemUrl, sectionName);
+            }
+            catch
+            {
+                // Search still works if the popular-search table has not been created yet.
+            }
+        }
+
+        private static string Cell(DataRow dr, string column)
+        {
+            if (dr?.Table == null || !dr.Table.Columns.Contains(column) || dr[column] == DBNull.Value)
+                return "";
+            return dr[column]?.ToString() ?? "";
+        }
+
+        private static string ResultTypeOf(DataRow dr)
+        {
+            string type = Cell(dr, "ResultType");
+            if (!string.IsNullOrWhiteSpace(type)) return type;
+            string url = Cell(dr, "PageUrl");
+            return url.IndexOf(".pdf", StringComparison.OrdinalIgnoreCase) >= 0 ? "PDF" : "Page";
+        }
 
         private string GetURl(string pdfUrl, string Path, string extURL)
         {

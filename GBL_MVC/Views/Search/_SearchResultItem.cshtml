@@ -52,7 +52,19 @@
         : !string.IsNullOrWhiteSpace(Model.hmpg_intro) ? Model.hmpg_intro
         : Model.content;
     var snippet = Truncate(PlainText(snippetSource), 240);
-    var crumbs = Crumbs(Model.URL);
+    var crumbs = !string.IsNullOrWhiteSpace(Model.section_path) ? Model.section_path : Crumbs(Model.URL);
+    var typeLabel = Model.result_type ?? "";
+    if (!string.IsNullOrWhiteSpace(typeLabel) && !typeLabel.Equals("Page", StringComparison.OrdinalIgnoreCase))
+    {
+        crumbs = string.IsNullOrWhiteSpace(crumbs) ? typeLabel : typeLabel + " · " + crumbs;
+    }
+
+    var actionLabel = typeLabel.Equals("Product", StringComparison.OrdinalIgnoreCase) ? "View product"
+        : typeLabel.Equals("Industry", StringComparison.OrdinalIgnoreCase) ? "View industry"
+        : typeLabel.Equals("PDF", StringComparison.OrdinalIgnoreCase) ? "View file"
+        : typeLabel.Equals("Section", StringComparison.OrdinalIgnoreCase) ? "View section"
+        : typeLabel.Equals("Article", StringComparison.OrdinalIgnoreCase) ? "View article"
+        : "View page";
 }
 
 <li class="search-list-group search-result-item">
@@ -67,7 +79,7 @@
             <p class="search-result-item-desc">@Html.Raw(Highlight(snippet))</p>
         }
         <span class="search-result-more" aria-hidden="true">
-            View page
+            @actionLabel
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </span>
     </a>

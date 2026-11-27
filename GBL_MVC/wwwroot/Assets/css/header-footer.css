@@ -747,6 +747,21 @@ font-weight: 400;
   border: 1px solid #e3b5aa;
 }
 
+.search-overlay__badge--product{
+  color: #1f5c4d;
+  background: #e5f3ee;
+}
+
+.search-overlay__badge--industry{
+  color: #3d5a1f;
+  background: #e7f0d8;
+}
+
+.search-overlay__badge--section{
+  color: #3a4a28;
+  background: #f4f1e6;
+}
+
 .search-overlay__result-title{
   font-size: 16px;
   overflow: hidden;
