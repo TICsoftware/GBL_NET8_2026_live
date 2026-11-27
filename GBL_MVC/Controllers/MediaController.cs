@@ -55,6 +55,18 @@ public class MediaController : Controller
         try
         {
             var data = _bal.GetMediaCoverage_BAL(title, 1, 1);
+            var isStories = string.Equals(title, "stories-of-change", StringComparison.OrdinalIgnoreCase);
+            ViewData["HideNewsFilters"] = isStories;
+            if (isStories)
+            {
+                const int pageSize = 9;
+                ViewData["NewsPageSize"] = pageSize;
+                var articles = data.SectionArticles_List ?? new List<ArticleModel>();
+                var total = data.TotalCount > 0 ? data.TotalCount : articles.Count;
+                data.TotalCount = total;
+                if (articles.Count > pageSize)
+                    data.SectionArticles_List = articles.Take(pageSize).ToList();
+            }
             return View(data);
         }
         catch (Exception ex)

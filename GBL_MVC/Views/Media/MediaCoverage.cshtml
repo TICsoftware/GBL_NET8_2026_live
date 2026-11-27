@@ -10,6 +10,8 @@
 
    var isPress = section == "press-release";
    var pageTitle = isPress ? "Press Release" : "Media Coverage";
+   var hideFilters = ViewData["HideNewsFilters"] as bool? == true;
+   var pageSize = ViewData["NewsPageSize"] as int? ?? 12;
 }
 
 
@@ -63,6 +65,8 @@
 <!-- HERO BANNER END -->
 
 
+@if (!hideFilters)
+{
 <section class="relative section-spacing pb-0!">
    <div class="container">
       <div class="news-toolbar tab-outer mb-10">
@@ -134,15 +138,16 @@
       </div>
    </div>
 </section>
+}
 
 
-<section class="relative industries-inside-outer news-inside-outer mb-20">
+<section class="relative industries-inside-outer news-inside-outer mb-20@(hideFilters ? " section-spacing" : "")">
    <div class="container">
       <div class="industries-tab-content">
          <div class="industry-tab-panel is-active" id="tab-MediaCoverage" role="tabpanel"
               aria-labelledby="tab-btn-MediaCoverage" data-tab-panel="MediaCoverage">
            
-            <div id="DivContent" class="industry-product-grid media-coverage-grid" data-news-grid data-page-size="12"
+            <div id="DivContent" class="industry-product-grid media-coverage-grid" data-news-grid data-page-size="@pageSize"
                  data-total-count="@Model.TotalCount" data-content-id="@(Model.Content?.ContId ?? 0)"
                  data-load-url="@Url.Action("LoadMediaCoverage", "Media")">
 

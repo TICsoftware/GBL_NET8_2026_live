@@ -373,6 +373,11 @@ app.MapControllerRoute(
                defaults: new { controller = "Media", action = "MediaCoverage", title = "media-coverage" }
           );
 
+            app.MapControllerRoute(
+               name: "stories-of-change",
+               pattern: "media/stories-of-change",
+               defaults: new { controller = "Media", action = "MediaCoverage", title = "stories-of-change" }
+          );
 
 
             app.MapControllerRoute(
